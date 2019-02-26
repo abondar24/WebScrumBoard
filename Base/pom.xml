@@ -13,11 +13,6 @@
     <version>1.0</version>
     <dependencies>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-autoconfigure</artifactId>
-            <version>${springboot.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.abondar.experimental</groupId>
             <artifactId>DAO</artifactId>
             <version>1.0</version>
