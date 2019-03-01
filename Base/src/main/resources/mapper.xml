@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.abondar.experimental.wsboard.base.dao.Mapper">
+
+    <sql id="userTable">
+        user usr
+    </sql>
+
+    <sql id="projectTable">
+        project prj
+    </sql>
+
+    <sql id="taskTable">
+        task ts
+    </sql>
+
+    <sql id="contributorTable">
+        contributor ctr
+    </sql>
+
+
+    <resultMap id="userMap" type="User">
+        <id column="id" property="id"/>
+        <result column="login" property="login"/>
+        <result column="email" property="email"/>
+        <result column="first_name" property="firstName"/>
+        <result column="last_name" property="lastName"/>
+        <result column="password" property="password"/>
+        <result column="roles" property="roles"/>
+    </resultMap>
+
+    <resultMap id="projectMap" type="Project">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="start_date" property="startDate"/>
+        <result column="end_date" property="endDate"/>
+        <result column="repository" property="repository"/>
+        <result column="is_active" property="is_active"/>
+    </resultMap>
+
+    <resultMap id="contributorMap" type="Contributor">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="project_id" property="projectId"/>
+        <result column="is_owner" property="isOwner"/>
+    </resultMap>
+
+    <resultMap id="taskMap" type="Task">
+        <id column="id" property="id"/>
+        <result column="contributor_id" property="contributorId"/>
+        <result column="task_state" property="taskState"/>
+        <result column="start_date" property="startDate"/>
+        <result column="end_date" property="endDate"/>
+    </resultMap>
+
+
+    <insert id="insertOrUpdateUser" useGeneratedKeys="true" keyColumn="id" keyProperty="user.id">
+        INSERT INTO
+        user (id,login,email,first_name,last_name, password,roles)
+        VALUES (
+        #{user.id},
+        #{user.login},
+        #{user.email},
+        #{user.firstName},
+        #{user.lastName},
+        #{user.password},
+        #{user.roles}
+        )
+        ON DUPLICATE KEY UPDATE
+        id         = #{user.id},
+        login      = #{user.login},
+        email      = #{user.email},
+        first_name = #{user.firstName},
+        last_name  = #{user.lastName},
+        password   = #{user.password},
+        roles      = #{user.roles}
+        password   = #{user.password}
+    </insert>
+
+    <insert id="insertOrUpdateProject" useGeneratedKeys="true" keyColumn="id" keyProperty="project.id">
+        INSERT INTO
+        project (id,name,start_date,end_date,repository,is_active)
+        VALUES (
+        #{project.id},
+        #{project.name},
+        #{project.startDate},
+        #{project.endDate},
+        #{project.repository},
+        #{project.isActive}
+        )
+        ON DUPLICATE KEY UPDATE
+        id         = #{project.id},
+        name       = #{project.name},
+        start_date = #{project.startDate},
+        end_date   = #{project.endDate},
+        repository = #{project.repository},
+        is_active  = #{project.isActive}
+    </insert>
+
+    <insert id="insertOrUpdateContributor" useGeneratedKeys="true" keyColumn="id" keyProperty="contributor.id">
+        INSERT INTO
+        contributor (id,project_id,user_id,is_owner)
+        VALUES (
+        #{contributor.id},
+        #{contributor.projectId},
+        #{contributor.userId},
+        #{contributor.isOwner}
+               )
+        ON DUPLICATE KEY UPDATE
+        id         = #{contributor.id},
+        project_id = #{contributor.projectId},
+        user_id    = #{contributor.userId},
+        user_id    = #{contributor.isOwner}
+
+    </insert>
+
+
+    <insert id="insertOrUpdateTask" useGeneratedKeys="true" keyColumn="id" keyProperty="task.id">
+    INSERT INTO
+    task (id,contributor_id,task_state,start_date,end_date)
+    VALUES (
+    #{task.id},
+    #{task.contributorId},
+    #{task.taskState},
+    #{task.startDate},
+    #{task.endDate}
+    )
+    ON DUPLICATE KEY UPDATE
+    id             = #{task.id},
+    contributor_id = #{task.contributorId},
+    task_state     = #{task.taskState},
+    start_date     = #{task.startDate},
+    end_date       = #{task.endDate}
+    </insert>
+
+    <select id="getUserByLogin" resultMap="userMap">
+        SELECT *
+        FROM
+        <include refid="userTable"/>
+        WHERE usr.login=#{login}
+    </select>
+
+    <select id="getUserById" resultMap="userMap">
+        SELECT *
+        FROM
+        <include refid="userTable"/>
+        WHERE usr.id=#{id}
+    </select>
+
+    <select id="getProjectById" resultMap="projectMap">
+        SELECT *
+        FROM
+        <include refid="projectTable"/>
+        WHERE prj.id=#{id}
+    </select>
+
+
+    <select id="getProjectByOwner" resultMap="userMap">
+        SELECT *
+        FROM
+        <include refid="userTable"/>
+
+        JOIN
+        <include refid="contributorTable"/>
+        ON ctr.user_id = usr.id
+
+        JOIN <include refid="projectTable"/>
+        ON prj.id = ctr.project_id
+
+        WHERE prj.id=#{projectId}
+    </select>
+
+    <select id="getTaskById" resultMap="taskMap">
+    SELECT *
+    FROM
+    <include refid="taskTable"/>
+    WHERE ts.id=#{id}
+    </select>
+
+    <select id="getTasksForProject" resultMap="taskMap">
+        SELECT *
+        FROM
+        <include refid="taskTable"/>
+
+        JOIN
+        <include refid="contributorTable"/>
+        ON ctr.id = ts.contributor_id
+
+        WHERE ctr.project_id=#{projectId}
+        OFFSET #{offset}
+        LIMIT #{limit}
+    </select>
+
+    <select id="getTasksForContributor" resultMap="taskMap">
+        SELECT *
+        FROM
+        <include refid="taskTable"/>
+
+        JOIN
+        <include refid="contributorTable"/>
+        ON ctr.id = ts.contributor_id
+
+        WHERE ctr.id=#{contributorId}
+        OFFSET #{offset}
+        LIMIT #{limit}
+    </select>
+
+    <select id="getTasksForUser" resultMap="taskMap">
+        SELECT *
+        FROM
+        <include refid="taskTable"/>
+
+        JOIN
+        <include refid="contributorTable"/>
+        ON ctr.id = ts.contributor_id
+
+        JOIN
+        <include refid="userTable"/>
+        ON usr.id = ctr.user_id
+
+        WHERE usr.id=#{userId}
+        OFFSET #{offset}
+        LIMIT #{limit}
+    </select>
+
+
+    <delete id="deleteUsers">
+        DELETE FROM
+        <include refid="userTable"/>
+    </delete>
+
+    <delete id="deleteProjects">
+        DELETE FROM
+        <include refid="projectTable"/>
+    </delete>
+
+    <delete id="deleteProject">
+        DELETE FROM
+        <include refid="projectTable"/>
+        WHERE prj.id=#{id}
+    </delete>
+
+    <delete id="deleteContributors">
+        DELETE FROM
+        <include refid="contributorTable"/>
+    </delete>
+
+    <delete id="deleteContributor">
+        DELETE FROM
+        <include refid="contributorTable"/>
+        WHERE ctr.id=#{id}
+    </delete>
+
+
+    <delete id="deleteTasks">
+        DELETE FROM
+        <include refid="tasksTable"/>
+    </delete>
+
+    <delete id="deleteTask">
+        DELETE FROM
+        <include refid="tasksTable"/>
+        WHERE ts.id=#{id}
+    </delete>
+
+
+</mapper>

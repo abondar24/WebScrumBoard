@@ -5,7 +5,7 @@ import java.util.Date;
 public class Task {
 
     private long id;
-    private long userId;
+    private long contributorId;
     private TaskState taskState;
     private int storyPoints;
     private Date startDate;
@@ -14,8 +14,7 @@ public class Task {
 
     public Task(){}
 
-    public Task(long userId, TaskState taskState, int storyPoints, Date startDate, Date endDate) {
-        this.userId = userId;
+    public Task( TaskState taskState, int storyPoints, Date startDate, Date endDate) {
         this.taskState = taskState;
         this.storyPoints = storyPoints;
         this.startDate = startDate;
@@ -31,12 +30,12 @@ public class Task {
         this.id = id;
     }
 
-    public long getUserId() {
-        return userId;
+    public long getContributorId() {
+        return contributorId;
     }
 
-    public void setUserId(long userId) {
-        this.userId = userId;
+    public void setContributorId(long contributorId) {
+        this.contributorId = contributorId;
     }
 
     public TaskState getTaskState() {
@@ -75,7 +74,7 @@ public class Task {
     public String toString() {
         return "Task{" +
                 "id=" + id +
-                ", userId=" + userId +
+                ", contributorId=" + contributorId +
                 ", taskState=" + taskState +
                 ", storyPoints=" + storyPoints +
                 ", startDate=" + startDate +
