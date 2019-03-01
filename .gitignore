@@ -24,3 +24,8 @@ hs_err_pid*
 
 .idea
 *.iml
+
+target
+Base/target
+DataModel/target
+Service/target

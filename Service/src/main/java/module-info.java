@@ -1,4 +1,6 @@
 module org.abondar.experimental.wsboard.Service {
 
-    exports org.abondar.experimental.wsboard.service;
+    requires org.abondar.experimental.wsboard.DataModel;
+    requires org.abondar.experimental.wsboard.Base;
+
 }

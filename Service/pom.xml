@@ -70,5 +70,17 @@
             <version>3.20.9</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>org.abondar.experimental</groupId>
+            <artifactId>DataModel</artifactId>
+            <version>1.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.abondar.experimental</groupId>
+            <artifactId>Base</artifactId>
+            <version>1.0</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 </project>
