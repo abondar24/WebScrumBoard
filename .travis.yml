@@ -2,4 +2,19 @@ language: java
 jdk:
   - openjdk11
 
+services:
+  - postgresql
+
+addons:
+  postgresql: "10"
+  apt:
+    packages:
+      - postgresql-10
+      - postgresql-client-10
+
+before_script:
+  - psql -c 'create database twsboard_test;' -U postgres
+  - psql -c "CREATE USER admin WITH PASSWORD 'admin217';" -U postgres
+
+
 script: mvn clean install -DskipTests=false

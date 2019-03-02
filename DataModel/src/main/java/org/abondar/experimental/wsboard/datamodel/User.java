@@ -77,6 +77,15 @@ public class User {
         this.id = id;
     }
 
+    public void setDeleted(){
+        this.login = "deleted";
+        this.email = "deleted";
+        this.firstName = "deleted";
+        this.lastName = "deleted";
+        this.password = "deleted";
+        this.roles = "deleted";
+    }
+
     @Override
     public String toString() {
         return "User{" +

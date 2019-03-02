@@ -56,11 +56,10 @@
     </resultMap>
 
 
-    <insert id="insertOrUpdateUser" useGeneratedKeys="true" keyColumn="id" keyProperty="user.id">
+    <insert id="insertUpdateUser" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
         INSERT INTO
-        user (id,login,email,first_name,last_name, password,roles)
+        user (login,email,first_name,last_name, password,roles)
         VALUES (
-        #{user.id},
         #{user.login},
         #{user.email},
         #{user.firstName},
@@ -68,30 +67,26 @@
         #{user.password},
         #{user.roles}
         )
-        ON DUPLICATE KEY UPDATE
-        id         = #{user.id},
+        ON CONFLICT (id) DO UPDATE SET
         login      = #{user.login},
         email      = #{user.email},
-        first_name = #{user.firstName},
-        last_name  = #{user.lastName},
+        first_name = #{user.first_name},
+        last_name  = #{user.last_name},
         password   = #{user.password},
-        roles      = #{user.roles}
-        password   = #{user.password}
+        roles      = #{user.roles};
     </insert>
 
-    <insert id="insertOrUpdateProject" useGeneratedKeys="true" keyColumn="id" keyProperty="project.id">
+    <insert id="insertUpdateProject" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
         INSERT INTO
-        project (id,name,start_date,end_date,repository,is_active)
+        project (name,start_date,end_date,repository,is_active)
         VALUES (
-        #{project.id},
         #{project.name},
         #{project.startDate},
         #{project.endDate},
         #{project.repository},
         #{project.isActive}
         )
-        ON DUPLICATE KEY UPDATE
-        id         = #{project.id},
+        ON CONFLICT (id) DO UPDATE SET
         name       = #{project.name},
         start_date = #{project.startDate},
         end_date   = #{project.endDate},
@@ -99,17 +94,15 @@
         is_active  = #{project.isActive}
     </insert>
 
-    <insert id="insertOrUpdateContributor" useGeneratedKeys="true" keyColumn="id" keyProperty="contributor.id">
+    <insert id="insertUpdateContributor" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
         INSERT INTO
-        contributor (id,project_id,user_id,is_owner)
+        contributor (project_id,user_id,is_owner)
         VALUES (
-        #{contributor.id},
         #{contributor.projectId},
         #{contributor.userId},
         #{contributor.isOwner}
                )
-        ON DUPLICATE KEY UPDATE
-        id         = #{contributor.id},
+        ON CONFLICT (id) DO UPDATE SET
         project_id = #{contributor.projectId},
         user_id    = #{contributor.userId},
         user_id    = #{contributor.isOwner}
@@ -117,18 +110,16 @@
     </insert>
 
 
-    <insert id="insertOrUpdateTask" useGeneratedKeys="true" keyColumn="id" keyProperty="task.id">
+    <insert id="insertUpdateTask" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
     INSERT INTO
-    task (id,contributor_id,task_state,start_date,end_date)
+    task (contributor_id,task_state,start_date,end_date)
     VALUES (
-    #{task.id},
     #{task.contributorId},
     #{task.taskState},
     #{task.startDate},
     #{task.endDate}
     )
-    ON DUPLICATE KEY UPDATE
-    id             = #{task.id},
+    ON CONFLICT (id) DO UPDATE SET
     contributor_id = #{task.contributorId},
     task_state     = #{task.taskState},
     start_date     = #{task.startDate},
@@ -256,12 +247,12 @@
 
     <delete id="deleteTasks">
         DELETE FROM
-        <include refid="tasksTable"/>
+        <include refid="taskTable"/>
     </delete>
 
     <delete id="deleteTask">
         DELETE FROM
-        <include refid="tasksTable"/>
+        <include refid="taskTable"/>
         WHERE ts.id=#{id}
     </delete>
 
