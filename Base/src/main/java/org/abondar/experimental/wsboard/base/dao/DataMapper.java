@@ -5,11 +5,13 @@ import org.abondar.experimental.wsboard.datamodel.Contributor;
 import org.abondar.experimental.wsboard.datamodel.Project;
 import org.abondar.experimental.wsboard.datamodel.Task;
 import org.abondar.experimental.wsboard.datamodel.User;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
-public interface Mapper {
+@Mapper
+public interface DataMapper {
   void insertUpdateUser(@Param("user") User user);
   void insertUpdateProject(@Param("project")Project project);
   void insertUpdateTask(@Param("task")Task task);
