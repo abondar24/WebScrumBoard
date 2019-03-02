@@ -1,20 +1,19 @@
+sudo: required
 language: java
 jdk:
   - openjdk11
 
-#addons:
-#  postgresql: "10"
-#  apt:
-#    packages:
-#      - postgresql-10
-#      - postgresql-client-10
-#env:
-#    global:
-#      - PGPORT=5433
+env:
+  global:
+    - PGPORT=5432
+    - PGHOST=localhost
 
-services:
-  - postgresql
-
+addons:
+  postgresql: "10"
+  apt:
+    packages:
+      - postgresql-10
+      - postgresql-client-10
 
 before_script:
   - psql -c 'create database wsboard_test;' -U postgres
