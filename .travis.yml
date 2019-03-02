@@ -12,6 +12,10 @@ env:
     global:
       - PGPORT=5433
 
+services:
+  - postgresql
+
+
 before_script:
   - psql -c 'create database wsboard_test;' -U postgres
   - psql -c "CREATE USER admin WITH PASSWORD 'admin217';" -U postgres
