@@ -8,6 +8,8 @@ env:
     - PGPORT=5432
     - PGHOST=localhost
 
+dist: trusty
+
 addons:
   postgresql: "10"
   apt:
