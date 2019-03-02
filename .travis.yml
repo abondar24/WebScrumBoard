@@ -2,9 +2,6 @@ language: java
 jdk:
   - openjdk11
 
-#services:
-#  - postgresql
-
 addons:
   postgresql: "10"
   apt:
@@ -13,7 +10,7 @@ addons:
       - postgresql-client-10
 env:
     global:
-      - PGPORT=5432
+      - PGPORT=5433
 
 before_script:
   - psql -c 'create database wsboard_test;' -U postgres
