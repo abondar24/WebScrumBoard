@@ -1,8 +1,15 @@
 sudo: required
-dist: trusty
 language: java
 jdk:
   - openjdk11
+
+
+addons:
+  postgresql: "9.5"
+  apt:
+    packages:
+      - postgresql-9.5
+      - postgresql-client-9.5
 
 env:
   global:
@@ -10,13 +17,6 @@ env:
     - PGHOST=localhost
 
 
-
-addons:
-  postgresql: "10"
-  apt:
-    packages:
-      - postgresql-10
-      - postgresql-client-10
 
 services:
   - postgresql
