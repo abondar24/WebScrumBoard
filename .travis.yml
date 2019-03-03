@@ -1,4 +1,5 @@
 sudo: required
+dist: trusty
 language: java
 jdk:
   - openjdk11
@@ -8,7 +9,7 @@ env:
     - PGPORT=5432
     - PGHOST=localhost
 
-dist: trusty
+
 
 addons:
   postgresql: "10"
@@ -16,6 +17,9 @@ addons:
     packages:
       - postgresql-10
       - postgresql-client-10
+
+services:
+  - postgresql
 
 before_script:
   - psql -c 'create database wsboard_test;' -U postgres
