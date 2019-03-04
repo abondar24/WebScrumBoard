@@ -1,7 +1,11 @@
 CREATE TABLE IF NOT EXISTS contributor
 (
-  id         SERIAL NOT NULL PRIMARY KEY,
-  user_id    BIGINT REFERENCES user (id),
-  project_id BIGINT REFERENCES project (id),
+  id         BIGINT NOT NULL PRIMARY KEY,
+  user_id    BIGINT REFERENCES user (id) MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION,
+  project_id BIGINT REFERENCES project (id) MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION,
   is_owner   BOOLEAN
 );
