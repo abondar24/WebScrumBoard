@@ -5,12 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.abondar.experimental</groupId>
+        <groupId>org.abondar.experimental.wsboard</groupId>
         <artifactId>WebScrumBoard</artifactId>
         <version>1.0</version>
     </parent>
 
-    <artifactId>DataModel</artifactId>
+    <artifactId>dataModel</artifactId>
     <version>1.0</version>
 
 </project>

@@ -5,12 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.abondar.experimental</groupId>
+        <groupId>org.abondar.experimental.wsboard</groupId>
         <artifactId>WebScrumBoard</artifactId>
         <version>1.0</version>
     </parent>
 
-    <artifactId>Service</artifactId>
+    <artifactId>service</artifactId>
     <version>1.0</version>
 
     <dependencies>
@@ -71,14 +71,8 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>org.abondar.experimental</groupId>
-            <artifactId>DataModel</artifactId>
-            <version>1.0</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.abondar.experimental</groupId>
-            <artifactId>Base</artifactId>
+            <groupId>org.abondar.experimental.wsboard</groupId>
+            <artifactId>base</artifactId>
             <version>1.0</version>
             <scope>compile</scope>
         </dependency>

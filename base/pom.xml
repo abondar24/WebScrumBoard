@@ -4,17 +4,17 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.abondar.experimental</groupId>
+        <groupId>org.abondar.experimental.wsboard</groupId>
         <artifactId>WebScrumBoard</artifactId>
         <version>1.0</version>
     </parent>
-    <artifactId>Base</artifactId>
+    <artifactId>base</artifactId>
     <version>1.0</version>
 
     <dependencies>
         <dependency>
-            <groupId>org.abondar.experimental</groupId>
-            <artifactId>DataModel</artifactId>
+            <groupId>org.abondar.experimental.wsboard</groupId>
+            <artifactId>dataModel</artifactId>
             <version>1.0</version>
             <scope>compile</scope>
         </dependency>
