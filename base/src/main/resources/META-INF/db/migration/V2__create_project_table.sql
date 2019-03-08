@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS project
 (
-  id         BIGINT       NOT NULL PRIMARY KEY,
+  id         SERIAL PRIMARY KEY,
   name       VARCHAR(255) NOT NULL,
   start_date TIMESTAMP,
   end_date   TIMESTAMP,

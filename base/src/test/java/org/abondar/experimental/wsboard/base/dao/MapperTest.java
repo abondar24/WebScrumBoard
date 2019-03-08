@@ -1,7 +1,6 @@
-package org.abondar.experimental.wsboard.base.dao.test;
+package org.abondar.experimental.wsboard.base.dao;
 
 import org.abondar.experimental.wsboard.base.Main;
-import org.abondar.experimental.wsboard.base.dao.DataMapper;
 import org.abondar.experimental.wsboard.datamodel.User;
 import org.abondar.experimental.wsboard.datamodel.UserRole;
 import org.junit.jupiter.api.Test;
@@ -12,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -24,7 +22,7 @@ public class MapperTest {
   private   static Logger logger = LoggerFactory.getLogger(MapperTest.class);
 
   @Autowired
-  private DataMapper mapper;
+  private  DataMapper mapper;
 
   @Test
   public void insertUpdateUserTest(){

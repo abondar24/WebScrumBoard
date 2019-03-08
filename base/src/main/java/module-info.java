@@ -6,6 +6,6 @@ module org.abondar.experimental.wsboard.base {
    requires org.mybatis;
    requires org.mybatis.spring;
 
-   opens org.abondar.experimental.wsboard.base.dao;
+   opens org.abondar.experimental.wsboard.base;
 
 }

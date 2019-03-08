@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS task
 (
-  id             BIGINT NOT NULL PRIMARY KEY,
+  id            SERIAL PRIMARY KEY,
   contributor_id BIGINT REFERENCES contributor (id) MATCH SIMPLE
     ON UPDATE NO ACTION
     ON DELETE NO ACTION,

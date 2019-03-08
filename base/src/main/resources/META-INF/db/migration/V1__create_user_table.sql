@@ -1,6 +1,6 @@
-CREATE TABLE IF NOT EXISTS user
+CREATE TABLE IF NOT EXISTS wsuser
 (
-  id         BIGINT       NOT NULL PRIMARY KEY,
+  id         SERIAL PRIMARY KEY,
   login      VARCHAR(255) NOT NULL,
   email      VARCHAR(255) NOT NULL,
   first_name VARCHAR(255) NOT NULL,

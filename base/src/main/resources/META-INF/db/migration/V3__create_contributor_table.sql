@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS contributor
 (
-  id         BIGINT NOT NULL PRIMARY KEY,
-  user_id    BIGINT REFERENCES user (id) MATCH SIMPLE
+  id        SERIAL PRIMARY KEY,
+  user_id    BIGINT REFERENCES wsuser (id) MATCH SIMPLE
     ON UPDATE NO ACTION
     ON DELETE NO ACTION,
   project_id BIGINT REFERENCES project (id) MATCH SIMPLE

@@ -5,7 +5,7 @@
 <mapper namespace="org.abondar.experimental.wsboard.base.dao.DataMapper">
 
     <sql id="userTable">
-        user usr
+        wsuser usr
     </sql>
 
     <sql id="projectTable">
@@ -58,7 +58,7 @@
 
     <insert id="insertUpdateUser" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
         INSERT INTO
-        user (login,email,first_name,last_name, password,roles)
+        wsuser (login,email,first_name,last_name, password,roles)
         VALUES (
         #{user.login},
         #{user.email},
@@ -70,8 +70,8 @@
         ON CONFLICT (id) DO UPDATE SET
         login      = #{user.login},
         email      = #{user.email},
-        first_name = #{user.first_name},
-        last_name  = #{user.last_name},
+        first_name = #{user.firstName},
+        last_name  = #{user.lastName},
         password   = #{user.password},
         roles      = #{user.roles};
     </insert>
