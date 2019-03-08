@@ -15,11 +15,10 @@ public class Project {
 
    }
 
-    public Project(String name, Date startDate, Date endDate, String repository) {
+    public Project(String name, Date startDate, Date endDate) {
         this.name = name;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.repository = repository;
         this.isActive = false;
     }
 

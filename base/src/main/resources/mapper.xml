@@ -37,7 +37,7 @@
         <result column="start_date" property="startDate"/>
         <result column="end_date" property="endDate"/>
         <result column="repository" property="repository"/>
-        <result column="is_active" property="is_active"/>
+        <result column="is_active" property="isActive"/>
     </resultMap>
 
     <resultMap id="contributorMap" type="Contributor">
@@ -57,73 +57,61 @@
 
 
     <insert id="insertUpdateUser" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
-        INSERT INTO
-        wsuser (login,email,first_name,last_name, password,roles)
-        VALUES (
-        #{user.login},
-        #{user.email},
-        #{user.firstName},
-        #{user.lastName},
-        #{user.password},
-        #{user.roles}
-        )
+        INSERT INTO wsuser (login, email, first_name, last_name, password, roles)
+        VALUES (#{user.login},
+                #{user.email},
+                #{user.firstName},
+                #{user.lastName},
+                #{user.password},
+                #{user.roles})
         ON CONFLICT (id) DO UPDATE SET
-        login      = #{user.login},
-        email      = #{user.email},
-        first_name = #{user.firstName},
-        last_name  = #{user.lastName},
-        password   = #{user.password},
-        roles      = #{user.roles};
+            login = #{user.login},
+            email = #{user.email},
+            first_name = #{user.firstName},
+            last_name = #{user.lastName},
+            password = #{user.password},
+            roles = #{user.roles};
     </insert>
 
     <insert id="insertUpdateProject" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
-        INSERT INTO
-        project (name,start_date,end_date,repository,is_active)
-        VALUES (
-        #{project.name},
-        #{project.startDate},
-        #{project.endDate},
-        #{project.repository},
-        #{project.isActive}
-        )
+        INSERT INTO project (name, start_date, end_date, repository, is_active)
+        VALUES (#{project.name},
+                #{project.startDate},
+                #{project.endDate},
+                #{project.repository},
+                #{project.isActive})
         ON CONFLICT (id) DO UPDATE SET
-        name       = #{project.name},
-        start_date = #{project.startDate},
-        end_date   = #{project.endDate},
-        repository = #{project.repository},
-        is_active  = #{project.isActive}
+            name = #{project.name},
+            start_date = #{project.startDate},
+            end_date = #{project.endDate},
+            repository = #{project.repository},
+            is_active = #{project.isActive}
     </insert>
 
     <insert id="insertUpdateContributor" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
-        INSERT INTO
-        contributor (project_id,user_id,is_owner)
-        VALUES (
-        #{contributor.projectId},
-        #{contributor.userId},
-        #{contributor.isOwner}
-               )
+        INSERT INTO contributor (user_id, project_id, is_owner)
+        VALUES (#{contributor.userId},
+                #{contributor.projectId},
+                #{contributor.isOwner})
         ON CONFLICT (id) DO UPDATE SET
-        project_id = #{contributor.projectId},
-        user_id    = #{contributor.userId},
-        user_id    = #{contributor.isOwner}
+            user_id = #{contributor.userId},
+            project_id = #{contributor.projectId},
+            is_owner = #{contributor.isOwner}
 
     </insert>
 
 
     <insert id="insertUpdateTask" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
-    INSERT INTO
-    task (contributor_id,task_state,start_date,end_date)
-    VALUES (
-    #{task.contributorId},
-    #{task.taskState},
-    #{task.startDate},
-    #{task.endDate}
-    )
-    ON CONFLICT (id) DO UPDATE SET
-    contributor_id = #{task.contributorId},
-    task_state     = #{task.taskState},
-    start_date     = #{task.startDate},
-    end_date       = #{task.endDate}
+        INSERT INTO task (contributor_id, task_state, start_date, end_date)
+        VALUES (#{task.contributorId},
+                #{task.taskState},
+                #{task.startDate},
+                #{task.endDate})
+        ON CONFLICT (id) DO UPDATE SET
+            contributor_id = #{task.contributorId},
+            task_state = #{task.taskState},
+            start_date = #{task.startDate},
+            end_date = #{task.endDate}
     </insert>
 
     <select id="getUserByLogin" resultMap="userMap">
@@ -148,7 +136,7 @@
     </select>
 
 
-    <select id="getProjectByOwner" resultMap="userMap">
+    <select id="getProjectOwner" resultMap="userMap">
         SELECT *
         FROM
         <include refid="userTable"/>
@@ -157,17 +145,37 @@
         <include refid="contributorTable"/>
         ON ctr.user_id = usr.id
 
-        JOIN <include refid="projectTable"/>
+        JOIN
+        <include refid="projectTable"/>
+        ON prj.id = ctr.project_id
+
+        WHERE prj.id=#{projectId} and ctr.is_owner=true
+    </select>
+
+
+    <select id="getContributorsForProject" resultMap="userMap">
+        SELECT *
+        FROM
+        <include refid="userTable"/>
+
+        JOIN
+        <include refid="contributorTable"/>
+        ON ctr.user_id = usr.id
+
+        JOIN
+        <include refid="projectTable"/>
         ON prj.id = ctr.project_id
 
         WHERE prj.id=#{projectId}
+        OFFSET #{offset}
+        LIMIT #{limit}
     </select>
 
     <select id="getTaskById" resultMap="taskMap">
-    SELECT *
-    FROM
-    <include refid="taskTable"/>
-    WHERE ts.id=#{id}
+        SELECT *
+        FROM
+        <include refid="taskTable"/>
+        WHERE ts.id=#{id}
     </select>
 
     <select id="getTasksForProject" resultMap="taskMap">

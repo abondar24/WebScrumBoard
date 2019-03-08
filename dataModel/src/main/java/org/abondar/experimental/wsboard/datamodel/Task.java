@@ -14,13 +14,13 @@ public class Task {
 
     public Task(){}
 
-    public Task( TaskState taskState, int storyPoints, Date startDate, Date endDate) {
+    public Task(long contributorId, TaskState taskState, int storyPoints, Date startDate, Date endDate) {
+        this.contributorId = contributorId;
         this.taskState = taskState;
         this.storyPoints = storyPoints;
         this.startDate = startDate;
         this.endDate = endDate;
     }
-
 
     public long getId() {
         return id;

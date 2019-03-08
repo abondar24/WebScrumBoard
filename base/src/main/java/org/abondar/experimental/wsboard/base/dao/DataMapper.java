@@ -28,7 +28,7 @@ public interface DataMapper {
 
     User getProjectOwner(@Param("projectId") Long projectId);
 
-    List<Contributor> getContributorsForProject(@Param("projectId") long projectId, @Param("offset") int offset, @Param("limit") int limit);
+    List<User> getContributorsForProject(@Param("projectId") long projectId, @Param("offset") int offset, @Param("limit") int limit);
 
     Task getTaskById(@Param("id") long id);
 
