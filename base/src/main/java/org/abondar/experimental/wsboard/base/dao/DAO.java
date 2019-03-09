@@ -91,6 +91,35 @@ public class DAO {
         return res;
     }
 
+    public ObjectWrapper<User> updatePassword(String oldPassword,String newPassword,long userId) throws Exception {
+        ObjectWrapper<User> res = new ObjectWrapper<>();
+
+        var usr = mapper.getUserById(userId);
+        if (usr == null) {
+            logger.error(ErrorMessageUtil.USER_NOT_EXISTS + " with id: "+userId);
+            res.setMessage(ErrorMessageUtil.USER_NOT_EXISTS);
+            res.setObject(null);
+
+            return res;
+        }
+
+        if (!PasswordUtil.verifyPassword(oldPassword,usr.getPassword())){
+            logger.error(ErrorMessageUtil.UNAUTHORIZED);
+            res.setMessage(ErrorMessageUtil.UNAUTHORIZED);
+            res.setObject(null);
+
+            return res;
+        }
+        usr.setPassword(PasswordUtil.createHash(newPassword));
+        mapper.insertUpdateUser(usr);
+
+        logger.info("Password updated for user: " +usr.getId());
+        res.setMessage(null);
+        res.setObject(usr);
+
+        return res;
+    }
+
 
     private boolean containsRole(String role) {
         for (UserRole r : UserRole.values()) {

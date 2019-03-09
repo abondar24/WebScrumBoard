@@ -134,5 +134,49 @@ public class DaoTest {
 
     }
 
+    @Test
+    public void updatePasswordTest() throws Exception{
+        logger.info("Update user password test");
+
+        String login="login";
+        String email="email@email.com";
+        String password="pwd";
+        String firstName = "fname";
+        String lastName = "lname";
+        List<String> roles = List.of(UserRole.Developer.name(),UserRole.DevOps.name());
+
+        var usr = dao.createUser(login,password,email,firstName,lastName,roles);
+        usr = dao.updatePassword(password,"newPed",usr.getObject().getId());
+        assertNull(usr.getMessage());
+
+        mapper.deleteUsers();
+    }
+
+    @Test
+    public void updatePasswordUserNotFoundTest() throws Exception{
+        logger.info("Update user password user not found test");
+
+        var usr = dao.updatePassword("pwd","newPed",100);
+        assertEquals(ErrorMessageUtil.USER_NOT_EXISTS,usr.getMessage());
+
+    }
+
+    @Test
+    public void updatePasswordUnathorizedTest() throws Exception{
+        logger.info("Update user password unauthorized test");
+
+        String login="login";
+        String email="email@email.com";
+        String password="pwd";
+        String firstName = "fname";
+        String lastName = "lname";
+        List<String> roles = List.of(UserRole.Developer.name(),UserRole.DevOps.name());
+
+        var usr = dao.createUser(login,password,email,firstName,lastName,roles);
+        usr = dao.updatePassword("randomPwd","newPed",usr.getObject().getId());
+        assertEquals(ErrorMessageUtil.UNAUTHORIZED,usr.getMessage());
+
+        mapper.deleteUsers();
+    }
 
 }
