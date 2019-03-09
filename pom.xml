@@ -22,7 +22,6 @@
         <module>dataModel</module>
         <module>webService</module>
         <module>email</module>
-        <module>security</module>
         <module>ui</module>
     </modules>
 
