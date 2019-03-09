@@ -10,7 +10,7 @@
         <version>1.0</version>
     </parent>
 
-    <artifactId>service</artifactId>
+    <artifactId>webService</artifactId>
     <version>1.0</version>
 
     <dependencies>
