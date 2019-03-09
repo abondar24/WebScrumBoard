@@ -135,6 +135,13 @@
         WHERE prj.id=#{id}
     </select>
 
+    <select id="getProjectByName" resultMap="projectMap">
+        SELECT *
+        FROM
+        <include refid="projectTable"/>
+        WHERE prj.name=#{name}
+    </select>
+
 
     <select id="getProjectOwner" resultMap="userMap">
         SELECT *

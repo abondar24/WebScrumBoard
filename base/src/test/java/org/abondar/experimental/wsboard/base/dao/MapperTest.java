@@ -113,6 +113,18 @@ public class MapperTest {
     }
 
     @Test
+    public void getProjectByNameTest() {
+        logger.info("Get project by name test");
+
+        var project = createProject();
+
+        var res = mapper.getProjectByName(project.getName());
+        assertEquals(project.getId(), res.getId());
+
+        mapper.deleteProjects();
+    }
+
+    @Test
     public void getProjectOwnerTest() {
         logger.info("Get project owner test");
 
