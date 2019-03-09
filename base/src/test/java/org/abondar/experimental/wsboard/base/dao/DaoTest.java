@@ -88,4 +88,51 @@ public class DaoTest {
         mapper.deleteUsers();
     }
 
+    @Test
+    public void updateUserLoginTest() throws Exception{
+        logger.info("Update user login test");
+
+        String login="login";
+        String email="email@email.com";
+        String password="pwd";
+        String firstName = "fname";
+        String lastName = "lname";
+        List<String> roles = List.of(UserRole.Developer.name(),UserRole.DevOps.name());
+
+        var usr = dao.createUser(login,password,email,firstName,lastName,roles);
+        usr = dao.updateLogin("login1",usr.getObject().getId());
+        assertNull(usr.getMessage());
+
+        mapper.deleteUsers();
+    }
+
+    @Test
+    public void updateUserLoginExistsTest() throws Exception{
+        logger.info("Update user login exists test");
+
+        String login="login";
+        String email="email@email.com";
+        String password="pwd";
+        String firstName = "fname";
+        String lastName = "lname";
+        List<String> roles = List.of(UserRole.Developer.name(),UserRole.DevOps.name());
+
+        var usr = dao.createUser(login,password,email,firstName,lastName,roles);
+        usr = dao.updateLogin(login,usr.getObject().getId());
+        assertEquals(ErrorMessageUtil.USER_EXISTS,usr.getMessage());
+
+        mapper.deleteUsers();
+    }
+
+
+    @Test
+    public void updateUserLoginNotExistsTest() {
+        logger.info("Update user login not exists test");
+
+        var usr = dao.updateLogin("login",1);
+        assertEquals(ErrorMessageUtil.USER_NOT_EXISTS,usr.getMessage());
+
+    }
+
+
 }

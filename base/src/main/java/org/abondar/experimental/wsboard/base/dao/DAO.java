@@ -1,6 +1,5 @@
 package org.abondar.experimental.wsboard.base.dao;
 
-import org.abondar.experimental.wsboard.base.dao.wrapper.ObjectWrapper;
 import org.abondar.experimental.wsboard.base.password.PasswordUtil;
 import org.abondar.experimental.wsboard.datamodel.User;
 import org.abondar.experimental.wsboard.datamodel.UserRole;
@@ -23,8 +22,8 @@ public class DAO {
 
     public ObjectWrapper<User> createUser(String login, String password, String email, String firstName,
                                     String lastName, List<String> roles) throws Exception {
-        var usr = mapper.getUserByLogin(login);
         ObjectWrapper<User> res = new ObjectWrapper<>();
+        var usr = mapper.getUserByLogin(login);
 
         if (usr != null) {
             logger.error(ErrorMessageUtil.USER_EXISTS);
@@ -49,6 +48,43 @@ public class DAO {
         mapper.insertUpdateUser(usr);
 
         logger.info("User successfully created with id: " +usr.getId());
+        res.setMessage(null);
+        res.setObject(usr);
+
+        return res;
+    }
+
+    public ObjectWrapper<User> updateLogin(String login,long userId) {
+        ObjectWrapper<User> res = new ObjectWrapper<>();
+        if (login.isBlank()){
+            logger.error(ErrorMessageUtil.EMTPY_LOGIN);
+            res.setMessage(ErrorMessageUtil.EMTPY_LOGIN);
+            res.setObject(null);
+            return res;
+        }
+
+        var usr = mapper.getUserByLogin(login);
+        if (usr != null) {
+            logger.error(ErrorMessageUtil.USER_EXISTS);
+            res.setMessage(ErrorMessageUtil.USER_EXISTS);
+            res.setObject(null);
+
+            return res;
+        }
+
+        usr = mapper.getUserById(userId);
+        if (usr == null) {
+            logger.error(ErrorMessageUtil.USER_NOT_EXISTS + " with id: "+userId);
+            res.setMessage(ErrorMessageUtil.USER_NOT_EXISTS);
+            res.setObject(null);
+
+            return res;
+        }
+
+        usr.setLogin(login);
+        mapper.insertUpdateUser(usr);
+
+        logger.info("User login updated for user: " +usr.getId());
         res.setMessage(null);
         res.setObject(usr);
 
