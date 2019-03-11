@@ -130,7 +130,7 @@ public class DaoTest {
         logger.info("Update user login not exists test");
 
         var usr = dao.updateLogin("login",1);
-        assertEquals(ErrorMessageUtil.USER_NOT_EXISTS,usr.getMessage());
+        assertEquals(ErrorMessageUtil.USER_NOT_EXIST,usr.getMessage());
 
     }
 
@@ -157,7 +157,7 @@ public class DaoTest {
         logger.info("Update user password user not found test");
 
         var usr = dao.updatePassword("pwd","newPed",100);
-        assertEquals(ErrorMessageUtil.USER_NOT_EXISTS,usr.getMessage());
+        assertEquals(ErrorMessageUtil.USER_NOT_EXIST,usr.getMessage());
 
     }
 
@@ -321,6 +321,46 @@ public class DaoTest {
 
         mapper.deleteUsers();
     }
+
+    @Test
+    public void loginUserTest() throws Exception{
+        logger.info("Update user password test");
+
+        String login="login";
+        String email="email@email.com";
+        String password="pwd";
+        String firstName = "fname";
+        String lastName = "lname";
+        List<String> roles = List.of(UserRole.Developer.name(),UserRole.DevOps.name());
+
+        dao.createUser(login,password,email,firstName,lastName,roles);
+        var res = dao.loginUser(login,password);
+
+        assertTrue(res.isBlank());
+
+        mapper.deleteUsers();
+    }
+
+    @Test
+    public void logoutUserTest() throws Exception{
+        logger.info("Update user password test");
+
+        String login="login";
+        String email="email@email.com";
+        String password="pwd";
+        String firstName = "fname";
+        String lastName = "lname";
+        List<String> roles = List.of(UserRole.Developer.name(),UserRole.DevOps.name());
+
+        var usr = dao.createUser(login,password,email,firstName,lastName,roles);
+        var res = dao.logoutUser(usr.getObject().getId());
+
+        assertTrue(res.isBlank());
+
+        mapper.deleteUsers();
+    }
+
+
 
 
 }

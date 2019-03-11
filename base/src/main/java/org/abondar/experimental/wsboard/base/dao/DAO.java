@@ -70,8 +70,8 @@ public class DAO {
 
         usr = mapper.getUserById(userId);
         if (usr == null) {
-            logger.error(ErrorMessageUtil.USER_NOT_EXISTS + " with id: "+userId);
-            res.setMessage(ErrorMessageUtil.USER_NOT_EXISTS);
+            logger.error(ErrorMessageUtil.USER_NOT_EXIST + " with id: "+userId);
+            res.setMessage(ErrorMessageUtil.USER_NOT_EXIST);
 
             return res;
         }
@@ -90,8 +90,8 @@ public class DAO {
 
         var usr = mapper.getUserById(userId);
         if (usr == null) {
-            logger.error(ErrorMessageUtil.USER_NOT_EXISTS + " with id: "+userId);
-            res.setMessage(ErrorMessageUtil.USER_NOT_EXISTS);
+            logger.error(ErrorMessageUtil.USER_NOT_EXIST + " with id: "+userId);
+            res.setMessage(ErrorMessageUtil.USER_NOT_EXIST);
             res.setObject(null);
 
             return res;
@@ -119,8 +119,8 @@ public class DAO {
 
         var usr = mapper.getUserById(id);
         if (usr == null) {
-            logger.error(ErrorMessageUtil.USER_NOT_EXISTS + " with id: "+id);
-            res.setMessage(ErrorMessageUtil.USER_NOT_EXISTS);
+            logger.error(ErrorMessageUtil.USER_NOT_EXIST + " with id: "+id);
+            res.setMessage(ErrorMessageUtil.USER_NOT_EXIST);
 
             return res;
         }
@@ -152,8 +152,8 @@ public class DAO {
 
         var usr = mapper.getUserById(id);
         if (usr == null) {
-            logger.error(ErrorMessageUtil.USER_NOT_EXISTS + " with id: "+id);
-            res.setMessage(ErrorMessageUtil.USER_NOT_EXISTS);
+            logger.error(ErrorMessageUtil.USER_NOT_EXIST + " with id: "+id);
+            res.setMessage(ErrorMessageUtil.USER_NOT_EXIST);
 
             return res;
         }
@@ -178,8 +178,8 @@ public class DAO {
 
         var usr = mapper.getUserById(id);
         if (usr == null) {
-            logger.error(ErrorMessageUtil.USER_NOT_EXISTS + " with id: "+id);
-            res.setMessage(ErrorMessageUtil.USER_NOT_EXISTS);
+            logger.error(ErrorMessageUtil.USER_NOT_EXIST + " with id: "+id);
+            res.setMessage(ErrorMessageUtil.USER_NOT_EXIST);
 
             return res;
         }
@@ -191,6 +191,36 @@ public class DAO {
 
         res.setObject(usr);
         return res;
+    }
+
+    public String loginUser(String login,String password) throws Exception {
+
+        var usr = mapper.getUserByLogin(login);
+        if (usr == null) {
+            logger.error(ErrorMessageUtil.USER_NOT_EXIST +"with login: "+login);
+
+            return ErrorMessageUtil.USER_NOT_EXIST;
+        }
+
+        if (!PasswordUtil.verifyPassword(password,usr.getPassword())){
+            logger.error(ErrorMessageUtil.UNAUTHORIZED);
+
+            return ErrorMessageUtil.UNAUTHORIZED;
+        }
+
+        return "";
+    }
+
+    public String logoutUser(long id) {
+
+        var usr = mapper.getUserById(id);
+        if (usr == null) {
+            logger.error(ErrorMessageUtil.USER_NOT_EXIST + " with id: "+id);
+
+            return ErrorMessageUtil.USER_NOT_EXIST;
+        }
+
+        return "";
     }
 
 
