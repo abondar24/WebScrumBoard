@@ -179,4 +179,65 @@ public class DaoTest {
         mapper.deleteUsers();
     }
 
+    @Test
+    public void updateUserTest() throws Exception{
+        logger.info("Update user password test");
+
+        String login="login";
+        String email="email@email.com";
+        String password="pwd";
+        String firstName = "fname";
+        String lastName = "lname";
+        List<String> roles = List.of(UserRole.Developer.name(),UserRole.DevOps.name());
+
+        var usr = dao.createUser(login,password,email,firstName,lastName,roles);
+
+        usr = dao.updateUser(usr.getObject().getId(),"name1","name2","email1@email.com",List.of(UserRole.Manager.name()));
+        assertNull(usr.getMessage());
+
+
+        mapper.deleteUsers();
+    }
+
+
+    @Test
+    public void updateUserNullFieldTest() throws Exception{
+        logger.info("Update user password test");
+
+        String login="login";
+        String email="email@email.com";
+        String password="pwd";
+        String firstName = "fname";
+        String lastName = "lname";
+        List<String> roles = List.of(UserRole.Developer.name(),UserRole.DevOps.name());
+
+        var usr = dao.createUser(login,password,email,firstName,lastName,roles);
+
+        usr = dao.updateUser(usr.getObject().getId(),"name1","name2",null,List.of(UserRole.Manager.name()));
+        assertNull(usr.getMessage());
+
+
+        mapper.deleteUsers();
+    }
+
+    @Test
+    public void updateUserEmptyFieldTest() throws Exception{
+        logger.info("Update user password test");
+
+        String login="login";
+        String email="email@email.com";
+        String password="pwd";
+        String firstName = "fname";
+        String lastName = "lname";
+        List<String> roles = List.of(UserRole.Developer.name(),UserRole.DevOps.name());
+
+        var usr = dao.createUser(login,password,email,firstName,lastName,roles);
+
+        usr = dao.updateUser(usr.getObject().getId(),"name1","",null,List.of());
+        assertNull(usr.getMessage());
+
+
+        mapper.deleteUsers();
+    }
+
 }

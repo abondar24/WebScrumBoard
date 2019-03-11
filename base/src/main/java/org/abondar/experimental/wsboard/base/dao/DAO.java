@@ -28,7 +28,6 @@ public class DAO {
         if (usr != null) {
             logger.error(ErrorMessageUtil.USER_EXISTS);
             res.setMessage(ErrorMessageUtil.USER_EXISTS);
-            res.setObject(null);
 
             return res;
         }
@@ -39,7 +38,6 @@ public class DAO {
         if (userRoles.isBlank()){
             logger.error(ErrorMessageUtil.NO_ROLES);
             res.setMessage(ErrorMessageUtil.NO_ROLES);
-            res.setObject(null);
 
             return res;
         }
@@ -48,7 +46,6 @@ public class DAO {
         mapper.insertUpdateUser(usr);
 
         logger.info("User successfully created with id: " +usr.getId());
-        res.setMessage(null);
         res.setObject(usr);
 
         return res;
@@ -67,7 +64,6 @@ public class DAO {
         if (usr != null) {
             logger.error(ErrorMessageUtil.USER_EXISTS);
             res.setMessage(ErrorMessageUtil.USER_EXISTS);
-            res.setObject(null);
 
             return res;
         }
@@ -76,7 +72,6 @@ public class DAO {
         if (usr == null) {
             logger.error(ErrorMessageUtil.USER_NOT_EXISTS + " with id: "+userId);
             res.setMessage(ErrorMessageUtil.USER_NOT_EXISTS);
-            res.setObject(null);
 
             return res;
         }
@@ -85,7 +80,6 @@ public class DAO {
         mapper.insertUpdateUser(usr);
 
         logger.info("User login updated for user: " +usr.getId());
-        res.setMessage(null);
         res.setObject(usr);
 
         return res;
@@ -114,9 +108,41 @@ public class DAO {
         mapper.insertUpdateUser(usr);
 
         logger.info("Password updated for user: " +usr.getId());
-        res.setMessage(null);
-        res.setObject(usr);
 
+        res.setObject(usr);
+        return res;
+    }
+
+    public ObjectWrapper<User> updateUser(Long id,String firstName,
+                                          String lastName,String email,List<String> roles) {
+        ObjectWrapper<User> res = new ObjectWrapper<>();
+
+        var usr = mapper.getUserById(id);
+        if (usr == null) {
+            logger.error(ErrorMessageUtil.USER_NOT_EXISTS + " with id: "+id);
+            res.setMessage(ErrorMessageUtil.USER_NOT_EXISTS);
+
+            return res;
+        }
+
+        if (email!=null && !email.isBlank()){
+            usr.setEmail(email);
+        }
+
+        if (firstName!=null && !firstName.isBlank()){
+            usr.setFirstName(firstName);
+        }
+
+        if (lastName!=null && !lastName.isBlank()){
+            usr.setLastName(lastName);
+        }
+
+        if (roles!=null &&!roles.isEmpty()){
+            var userRoles = roles.stream().filter(this::containsRole).collect(Collectors.joining(";"));
+            usr.setRoles(userRoles);
+        }
+
+        res.setObject(usr);
         return res;
     }
 
