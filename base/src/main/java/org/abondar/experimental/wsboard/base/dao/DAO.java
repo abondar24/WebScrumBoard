@@ -173,6 +173,26 @@ public class DAO {
         return res;
     }
 
+    public ObjectWrapper<User> deleteUser(Long id){
+        ObjectWrapper<User> res = new ObjectWrapper<>();
+
+        var usr = mapper.getUserById(id);
+        if (usr == null) {
+            logger.error(ErrorMessageUtil.USER_NOT_EXISTS + " with id: "+id);
+            res.setMessage(ErrorMessageUtil.USER_NOT_EXISTS);
+
+            return res;
+        }
+
+        usr.setDeleted();
+
+        mapper.updateUserAvatar(id,usr.getAvatar());
+        mapper.insertUpdateUser(usr);
+
+        res.setObject(usr);
+        return res;
+    }
+
 
     private boolean containsRole(String role) {
         for (UserRole r : UserRole.values()) {

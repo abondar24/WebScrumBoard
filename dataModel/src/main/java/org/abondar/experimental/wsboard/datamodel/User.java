@@ -93,6 +93,7 @@ public class User {
         this.lastName = "deleted";
         this.password = "deleted";
         this.roles = "deleted";
+        this.avatar = new byte[]{};
     }
 
     @Override

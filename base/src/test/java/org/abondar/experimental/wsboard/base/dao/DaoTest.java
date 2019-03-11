@@ -293,13 +293,34 @@ public class DaoTest {
 
         var usr = dao.createUser(login,password,email,firstName,lastName,roles);
 
-        var avatar = new byte[0];
+        var avatar = new byte[]{};
         usr = dao.updateUserAvatar(usr.getObject().getId(),avatar);
         assertEquals(ErrorMessageUtil.USER_AVATAR_EMPTY ,usr.getMessage());
 
         mapper.deleteUsers();
     }
 
+    @Test
+    public void deleteUserTest() throws Exception{
+        logger.info("Update user password test");
+
+        String login="login";
+        String email="email@email.com";
+        String password="pwd";
+        String firstName = "fname";
+        String lastName = "lname";
+        List<String> roles = List.of(UserRole.Developer.name(),UserRole.DevOps.name());
+
+        var usr = dao.createUser(login,password,email,firstName,lastName,roles);
+
+        usr = dao.updateUserAvatar(usr.getObject().getId(),new byte[512]);
+        usr = dao.deleteUser(usr.getObject().getId());
+
+        assertNull(usr.getMessage());
+        assertEquals("deleted",usr.getObject().getLogin());
+
+        mapper.deleteUsers();
+    }
 
 
 }
