@@ -7,6 +7,7 @@ public class ErrorMessageUtil {
     public static final String EMTPY_LOGIN = "Got empty login";
     public static final String USER_NOT_EXISTS = "User not exists";
     public static final String UNAUTHORIZED = "Unauthorized action";
+    public static final String USER_AVATAR_EMPTY = "Image data not set";
 
     private ErrorMessageUtil(){}
 

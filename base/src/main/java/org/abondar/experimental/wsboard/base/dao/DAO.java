@@ -137,10 +137,37 @@ public class DAO {
             usr.setLastName(lastName);
         }
 
-        if (roles!=null &&!roles.isEmpty()){
+        if (roles!=null && !roles.isEmpty()){
             var userRoles = roles.stream().filter(this::containsRole).collect(Collectors.joining(";"));
             usr.setRoles(userRoles);
         }
+
+        res.setObject(usr);
+        return res;
+    }
+
+
+    public ObjectWrapper<User> updateUserAvatar(Long id,byte[] avatar) {
+        ObjectWrapper<User> res = new ObjectWrapper<>();
+
+        var usr = mapper.getUserById(id);
+        if (usr == null) {
+            logger.error(ErrorMessageUtil.USER_NOT_EXISTS + " with id: "+id);
+            res.setMessage(ErrorMessageUtil.USER_NOT_EXISTS);
+
+            return res;
+        }
+
+        if (avatar==null || avatar.length==0){
+            logger.error(ErrorMessageUtil.USER_AVATAR_EMPTY);
+            res.setMessage(ErrorMessageUtil.USER_AVATAR_EMPTY);
+
+            return res;
+        }
+
+
+        mapper.updateUserAvatar(id,avatar);
+        usr = mapper.getUserById(id);
 
         res.setObject(usr);
         return res;

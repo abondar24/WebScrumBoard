@@ -240,4 +240,66 @@ public class DaoTest {
         mapper.deleteUsers();
     }
 
+
+    @Test
+    public void updateUserAvatarTest() throws Exception{
+        logger.info("Update user password test");
+
+        String login="login";
+        String email="email@email.com";
+        String password="pwd";
+        String firstName = "fname";
+        String lastName = "lname";
+        List<String> roles = List.of(UserRole.Developer.name(),UserRole.DevOps.name());
+
+        var usr = dao.createUser(login,password,email,firstName,lastName,roles);
+
+        var avatar = new byte[512];
+        usr = dao.updateUserAvatar(usr.getObject().getId(),avatar);
+        assertNull(usr.getMessage());
+
+        mapper.deleteUsers();
+    }
+
+    @Test
+    public void updateUserAvatarNullTest() throws Exception{
+        logger.info("Update user password test");
+
+        String login="login";
+        String email="email@email.com";
+        String password="pwd";
+        String firstName = "fname";
+        String lastName = "lname";
+        List<String> roles = List.of(UserRole.Developer.name(),UserRole.DevOps.name());
+
+        var usr = dao.createUser(login,password,email,firstName,lastName,roles);
+
+        usr = dao.updateUserAvatar(usr.getObject().getId(),null);
+        assertEquals(ErrorMessageUtil.USER_AVATAR_EMPTY ,usr.getMessage());
+
+        mapper.deleteUsers();
+    }
+
+    @Test
+    public void updateUserAvatarEmptyTest() throws Exception{
+        logger.info("Update user password test");
+
+        String login="login";
+        String email="email@email.com";
+        String password="pwd";
+        String firstName = "fname";
+        String lastName = "lname";
+        List<String> roles = List.of(UserRole.Developer.name(),UserRole.DevOps.name());
+
+        var usr = dao.createUser(login,password,email,firstName,lastName,roles);
+
+        var avatar = new byte[0];
+        usr = dao.updateUserAvatar(usr.getObject().getId(),avatar);
+        assertEquals(ErrorMessageUtil.USER_AVATAR_EMPTY ,usr.getMessage());
+
+        mapper.deleteUsers();
+    }
+
+
+
 }

@@ -20,6 +20,8 @@ public interface DataMapper {
 
     void insertUpdateContributor(@Param("contributor") Contributor contributor);
 
+    void updateUserAvatar(@Param("id") Long id, @Param("avatar") byte[] avatar);
+
     User getUserByLogin(@Param("login") String login);
 
     User getUserById(@Param("id") long id);

@@ -77,6 +77,23 @@ public class MapperTest {
     }
 
     @Test
+    public void updateAvatarTest(){
+        logger.info("Update user avatar test");
+
+        var user = createUser();
+        var img = new byte[1024];
+
+        user.setAvatar(img);
+        mapper.updateUserAvatar(user.getId(),user.getAvatar());
+
+        user = mapper.getUserById(user.getId());
+
+        assertNotNull(user.getAvatar());
+
+        mapper.deleteUsers();
+    }
+
+    @Test
     public void getUserByLoginTest() {
         logger.info("Get user by login test");
 

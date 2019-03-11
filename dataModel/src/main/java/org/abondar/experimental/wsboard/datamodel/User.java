@@ -9,6 +9,7 @@ public class User {
     private String lastName;
     private String password;
     private String roles;
+    private byte[] avatar;
 
     public User(){}
 
@@ -75,6 +76,14 @@ public class User {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public byte[] getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(byte[] avatar) {
+        this.avatar = avatar;
     }
 
     public void setDeleted(){

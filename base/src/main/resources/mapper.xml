@@ -29,6 +29,7 @@
         <result column="last_name" property="lastName"/>
         <result column="password" property="password"/>
         <result column="roles" property="roles"/>
+        <result column="avatar" property="avatar"/>
     </resultMap>
 
     <resultMap id="projectMap" type="Project">
@@ -113,6 +114,12 @@
             start_date = #{task.startDate},
             end_date = #{task.endDate}
     </insert>
+
+
+    <update id="updateUserAvatar">
+        UPDATE wsuser SET avatar = #{avatar}
+        WHERE id = #{id}
+    </update>
 
     <select id="getUserByLogin" resultMap="userMap">
         SELECT *
