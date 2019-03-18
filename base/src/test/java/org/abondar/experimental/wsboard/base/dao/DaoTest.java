@@ -365,7 +365,7 @@ public class DaoTest {
 
 
     @Test
-    public void createProjectTest() throws Exception{
+    public void createProjectTest() {
         logger.info("Create project test");
 
         var name="test";
@@ -381,7 +381,7 @@ public class DaoTest {
 
 
     @Test
-    public void createProjectExistsTest() throws Exception{
+    public void createProjectExistsTest() {
         logger.info("Create project test");
 
         var name="test";
@@ -396,5 +396,32 @@ public class DaoTest {
 
         mapper.deleteProjects();
     }
+
+    @Test
+    public void findProjectByIdTest(){
+        logger.info("Find project by id test");
+
+        var name="test";
+        var startDate=new Date();
+        var prj = dao.createProject(name,startDate);
+
+        var res = dao.findProjectById(prj.getObject().getId());
+        assertEquals(prj.getObject().getName(),res.getObject().getName());
+        assertEquals(prj.getObject().getStartDate(),res.getObject().getStartDate());
+
+    }
+
+
+    @Test
+    public void findProjectNotFoundByIdTest(){
+        logger.info("Find project not found by id test");
+
+        var prj = dao.findProjectById(100);
+
+        assertEquals(ErrorMessageUtil.PROJECT_NOT_EXISTS,prj.getMessage());
+        assertNull(prj.getObject());
+
+    }
+
 
 }

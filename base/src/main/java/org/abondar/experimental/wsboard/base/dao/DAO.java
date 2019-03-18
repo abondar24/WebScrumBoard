@@ -226,7 +226,7 @@ public class DAO {
         return "";
     }
 
-    public ObjectWrapper<Project> createProject(String name, Date startDate) throws Exception {
+    public ObjectWrapper<Project> createProject(String name, Date startDate) {
         ObjectWrapper<Project> res = new ObjectWrapper<>();
         var prj = mapper.getProjectByName(name);
 
@@ -241,6 +241,23 @@ public class DAO {
         mapper.insertUpdateProject(prj);
 
         logger.info("Project successfully created with id: " +prj.getId());
+        res.setObject(prj);
+
+        return res;
+    }
+
+    public ObjectWrapper<Project> findProjectById(long id) {
+        ObjectWrapper<Project> res = new ObjectWrapper<>();
+        var prj = mapper.getProjectById(id);
+
+        if (prj == null) {
+            logger.error(ErrorMessageUtil.PROJECT_NOT_EXISTS + "with id:" +id);
+            res.setMessage(ErrorMessageUtil.PROJECT_NOT_EXISTS);
+
+            return res;
+        }
+
+        logger.info("Project found with id: " +prj.getId());
         res.setObject(prj);
 
         return res;
