@@ -11,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.Date;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -32,12 +33,12 @@ public class DaoTest {
     public void createUserTest() throws Exception{
         logger.info("Create user test");
 
-        String login="login";
-        String email="email@email.com";
-        String password="pwd";
-        String firstName = "fname";
-        String lastName = "lname";
-        List<String> roles = List.of(UserRole.Developer.name(),UserRole.DevOps.name());
+        var login="login";
+        var email="email@email.com";
+        var password="pwd";
+        var firstName = "fname";
+        var lastName = "lname";
+        var roles = List.of(UserRole.Developer.name(),UserRole.DevOps.name());
 
         var usr = dao.createUser(login,password,email,firstName,lastName,roles);
 
@@ -52,12 +53,12 @@ public class DaoTest {
     public void createUserLoginExistsTest() throws Exception{
         logger.info("Create user test");
 
-        String login="login";
-        String email="email@email.com";
-        String password="pwd";
-        String firstName = "fname";
-        String lastName = "lname";
-        List<String> roles = List.of(UserRole.Developer.name(),UserRole.DevOps.name());
+        var login="login";
+        var email="email@email.com";
+        var password="pwd";
+        var firstName = "fname";
+        var lastName = "lname";
+        var roles = List.of(UserRole.Developer.name(),UserRole.DevOps.name());
 
         var usr = dao.createUser(login,password,email,firstName,lastName,roles);
         var usr1 = dao.createUser(login,password,email,firstName,lastName,roles);
@@ -73,11 +74,11 @@ public class DaoTest {
     public void createUserLoginNoRolesTest() throws Exception{
         logger.info("Create user test");
 
-        String login="login";
-        String email="email@email.com";
-        String password="pwd";
-        String firstName = "fname";
-        String lastName = "lname";
+        var login="login";
+        var email="email@email.com";
+        var password="pwd";
+        var firstName = "fname";
+        var lastName = "lname";
         List<String> roles = List.of();
 
         var usr = dao.createUser(login,password,email,firstName,lastName,roles);
@@ -92,12 +93,12 @@ public class DaoTest {
     public void updateUserLoginTest() throws Exception{
         logger.info("Update user login test");
 
-        String login="login";
-        String email="email@email.com";
-        String password="pwd";
-        String firstName = "fname";
-        String lastName = "lname";
-        List<String> roles = List.of(UserRole.Developer.name(),UserRole.DevOps.name());
+        var login="login";
+        var email="email@email.com";
+        var password="pwd";
+        var firstName = "fname";
+        var lastName = "lname";
+        var roles = List.of(UserRole.Developer.name(),UserRole.DevOps.name());
 
         var usr = dao.createUser(login,password,email,firstName,lastName,roles);
         usr = dao.updateLogin("login1",usr.getObject().getId());
@@ -110,12 +111,12 @@ public class DaoTest {
     public void updateUserLoginExistsTest() throws Exception{
         logger.info("Update user login exists test");
 
-        String login="login";
-        String email="email@email.com";
-        String password="pwd";
-        String firstName = "fname";
-        String lastName = "lname";
-        List<String> roles = List.of(UserRole.Developer.name(),UserRole.DevOps.name());
+        var login="login";
+        var email="email@email.com";
+        var password="pwd";
+        var firstName = "fname";
+        var lastName = "lname";
+        var roles = List.of(UserRole.Developer.name(),UserRole.DevOps.name());
 
         var usr = dao.createUser(login,password,email,firstName,lastName,roles);
         usr = dao.updateLogin(login,usr.getObject().getId());
@@ -138,12 +139,12 @@ public class DaoTest {
     public void updatePasswordTest() throws Exception{
         logger.info("Update user password test");
 
-        String login="login";
-        String email="email@email.com";
-        String password="pwd";
-        String firstName = "fname";
-        String lastName = "lname";
-        List<String> roles = List.of(UserRole.Developer.name(),UserRole.DevOps.name());
+        var login="login";
+        var email="email@email.com";
+        var password="pwd";
+        var firstName = "fname";
+        var lastName = "lname";
+        var roles = List.of(UserRole.Developer.name(),UserRole.DevOps.name());
 
         var usr = dao.createUser(login,password,email,firstName,lastName,roles);
         usr = dao.updatePassword(password,"newPed",usr.getObject().getId());
@@ -165,12 +166,12 @@ public class DaoTest {
     public void updatePasswordUnathorizedTest() throws Exception{
         logger.info("Update user password unauthorized test");
 
-        String login="login";
-        String email="email@email.com";
-        String password="pwd";
-        String firstName = "fname";
-        String lastName = "lname";
-        List<String> roles = List.of(UserRole.Developer.name(),UserRole.DevOps.name());
+        var login="login";
+        var email="email@email.com";
+        var password="pwd";
+        var firstName = "fname";
+        var lastName = "lname";
+        var roles = List.of(UserRole.Developer.name(),UserRole.DevOps.name());
 
         var usr = dao.createUser(login,password,email,firstName,lastName,roles);
         usr = dao.updatePassword("randomPwd","newPed",usr.getObject().getId());
@@ -183,12 +184,12 @@ public class DaoTest {
     public void updateUserTest() throws Exception{
         logger.info("Update user password test");
 
-        String login="login";
-        String email="email@email.com";
-        String password="pwd";
-        String firstName = "fname";
-        String lastName = "lname";
-        List<String> roles = List.of(UserRole.Developer.name(),UserRole.DevOps.name());
+        var login="login";
+        var email="email@email.com";
+        var password="pwd";
+        var firstName = "fname";
+        var lastName = "lname";
+        var roles = List.of(UserRole.Developer.name(),UserRole.DevOps.name());
 
         var usr = dao.createUser(login,password,email,firstName,lastName,roles);
 
@@ -204,12 +205,12 @@ public class DaoTest {
     public void updateUserNullFieldTest() throws Exception{
         logger.info("Update user password test");
 
-        String login="login";
-        String email="email@email.com";
-        String password="pwd";
-        String firstName = "fname";
-        String lastName = "lname";
-        List<String> roles = List.of(UserRole.Developer.name(),UserRole.DevOps.name());
+        var login="login";
+        var email="email@email.com";
+        var password="pwd";
+        var firstName = "fname";
+        var lastName = "lname";
+        var roles = List.of(UserRole.Developer.name(),UserRole.DevOps.name());
 
         var usr = dao.createUser(login,password,email,firstName,lastName,roles);
 
@@ -224,12 +225,12 @@ public class DaoTest {
     public void updateUserEmptyFieldTest() throws Exception{
         logger.info("Update user password test");
 
-        String login="login";
-        String email="email@email.com";
-        String password="pwd";
-        String firstName = "fname";
-        String lastName = "lname";
-        List<String> roles = List.of(UserRole.Developer.name(),UserRole.DevOps.name());
+        var login="login";
+        var email="email@email.com";
+        var password="pwd";
+        var firstName = "fname";
+        var lastName = "lname";
+        var roles = List.of(UserRole.Developer.name(),UserRole.DevOps.name());
 
         var usr = dao.createUser(login,password,email,firstName,lastName,roles);
 
@@ -245,12 +246,12 @@ public class DaoTest {
     public void updateUserAvatarTest() throws Exception{
         logger.info("Update user password test");
 
-        String login="login";
-        String email="email@email.com";
-        String password="pwd";
-        String firstName = "fname";
-        String lastName = "lname";
-        List<String> roles = List.of(UserRole.Developer.name(),UserRole.DevOps.name());
+        var login="login";
+        var email="email@email.com";
+        var password="pwd";
+        var firstName = "fname";
+        var lastName = "lname";
+        var roles = List.of(UserRole.Developer.name(),UserRole.DevOps.name());
 
         var usr = dao.createUser(login,password,email,firstName,lastName,roles);
 
@@ -265,12 +266,12 @@ public class DaoTest {
     public void updateUserAvatarNullTest() throws Exception{
         logger.info("Update user password test");
 
-        String login="login";
-        String email="email@email.com";
-        String password="pwd";
-        String firstName = "fname";
-        String lastName = "lname";
-        List<String> roles = List.of(UserRole.Developer.name(),UserRole.DevOps.name());
+        var login="login";
+        var email="email@email.com";
+        var password="pwd";
+        var firstName = "fname";
+        var lastName = "lname";
+        var roles = List.of(UserRole.Developer.name(),UserRole.DevOps.name());
 
         var usr = dao.createUser(login,password,email,firstName,lastName,roles);
 
@@ -284,12 +285,12 @@ public class DaoTest {
     public void updateUserAvatarEmptyTest() throws Exception{
         logger.info("Update user password test");
 
-        String login="login";
-        String email="email@email.com";
-        String password="pwd";
-        String firstName = "fname";
-        String lastName = "lname";
-        List<String> roles = List.of(UserRole.Developer.name(),UserRole.DevOps.name());
+        var login="login";
+        var email="email@email.com";
+        var password="pwd";
+        var firstName = "fname";
+        var lastName = "lname";
+        var roles = List.of(UserRole.Developer.name(),UserRole.DevOps.name());
 
         var usr = dao.createUser(login,password,email,firstName,lastName,roles);
 
@@ -304,12 +305,12 @@ public class DaoTest {
     public void deleteUserTest() throws Exception{
         logger.info("Update user password test");
 
-        String login="login";
-        String email="email@email.com";
-        String password="pwd";
-        String firstName = "fname";
-        String lastName = "lname";
-        List<String> roles = List.of(UserRole.Developer.name(),UserRole.DevOps.name());
+        var login="login";
+        var email="email@email.com";
+        var password="pwd";
+        var firstName = "fname";
+        var lastName = "lname";
+        var roles = List.of(UserRole.Developer.name(),UserRole.DevOps.name());
 
         var usr = dao.createUser(login,password,email,firstName,lastName,roles);
 
@@ -326,12 +327,12 @@ public class DaoTest {
     public void loginUserTest() throws Exception{
         logger.info("Update user password test");
 
-        String login="login";
-        String email="email@email.com";
-        String password="pwd";
-        String firstName = "fname";
-        String lastName = "lname";
-        List<String> roles = List.of(UserRole.Developer.name(),UserRole.DevOps.name());
+        var login="login";
+        var email="email@email.com";
+        var password="pwd";
+        var firstName = "fname";
+        var lastName = "lname";
+        var roles = List.of(UserRole.Developer.name(),UserRole.DevOps.name());
 
         dao.createUser(login,password,email,firstName,lastName,roles);
         var res = dao.loginUser(login,password);
@@ -345,12 +346,12 @@ public class DaoTest {
     public void logoutUserTest() throws Exception{
         logger.info("Update user password test");
 
-        String login="login";
-        String email="email@email.com";
-        String password="pwd";
-        String firstName = "fname";
-        String lastName = "lname";
-        List<String> roles = List.of(UserRole.Developer.name(),UserRole.DevOps.name());
+        var login="login";
+        var email="email@email.com";
+        var password="pwd";
+        var firstName = "fname";
+        var lastName = "lname";
+        var roles = List.of(UserRole.Developer.name(),UserRole.DevOps.name());
 
         var usr = dao.createUser(login,password,email,firstName,lastName,roles);
         var res = dao.logoutUser(usr.getObject().getId());
@@ -362,5 +363,38 @@ public class DaoTest {
 
 
 
+
+    @Test
+    public void createProjectTest() throws Exception{
+        logger.info("Create project test");
+
+        var name="test";
+        var startDate=new Date();
+
+        var prj = dao.createProject(name,startDate);
+
+        assertNull(prj.getMessage());
+        assertTrue(prj.getObject().getId()>0);
+
+        mapper.deleteProjects();
+    }
+
+
+    @Test
+    public void createProjectExistsTest() throws Exception{
+        logger.info("Create project test");
+
+        var name="test";
+        var startDate=new Date();
+
+        var prj = dao.createProject(name,startDate);
+        var prj1 = dao.createProject(name,startDate);
+
+
+        assertEquals(ErrorMessageUtil.PROJECT_EXISTS,prj1.getMessage());
+        assertNull(prj1.getObject());
+
+        mapper.deleteProjects();
+    }
 
 }

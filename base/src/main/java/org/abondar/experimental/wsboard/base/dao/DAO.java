@@ -1,11 +1,13 @@
 package org.abondar.experimental.wsboard.base.dao;
 
 import org.abondar.experimental.wsboard.base.password.PasswordUtil;
+import org.abondar.experimental.wsboard.datamodel.Project;
 import org.abondar.experimental.wsboard.datamodel.User;
 import org.abondar.experimental.wsboard.datamodel.UserRole;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -183,6 +185,7 @@ public class DAO {
 
             return res;
         }
+        //TODO: check if user is project owner and don't delete if he is
 
         usr.setDeleted();
 
@@ -221,6 +224,26 @@ public class DAO {
         }
 
         return "";
+    }
+
+    public ObjectWrapper<Project> createProject(String name, Date startDate) throws Exception {
+        ObjectWrapper<Project> res = new ObjectWrapper<>();
+        var prj = mapper.getProjectByName(name);
+
+        if (prj != null) {
+            logger.error(ErrorMessageUtil.PROJECT_EXISTS);
+            res.setMessage(ErrorMessageUtil.PROJECT_EXISTS);
+
+            return res;
+        }
+
+        prj = new Project(name,startDate);
+        mapper.insertUpdateProject(prj);
+
+        logger.info("Project successfully created with id: " +prj.getId());
+        res.setObject(prj);
+
+        return res;
     }
 
 

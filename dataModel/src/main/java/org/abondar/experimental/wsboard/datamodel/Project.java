@@ -15,10 +15,9 @@ public class Project {
 
    }
 
-    public Project(String name, Date startDate, Date endDate) {
+    public Project(String name, Date startDate) {
         this.name = name;
         this.startDate = startDate;
-        this.endDate = endDate;
         this.isActive = false;
     }
 

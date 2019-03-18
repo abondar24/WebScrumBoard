@@ -300,7 +300,7 @@ public class MapperTest {
     }
 
     private Project createProject() {
-        var project = new Project("test", new Date(), new Date());
+        var project = new Project("test", new Date());
         mapper.insertUpdateProject(project);
 
         logger.info("Created project with id:" + project.getId());
