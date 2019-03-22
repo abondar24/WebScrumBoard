@@ -11,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -397,6 +398,81 @@ public class DaoTest {
         mapper.deleteProjects();
     }
 
+
+    @Test
+    public void updateProjectTest(){
+        logger.info("Update project test");
+
+        var name="test";
+        var startDate=new Date();
+        var prj = dao.createProject(name,startDate);
+
+        prj = dao.updateProject(prj.getObject().getId(),"newTest","github.com/aaaa/aaa.git",true,null);
+
+        assertNull(prj.getMessage());
+        mapper.deleteProjects();
+    }
+
+    @Test
+    public void updateProjectInactiveTest(){
+        logger.info("Update project test");
+
+        var name="test";
+        var startDate=new Date();
+        var prj = dao.createProject(name,startDate);
+
+        prj = dao.updateProject(prj.getObject().getId(),"newTest","github.com/aaaa/aaa.git",false,new Date());
+
+        assertNull(prj.getMessage());
+        mapper.deleteProjects();
+    }
+
+    @Test
+    public void updateProjectInactiveNullTest(){
+        logger.info("Update project inactive null end date test");
+
+        var name="test";
+        var startDate=new Date();
+        var prj = dao.createProject(name,startDate);
+
+        prj = dao.updateProject(prj.getObject().getId(),"newTest","github.com/aaaa/aaa.git",false,null);
+
+        assertEquals(ErrorMessageUtil.WRONG_END_DATE,prj.getMessage());
+        mapper.deleteProjects();
+    }
+
+    @Test
+    public void updateProjectInactiveWrongDateTest(){
+        logger.info("Update project inactive wrong end date test");
+
+        var name="test";
+        var startDate=new Date();
+        var prj = dao.createProject(name,startDate);
+
+        prj = dao.updateProject(prj.getObject().getId(),"newTest","github.com/aaaa/aaa.git",false,yesterday());
+
+        assertEquals(ErrorMessageUtil.WRONG_END_DATE,prj.getMessage());
+        mapper.deleteProjects();
+    }
+
+
+
+    @Test
+    public void deleteProjectTest(){
+        logger.info("Delete project test");
+
+        var name="test";
+        var startDate=new Date();
+        var prj = dao.createProject(name,startDate);
+
+        var res = dao.deleteProject(prj.getObject().getId());
+
+        assertNull(res.getMessage());
+        assertEquals(prj.getObject().getId(),(long)res.getObject());
+
+        mapper.deleteProjects();
+    }
+
     @Test
     public void findProjectByIdTest(){
         logger.info("Find project by id test");
@@ -408,6 +484,8 @@ public class DaoTest {
         var res = dao.findProjectById(prj.getObject().getId());
         assertEquals(prj.getObject().getName(),res.getObject().getName());
         assertEquals(prj.getObject().getStartDate(),res.getObject().getStartDate());
+
+        mapper.deleteProjects();
 
     }
 
@@ -421,7 +499,15 @@ public class DaoTest {
         assertEquals(ErrorMessageUtil.PROJECT_NOT_EXISTS,prj.getMessage());
         assertNull(prj.getObject());
 
+        mapper.deleteProjects();
+
     }
 
+
+    private Date yesterday() {
+        final Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DATE, -1);
+        return cal.getTime();
+    }
 
 }

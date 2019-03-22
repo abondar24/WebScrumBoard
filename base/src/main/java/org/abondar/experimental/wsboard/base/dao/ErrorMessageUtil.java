@@ -10,6 +10,7 @@ public class ErrorMessageUtil {
     public static final String USER_AVATAR_EMPTY = "Image data not set";
     public static final String PROJECT_EXISTS = "Project with name already exists";
     public static final String PROJECT_NOT_EXISTS = "Project doesn't exist";
+    public static final String WRONG_END_DATE = "End date must be after a start date";
 
     private ErrorMessageUtil(){}
 

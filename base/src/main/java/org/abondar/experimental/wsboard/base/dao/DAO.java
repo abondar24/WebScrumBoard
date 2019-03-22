@@ -246,6 +246,63 @@ public class DAO {
         return res;
     }
 
+    public ObjectWrapper<Project> updateProject(Long id,String name, String repo,
+                                                Boolean isActive,Date endDate) {
+        ObjectWrapper<Project> res = new ObjectWrapper<>();
+        var prj = mapper.getProjectById(id);
+
+        if (prj == null) {
+            logger.error(ErrorMessageUtil.PROJECT_NOT_EXISTS);
+            res.setMessage(ErrorMessageUtil.PROJECT_NOT_EXISTS);
+
+            return res;
+        }
+
+        if (name!=null && !name.isBlank()){
+           prj.setName(name);
+        }
+
+        if (repo!=null && !repo.isBlank()){
+            prj.setName(name);
+        }
+
+        if (isActive!=null){
+            prj.setActive(isActive);
+            if (!isActive){
+                if (endDate!=null && !prj.getStartDate().after(endDate)){
+                    prj.setEndDate(endDate);
+                } else {
+                    res.setMessage(ErrorMessageUtil.WRONG_END_DATE);
+                    return res;
+                }
+            }
+        }
+
+        mapper.insertUpdateProject(prj);
+        logger.info("Project successfully updated");
+
+        res.setObject(prj);
+        return res;
+    }
+
+    public ObjectWrapper<Long> deleteProject(Long id){
+        ObjectWrapper<Long> res = new ObjectWrapper<>();
+        var prj = mapper.getProjectById(id);
+
+        if (prj == null) {
+            logger.error(ErrorMessageUtil.PROJECT_NOT_EXISTS);
+            res.setMessage(ErrorMessageUtil.PROJECT_NOT_EXISTS);
+
+            return res;
+        }
+
+        mapper.deleteProject(id);
+        logger.info("Project with id: "+id+ " successfully updated");
+        res.setObject(id);
+        return res;
+    }
+
+
     public ObjectWrapper<Project> findProjectById(long id) {
         ObjectWrapper<Project> res = new ObjectWrapper<>();
         var prj = mapper.getProjectById(id);
