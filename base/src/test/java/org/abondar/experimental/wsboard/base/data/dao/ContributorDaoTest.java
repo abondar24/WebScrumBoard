@@ -2,6 +2,7 @@ package org.abondar.experimental.wsboard.base.data.dao;
 
 import org.abondar.experimental.wsboard.base.Main;
 import org.abondar.experimental.wsboard.base.data.DataMapper;
+import org.abondar.experimental.wsboard.base.data.ErrorMessageUtil;
 import org.abondar.experimental.wsboard.base.data.MapperTest;
 import org.abondar.experimental.wsboard.datamodel.UserRole;
 import org.junit.jupiter.api.Test;
@@ -16,8 +17,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.util.Date;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(classes = Main.class)
 @ExtendWith(SpringExtension.class)
@@ -58,7 +58,6 @@ public class ContributorDaoTest {
 
         var contr = contributorDao.createContributor(usr.getObject().getId(), prj.getObject().getId(), true);
 
-        System.out.println(contr);
         assertNull(contr.getMessage());
         assertTrue(contr.getObject().getId() > 0);
 
@@ -68,4 +67,86 @@ public class ContributorDaoTest {
     }
 
 
+    @Test
+    public void createContributorNotOwnerTest() throws Exception {
+        logger.info("Create contributor not owner test");
+
+        var login = "login";
+        var email = "email@email.com";
+        var password = "pwd";
+        var firstName = "fname";
+        var lastName = "lname";
+        var roles = List.of(UserRole.Developer.name(), UserRole.DevOps.name());
+
+        var usr = userDao.createUser(login, password, email, firstName, lastName, roles);
+
+        var name = "test";
+        var startDate = new Date();
+        var prj = projectDao.createProject(name, startDate);
+        prj = projectDao.updateProject(prj.getObject().getId(), null, null, true, null);
+
+        var contr = contributorDao.createContributor(usr.getObject().getId(), prj.getObject().getId(), false);
+
+        assertNull(contr.getMessage());
+        assertTrue(contr.getObject().getId() > 0);
+
+        mapper.deleteContributors();
+        mapper.deleteProjects();
+        mapper.deleteUsers();
+    }
+
+
+    @Test
+    public void createContributorActiveFalseTest() throws Exception {
+        logger.info("Create contributor active false test");
+
+        var login = "login";
+        var email = "email@email.com";
+        var password = "pwd";
+        var firstName = "fname";
+        var lastName = "lname";
+        var roles = List.of(UserRole.Developer.name(), UserRole.DevOps.name());
+
+        var usr = userDao.createUser(login, password, email, firstName, lastName, roles);
+
+        var name = "test";
+        var startDate = new Date();
+        var prj = projectDao.createProject(name, startDate);
+
+        var contr = contributorDao.createContributor(usr.getObject().getId(), prj.getObject().getId(), false);
+
+        assertEquals(ErrorMessageUtil.PROJECT_NOT_ACTIVE,contr.getMessage());
+
+        mapper.deleteContributors();
+        mapper.deleteProjects();
+        mapper.deleteUsers();
+    }
+
+    @Test
+    public void createContributorProjectHasOwnerTest() throws Exception {
+        logger.info("Create contributor project has owner test");
+
+        var login = "login";
+        var email = "email@email.com";
+        var password = "pwd";
+        var firstName = "fname";
+        var lastName = "lname";
+        var roles = List.of(UserRole.Developer.name(), UserRole.DevOps.name());
+
+        var usr = userDao.createUser(login, password, email, firstName, lastName, roles);
+
+        var name = "test";
+        var startDate = new Date();
+        var prj = projectDao.createProject(name, startDate);
+        prj = projectDao.updateProject(prj.getObject().getId(), null, null, true, null);
+
+        var contr = contributorDao.createContributor(usr.getObject().getId(), prj.getObject().getId(), true);
+        contr = contributorDao.createContributor(usr.getObject().getId(), prj.getObject().getId(), true);
+
+        assertEquals(ErrorMessageUtil.PROJECT_HAS_OWNER,contr.getMessage());
+
+        mapper.deleteContributors();
+        mapper.deleteProjects();
+        mapper.deleteUsers();
+    }
 }
