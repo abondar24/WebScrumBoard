@@ -24,7 +24,6 @@ public class ContributorDao {
 
         var usr = mapper.getUserById(userId);
         if (usr == null) {
-            System.out.println("hui");
             logger.error(ErrorMessageUtil.USER_NOT_EXIST + "with id: " + userId);
             res.setMessage(ErrorMessageUtil.USER_NOT_EXIST);
             return res;
@@ -57,15 +56,49 @@ public class ContributorDao {
         }
 
 
-        var contr = new Contributor(userId,projectId,isOwner);
-        mapper.insertUpdateContributor(contr);
-        logger.info("Contributor created with id: " + contr.getId());
-        res.setObject(contr);
+        var ctr = new Contributor(userId,projectId,isOwner);
+        mapper.insertUpdateContributor(ctr);
+        logger.info("Contributor created with id: " + ctr.getId());
+        res.setObject(ctr);
 
         return res;
     }
 
+    public ObjectWrapper<Contributor> setContributorAsOwner(long contributorId,boolean isOwner) {
+        ObjectWrapper<Contributor> res = new ObjectWrapper<>();
 
+        var ctr = mapper.getContributorById(contributorId);
+        if (ctr == null) {
+            logger.error(ErrorMessageUtil.CONTRIBUTOR_NOT_EXISTS + "with id: " + contributorId);
+            res.setMessage(ErrorMessageUtil.CONTRIBUTOR_NOT_EXISTS);
+            return res;
+        }
+
+        if (ctr.isOwner()){
+            logger.error(ErrorMessageUtil.PROJECT_HAS_OWNER);
+            res.setMessage(ErrorMessageUtil.PROJECT_HAS_OWNER);
+
+            return res;
+        }
+
+        if (!isOwner){
+            var ownr = mapper.getProjectOwner(ctr.getProjectId());
+            if (ownr==null || ownr.getId()==ctr.getUserId()){
+                logger.error(ErrorMessageUtil.PROJECT_HAS_NO_OWNER);
+                res.setMessage(ErrorMessageUtil.PROJECT_HAS_NO_OWNER);
+
+                return res;
+            }
+        }
+
+        ctr.setOwner(isOwner);
+
+        mapper.insertUpdateContributor(ctr);
+        logger.info("Contributor updated with id: " + ctr.getId());
+        res.setObject(ctr);
+
+        return res;
+    }
 
 
 

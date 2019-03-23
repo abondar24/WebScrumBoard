@@ -13,6 +13,8 @@ public class ErrorMessageUtil {
     public static final String WRONG_END_DATE = "End date must be after a start date";
     public static final String PROJECT_NOT_ACTIVE = "Current project is not active";
     public static final String PROJECT_HAS_OWNER = "Project already has an owner";
+    public static final String CONTRIBUTOR_NOT_EXISTS = "Contributor not found";
+    public static final String PROJECT_HAS_NO_OWNER = "Project has no owner";
 
     private ErrorMessageUtil(){}
 
