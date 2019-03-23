@@ -17,6 +17,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.util.Date;
 import java.util.List;
 
+import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(classes = Main.class)
@@ -116,6 +117,7 @@ public class ContributorDaoTest {
         var contr = contributorDao.createContributor(usr.getObject().getId(), prj.getObject().getId(), false);
 
         assertEquals(ErrorMessageUtil.PROJECT_NOT_ACTIVE,contr.getMessage());
+        assertNull(contr.getObject());
 
         mapper.deleteContributors();
         mapper.deleteProjects();
@@ -144,6 +146,7 @@ public class ContributorDaoTest {
         contr = contributorDao.createContributor(usr.getObject().getId(), prj.getObject().getId(), true);
 
         assertEquals(ErrorMessageUtil.PROJECT_HAS_OWNER,contr.getMessage());
+        assertNull(contr.getObject());
 
         mapper.deleteContributors();
         mapper.deleteProjects();
@@ -152,7 +155,7 @@ public class ContributorDaoTest {
 
 
     @Test
-    public void setContributorAsOwner() throws Exception {
+    public void setContributorAsOwnerTest() throws Exception {
         logger.info("Set contributor as owner test");
 
         var login = "login";
@@ -181,12 +184,13 @@ public class ContributorDaoTest {
 
 
     @Test
-    public void setContributorAsOwnerContributorNotExists() {
+    public void setContributorAsOwnerContributorNotExistsTest() {
         logger.info("Create contributor as owner contributor not exists");
 
         var contr = contributorDao.setContributorAsOwner(100, false);
 
         assertEquals(ErrorMessageUtil.CONTRIBUTOR_NOT_EXISTS,contr.getMessage());
+        assertNull(contr.getObject());
 
         mapper.deleteContributors();
         mapper.deleteProjects();
@@ -194,7 +198,7 @@ public class ContributorDaoTest {
     }
 
     @Test
-    public void setContributorPrtojectHasOwner() throws Exception {
+    public void setContributorPrtojectHasOwnerTest() throws Exception {
         logger.info("Create contributor project has owner test");
 
         var login = "login";
@@ -215,6 +219,7 @@ public class ContributorDaoTest {
         contr = contributorDao.setContributorAsOwner(contr.getObject().getId(), true);
 
         assertEquals(ErrorMessageUtil.PROJECT_HAS_OWNER,contr.getMessage());
+        assertNull(contr.getObject());
 
         mapper.deleteContributors();
         mapper.deleteProjects();
@@ -222,7 +227,7 @@ public class ContributorDaoTest {
     }
 
     @Test
-    public void setContributorPrtojectHasNoOwner() throws Exception {
+    public void setContributorPrtojectHasNoOwnerTest() throws Exception {
         logger.info("Create contributor project has no owner test");
 
         var login = "login";
@@ -243,6 +248,36 @@ public class ContributorDaoTest {
         contr = contributorDao.setContributorAsOwner(contr.getObject().getId(), false);
 
         assertEquals(ErrorMessageUtil.PROJECT_HAS_NO_OWNER,contr.getMessage());
+        assertNull(contr.getObject());
+
+        mapper.deleteContributors();
+        mapper.deleteProjects();
+        mapper.deleteUsers();
+    }
+
+    @Test
+    public void deleteContributorTest() throws Exception {
+        logger.info("Create contributor project has no owner test");
+
+        var login = "login";
+        var email = "email@email.com";
+        var password = "pwd";
+        var firstName = "fname";
+        var lastName = "lname";
+        var roles = List.of(UserRole.Developer.name(), UserRole.DevOps.name());
+
+        var usr = userDao.createUser(login, password, email, firstName, lastName, roles);
+
+        var name = "test";
+        var startDate = new Date();
+        var prj = projectDao.createProject(name, startDate);
+        prj = projectDao.updateProject(prj.getObject().getId(), null, null, true, null);
+
+        var contr = contributorDao.createContributor(usr.getObject().getId(), prj.getObject().getId(), false);
+        var res = contributorDao.deleteContributor(contr.getObject().getId());
+
+        assertNull(contr.getMessage());
+        assertEquals(contr.getObject().getId(), (long) res.getObject());
 
         mapper.deleteContributors();
         mapper.deleteProjects();

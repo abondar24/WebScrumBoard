@@ -22,8 +22,7 @@ public class ContributorDao {
     public ObjectWrapper<Contributor> createContributor(long userId, long projectId, boolean isOwner) {
         ObjectWrapper<Contributor> res = new ObjectWrapper<>();
 
-        var usr = mapper.getUserById(userId);
-        if (usr == null) {
+        if ( mapper.getUserById(userId) == null) {
             logger.error(ErrorMessageUtil.USER_NOT_EXIST + "with id: " + userId);
             res.setMessage(ErrorMessageUtil.USER_NOT_EXIST);
             return res;
@@ -94,13 +93,28 @@ public class ContributorDao {
         ctr.setOwner(isOwner);
 
         mapper.insertUpdateContributor(ctr);
-        logger.info("Contributor updated with id: " + ctr.getId());
+        logger.info("Contributor set as owner with id: " + ctr.getId());
         res.setObject(ctr);
 
         return res;
     }
 
+    public ObjectWrapper<Long> deleteContributor(long contributorId) {
+        ObjectWrapper<Long> res = new ObjectWrapper<>();
 
+        if (mapper.getContributorById(contributorId) == null) {
+            logger.error(ErrorMessageUtil.CONTRIBUTOR_NOT_EXISTS + "with id: " + contributorId);
+            res.setMessage(ErrorMessageUtil.CONTRIBUTOR_NOT_EXISTS);
+            return res;
+        }
+
+        mapper.deleteContributor(contributorId);
+        logger.info("Contributor with id: " + contributorId + " successfully updated");
+        res.setObject(contributorId);
+
+        return res;
+
+    }
 
 
 
