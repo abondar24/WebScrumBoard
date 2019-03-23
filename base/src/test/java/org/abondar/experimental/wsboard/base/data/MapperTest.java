@@ -1,4 +1,4 @@
-package org.abondar.experimental.wsboard.base.dao;
+package org.abondar.experimental.wsboard.base.data;
 
 import org.abondar.experimental.wsboard.base.Main;
 import org.abondar.experimental.wsboard.datamodel.*;

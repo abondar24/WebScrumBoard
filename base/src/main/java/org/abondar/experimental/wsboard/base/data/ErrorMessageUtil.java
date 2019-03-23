@@ -1,4 +1,4 @@
-package org.abondar.experimental.wsboard.base.dao;
+package org.abondar.experimental.wsboard.base.data;
 
 public class ErrorMessageUtil {
 
@@ -11,6 +11,8 @@ public class ErrorMessageUtil {
     public static final String PROJECT_EXISTS = "Project with name already exists";
     public static final String PROJECT_NOT_EXISTS = "Project doesn't exist";
     public static final String WRONG_END_DATE = "End date must be after a start date";
+    public static final String PROJECT_NOT_ACTIVE = "Current project is not active";
+    public static final String PROJECT_HAS_OWNER = "Project already has an owner";
 
     private ErrorMessageUtil(){}
 

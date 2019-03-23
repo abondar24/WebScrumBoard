@@ -8,7 +8,7 @@ import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-@MapperScan({"org.abondar.experimental.wsboard.base.dao"})
+@MapperScan({"org.abondar.experimental.wsboard.base.data"})
 @ImportAutoConfiguration({BaseConfig.class})
 public class Main {
 
