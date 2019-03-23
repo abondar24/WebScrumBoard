@@ -147,10 +147,27 @@ public class MapperTest {
 
         var user = createUser();
         var project = createProject();
-        var contributor = createContributor(user.getId(), project.getId(), true);
+        createContributor(user.getId(), project.getId(), true);
 
         var res = mapper.getProjectOwner(project.getId());
         assertEquals(user.getId(), res.getId());
+
+        mapper.deleteContributors();
+        mapper.deleteUsers();
+        mapper.deleteProjects();
+    }
+
+    @Test
+    public void getContributorByIdTest() {
+        logger.info("Get contributor by id test");
+
+        var user = createUser();
+        var project = createProject();
+        var ctr = createContributor(user.getId(), project.getId(), true);
+
+
+        var res = mapper.getContributorById(ctr.getId());
+        assertEquals(ctr.getId(), res.getId());
 
         mapper.deleteContributors();
         mapper.deleteUsers();
@@ -164,7 +181,7 @@ public class MapperTest {
 
         var user = createUser();
         var project = createProject();
-        var contributor = createContributor(user.getId(), project.getId(), true);
+        createContributor(user.getId(), project.getId(), true);
 
         var res = mapper.getContributorsForProject(project.getId(), 0, 1);
         assertEquals(1, res.size());
@@ -224,7 +241,7 @@ public class MapperTest {
     }
 
     @Test
-    public void getTasksForuserTest() {
+    public void getTasksForUserTest() {
         logger.info("Get tasks for user test");
 
         var user = createUser();

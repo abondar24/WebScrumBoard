@@ -34,6 +34,8 @@ public interface DataMapper {
 
     List<User> getContributorsForProject(@Param("projectId") long projectId, @Param("offset") int offset, @Param("limit") int limit);
 
+    Contributor getContributorById(@Param("id") long id);
+
     Task getTaskById(@Param("id") long id);
 
     List<Task> getTasksForProject(@Param("projectId") long projectId, @Param("offset") int offset, @Param("limit") int limit);

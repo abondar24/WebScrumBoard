@@ -166,6 +166,13 @@
         WHERE prj.id=#{projectId} and ctr.is_owner=true
     </select>
 
+    <select id="getContributorById" resultMap="contributorMap">
+        SELECT *
+        FROM
+        <include refid="contributorTable"/>
+        WHERE ctr.id=#{id}
+    </select>
+
 
     <select id="getContributorsForProject" resultMap="userMap">
         SELECT *
