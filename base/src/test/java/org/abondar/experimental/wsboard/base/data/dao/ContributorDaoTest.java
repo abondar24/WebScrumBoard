@@ -313,4 +313,33 @@ public class ContributorDaoTest {
         mapper.deleteUsers();
     }
 
+    @Test
+    public void findContributorsForProjectTest() throws Exception {
+        logger.info("Find contributors for project test");
+
+        var login = "login";
+        var email = "email@email.com";
+        var password = "pwd";
+        var firstName = "fname";
+        var lastName = "lname";
+        var roles = List.of(UserRole.Developer.name(), UserRole.DevOps.name());
+
+        var usr = userDao.createUser(login, password, email, firstName, lastName, roles);
+
+        var name = "test";
+        var startDate = new Date();
+        var prj = projectDao.createProject(name, startDate);
+        prj = projectDao.updateProject(prj.getObject().getId(), null, null, true, null);
+
+        contributorDao.createContributor(usr.getObject().getId(), prj.getObject().getId(), true);
+        var contrs = contributorDao.findProjectContributors(prj.getObject().getId(),0,1);
+
+        assertNull(contrs.getMessage());
+        assertEquals(1,contrs.getObject().size());
+
+
+        mapper.deleteContributors();
+        mapper.deleteProjects();
+        mapper.deleteUsers();
+    }
 }

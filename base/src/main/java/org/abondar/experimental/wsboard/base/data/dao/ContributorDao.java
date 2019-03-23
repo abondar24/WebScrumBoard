@@ -8,6 +8,8 @@ import org.abondar.experimental.wsboard.datamodel.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
+
 public class ContributorDao {
 
     private static Logger logger = LoggerFactory.getLogger(ContributorDao.class);
@@ -136,6 +138,25 @@ public class ContributorDao {
         }
 
         res.setObject(ownr);
+
+        return res;
+    }
+
+    public ObjectWrapper<List<User>> findProjectContributors(long projectId,int offset,int limit) {
+        ObjectWrapper<List<User>> res = new ObjectWrapper<>();
+
+
+        var prj = mapper.getProjectById(projectId);
+        if (prj==null){
+            logger.error(ErrorMessageUtil.PROJECT_NOT_EXISTS + "with id: "+projectId);
+            res.setMessage(ErrorMessageUtil.PROJECT_NOT_EXISTS);
+            return res;
+        }
+
+        var contrs = mapper.getContributorsForProject(projectId,offset,limit);
+
+        logger.info("Number contributors for project with id: "+projectId+": "+contrs.size());
+        res.setObject(contrs);
 
         return res;
     }
