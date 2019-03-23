@@ -173,6 +173,13 @@
         WHERE ctr.id=#{id}
     </select>
 
+    <select id="getContributorByUserId" resultMap="contributorMap">
+        SELECT *
+        FROM
+        <include refid="contributorTable"/>
+        WHERE ctr.user_id=#{userId}
+    </select>
+
 
     <select id="getContributorsForProject" resultMap="userMap">
         SELECT *

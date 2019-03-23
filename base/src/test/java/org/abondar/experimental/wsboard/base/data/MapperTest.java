@@ -193,6 +193,22 @@ public class MapperTest {
     }
 
     @Test
+    public void getContributorsByUserId() {
+        logger.info("Get contributor by user id");
+
+        var user = createUser();
+        var project = createProject();
+        createContributor(user.getId(), project.getId(), true);
+
+        var res = mapper.getContributorByUserId(user.getId());
+        assertEquals(user.getId(), res.getUserId());
+
+        mapper.deleteContributors();
+        mapper.deleteUsers();
+        mapper.deleteProjects();
+    }
+
+    @Test
     public void getTaskByIdTest() {
         logger.info("Get task  by id test");
 

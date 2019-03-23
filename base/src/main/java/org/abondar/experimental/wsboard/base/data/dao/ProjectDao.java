@@ -1,6 +1,5 @@
 package org.abondar.experimental.wsboard.base.data.dao;
 
-import org.abondar.experimental.wsboard.base.Main;
 import org.abondar.experimental.wsboard.base.data.DataMapper;
 import org.abondar.experimental.wsboard.base.data.ErrorMessageUtil;
 import org.abondar.experimental.wsboard.base.data.ObjectWrapper;

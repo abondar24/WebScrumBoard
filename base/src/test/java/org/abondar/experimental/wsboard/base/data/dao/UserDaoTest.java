@@ -3,6 +3,8 @@ package org.abondar.experimental.wsboard.base.data.dao;
 import org.abondar.experimental.wsboard.base.Main;
 import org.abondar.experimental.wsboard.base.data.DataMapper;
 import org.abondar.experimental.wsboard.base.data.ErrorMessageUtil;
+import org.abondar.experimental.wsboard.datamodel.Contributor;
+import org.abondar.experimental.wsboard.datamodel.Project;
 import org.abondar.experimental.wsboard.datamodel.UserRole;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.Date;
 import java.util.List;
 
 import static org.junit.Assert.assertNull;
@@ -308,7 +311,7 @@ public class UserDaoTest {
 
     @Test
     public void deleteUserTest() throws Exception {
-        logger.info("Update user password test");
+        logger.info("Delete user test");
 
         var login = "login";
         var email = "email@email.com";
@@ -327,6 +330,69 @@ public class UserDaoTest {
 
         mapper.deleteUsers();
     }
+
+    @Test
+    public void deleteUserIsOwnerTest() throws Exception {
+        logger.info("Delete user is owner test");
+
+        var login = "login";
+        var email = "email@email.com";
+        var password = "pwd";
+        var firstName = "fname";
+        var lastName = "lname";
+        var roles = List.of(UserRole.Developer.name(), UserRole.DevOps.name());
+
+        var usr = userDao.createUser(login, password, email, firstName, lastName, roles);
+        usr = userDao.updateUserAvatar(usr.getObject().getId(), new byte[512]);
+
+        var project = new Project("test", new Date());
+        project.setActive(true);
+        mapper.insertUpdateProject(project);
+
+        var contributor = new Contributor(usr.getObject().getId(),project.getId(),true);
+        mapper.insertUpdateContributor(contributor);
+
+        usr = userDao.deleteUser(usr.getObject().getId());
+
+        assertEquals(ErrorMessageUtil.USER_IS_PROJECT_OWNER, usr.getMessage());
+
+        mapper.deleteContributors();
+        mapper.deleteProjects();
+        mapper.deleteUsers();
+    }
+
+    @Test
+    public void deleteUserContributorTest() throws Exception {
+        logger.info("Delete user contributor test");
+
+        var login = "login";
+        var email = "email@email.com";
+        var password = "pwd";
+        var firstName = "fname";
+        var lastName = "lname";
+        var roles = List.of(UserRole.Developer.name(), UserRole.DevOps.name());
+
+        var usr = userDao.createUser(login, password, email, firstName, lastName, roles);
+        usr = userDao.updateUserAvatar(usr.getObject().getId(), new byte[512]);
+
+        var project = new Project("test", new Date());
+        project.setActive(true);
+        mapper.insertUpdateProject(project);
+
+        var contributor = new Contributor(usr.getObject().getId(),project.getId(),false);
+        mapper.insertUpdateContributor(contributor);
+
+        usr = userDao.deleteUser(usr.getObject().getId());
+
+
+        assertNull(mapper.getContributorById(contributor.getId()));
+        assertNull(usr.getMessage());
+
+        mapper.deleteContributors();
+        mapper.deleteProjects();
+        mapper.deleteUsers();
+    }
+
 
     @Test
     public void loginUserTest() throws Exception {
