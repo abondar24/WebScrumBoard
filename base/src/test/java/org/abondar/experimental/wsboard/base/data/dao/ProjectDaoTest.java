@@ -57,6 +57,7 @@ public class ProjectDaoTest {
         var name = "test";
         var startDate = new Date();
 
+        dao.createProject(name, startDate);
         var prj1 = dao.createProject(name, startDate);
 
 
