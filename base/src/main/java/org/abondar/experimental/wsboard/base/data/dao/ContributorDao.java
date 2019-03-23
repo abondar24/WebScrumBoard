@@ -4,6 +4,7 @@ import org.abondar.experimental.wsboard.base.data.DataMapper;
 import org.abondar.experimental.wsboard.base.data.ErrorMessageUtil;
 import org.abondar.experimental.wsboard.base.data.ObjectWrapper;
 import org.abondar.experimental.wsboard.datamodel.Contributor;
+import org.abondar.experimental.wsboard.datamodel.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -116,6 +117,28 @@ public class ContributorDao {
 
     }
 
+    public ObjectWrapper<User> findProjectOwner(long projectId) {
+        ObjectWrapper<User> res = new ObjectWrapper<>();
+
+
+        var prj = mapper.getProjectById(projectId);
+        if (prj==null){
+            logger.error(ErrorMessageUtil.PROJECT_NOT_EXISTS + "with id: "+projectId);
+            res.setMessage(ErrorMessageUtil.PROJECT_NOT_EXISTS);
+            return res;
+        }
+
+        var ownr = mapper.getProjectOwner(projectId);
+        if (ownr == null) {
+            logger.error(ErrorMessageUtil.PROJECT_HAS_NO_OWNER);
+            res.setMessage(ErrorMessageUtil.PROJECT_HAS_NO_OWNER);
+            return res;
+        }
+
+        res.setObject(ownr);
+
+        return res;
+    }
 
 
 }

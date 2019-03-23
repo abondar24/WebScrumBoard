@@ -15,6 +15,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.List;
 
+import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(classes = Main.class)
@@ -28,7 +29,8 @@ public class UserDaoTest {
     private DataMapper mapper;
 
     @Autowired
-    private UserDao dao;
+    private UserDao userDao;
+
 
 
     @Test
@@ -42,8 +44,8 @@ public class UserDaoTest {
         var lastName = "lname";
         var roles = List.of(UserRole.Developer.name(), UserRole.DevOps.name());
 
-        assertNotNull(dao);
-        var usr = dao.createUser(login, password, email, firstName, lastName, roles);
+        assertNotNull(userDao);
+        var usr = userDao.createUser(login, password, email, firstName, lastName, roles);
 
         assertNull(usr.getMessage());
         assertTrue(usr.getObject().getId() > 0);
@@ -63,8 +65,8 @@ public class UserDaoTest {
         var lastName = "lname";
         var roles = List.of(UserRole.Developer.name(), UserRole.DevOps.name());
 
-        var usr = dao.createUser(login, password, email, firstName, lastName, roles);
-        var usr1 = dao.createUser(login, password, email, firstName, lastName, roles);
+        var usr = userDao.createUser(login, password, email, firstName, lastName, roles);
+        var usr1 = userDao.createUser(login, password, email, firstName, lastName, roles);
 
 
         assertEquals(ErrorMessageUtil.USER_EXISTS, usr1.getMessage());
@@ -84,7 +86,7 @@ public class UserDaoTest {
         var lastName = "lname";
         List<String> roles = List.of();
 
-        var usr = dao.createUser(login, password, email, firstName, lastName, roles);
+        var usr = userDao.createUser(login, password, email, firstName, lastName, roles);
 
         assertEquals(ErrorMessageUtil.NO_ROLES, usr.getMessage());
         assertNull(usr.getObject());
@@ -103,8 +105,8 @@ public class UserDaoTest {
         var lastName = "lname";
         var roles = List.of(UserRole.Developer.name(), UserRole.DevOps.name());
 
-        var usr = dao.createUser(login, password, email, firstName, lastName, roles);
-        usr = dao.updateLogin("login1", usr.getObject().getId());
+        var usr = userDao.createUser(login, password, email, firstName, lastName, roles);
+        usr = userDao.updateLogin("login1", usr.getObject().getId());
         assertNull(usr.getMessage());
 
         mapper.deleteUsers();
@@ -121,8 +123,8 @@ public class UserDaoTest {
         var lastName = "lname";
         var roles = List.of(UserRole.Developer.name(), UserRole.DevOps.name());
 
-        var usr = dao.createUser(login, password, email, firstName, lastName, roles);
-        usr = dao.updateLogin(login, usr.getObject().getId());
+        var usr = userDao.createUser(login, password, email, firstName, lastName, roles);
+        usr = userDao.updateLogin(login, usr.getObject().getId());
         assertEquals(ErrorMessageUtil.USER_EXISTS, usr.getMessage());
 
         mapper.deleteUsers();
@@ -133,7 +135,7 @@ public class UserDaoTest {
     public void updateUserLoginNotExistsTest() {
         logger.info("Update user login not exists test");
 
-        var usr = dao.updateLogin("login", 1);
+        var usr = userDao.updateLogin("login", 1);
         assertEquals(ErrorMessageUtil.USER_NOT_EXIST, usr.getMessage());
 
     }
@@ -149,8 +151,8 @@ public class UserDaoTest {
         var lastName = "lname";
         var roles = List.of(UserRole.Developer.name(), UserRole.DevOps.name());
 
-        var usr = dao.createUser(login, password, email, firstName, lastName, roles);
-        usr = dao.updatePassword(password, "newPed", usr.getObject().getId());
+        var usr = userDao.createUser(login, password, email, firstName, lastName, roles);
+        usr = userDao.updatePassword(password, "newPed", usr.getObject().getId());
         assertNull(usr.getMessage());
 
         mapper.deleteUsers();
@@ -160,7 +162,7 @@ public class UserDaoTest {
     public void updatePasswordUserNotFoundTest() throws Exception {
         logger.info("Update user password user not found test");
 
-        var usr = dao.updatePassword("pwd", "newPed", 100);
+        var usr = userDao.updatePassword("pwd", "newPed", 100);
         assertEquals(ErrorMessageUtil.USER_NOT_EXIST, usr.getMessage());
 
     }
@@ -176,8 +178,8 @@ public class UserDaoTest {
         var lastName = "lname";
         var roles = List.of(UserRole.Developer.name(), UserRole.DevOps.name());
 
-        var usr = dao.createUser(login, password, email, firstName, lastName, roles);
-        usr = dao.updatePassword("randomPwd", "newPed", usr.getObject().getId());
+        var usr = userDao.createUser(login, password, email, firstName, lastName, roles);
+        usr = userDao.updatePassword("randomPwd", "newPed", usr.getObject().getId());
         assertEquals(ErrorMessageUtil.UNAUTHORIZED, usr.getMessage());
 
         mapper.deleteUsers();
@@ -194,9 +196,9 @@ public class UserDaoTest {
         var lastName = "lname";
         var roles = List.of(UserRole.Developer.name(), UserRole.DevOps.name());
 
-        var usr = dao.createUser(login, password, email, firstName, lastName, roles);
+        var usr = userDao.createUser(login, password, email, firstName, lastName, roles);
 
-        usr = dao.updateUser(usr.getObject().getId(), "name1", "name2", "email1@email.com", List.of(UserRole.Manager.name()));
+        usr = userDao.updateUser(usr.getObject().getId(), "name1", "name2", "email1@email.com", List.of(UserRole.Manager.name()));
         assertNull(usr.getMessage());
 
 
@@ -215,9 +217,9 @@ public class UserDaoTest {
         var lastName = "lname";
         var roles = List.of(UserRole.Developer.name(), UserRole.DevOps.name());
 
-        var usr = dao.createUser(login, password, email, firstName, lastName, roles);
+        var usr = userDao.createUser(login, password, email, firstName, lastName, roles);
 
-        usr = dao.updateUser(usr.getObject().getId(), null, null, null, List.of());
+        usr = userDao.updateUser(usr.getObject().getId(), null, null, null, List.of());
         assertNull(usr.getMessage());
 
 
@@ -235,9 +237,9 @@ public class UserDaoTest {
         var lastName = "lname";
         var roles = List.of(UserRole.Developer.name(), UserRole.DevOps.name());
 
-        var usr = dao.createUser(login, password, email, firstName, lastName, roles);
+        var usr = userDao.createUser(login, password, email, firstName, lastName, roles);
 
-        usr = dao.updateUser(usr.getObject().getId(), null, "", null, List.of());
+        usr = userDao.updateUser(usr.getObject().getId(), null, "", null, List.of());
         assertNull(usr.getMessage());
 
 
@@ -256,10 +258,10 @@ public class UserDaoTest {
         var lastName = "lname";
         var roles = List.of(UserRole.Developer.name(), UserRole.DevOps.name());
 
-        var usr = dao.createUser(login, password, email, firstName, lastName, roles);
+        var usr = userDao.createUser(login, password, email, firstName, lastName, roles);
 
         var avatar = new byte[512];
-        usr = dao.updateUserAvatar(usr.getObject().getId(), avatar);
+        usr = userDao.updateUserAvatar(usr.getObject().getId(), avatar);
         assertNull(usr.getMessage());
 
         mapper.deleteUsers();
@@ -276,9 +278,9 @@ public class UserDaoTest {
         var lastName = "lname";
         var roles = List.of(UserRole.Developer.name(), UserRole.DevOps.name());
 
-        var usr = dao.createUser(login, password, email, firstName, lastName, roles);
+        var usr = userDao.createUser(login, password, email, firstName, lastName, roles);
 
-        usr = dao.updateUserAvatar(usr.getObject().getId(), null);
+        usr = userDao.updateUserAvatar(usr.getObject().getId(), null);
         assertEquals(ErrorMessageUtil.USER_AVATAR_EMPTY, usr.getMessage());
 
         mapper.deleteUsers();
@@ -295,10 +297,10 @@ public class UserDaoTest {
         var lastName = "lname";
         var roles = List.of(UserRole.Developer.name(), UserRole.DevOps.name());
 
-        var usr = dao.createUser(login, password, email, firstName, lastName, roles);
+        var usr = userDao.createUser(login, password, email, firstName, lastName, roles);
 
         var avatar = new byte[]{};
-        usr = dao.updateUserAvatar(usr.getObject().getId(), avatar);
+        usr = userDao.updateUserAvatar(usr.getObject().getId(), avatar);
         assertEquals(ErrorMessageUtil.USER_AVATAR_EMPTY, usr.getMessage());
 
         mapper.deleteUsers();
@@ -315,10 +317,10 @@ public class UserDaoTest {
         var lastName = "lname";
         var roles = List.of(UserRole.Developer.name(), UserRole.DevOps.name());
 
-        var usr = dao.createUser(login, password, email, firstName, lastName, roles);
+        var usr = userDao.createUser(login, password, email, firstName, lastName, roles);
 
-        usr = dao.updateUserAvatar(usr.getObject().getId(), new byte[512]);
-        usr = dao.deleteUser(usr.getObject().getId());
+        usr = userDao.updateUserAvatar(usr.getObject().getId(), new byte[512]);
+        usr = userDao.deleteUser(usr.getObject().getId());
 
         assertNull(usr.getMessage());
         assertEquals("deleted", usr.getObject().getLogin());
@@ -337,8 +339,8 @@ public class UserDaoTest {
         var lastName = "lname";
         var roles = List.of(UserRole.Developer.name(), UserRole.DevOps.name());
 
-        dao.createUser(login, password, email, firstName, lastName, roles);
-        var res = dao.loginUser(login, password);
+        userDao.createUser(login, password, email, firstName, lastName, roles);
+        var res = userDao.loginUser(login, password);
 
         assertTrue(res.isBlank());
 
@@ -356,8 +358,8 @@ public class UserDaoTest {
         var lastName = "lname";
         var roles = List.of(UserRole.Developer.name(), UserRole.DevOps.name());
 
-        var usr = dao.createUser(login, password, email, firstName, lastName, roles);
-        var res = dao.logoutUser(usr.getObject().getId());
+        var usr = userDao.createUser(login, password, email, firstName, lastName, roles);
+        var res = userDao.logoutUser(usr.getObject().getId());
 
         assertTrue(res.isBlank());
 
