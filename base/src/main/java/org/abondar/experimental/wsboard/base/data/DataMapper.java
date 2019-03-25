@@ -1,10 +1,7 @@
 package org.abondar.experimental.wsboard.base.data;
 
 
-import org.abondar.experimental.wsboard.datamodel.Contributor;
-import org.abondar.experimental.wsboard.datamodel.Project;
-import org.abondar.experimental.wsboard.datamodel.Task;
-import org.abondar.experimental.wsboard.datamodel.User;
+import org.abondar.experimental.wsboard.datamodel.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -20,7 +17,11 @@ public interface DataMapper {
 
     void insertUpdateContributor(@Param("contributor") Contributor contributor);
 
+    void insertUpdateSprint(@Param("sprint")Sprint sprint);
+
     void updateUserAvatar(@Param("id") Long id, @Param("avatar") byte[] avatar);
+
+    void updateTaskSprint(@Param("id")Long id,@Param("sprintId") long sprintId);
 
     User getUserByLogin(@Param("login") String login);
 
@@ -46,11 +47,20 @@ public interface DataMapper {
 
     List<Task> getTasksForUser(@Param("userId") long userId, @Param("offset") int offset, @Param("limit") int limit);
 
+    List<Task> getTasksForSprint(@Param("sprintId") long sprintId, @Param("offset") int offset, @Param("limit") int limit);
+
+    Sprint getSprintById(@Param("id")long id);
+
+    List<Sprint> getAllSprints(@Param("offset") int offset, @Param("limit") int limit);
+
+
     void deleteTask(@Param("id") long id);
 
     void deleteProject(@Param("id") long id);
 
     void deleteContributor(@Param("id") long id);
+
+    void deleteSprint(@Param("id") long id);
 
     void deleteUsers();
 
@@ -59,4 +69,6 @@ public interface DataMapper {
     void deleteTasks();
 
     void deleteProjects();
+
+    void deleteSprints();
 }

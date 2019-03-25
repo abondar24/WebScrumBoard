@@ -32,7 +32,7 @@ public class MapperTest {
         var user = createUser();
         assertTrue(user.getId() > 0);
 
-        mapper.deleteUsers();
+        cleanData();
     }
 
     @Test
@@ -42,7 +42,7 @@ public class MapperTest {
         var project = createProject();
         assertTrue(project.getId() > 0);
 
-        mapper.deleteProjects();
+        cleanData();
     }
 
 
@@ -56,9 +56,7 @@ public class MapperTest {
         var contributor = createContributor(user.getId(), project.getId(), false);
         assertTrue(contributor.getId() > 0);
 
-        mapper.deleteContributors();
-        mapper.deleteUsers();
-        mapper.deleteProjects();
+        cleanData();
     }
 
     @Test
@@ -77,20 +75,20 @@ public class MapperTest {
     }
 
     @Test
-    public void updateAvatarTest(){
+    public void updateAvatarTest() {
         logger.info("Update user avatar test");
 
         var user = createUser();
         var img = new byte[1024];
 
         user.setAvatar(img);
-        mapper.updateUserAvatar(user.getId(),user.getAvatar());
+        mapper.updateUserAvatar(user.getId(), user.getAvatar());
 
         user = mapper.getUserById(user.getId());
 
         assertNotNull(user.getAvatar());
 
-        mapper.deleteUsers();
+        cleanData();
     }
 
     @Test
@@ -101,7 +99,7 @@ public class MapperTest {
         var res = mapper.getUserByLogin(user.getLogin());
 
         assertEquals(user.getId(), res.getId());
-        mapper.deleteUsers();
+        cleanData();
     }
 
 
@@ -113,7 +111,7 @@ public class MapperTest {
         var res = mapper.getUserById(user.getId());
 
         assertEquals(user.getId(), res.getId());
-        mapper.deleteUsers();
+        cleanData();
     }
 
 
@@ -126,7 +124,7 @@ public class MapperTest {
         var res = mapper.getProjectById(project.getId());
         assertEquals(project.getId(), res.getId());
 
-        mapper.deleteProjects();
+        cleanData();
     }
 
     @Test
@@ -138,7 +136,7 @@ public class MapperTest {
         var res = mapper.getProjectByName(project.getName());
         assertEquals(project.getId(), res.getId());
 
-        mapper.deleteProjects();
+        cleanData();
     }
 
     @Test
@@ -152,9 +150,7 @@ public class MapperTest {
         var res = mapper.getProjectOwner(project.getId());
         assertEquals(user.getId(), res.getId());
 
-        mapper.deleteContributors();
-        mapper.deleteUsers();
-        mapper.deleteProjects();
+        cleanData();
     }
 
     @Test
@@ -169,9 +165,7 @@ public class MapperTest {
         var res = mapper.getContributorById(ctr.getId());
         assertEquals(ctr.getId(), res.getId());
 
-        mapper.deleteContributors();
-        mapper.deleteUsers();
-        mapper.deleteProjects();
+        cleanData();
     }
 
 
@@ -187,9 +181,7 @@ public class MapperTest {
         assertEquals(1, res.size());
         assertEquals(user.getId(), res.get(0).getId());
 
-        mapper.deleteContributors();
-        mapper.deleteUsers();
-        mapper.deleteProjects();
+        cleanData();
     }
 
     @Test
@@ -203,9 +195,7 @@ public class MapperTest {
         var res = mapper.getContributorByUserId(user.getId());
         assertEquals(user.getId(), res.getUserId());
 
-        mapper.deleteContributors();
-        mapper.deleteUsers();
-        mapper.deleteProjects();
+        cleanData();
     }
 
     @Test
@@ -273,6 +263,78 @@ public class MapperTest {
     }
 
     @Test
+    public void insertSprintTest() {
+        logger.info("Insert sprint test");
+
+        var sprint = createSprint();
+        assertTrue(sprint.getId() > 0);
+
+        cleanData();
+    }
+
+    @Test
+    public void getSprintByIdTest() {
+        logger.info("Get sprint by id test");
+
+        var sprint = createSprint();
+        var res = mapper.getSprintById(sprint.getId());
+        assertEquals(sprint.getName(), res.getName());
+
+        cleanData();
+    }
+
+    @Test
+    public void getAllSprintsTest() {
+        logger.info("Get all sprints test");
+
+        createSprint();
+        createSprint();
+        createSprint();
+
+        var sprints = mapper.getAllSprints(0, 3);
+        assertEquals(3, sprints.size());
+
+        cleanData();
+    }
+
+    @Test
+    public void updateTaskSprintTest() {
+        logger.info("Update task sprint test");
+
+        var user = createUser();
+        var project = createProject();
+        var contributor = createContributor(user.getId(), project.getId(), false);
+        var task = createTask(contributor.getId());
+        var sprint = createSprint();
+
+        task.setSprintId(sprint.getId());
+        mapper.updateTaskSprint(task.getId(), task.getSprintId());
+
+        var res = mapper.getTaskById(task.getId());
+        assertEquals(task.getSprintId(), res.getSprintId());
+
+        cleanData();
+    }
+
+    @Test
+    public void getTasksForSprintTest() {
+        logger.info("Get tasks for sprint test");
+
+        var user = createUser();
+        var project = createProject();
+        var contributor = createContributor(user.getId(), project.getId(), false);
+        var task = createTask(contributor.getId());
+        var sprint = createSprint();
+        mapper.updateTaskSprint(task.getId(), sprint.getId());
+
+        var res = mapper.getTasksForSprint(sprint.getId(), 0, 1);
+        assertEquals(1,res.size());
+        assertEquals(task.getId(), res.get(0).getId());
+
+        cleanData();
+    }
+
+    @Test
     public void deleteProjectTest() {
         logger.info("Delete project test");
         var project = createProject();
@@ -298,8 +360,7 @@ public class MapperTest {
         var res = mapper.getContributorsForProject(project.getId(), 0, 1);
         assertEquals(0, res.size());
 
-        mapper.deleteUsers();
-        mapper.deleteProjects();
+       cleanData();
     }
 
     @Test
@@ -317,10 +378,23 @@ public class MapperTest {
         var res = mapper.getTaskById(task.getId());
         assertNull(res);
 
-        mapper.deleteContributors();
-        mapper.deleteUsers();
-        mapper.deleteProjects();
+        cleanData();
     }
+
+    @Test
+    public void deleteSprintTest(){
+        logger.info("Delete sprint test");
+        var sprint = createSprint();
+
+        mapper.deleteSprint(sprint.getId());
+        logger.info("Deleted sprint with id:"+sprint.getId());
+
+        var res = mapper.getSprintById(sprint.getId());
+        assertNull(res);
+
+        cleanData();
+    }
+
 
     private User createUser() {
         var roles = UserRole.Developer + ":" + UserRole.Manager;
@@ -355,8 +429,16 @@ public class MapperTest {
         return task;
     }
 
+    private Sprint createSprint() {
+        var sprint = new Sprint("test", new Date(), new Date());
+        mapper.insertUpdateSprint(sprint);
+        logger.info("Created sprint with id:" + sprint.getId());
+        return sprint;
+    }
+
     private void cleanData() {
         mapper.deleteTasks();
+        mapper.deleteSprints();
         mapper.deleteContributors();
         mapper.deleteUsers();
         mapper.deleteProjects();

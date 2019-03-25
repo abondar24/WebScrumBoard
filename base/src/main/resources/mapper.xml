@@ -20,6 +20,10 @@
         contributor ctr
     </sql>
 
+    <sql id="sprintTable">
+        sprint sp
+    </sql>
+
 
     <resultMap id="userMap" type="User">
         <id column="id" property="id"/>
@@ -52,6 +56,14 @@
         <id column="id" property="id"/>
         <result column="contributor_id" property="contributorId"/>
         <result column="task_state" property="taskState"/>
+        <result column="start_date" property="startDate"/>
+        <result column="end_date" property="endDate"/>
+        <result column="sprint_id" property="sprintId"/>
+    </resultMap>
+
+    <resultMap id="sprintMap" type="Sprint">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
         <result column="start_date" property="startDate"/>
         <result column="end_date" property="endDate"/>
     </resultMap>
@@ -115,11 +127,30 @@
             end_date = #{task.endDate}
     </insert>
 
+    <insert id="insertUpdateSprint" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+        INSERT INTO sprint (name, start_date, end_date)
+        VALUES (#{sprint.name},
+                #{sprint.startDate},
+                #{sprint.endDate})
+        ON CONFLICT (id) DO UPDATE SET
+            name = #{sprint.name},
+            start_date = #{sprint.startDate},
+            end_date = #{sprint.endDate}
+    </insert>
+
 
     <update id="updateUserAvatar">
-        UPDATE wsuser SET avatar = #{avatar}
+        UPDATE wsuser
+        SET avatar = #{avatar}
         WHERE id = #{id}
     </update>
+
+    <update id="updateTaskSprint">
+        UPDATE task
+        SET sprint_id = #{sprintId}
+        WHERE id = #{id}
+    </update>
+
 
     <select id="getUserByLogin" resultMap="userMap">
         SELECT *
@@ -252,6 +283,33 @@
         LIMIT #{limit}
     </select>
 
+    <select id="getTasksForSprint" resultMap="taskMap">
+        SELECT *
+        FROM
+        <include refid="taskTable"/>
+
+        WHERE ts.sprint_id=#{sprintId}
+        OFFSET #{offset}
+        LIMIT #{limit}
+    </select>
+
+    <select id="getSprintById" resultMap="sprintMap">
+        SELECT *
+        FROM
+        <include refid="sprintTable"/>
+
+        WHERE sp.id=#{id}
+    </select>
+
+    <select id="getAllSprints" resultMap="sprintMap">
+        SELECT *
+        FROM
+        <include refid="sprintTable"/>
+
+        OFFSET #{offset}
+        LIMIT #{limit}
+    </select>
+
 
     <delete id="deleteUsers">
         DELETE FROM
@@ -290,6 +348,17 @@
         DELETE FROM
         <include refid="taskTable"/>
         WHERE ts.id=#{id}
+    </delete>
+
+    <delete id="deleteSprints">
+        DELETE FROM
+        <include refid="sprintTable"/>
+    </delete>
+
+    <delete id="deleteSprint">
+        DELETE FROM
+        <include refid="sprintTable"/>
+        WHERE sp.id=#{id}
     </delete>
 
 

@@ -10,6 +10,7 @@ public class Task {
     private int storyPoints;
     private Date startDate;
     private Date endDate;
+    private long sprintId;
 
 
     public Task(){}
@@ -70,6 +71,14 @@ public class Task {
         this.endDate = endDate;
     }
 
+    public long getSprintId() {
+        return sprintId;
+    }
+
+    public void setSprintId(long sprintId) {
+        this.sprintId = sprintId;
+    }
+
     @Override
     public String toString() {
         return "Task{" +
@@ -79,6 +88,7 @@ public class Task {
                 ", storyPoints=" + storyPoints +
                 ", startDate=" + startDate +
                 ", endDate=" + endDate +
+                ", sprintId=" + sprintId +
                 '}';
     }
 }
