@@ -5,6 +5,7 @@ import org.abondar.experimental.wsboard.base.data.ErrorMessageUtil;
 import org.abondar.experimental.wsboard.base.data.ObjectWrapper;
 import org.abondar.experimental.wsboard.datamodel.Contributor;
 import org.abondar.experimental.wsboard.datamodel.User;
+import org.abondar.experimental.wsboard.datamodel.UserRole;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -95,7 +96,11 @@ public class ContributorDao {
 
         ctr.setOwner(isOwner);
         var usr = mapper.getUserById(ctr.getUserId());
-        //if (usr)
+        if (!usr.getRoles().contains(UserRole.Manager.name())){
+            var roles = usr.getRoles().concat(";"+UserRole.Manager.name());
+            usr.setRoles(roles);
+            mapper.insertUpdateUser(usr);
+        }
 
         mapper.insertUpdateContributor(ctr);
         logger.info("Contributor set as owner with id: " + ctr.getId());
