@@ -185,18 +185,6 @@ public class UserDao {
             return res;
         }
 
-        var ctr = mapper.getContributorByUserId(id);
-        if (ctr!=null){
-            var prj = mapper.getProjectById(ctr.getProjectId());
-            if (prj!=null){
-                if(ctr.isOwner() && prj.isActive()){
-                    logger.error(ErrorMessageUtil.USER_IS_PROJECT_OWNER);
-                    res.setMessage(ErrorMessageUtil.USER_IS_PROJECT_OWNER);
-                    return res;
-                }
-            }
-            mapper.deleteContributor(ctr.getId());
-        }
 
         usr.setDeleted();
 

@@ -255,34 +255,6 @@ public class ContributorDaoTest {
         mapper.deleteUsers();
     }
 
-    @Test
-    public void deleteContributorTest() throws Exception {
-        logger.info("Create contributor project has no owner test");
-
-        var login = "login";
-        var email = "email@email.com";
-        var password = "pwd";
-        var firstName = "fname";
-        var lastName = "lname";
-        var roles = List.of(UserRole.Developer.name(), UserRole.DevOps.name());
-
-        var usr = userDao.createUser(login, password, email, firstName, lastName, roles);
-
-        var name = "test";
-        var startDate = new Date();
-        var prj = projectDao.createProject(name, startDate);
-        prj = projectDao.updateProject(prj.getObject().getId(), null, null, true, null);
-
-        var contr = contributorDao.createContributor(usr.getObject().getId(), prj.getObject().getId(), false);
-        var res = contributorDao.deleteContributor(contr.getObject().getId());
-
-        assertNull(contr.getMessage());
-        assertEquals(contr.getObject().getId(), (long) res.getObject());
-
-        mapper.deleteContributors();
-        mapper.deleteProjects();
-        mapper.deleteUsers();
-    }
 
     @Test
     public void findProjectOwnerTest() throws Exception{

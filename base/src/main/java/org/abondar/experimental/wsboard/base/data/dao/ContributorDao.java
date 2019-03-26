@@ -109,24 +109,6 @@ public class ContributorDao {
         return res;
     }
 
-    public ObjectWrapper<Long> deleteContributor(long contributorId) {
-        ObjectWrapper<Long> res = new ObjectWrapper<>();
-
-        if (mapper.getContributorById(contributorId) == null) {
-            logger.error(ErrorMessageUtil.CONTRIBUTOR_NOT_EXISTS + "with id: " + contributorId);
-            res.setMessage(ErrorMessageUtil.CONTRIBUTOR_NOT_EXISTS);
-            return res;
-        }
-
-        mapper.deleteContributor(contributorId);
-
-        //TODO: update all contributor related to contributor with id null
-        logger.info("Contributor with id: " + contributorId + " successfully deleted");
-        res.setObject(contributorId);
-
-        return res;
-
-    }
 
     public ObjectWrapper<User> findProjectOwner(long projectId) {
         ObjectWrapper<User> res = new ObjectWrapper<>();

@@ -347,23 +347,6 @@ public class MapperTest {
     }
 
     @Test
-    public void deleteContributorTest() {
-        logger.info("Delete contributor test");
-
-        var user = createUser();
-        var project = createProject();
-        var contributor = createContributor(user.getId(), project.getId(), false);
-
-        mapper.deleteContributor(contributor.getId());
-        logger.info("Deleted contributor with id:" + contributor.getId());
-
-        var res = mapper.getContributorsForProject(project.getId(), 0, 1);
-        assertEquals(0, res.size());
-
-       cleanData();
-    }
-
-    @Test
     public void deleteTaskTest() {
         logger.info("Delete task test");
 

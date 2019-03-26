@@ -332,11 +332,6 @@
         <include refid="contributorTable"/>
     </delete>
 
-    <delete id="deleteContributor">
-        DELETE FROM
-        <include refid="contributorTable"/>
-        WHERE ctr.id=#{id}
-    </delete>
 
 
     <delete id="deleteTasks">

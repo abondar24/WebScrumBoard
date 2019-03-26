@@ -58,7 +58,6 @@ public interface DataMapper {
 
     void deleteProject(@Param("id") long id);
 
-    void deleteContributor(@Param("id") long id);
 
     void deleteSprint(@Param("id") long id);
 
