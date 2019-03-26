@@ -1,6 +1,7 @@
 package org.abondar.experimental.wsboard.datamodel;
 
 import java.util.Date;
+import java.util.List;
 
 public class Task {
 
@@ -15,9 +16,9 @@ public class Task {
 
     public Task(){}
 
-    public Task(long contributorId, TaskState taskState, int storyPoints, Date startDate, Date endDate) {
+    public Task(long contributorId, int storyPoints, Date startDate, Date endDate) {
         this.contributorId = contributorId;
-        this.taskState = taskState;
+        this.taskState = TaskState.Created;
         this.storyPoints = storyPoints;
         this.startDate = startDate;
         this.endDate = endDate;

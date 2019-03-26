@@ -94,6 +94,8 @@ public class ContributorDao {
         }
 
         ctr.setOwner(isOwner);
+        var usr = mapper.getUserById(ctr.getUserId());
+        //if (usr)
 
         mapper.insertUpdateContributor(ctr);
         logger.info("Contributor set as owner with id: " + ctr.getId());
@@ -112,7 +114,9 @@ public class ContributorDao {
         }
 
         mapper.deleteContributor(contributorId);
-        logger.info("Contributor with id: " + contributorId + " successfully updated");
+
+        //TODO: update all contributor related to contributor with id null
+        logger.info("Contributor with id: " + contributorId + " successfully deleted");
         res.setObject(contributorId);
 
         return res;
