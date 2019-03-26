@@ -50,6 +50,7 @@
         <result column="user_id" property="userId"/>
         <result column="project_id" property="projectId"/>
         <result column="is_owner" property="isOwner"/>
+        <result column="is_active" property="isActive"/>
     </resultMap>
 
     <resultMap id="taskMap" type="Task">
@@ -102,15 +103,16 @@
     </insert>
 
     <insert id="insertUpdateContributor" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
-        INSERT INTO contributor (user_id, project_id, is_owner)
+        INSERT INTO contributor (user_id, project_id, is_owner,is_active)
         VALUES (#{contributor.userId},
                 #{contributor.projectId},
-                #{contributor.isOwner})
+                #{contributor.isOwner},
+                #{contributor.isActive})
         ON CONFLICT (id) DO UPDATE SET
             user_id = #{contributor.userId},
             project_id = #{contributor.projectId},
-            is_owner = #{contributor.isOwner}
-
+            is_owner = #{contributor.isOwner},
+            is_active = #{contributor.isActive}
     </insert>
 
 
@@ -225,7 +227,7 @@
         <include refid="projectTable"/>
         ON prj.id = ctr.project_id
 
-        WHERE prj.id=#{projectId}
+        WHERE prj.id=#{projectId} and ctr.is_active=true
         OFFSET #{offset}
         LIMIT #{limit}
     </select>

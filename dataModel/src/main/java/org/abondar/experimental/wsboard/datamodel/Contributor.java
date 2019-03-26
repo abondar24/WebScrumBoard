@@ -6,6 +6,7 @@ public class Contributor {
     private long userId;
     private long projectId;
     private boolean isOwner;
+    private boolean isActive;
 
     public Contributor(){}
 
@@ -13,6 +14,7 @@ public class Contributor {
         this.userId = userId;
         this.projectId = projectId;
         this.isOwner = isOwner;
+        this.isActive = true;
     }
 
     public long getId() {
@@ -47,6 +49,14 @@ public class Contributor {
         isOwner = owner;
     }
 
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
+    }
+
     @Override
     public String toString() {
         return "Contributor{" +
@@ -54,6 +64,7 @@ public class Contributor {
                 ", userId=" + userId +
                 ", projectId=" + projectId +
                 ", isOwner=" + isOwner +
+                ", isActive=" + isActive +
                 '}';
     }
 }

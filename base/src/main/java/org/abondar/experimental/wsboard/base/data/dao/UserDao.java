@@ -185,7 +185,7 @@ public class UserDao {
             return res;
         }
 
-
+        //TODO: trigger setting is_active event for contributor with user_id
         usr.setDeleted();
 
         mapper.updateUserAvatar(id, usr.getAvatar());

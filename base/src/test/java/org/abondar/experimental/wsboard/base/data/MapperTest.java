@@ -177,6 +177,11 @@ public class MapperTest {
         var project = createProject();
         createContributor(user.getId(), project.getId(), true);
 
+        var project1 = createProject();
+        var inactiveCtr = createContributor(user.getId(),project1.getId(),false);
+        inactiveCtr.setActive(false);
+        mapper.insertUpdateContributor(inactiveCtr);
+
         var res = mapper.getContributorsForProject(project.getId(), 0, 1);
         assertEquals(1, res.size());
         assertEquals(user.getId(), res.get(0).getId());

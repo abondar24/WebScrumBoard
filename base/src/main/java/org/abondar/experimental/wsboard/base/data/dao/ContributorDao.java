@@ -67,7 +67,7 @@ public class ContributorDao {
         return res;
     }
 
-    public ObjectWrapper<Contributor> setContributorAsOwner(long contributorId,boolean isOwner) {
+    public ObjectWrapper<Contributor> updateContributorAsOwner(long contributorId, Boolean isOwner, Boolean isActive) {
         ObjectWrapper<Contributor> res = new ObjectWrapper<>();
 
         var ctr = mapper.getContributorById(contributorId);
@@ -77,33 +77,41 @@ public class ContributorDao {
             return res;
         }
 
-        if (ctr.isOwner()){
-            logger.error(ErrorMessageUtil.PROJECT_HAS_OWNER);
-            res.setMessage(ErrorMessageUtil.PROJECT_HAS_OWNER);
-
-            return res;
-        }
-
-        if (!isOwner){
-            var ownr = mapper.getProjectOwner(ctr.getProjectId());
-            if (ownr==null || ownr.getId()==ctr.getUserId()){
-                logger.error(ErrorMessageUtil.PROJECT_HAS_NO_OWNER);
-                res.setMessage(ErrorMessageUtil.PROJECT_HAS_NO_OWNER);
+        if (isOwner!=null){
+            if (ctr.isOwner()){
+                logger.error(ErrorMessageUtil.PROJECT_HAS_OWNER);
+                res.setMessage(ErrorMessageUtil.PROJECT_HAS_OWNER);
 
                 return res;
             }
+
+            if (!isOwner){
+                var ownr = mapper.getProjectOwner(ctr.getProjectId());
+                if (ownr==null || ownr.getId()==ctr.getUserId()){
+                    logger.error(ErrorMessageUtil.PROJECT_HAS_NO_OWNER);
+                    res.setMessage(ErrorMessageUtil.PROJECT_HAS_NO_OWNER);
+
+                    return res;
+                }
+            }
+
+            ctr.setOwner(isOwner);
+            var usr = mapper.getUserById(ctr.getUserId());
+            if (!usr.getRoles().contains(UserRole.Manager.name())){
+                var roles = usr.getRoles().concat(";"+UserRole.Manager.name());
+                usr.setRoles(roles);
+                mapper.insertUpdateUser(usr);
+            }
         }
 
-        ctr.setOwner(isOwner);
-        var usr = mapper.getUserById(ctr.getUserId());
-        if (!usr.getRoles().contains(UserRole.Manager.name())){
-            var roles = usr.getRoles().concat(";"+UserRole.Manager.name());
-            usr.setRoles(roles);
-            mapper.insertUpdateUser(usr);
+        if (isActive!=null){
+            ctr.setActive(isActive);
         }
 
         mapper.insertUpdateContributor(ctr);
-        logger.info("Contributor set as owner with id: " + ctr.getId());
+
+
+        logger.info("Contributor updated with id: " + ctr.getId());
         res.setObject(ctr);
 
         return res;
