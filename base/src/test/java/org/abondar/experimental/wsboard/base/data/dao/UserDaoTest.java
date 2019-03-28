@@ -325,12 +325,22 @@ public class UserDaoTest {
         var usr = userDao.createUser(login, password, email, firstName, lastName, roles);
 
         usr = userDao.updateUserAvatar(usr.getObject().getId(), new byte[512]);
+
+        var project = new Project("test", new Date());
+        project.setActive(true);
+        mapper.insertUpdateProject(project);
+
+        var contributor = new Contributor(usr.getObject().getId(),project.getId(),false);
+        mapper.insertUpdateContributor(contributor);
+
         usr = userDao.deleteUser(usr.getObject().getId());
 
         assertNull(usr.getMessage());
         assertEquals("deleted", usr.getObject().getLogin());
 
+        mapper.deleteContributors();
         mapper.deleteUsers();
+        mapper.deleteProjects();
     }
 
     @Test

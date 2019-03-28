@@ -191,6 +191,13 @@ public class UserDao {
         }
 
         var contributor=mapper.getContributorByUserId(id);
+        if (contributor.isOwner()){
+            logger.error(ErrorMessageUtil.USER_IS_PROJECT_OWNER);
+            res.setMessage(ErrorMessageUtil.USER_IS_PROJECT_OWNER);
+
+            return res;
+        }
+
         eventPublisher.publishContributorUpdate(contributor.getId(),contributor.isOwner());
 
         usr.setDeleted();
