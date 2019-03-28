@@ -322,6 +322,44 @@ public class MapperTest {
     }
 
     @Test
+    public void updateTaskStoryPointsTest() {
+        logger.info("Update task story points test");
+
+        var user = createUser();
+        var project = createProject();
+        var contributor = createContributor(user.getId(), project.getId(), false);
+        var task = createTask(contributor.getId());
+
+        var storyPoints = 1;
+        mapper.updateTaskStoryPoints(task.getId(), storyPoints);
+
+        var res = mapper.getTaskById(task.getId());
+        assertEquals(storyPoints, res.getStoryPoints());
+
+        cleanData();
+    }
+
+    @Test
+    public void updateTaskEndDateTest() {
+        logger.info("Update task end date test");
+
+        var user = createUser();
+        var project = createProject();
+        var contributor = createContributor(user.getId(), project.getId(), false);
+        var task = createTask(contributor.getId());
+
+        var endDate = new Date();
+        mapper.updateTaskEndDate(task.getId(),endDate);
+
+        var res = mapper.getTaskById(task.getId());
+        assertEquals(endDate, res.getEndDate());
+
+        cleanData();
+    }
+
+
+
+    @Test
     public void getTasksForSprintTest() {
         logger.info("Get tasks for sprint test");
 

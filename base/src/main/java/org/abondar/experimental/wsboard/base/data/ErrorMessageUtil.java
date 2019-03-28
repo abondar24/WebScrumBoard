@@ -16,6 +16,7 @@ public class ErrorMessageUtil {
     public static final String CONTRIBUTOR_NOT_EXISTS = "Contributor not found";
     public static final String PROJECT_HAS_NO_OWNER = "Project has no owner";
     public static final String USER_IS_PROJECT_OWNER = "User is project owner and can't be deleted";
+    public static final String TASK_START_DATE_NOT_SET = "Task start date is null";
 
     private ErrorMessageUtil(){}
 

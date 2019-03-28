@@ -59,6 +59,7 @@
         <result column="task_state" property="taskState"/>
         <result column="start_date" property="startDate"/>
         <result column="end_date" property="endDate"/>
+        <result column="story_points" property="storyPoints"/>
         <result column="sprint_id" property="sprintId"/>
     </resultMap>
 
@@ -148,6 +149,18 @@
     <update id="updateTaskSprint">
         UPDATE task
         SET sprint_id = #{sprintId}
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateTaskStoryPoints">
+        UPDATE task
+        SET story_points = #{storyPoints}
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateTaskEndDate">
+        UPDATE task
+        SET end_date = #{endDate}
         WHERE id = #{id}
     </update>
 

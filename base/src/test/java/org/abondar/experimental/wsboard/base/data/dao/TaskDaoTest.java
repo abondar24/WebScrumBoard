@@ -81,6 +81,35 @@ public class TaskDaoTest {
 
     }
 
+
+    @Test
+    public void createTaskNullDateTest() throws Exception{
+        logger.info("Create task null date test");
+
+        var login = "login";
+        var email = "email@email.com";
+        var password = "pwd";
+        var firstName = "fname";
+        var lastName = "lname";
+        var roles = List.of(UserRole.Developer.name(), UserRole.DevOps.name());
+
+        var usr = userDao.createUser(login, password, email, firstName, lastName, roles);
+
+        var name = "test";
+        var startDate = new Date();
+        var prj = projectDao.createProject(name, startDate);
+        prj = projectDao.updateProject(prj.getObject().getId(), null, null, true, null);
+
+        var contr = contributorDao.createContributor(usr.getObject().getId(), prj.getObject().getId(), false);
+
+        var task =  dao.createTask(contr.getObject().getId(),null);
+
+        assertEquals(ErrorMessageUtil.TASK_START_DATE_NOT_SET,task.getMessage());
+
+
+        cleanData();
+    }
+
     private void cleanData() {
         mapper.deleteTasks();
         mapper.deleteSprints();

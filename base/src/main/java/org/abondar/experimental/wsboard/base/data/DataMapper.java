@@ -5,6 +5,7 @@ import org.abondar.experimental.wsboard.datamodel.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.Date;
 import java.util.List;
 
 @Mapper
@@ -22,6 +23,10 @@ public interface DataMapper {
     void updateUserAvatar(@Param("id") Long id, @Param("avatar") byte[] avatar);
 
     void updateTaskSprint(@Param("id")Long id,@Param("sprintId") long sprintId);
+
+    void updateTaskStoryPoints(@Param("id")Long id,@Param("storyPoints") int storyPoints);
+
+    void updateTaskEndDate(@Param("id")Long id, @Param("endDate") Date endDate);
 
     User getUserByLogin(@Param("login") String login);
 

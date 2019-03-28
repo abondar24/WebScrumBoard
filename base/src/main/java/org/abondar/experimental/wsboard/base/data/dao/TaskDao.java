@@ -35,6 +35,12 @@ public class TaskDao {
             return res;
         }
 
+        if (startDate==null){
+            logger.error(ErrorMessageUtil.TASK_START_DATE_NOT_SET);
+            res.setMessage(ErrorMessageUtil.TASK_START_DATE_NOT_SET);
+            return res;
+        }
+
         var task = new Task(contributorId,startDate);
 
         mapper.insertUpdateTask(task);
