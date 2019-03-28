@@ -1,15 +1,15 @@
 package org.abondar.experimental.wsboard.base.data.dao;
 
 import org.abondar.experimental.wsboard.base.data.DataMapper;
+import org.abondar.experimental.wsboard.base.data.ErrorMessageUtil;
+import org.abondar.experimental.wsboard.base.data.ObjectWrapper;
+import org.abondar.experimental.wsboard.datamodel.Task;
 import org.abondar.experimental.wsboard.datamodel.TaskState;
 import org.abondar.experimental.wsboard.datamodel.UserRole;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class TaskDao {
 
@@ -26,6 +26,23 @@ public class TaskDao {
     }
 
 
+    public ObjectWrapper<Task> createTask(long contributorId, Date startDate){
+        ObjectWrapper<Task> res = new ObjectWrapper<>();
+        var ctr = mapper.getContributorById(contributorId);
+        if (ctr==null){
+            logger.error(ErrorMessageUtil.CONTRIBUTOR_NOT_EXISTS);
+            res.setMessage(ErrorMessageUtil.CONTRIBUTOR_NOT_EXISTS);
+            return res;
+        }
+
+        var task = new Task(contributorId,startDate);
+
+        mapper.insertUpdateTask(task);
+        logger.info("Created a task with id: " +task.getId());
+
+        res.setObject(task);
+        return res;
+    }
 
     //TODO: for task state update in case of manager check if he is owner of the project,check if user deleted
 
