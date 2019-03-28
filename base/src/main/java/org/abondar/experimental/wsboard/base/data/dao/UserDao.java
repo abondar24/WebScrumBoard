@@ -3,6 +3,7 @@ package org.abondar.experimental.wsboard.base.data.dao;
 import org.abondar.experimental.wsboard.base.data.DataMapper;
 import org.abondar.experimental.wsboard.base.data.ErrorMessageUtil;
 import org.abondar.experimental.wsboard.base.data.ObjectWrapper;
+import org.abondar.experimental.wsboard.base.data.event.EventPublisher;
 import org.abondar.experimental.wsboard.base.password.PasswordUtil;
 import org.abondar.experimental.wsboard.datamodel.User;
 import org.abondar.experimental.wsboard.datamodel.UserRole;
@@ -13,11 +14,15 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class UserDao {
+
+    private EventPublisher eventPublisher;
+
     private static Logger logger = LoggerFactory.getLogger(UserDao.class);
 
     private DataMapper mapper;
 
-    public UserDao(DataMapper mapper) {
+    public UserDao(DataMapper mapper, EventPublisher eventPublisher) {
+        this.eventPublisher = eventPublisher;
         this.mapper = mapper;
     }
 
@@ -185,7 +190,9 @@ public class UserDao {
             return res;
         }
 
-        //TODO: trigger setting is_active event for contributor with user_id
+        var contributor=mapper.getContributorByUserId(id);
+        eventPublisher.publishContributorUpdate(contributor.getId(),contributor.isOwner());
+
         usr.setDeleted();
 
         mapper.updateUserAvatar(id, usr.getAvatar());

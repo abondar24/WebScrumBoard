@@ -333,9 +333,7 @@ public class UserDaoTest {
         mapper.deleteUsers();
     }
 
-    //TODO: unskip tests after event is implemented
     @Test
-    @Disabled
     public void deleteUserIsOwnerTest() throws Exception {
         logger.info("Delete user is owner test");
 
@@ -366,7 +364,6 @@ public class UserDaoTest {
     }
 
     @Test
-    @Disabled
     public void deleteUserContributorTest() throws Exception {
         logger.info("Delete user contributor test");
 
@@ -391,7 +388,6 @@ public class UserDaoTest {
         usr = userDao.deleteUser(usr.getObject().getId());
 
 
-        assertNull(mapper.getContributorById(contributor.getId()));
         assertNull(usr.getMessage());
 
         mapper.deleteContributors();

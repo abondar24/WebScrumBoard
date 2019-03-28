@@ -15,6 +15,7 @@ module org.abondar.experimental.wsboard.base {
     opens org.abondar.experimental.wsboard.base.data.dao;
     opens org.abondar.experimental.wsboard.base.password;
     opens org.abondar.experimental.wsboard.base.config;
+    opens org.abondar.experimental.wsboard.base.data.event;
 
 
 }
