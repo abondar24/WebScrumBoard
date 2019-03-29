@@ -1,10 +1,7 @@
 package org.abondar.experimental.wsboard.base.config;
 
 import org.abondar.experimental.wsboard.base.data.DataMapper;
-import org.abondar.experimental.wsboard.base.data.dao.ContributorDao;
-import org.abondar.experimental.wsboard.base.data.dao.ProjectDao;
-import org.abondar.experimental.wsboard.base.data.dao.TaskDao;
-import org.abondar.experimental.wsboard.base.data.dao.UserDao;
+import org.abondar.experimental.wsboard.base.data.dao.*;
 import org.abondar.experimental.wsboard.base.data.event.EventPublisher;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionTemplate;
@@ -20,24 +17,24 @@ public class BaseConfig {
         return sessionTemplate.getMapper(DataMapper.class);
     }
 
-    @Bean(name="userDao")
-    public UserDao userDao(SqlSessionFactory sqlSessionFactory) {
+    @Bean(name = "userDao")
+    public BaseDao userDao(SqlSessionFactory sqlSessionFactory) {
         return new UserDao(mapper(sqlSessionFactory), eventPublisher());
     }
 
-    @Bean
-    public ProjectDao projectDao(SqlSessionFactory sqlSessionFactory) {
+    @Bean(name = "projectDao")
+    public BaseDao projectDao(SqlSessionFactory sqlSessionFactory) {
         return new ProjectDao(mapper(sqlSessionFactory), eventPublisher());
     }
 
-    @Bean
-    public ContributorDao contributorDao(SqlSessionFactory sqlSessionFactory) {
+    @Bean(name="contributorDao")
+    public BaseDao contributorDao(SqlSessionFactory sqlSessionFactory) {
         return new ContributorDao(mapper(sqlSessionFactory), eventPublisher());
     }
 
 
-    @Bean
-    public TaskDao taskDao(SqlSessionFactory sqlSessionFactory) {
+    @Bean(name="taskDao")
+    public BaseDao taskDao(SqlSessionFactory sqlSessionFactory) {
         return new TaskDao(mapper(sqlSessionFactory), eventPublisher());
     }
 
