@@ -3,6 +3,7 @@ package org.abondar.experimental.wsboard.base.data.dao;
 import org.abondar.experimental.wsboard.base.data.DataMapper;
 import org.abondar.experimental.wsboard.base.data.ErrorMessageUtil;
 import org.abondar.experimental.wsboard.base.data.ObjectWrapper;
+import org.abondar.experimental.wsboard.base.data.event.EventPublisher;
 import org.abondar.experimental.wsboard.datamodel.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,14 +11,13 @@ import org.slf4j.LoggerFactory;
 import java.util.Date;
 
 
-public class ProjectDao {
+public class ProjectDao extends BaseDao {
 
     private static Logger logger = LoggerFactory.getLogger(ProjectDao.class);
 
-    private DataMapper mapper;
 
-    public ProjectDao(DataMapper mapper) {
-        this.mapper = mapper;
+    public ProjectDao(DataMapper mapper, EventPublisher eventPublisher) {
+       super(mapper,eventPublisher);
     }
 
 

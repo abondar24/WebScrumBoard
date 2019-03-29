@@ -13,17 +13,14 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class UserDao {
+public class UserDao extends BaseDao {
 
-    private EventPublisher eventPublisher;
 
     private static Logger logger = LoggerFactory.getLogger(UserDao.class);
 
-    private DataMapper mapper;
 
     public UserDao(DataMapper mapper, EventPublisher eventPublisher) {
-        this.eventPublisher = eventPublisher;
-        this.mapper = mapper;
+        super(mapper, eventPublisher);
     }
 
     public ObjectWrapper<User> createUser(String login, String password, String email, String firstName,
@@ -190,15 +187,15 @@ public class UserDao {
             return res;
         }
 
-        var contributor=mapper.getContributorByUserId(id);
-        if (contributor.isOwner()){
+        var contributor = mapper.getContributorByUserId(id);
+        if (contributor.isOwner()) {
             logger.error(ErrorMessageUtil.USER_IS_PROJECT_OWNER);
             res.setMessage(ErrorMessageUtil.USER_IS_PROJECT_OWNER);
 
             return res;
         }
 
-        eventPublisher.publishContributorUpdate(contributor.getId(),contributor.isOwner());
+        eventPublisher.publishContributorUpdate(contributor.getId(), contributor.isOwner());
 
         usr.setDeleted();
 

@@ -6,8 +6,6 @@ import org.abondar.experimental.wsboard.base.data.ErrorMessageUtil;
 import org.abondar.experimental.wsboard.datamodel.Contributor;
 import org.abondar.experimental.wsboard.datamodel.Project;
 import org.abondar.experimental.wsboard.datamodel.UserRole;
-import org.junit.Ignore;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
@@ -35,7 +33,6 @@ public class UserDaoTest {
 
     @Autowired
     private UserDao userDao;
-
 
 
     @Test
@@ -330,7 +327,7 @@ public class UserDaoTest {
         project.setActive(true);
         mapper.insertUpdateProject(project);
 
-        var contributor = new Contributor(usr.getObject().getId(),project.getId(),false);
+        var contributor = new Contributor(usr.getObject().getId(), project.getId(), false);
         mapper.insertUpdateContributor(contributor);
 
         usr = userDao.deleteUser(usr.getObject().getId());
@@ -361,7 +358,7 @@ public class UserDaoTest {
         project.setActive(true);
         mapper.insertUpdateProject(project);
 
-        var contributor = new Contributor(usr.getObject().getId(),project.getId(),true);
+        var contributor = new Contributor(usr.getObject().getId(), project.getId(), true);
         mapper.insertUpdateContributor(contributor);
 
         usr = userDao.deleteUser(usr.getObject().getId());
@@ -392,7 +389,7 @@ public class UserDaoTest {
         mapper.insertUpdateProject(project);
 
 
-        var contributor = new Contributor(usr.getObject().getId(),project.getId(),false);
+        var contributor = new Contributor(usr.getObject().getId(), project.getId(), false);
         mapper.insertUpdateContributor(contributor);
 
         usr = userDao.deleteUser(usr.getObject().getId());

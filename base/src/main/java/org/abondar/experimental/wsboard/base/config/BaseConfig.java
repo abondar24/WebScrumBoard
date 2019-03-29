@@ -13,35 +13,36 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class BaseConfig {
+
     @Bean
-    public DataMapper mapper(SqlSessionFactory sqlSessionFactory){
-        SqlSessionTemplate sessionTemplate = new SqlSessionTemplate( sqlSessionFactory );
+    public DataMapper mapper(SqlSessionFactory sqlSessionFactory) {
+        SqlSessionTemplate sessionTemplate = new SqlSessionTemplate(sqlSessionFactory);
         return sessionTemplate.getMapper(DataMapper.class);
     }
 
-    @Bean
-    public UserDao userDao(SqlSessionFactory sqlSessionFactory){
-        return new UserDao(mapper(sqlSessionFactory),eventPublisher());
+    @Bean(name="userDao")
+    public UserDao userDao(SqlSessionFactory sqlSessionFactory) {
+        return new UserDao(mapper(sqlSessionFactory), eventPublisher());
     }
 
     @Bean
-    public ProjectDao projectDao(SqlSessionFactory sqlSessionFactory){
-        return new ProjectDao(mapper(sqlSessionFactory));
+    public ProjectDao projectDao(SqlSessionFactory sqlSessionFactory) {
+        return new ProjectDao(mapper(sqlSessionFactory), eventPublisher());
     }
 
     @Bean
-    public ContributorDao contributorDao(SqlSessionFactory sqlSessionFactory){
-        return  new ContributorDao(mapper(sqlSessionFactory));
+    public ContributorDao contributorDao(SqlSessionFactory sqlSessionFactory) {
+        return new ContributorDao(mapper(sqlSessionFactory), eventPublisher());
     }
 
 
     @Bean
-    public TaskDao taskDao(SqlSessionFactory sqlSessionFactory){
-        return  new TaskDao(mapper(sqlSessionFactory));
+    public TaskDao taskDao(SqlSessionFactory sqlSessionFactory) {
+        return new TaskDao(mapper(sqlSessionFactory), eventPublisher());
     }
 
     @Bean
-    public EventPublisher eventPublisher(){
+    public EventPublisher eventPublisher() {
         return new EventPublisher();
     }
 
