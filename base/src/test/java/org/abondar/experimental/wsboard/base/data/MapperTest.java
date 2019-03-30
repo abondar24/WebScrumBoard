@@ -70,8 +70,7 @@ public class MapperTest {
 
         assertTrue(task.getId() > 0);
 
-       // cleanData();
-
+        cleanData();
     }
 
     @Test
@@ -357,6 +356,25 @@ public class MapperTest {
         cleanData();
     }
 
+
+    @Test
+    public void updateTaskStateTest(){
+        logger.info("Update task state test");
+
+        var user = createUser();
+        var project = createProject();
+        var contributor = createContributor(user.getId(), project.getId(), false);
+        var task = createTask(contributor.getId());
+
+
+        mapper.updateTaskState(task.getId(),TaskState.InDevelopment,task.getTaskState());
+
+        var res = mapper.getTaskById(task.getId());
+        assertEquals(task.getTaskState(), res.getPrevState());
+        assertEquals(TaskState.InDevelopment,res.getTaskState());
+
+        cleanData();
+    }
 
 
     @Test

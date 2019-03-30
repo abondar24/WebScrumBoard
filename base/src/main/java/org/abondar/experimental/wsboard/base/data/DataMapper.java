@@ -28,6 +28,8 @@ public interface DataMapper {
 
     void updateTaskEndDate(@Param("id")Long id, @Param("endDate") Date endDate);
 
+    void updateTaskState(@Param("id")Long id, @Param("taskState") TaskState taskState,@Param("prevState") TaskState prevState);
+
     User getUserByLogin(@Param("login") String login);
 
     User getUserById(@Param("id") long id);

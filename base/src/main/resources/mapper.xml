@@ -57,6 +57,7 @@
         <id column="id" property="id"/>
         <result column="contributor_id" property="contributorId"/>
         <result column="task_state" property="taskState"/>
+        <result column="prev_state" property="prevState"/>
         <result column="start_date" property="startDate"/>
         <result column="end_date" property="endDate"/>
         <result column="story_points" property="storyPoints"/>
@@ -159,6 +160,12 @@
     <update id="updateTaskEndDate">
         UPDATE task
         SET end_date = #{endDate}
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateTaskState">
+        UPDATE task
+        SET task_state = #{taskState}, prev_state = #{prevState}
         WHERE id = #{id}
     </update>
 

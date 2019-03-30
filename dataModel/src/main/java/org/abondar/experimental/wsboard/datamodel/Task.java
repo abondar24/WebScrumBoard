@@ -8,6 +8,7 @@ public class Task {
     private long id;
     private long contributorId;
     private TaskState taskState;
+    private TaskState prevState;
     private int storyPoints;
     private Date startDate;
     private Date endDate;
@@ -77,12 +78,21 @@ public class Task {
         this.sprintId = sprintId;
     }
 
+    public TaskState getPrevState() {
+        return prevState;
+    }
+
+    public void setPrevState(TaskState prevState) {
+        this.prevState = prevState;
+    }
+
     @Override
     public String toString() {
         return "Task{" +
                 "id=" + id +
                 ", contributorId=" + contributorId +
                 ", taskState=" + taskState +
+                ", prevState=" + prevState +
                 ", storyPoints=" + storyPoints +
                 ", startDate=" + startDate +
                 ", endDate=" + endDate +
