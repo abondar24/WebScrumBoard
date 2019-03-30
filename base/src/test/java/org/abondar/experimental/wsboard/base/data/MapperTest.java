@@ -70,7 +70,7 @@ public class MapperTest {
 
         assertTrue(task.getId() > 0);
 
-        cleanData();
+       // cleanData();
 
     }
 

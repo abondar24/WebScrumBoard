@@ -18,7 +18,6 @@ public class Task {
 
     public Task(long contributorId,Date startDate) {
         this.contributorId = contributorId;
-        this.taskState = TaskState.Created;
         this.startDate = startDate;
     }
 

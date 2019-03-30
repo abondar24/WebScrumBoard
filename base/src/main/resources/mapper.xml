@@ -118,13 +118,11 @@
 
 
     <insert id="insertUpdateTask" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
-        INSERT INTO task (contributor_id, task_state, start_date)
+        INSERT INTO task (contributor_id, start_date)
         VALUES (#{task.contributorId},
-                #{task.taskState},
                 #{task.startDate})
         ON CONFLICT (id) DO UPDATE SET
             contributor_id = #{task.contributorId},
-            task_state = #{task.taskState},
             start_date = #{task.startDate}
     </insert>
 
