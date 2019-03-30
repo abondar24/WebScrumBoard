@@ -18,6 +18,7 @@ public class ErrorMessageUtil {
     public static final String USER_IS_PROJECT_OWNER = "User is project owner and can't be deleted";
     public static final String TASK_START_DATE_NOT_SET = "Task start date is null";
     public static final String TASK_NOT_EXISTS = "Task doesn't exist";
+    public static final String STORY_POINTS_NOT_SET = "Story points not set";
 
     private ErrorMessageUtil(){}
 

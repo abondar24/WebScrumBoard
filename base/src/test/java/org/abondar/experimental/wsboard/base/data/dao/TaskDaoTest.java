@@ -118,6 +118,138 @@ public class TaskDaoTest {
 
 
     @Test
+    public void updateTaskContributorTest() throws Exception {
+        logger.info("Update task contributor test");
+
+        var login = "login";
+        var email = "email@email.com";
+        var password = "pwd";
+        var firstName = "fname";
+        var lastName = "lname";
+        var roles = List.of(UserRole.Developer.name(), UserRole.DevOps.name());
+
+        var usr = userDao.createUser(login, password, email, firstName, lastName, roles);
+        var usr1 = userDao.createUser("login1", password, email, firstName, lastName, roles);
+
+        var name = "test";
+        var startDate = new Date();
+        var prj = projectDao.createProject(name, startDate);
+        prj = projectDao.updateProject(prj.getObject().getId(), null, null, true, null);
+
+        var contr = contributorDao.createContributor(usr.getObject().getId(), prj.getObject().getId(), false);
+        var contr1 = contributorDao.createContributor(usr1.getObject().getId(), prj.getObject().getId(), false);
+
+        var task = dao.createTask(contr.getObject().getId(), new Date());
+
+        var res = dao.updateTaskContributor(task.getObject().getId(), contr1.getObject().getId());
+
+
+        assertNull(res.getMessage());
+        assertEquals(contr1.getObject().getId(), res.getObject().getContributorId());
+
+        cleanData();
+    }
+
+
+    @Test
+    public void updateTaskNotExistsTest() {
+        logger.info("Update task not exists test");
+
+        var res = dao.updateTaskContributor(100, 100);
+
+        assertEquals(ErrorMessageUtil.TASK_NOT_EXISTS, res.getMessage());
+    }
+
+    @Test
+    public void updateTaskContributorNotExistsTest() throws Exception {
+        logger.info("Update task contributor not exists test");
+
+        var login = "login";
+        var email = "email@email.com";
+        var password = "pwd";
+        var firstName = "fname";
+        var lastName = "lname";
+        var roles = List.of(UserRole.Developer.name(), UserRole.DevOps.name());
+
+        var usr = userDao.createUser(login, password, email, firstName, lastName, roles);
+
+        var name = "test";
+        var startDate = new Date();
+        var prj = projectDao.createProject(name, startDate);
+        prj = projectDao.updateProject(prj.getObject().getId(), null, null, true, null);
+
+        var contr = contributorDao.createContributor(usr.getObject().getId(), prj.getObject().getId(), false);
+        var task = dao.createTask(contr.getObject().getId(), new Date());
+
+        var res = dao.updateTaskContributor(task.getObject().getId(), 100);
+
+        assertEquals(ErrorMessageUtil.CONTRIBUTOR_NOT_EXISTS, res.getMessage());
+
+        cleanData();
+    }
+
+
+    @Test
+    public void updateTaskStoryPointsTest() throws Exception {
+        logger.info("Update task story points test");
+
+        var login = "login";
+        var email = "email@email.com";
+        var password = "pwd";
+        var firstName = "fname";
+        var lastName = "lname";
+        var roles = List.of(UserRole.Developer.name(), UserRole.DevOps.name());
+
+        var usr = userDao.createUser(login, password, email, firstName, lastName, roles);
+
+        var name = "test";
+        var startDate = new Date();
+        var prj = projectDao.createProject(name, startDate);
+        prj = projectDao.updateProject(prj.getObject().getId(), null, null, true, null);
+
+        var contr = contributorDao.createContributor(usr.getObject().getId(), prj.getObject().getId(), false);
+        var task = dao.createTask(contr.getObject().getId(), new Date());
+
+        int storyPoints = 2;
+        var res = dao.updateTaskStorypoints(task.getObject().getId(), storyPoints);
+
+        assertNull(res.getMessage());
+        assertEquals(storyPoints, res.getObject().getStoryPoints());
+
+        cleanData();
+    }
+
+
+    @Test
+    public void updateTaskStoryPointsNullTest() throws Exception {
+        logger.info("Update task story points null test");
+
+        var login = "login";
+        var email = "email@email.com";
+        var password = "pwd";
+        var firstName = "fname";
+        var lastName = "lname";
+        var roles = List.of(UserRole.Developer.name(), UserRole.DevOps.name());
+
+        var usr = userDao.createUser(login, password, email, firstName, lastName, roles);
+
+        var name = "test";
+        var startDate = new Date();
+        var prj = projectDao.createProject(name, startDate);
+        prj = projectDao.updateProject(prj.getObject().getId(), null, null, true, null);
+
+        var contr = contributorDao.createContributor(usr.getObject().getId(), prj.getObject().getId(), false);
+        var task = dao.createTask(contr.getObject().getId(), new Date());
+
+        var res = dao.updateTaskStorypoints(task.getObject().getId(), null);
+
+        assertEquals(ErrorMessageUtil.STORY_POINTS_NOT_SET, res.getMessage());
+
+        cleanData();
+    }
+
+
+    @Test
     public void deleteTaskTest() throws Exception {
         logger.info("Delete task test");
 

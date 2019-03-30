@@ -51,10 +51,64 @@ public class TaskDao extends BaseDao {
         return res;
     }
 
+    public ObjectWrapper<Task> updateTaskContributor(long taskId,long contributorId) {
+        ObjectWrapper<Task> res = new ObjectWrapper<>();
+
+        var task = mapper.getTaskById(taskId);
+        if (task==null){
+            logger.info(ErrorMessageUtil.TASK_NOT_EXISTS+ "with id: "+taskId);
+            res.setMessage(ErrorMessageUtil.TASK_NOT_EXISTS);
+            return res;
+        }
+
+        var ctr = mapper.getContributorById(contributorId);
+        if (ctr == null) {
+            logger.error(ErrorMessageUtil.CONTRIBUTOR_NOT_EXISTS);
+            res.setMessage(ErrorMessageUtil.CONTRIBUTOR_NOT_EXISTS);
+            return res;
+        }
+        task.setContributorId(contributorId);
+
+        mapper.insertUpdateTask(task);
+        logger.info("Updated a task with id: " + task.getId());
+
+        res.setObject(task);
+        return res;
+    }
+
+
+    public ObjectWrapper<Task> updateTaskStorypoints(long taskId,Integer storyPoints) {
+        ObjectWrapper<Task> res = new ObjectWrapper<>();
+
+        var task = mapper.getTaskById(taskId);
+        if (task==null){
+            logger.info(ErrorMessageUtil.TASK_NOT_EXISTS+ "with id: "+taskId);
+            res.setMessage(ErrorMessageUtil.TASK_NOT_EXISTS);
+            return res;
+        }
+
+        if (storyPoints==null){
+            logger.info(ErrorMessageUtil.STORY_POINTS_NOT_SET);
+            res.setMessage(ErrorMessageUtil.STORY_POINTS_NOT_SET);
+            return res;
+        }
+
+        mapper.updateTaskStoryPoints(taskId,storyPoints);
+        logger.info("Updated a task  story points for id: " + task.getId());
+        task.setStoryPoints(storyPoints);
+        res.setObject(task);
+
+        return res;
+    }
+
+    //TODO: for task state update in case of manager check if he is owner of the project,check if user deleted
+    //TODO: update task sprint
+
+
     public boolean deleteTask(long id){
 
         if (mapper.getTaskById(id)==null){
-            logger.info(ErrorMessageUtil.TASK_NOT_EXISTS);
+            logger.info(ErrorMessageUtil.TASK_NOT_EXISTS+ "with id: "+id);
             return false;
         }
 
@@ -63,7 +117,6 @@ public class TaskDao extends BaseDao {
         return true;
     }
 
-    //TODO: for task state update in case of manager check if he is owner of the project,check if user deleted
 
     private void fillPermitted() {
         for (UserRole ur : EnumSet.allOf(UserRole.class)) {
