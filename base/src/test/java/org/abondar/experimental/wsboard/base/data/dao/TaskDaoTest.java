@@ -19,6 +19,8 @@ import java.util.List;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNull;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest(classes = Main.class)
 @ExtendWith(SpringExtension.class)
@@ -113,6 +115,47 @@ public class TaskDaoTest {
 
         cleanData();
     }
+
+
+    @Test
+    public void deleteTaskTest() throws Exception {
+        logger.info("Delete task test");
+
+        var login = "login";
+        var email = "email@email.com";
+        var password = "pwd";
+        var firstName = "fname";
+        var lastName = "lname";
+        var roles = List.of(UserRole.Developer.name(), UserRole.DevOps.name());
+
+        var usr = userDao.createUser(login, password, email, firstName, lastName, roles);
+
+        var name = "test";
+        var startDate = new Date();
+        var prj = projectDao.createProject(name, startDate);
+        prj = projectDao.updateProject(prj.getObject().getId(), null, null, true, null);
+
+        var contr = contributorDao.createContributor(usr.getObject().getId(), prj.getObject().getId(), false);
+
+        var task = dao.createTask(contr.getObject().getId(), new Date());
+        var res = dao.deleteTask(task.getObject().getId());
+
+        assertTrue(res);
+
+        cleanData();
+    }
+
+
+    @Test
+    public void deleteTaskNoExistsTest() {
+        logger.info("Delete task not exists test");
+
+        var res = dao.deleteTask(100);
+
+        assertFalse(res);
+    }
+
+    //TODO: delete task with sprint test
 
     private void cleanData() {
         mapper.deleteTasks();

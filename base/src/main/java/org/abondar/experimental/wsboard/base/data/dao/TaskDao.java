@@ -51,6 +51,18 @@ public class TaskDao extends BaseDao {
         return res;
     }
 
+    public boolean deleteTask(long id){
+
+        if (mapper.getTaskById(id)==null){
+            logger.info(ErrorMessageUtil.TASK_NOT_EXISTS);
+            return false;
+        }
+
+        mapper.deleteTask(id);
+        logger.info("Deleted task with id: "+id);
+        return true;
+    }
+
     //TODO: for task state update in case of manager check if he is owner of the project,check if user deleted
 
     private void fillPermitted() {
