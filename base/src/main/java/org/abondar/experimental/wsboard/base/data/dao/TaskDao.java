@@ -40,6 +40,12 @@ public class TaskDao extends BaseDao {
             return res;
         }
 
+        if (!ctr.isActive()) {
+            logger.error(ErrorMessageUtil.CONTRIBUTOR_NOT_EXISTS);
+            res.setMessage(ErrorMessageUtil.CONTRIBUTOR_NOT_EXISTS);
+            return res;
+        }
+
         if (startDate == null) {
             logger.error(ErrorMessageUtil.TASK_START_DATE_NOT_SET);
             res.setMessage(ErrorMessageUtil.TASK_START_DATE_NOT_SET);
@@ -90,6 +96,13 @@ public class TaskDao extends BaseDao {
             res.setMessage(ErrorMessageUtil.CONTRIBUTOR_NOT_EXISTS);
             return res;
         }
+
+        if (!ctr.isActive()) {
+            logger.error(ErrorMessageUtil.CONTRIBUTOR_NOT_EXISTS);
+            res.setMessage(ErrorMessageUtil.CONTRIBUTOR_NOT_EXISTS);
+            return res;
+        }
+
         task.setContributorId(contributorId);
 
         if (type != null && !type.isBlank()) {
@@ -178,6 +191,7 @@ public class TaskDao extends BaseDao {
 
             return res;
         }
+
 
         mapper.updateTaskState(taskId, state, task.getPrevState());
         logger.info("Updated task state to " + state.name() + " for id: " + taskId);

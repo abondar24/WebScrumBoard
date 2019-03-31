@@ -79,7 +79,7 @@ public class TaskDaoTest {
 
     @Test
     public void createTaskUnknownTypeTest() throws Exception {
-        logger.info("Create task test");
+        logger.info("Create task unknown type test");
 
         var login = "login";
         var email = "email@email.com";
@@ -105,7 +105,7 @@ public class TaskDaoTest {
 
     @Test
     public void createTaskTypeMismatchTest() throws Exception {
-        logger.info("Create task test");
+        logger.info("Create task  type mismatch test");
 
         var login = "login";
         var email = "email@email.com";
@@ -140,6 +140,33 @@ public class TaskDaoTest {
 
     }
 
+
+    @Test
+    public void createTaskInactiveContributorTest() throws Exception {
+        logger.info("Create task test");
+
+        var login = "login";
+        var email = "email@email.com";
+        var password = "pwd";
+        var firstName = "fname";
+        var lastName = "lname";
+        var roles = List.of(UserRole.Developer.name(), UserRole.DevOps.name());
+
+        var usr = userDao.createUser(login, password, email, firstName, lastName, roles);
+
+        var name = "test";
+        var startDate = new Date();
+        var prj = projectDao.createProject(name, startDate);
+        prj = projectDao.updateProject(prj.getObject().getId(), null, null, true, null);
+
+        var contr = contributorDao.createContributor(usr.getObject().getId(), prj.getObject().getId(), false);
+        userDao.deleteUser(contr.getObject().getUserId());
+
+        var task = dao.createTask(contr.getObject().getId(), TaskType.Testing.name(), new Date());
+
+        assertEquals(ErrorMessageUtil.TASK_TYPE_MISMATCH, task.getMessage());
+        cleanData();
+    }
 
     @Test
     public void createTaskNullDateTest() throws Exception {
