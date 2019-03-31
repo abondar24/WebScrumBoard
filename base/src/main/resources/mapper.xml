@@ -231,6 +231,17 @@
         WHERE ctr.user_id=#{userId}
     </select>
 
+    <select id="getUserByContributorId" resultMap="userMap">
+        SELECT *
+        FROM
+        <include refid="userTable"/>
+        JOIN
+        <include refid="contributorTable"/>
+        ON ctr.user_id = usr.id
+
+        WHERE ctr.id=#{ctrId}
+    </select>
+
 
     <select id="getContributorsForProject" resultMap="userMap">
         SELECT *

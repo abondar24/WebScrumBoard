@@ -172,6 +172,20 @@ public class MapperTest {
 
 
     @Test
+    public void getUserByContributorId() {
+        logger.info("Get user by contributor id test");
+
+        var user = createUser();
+        var project = createProject();
+        var ctr = createContributor(user.getId(), project.getId(), true);
+
+        var res = mapper.getUserByContributorId(ctr.getId());
+        assertEquals(user.getId(), res.getId());
+
+        cleanData();
+    }
+
+    @Test
     public void getContributorsForProjectTest() {
         logger.info("Get contributors for project test");
 
@@ -192,7 +206,7 @@ public class MapperTest {
     }
 
     @Test
-    public void getContributorsByUserId() {
+    public void getContributorByUserId() {
         logger.info("Get contributor by user id");
 
         var user = createUser();
