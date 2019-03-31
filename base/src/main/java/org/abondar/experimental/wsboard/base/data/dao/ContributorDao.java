@@ -95,12 +95,6 @@ public class ContributorDao extends BaseDao {
             }
 
             ctr.setOwner(isOwner);
-            var usr = mapper.getUserById(ctr.getUserId());
-            if (!usr.getRoles().contains(UserRole.Manager.name())) {
-                var roles = usr.getRoles().concat(";" + UserRole.Manager.name());
-                usr.setRoles(roles);
-                mapper.insertUpdateUser(usr);
-            }
         }
 
         if (isActive != null) {

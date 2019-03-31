@@ -4,6 +4,7 @@ import org.abondar.experimental.wsboard.base.Main;
 import org.abondar.experimental.wsboard.base.data.DataMapper;
 import org.abondar.experimental.wsboard.base.data.ErrorMessageUtil;
 import org.abondar.experimental.wsboard.datamodel.UserRole;
+import org.abondar.experimental.wsboard.datamodel.task.TaskType;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
@@ -68,11 +69,63 @@ public class TaskDaoTest {
 
         var contr = contributorDao.createContributor(usr.getObject().getId(), prj.getObject().getId(), false);
 
-        var task = dao.createTask(contr.getObject().getId(), new Date());
+        var task = dao.createTask(contr.getObject().getId(), TaskType.Development.name(), new Date());
 
         assertNull(task.getMessage());
 
+        cleanData();
+    }
 
+
+    @Test
+    public void createTaskUnknownTypeTest() throws Exception {
+        logger.info("Create task test");
+
+        var login = "login";
+        var email = "email@email.com";
+        var password = "pwd";
+        var firstName = "fname";
+        var lastName = "lname";
+        var roles = List.of(UserRole.Developer.name(), UserRole.DevOps.name());
+
+        var usr = userDao.createUser(login, password, email, firstName, lastName, roles);
+
+        var name = "test";
+        var startDate = new Date();
+        var prj = projectDao.createProject(name, startDate);
+        prj = projectDao.updateProject(prj.getObject().getId(), null, null, true, null);
+
+        var contr = contributorDao.createContributor(usr.getObject().getId(), prj.getObject().getId(), false);
+
+        var task = dao.createTask(contr.getObject().getId(), "test", new Date());
+
+        assertEquals(ErrorMessageUtil.TASK_TYPE_UNKNOWN, task.getMessage());
+        cleanData();
+    }
+
+    @Test
+    public void createTaskTypeMismatchTest() throws Exception {
+        logger.info("Create task test");
+
+        var login = "login";
+        var email = "email@email.com";
+        var password = "pwd";
+        var firstName = "fname";
+        var lastName = "lname";
+        var roles = List.of(UserRole.Developer.name(), UserRole.DevOps.name());
+
+        var usr = userDao.createUser(login, password, email, firstName, lastName, roles);
+
+        var name = "test";
+        var startDate = new Date();
+        var prj = projectDao.createProject(name, startDate);
+        prj = projectDao.updateProject(prj.getObject().getId(), null, null, true, null);
+
+        var contr = contributorDao.createContributor(usr.getObject().getId(), prj.getObject().getId(), false);
+
+        var task = dao.createTask(contr.getObject().getId(), TaskType.Testing.name(), new Date());
+
+        assertEquals(ErrorMessageUtil.TASK_TYPE_MISMATCH, task.getMessage());
         cleanData();
     }
 
@@ -81,7 +134,7 @@ public class TaskDaoTest {
     public void createTaskNoContributorTest() {
         logger.info("Create task no contributor test");
 
-        var task = dao.createTask(100, new Date());
+        var task = dao.createTask(100, TaskType.Development.name(), new Date());
 
         assertEquals(ErrorMessageUtil.CONTRIBUTOR_NOT_EXISTS, task.getMessage());
 
@@ -108,7 +161,7 @@ public class TaskDaoTest {
 
         var contr = contributorDao.createContributor(usr.getObject().getId(), prj.getObject().getId(), false);
 
-        var task = dao.createTask(contr.getObject().getId(), null);
+        var task = dao.createTask(contr.getObject().getId(), TaskType.Development.name(), null);
 
         assertEquals(ErrorMessageUtil.TASK_START_DATE_NOT_SET, task.getMessage());
 
@@ -139,9 +192,9 @@ public class TaskDaoTest {
         var contr = contributorDao.createContributor(usr.getObject().getId(), prj.getObject().getId(), false);
         var contr1 = contributorDao.createContributor(usr1.getObject().getId(), prj.getObject().getId(), false);
 
-        var task = dao.createTask(contr.getObject().getId(), new Date());
+        var task = dao.createTask(contr.getObject().getId(), TaskType.Development.name(), new Date());
 
-        var res = dao.updateTaskContributor(task.getObject().getId(), contr1.getObject().getId());
+        var res = dao.updateTask(task.getObject().getId(), contr1.getObject().getId(), TaskType.Development.name());
 
 
         assertNull(res.getMessage());
@@ -155,7 +208,7 @@ public class TaskDaoTest {
     public void updateTaskNotExistsTest() {
         logger.info("Update task not exists test");
 
-        var res = dao.updateTaskContributor(100, 100);
+        var res = dao.updateTask(100, 100, TaskType.DevOps.name());
 
         assertEquals(ErrorMessageUtil.TASK_NOT_EXISTS, res.getMessage());
     }
@@ -179,9 +232,9 @@ public class TaskDaoTest {
         prj = projectDao.updateProject(prj.getObject().getId(), null, null, true, null);
 
         var contr = contributorDao.createContributor(usr.getObject().getId(), prj.getObject().getId(), false);
-        var task = dao.createTask(contr.getObject().getId(), new Date());
+        var task = dao.createTask(contr.getObject().getId(), TaskType.DevOps.name(), new Date());
 
-        var res = dao.updateTaskContributor(task.getObject().getId(), 100);
+        var res = dao.updateTask(task.getObject().getId(), 100, TaskType.DevOps.name());
 
         assertEquals(ErrorMessageUtil.CONTRIBUTOR_NOT_EXISTS, res.getMessage());
 
@@ -208,10 +261,10 @@ public class TaskDaoTest {
         prj = projectDao.updateProject(prj.getObject().getId(), null, null, true, null);
 
         var contr = contributorDao.createContributor(usr.getObject().getId(), prj.getObject().getId(), false);
-        var task = dao.createTask(contr.getObject().getId(), new Date());
+        var task = dao.createTask(contr.getObject().getId(), TaskType.DevOps.name(), new Date());
 
         int storyPoints = 2;
-        var res = dao.updateTaskStorypoints(task.getObject().getId(), storyPoints);
+        var res = dao.updateTaskStoryPoints(task.getObject().getId(), storyPoints);
 
         assertNull(res.getMessage());
         assertEquals(storyPoints, res.getObject().getStoryPoints());
@@ -239,11 +292,11 @@ public class TaskDaoTest {
         prj = projectDao.updateProject(prj.getObject().getId(), null, null, true, null);
 
         var contr = contributorDao.createContributor(usr.getObject().getId(), prj.getObject().getId(), false);
-        var task = dao.createTask(contr.getObject().getId(), new Date());
+        var task = dao.createTask(contr.getObject().getId(), TaskType.DevOps.name(), new Date());
 
-        var res = dao.updateTaskStorypoints(task.getObject().getId(), null);
+        var res = dao.updateTaskStoryPoints(task.getObject().getId(), null);
 
-        assertEquals(ErrorMessageUtil.STORY_POINTS_NOT_SET, res.getMessage());
+        assertEquals(ErrorMessageUtil.TASK_STORY_POINTS_NOT_SET, res.getMessage());
 
         cleanData();
     }
@@ -269,7 +322,7 @@ public class TaskDaoTest {
 
         var contr = contributorDao.createContributor(usr.getObject().getId(), prj.getObject().getId(), false);
 
-        var task = dao.createTask(contr.getObject().getId(), new Date());
+        var task = dao.createTask(contr.getObject().getId(), TaskType.DevOps.name(), new Date());
         var res = dao.deleteTask(task.getObject().getId());
 
         assertTrue(res);

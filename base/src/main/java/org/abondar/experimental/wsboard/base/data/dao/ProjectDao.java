@@ -66,7 +66,7 @@ public class ProjectDao extends BaseDao {
                 if (endDate!=null && !prj.getStartDate().after(endDate)){
                     prj.setEndDate(endDate);
                 } else {
-                    res.setMessage(ErrorMessageUtil.WRONG_END_DATE);
+                    res.setMessage(ErrorMessageUtil.PROJECT_WRONG_END_DATE);
                     return res;
                 }
             }

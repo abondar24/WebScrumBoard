@@ -4,7 +4,5 @@ public enum UserRole {
 
     Developer,
     QA,
-    DevOps,
-    Manager
-
+    DevOps
 }

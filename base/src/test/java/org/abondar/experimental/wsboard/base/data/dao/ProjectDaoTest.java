@@ -108,7 +108,7 @@ public class ProjectDaoTest {
 
         prj = dao.updateProject(prj.getObject().getId(), "newTest", "github.com/aaaa/aaa.git", false, null);
 
-        assertEquals(ErrorMessageUtil.WRONG_END_DATE, prj.getMessage());
+        assertEquals(ErrorMessageUtil.PROJECT_WRONG_END_DATE, prj.getMessage());
         mapper.deleteProjects();
     }
 
@@ -122,7 +122,7 @@ public class ProjectDaoTest {
 
         prj = dao.updateProject(prj.getObject().getId(), "newTest", "github.com/aaaa/aaa.git", false, yesterday());
 
-        assertEquals(ErrorMessageUtil.WRONG_END_DATE, prj.getMessage());
+        assertEquals(ErrorMessageUtil.PROJECT_WRONG_END_DATE, prj.getMessage());
         mapper.deleteProjects();
     }
 

@@ -39,8 +39,8 @@ public class UserDao extends BaseDao {
 
         var userRoles = roles.stream().filter(this::containsRole).collect(Collectors.joining(";"));
         if (userRoles.isBlank()) {
-            logger.error(ErrorMessageUtil.NO_ROLES);
-            res.setMessage(ErrorMessageUtil.NO_ROLES);
+            logger.error(ErrorMessageUtil.USER_NO_ROLES);
+            res.setMessage(ErrorMessageUtil.USER_NO_ROLES);
 
             return res;
         }
@@ -57,8 +57,8 @@ public class UserDao extends BaseDao {
     public ObjectWrapper<User> updateLogin(String login, long userId) {
         ObjectWrapper<User> res = new ObjectWrapper<>();
         if (login.isBlank()) {
-            logger.error(ErrorMessageUtil.EMTPY_LOGIN);
-            res.setMessage(ErrorMessageUtil.EMTPY_LOGIN);
+            logger.error(ErrorMessageUtil.USER_EMTPY_LOGIN);
+            res.setMessage(ErrorMessageUtil.USER_EMTPY_LOGIN);
             res.setObject(null);
             return res;
         }
@@ -101,8 +101,8 @@ public class UserDao extends BaseDao {
         }
 
         if (!PasswordUtil.verifyPassword(oldPassword, usr.getPassword())) {
-            logger.error(ErrorMessageUtil.UNAUTHORIZED);
-            res.setMessage(ErrorMessageUtil.UNAUTHORIZED);
+            logger.error(ErrorMessageUtil.USER_UNAUTHORIZED);
+            res.setMessage(ErrorMessageUtil.USER_UNAUTHORIZED);
             res.setObject(null);
 
             return res;
@@ -216,9 +216,9 @@ public class UserDao extends BaseDao {
         }
 
         if (!PasswordUtil.verifyPassword(password, usr.getPassword())) {
-            logger.error(ErrorMessageUtil.UNAUTHORIZED);
+            logger.error(ErrorMessageUtil.USER_UNAUTHORIZED);
 
-            return ErrorMessageUtil.UNAUTHORIZED;
+            return ErrorMessageUtil.USER_UNAUTHORIZED;
         }
 
         return "";

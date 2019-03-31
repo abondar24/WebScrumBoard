@@ -444,7 +444,7 @@ public class MapperTest {
 
 
     private User createUser() {
-        var roles = UserRole.Developer + ":" + UserRole.Manager;
+        var roles = UserRole.Developer + ":" + UserRole.QA;
         var user = new User("testUser", "test@email.com",
                 "test", "test", "12345", roles);
 

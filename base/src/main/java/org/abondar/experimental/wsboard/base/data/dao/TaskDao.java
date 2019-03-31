@@ -4,13 +4,16 @@ import org.abondar.experimental.wsboard.base.data.DataMapper;
 import org.abondar.experimental.wsboard.base.data.ErrorMessageUtil;
 import org.abondar.experimental.wsboard.base.data.ObjectWrapper;
 import org.abondar.experimental.wsboard.base.data.event.EventPublisher;
-import org.abondar.experimental.wsboard.datamodel.Task;
-import org.abondar.experimental.wsboard.datamodel.TaskState;
 import org.abondar.experimental.wsboard.datamodel.UserRole;
+import org.abondar.experimental.wsboard.datamodel.task.Task;
+import org.abondar.experimental.wsboard.datamodel.task.TaskState;
+import org.abondar.experimental.wsboard.datamodel.task.TaskType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
+
+import static org.abondar.experimental.wsboard.datamodel.UserRole.*;
 
 
 public class TaskDao extends BaseDao {
@@ -20,14 +23,15 @@ public class TaskDao extends BaseDao {
 
     private Map<UserRole, List<TaskState>> roleStates;
 
+    private Map<TaskState, List<TaskState>> stateMoves;
+
     public TaskDao(DataMapper mapper, EventPublisher eventPublisher) {
         super(mapper, eventPublisher);
-        this.roleStates = new HashMap<>();
-        fillPermitted();
+        this.roleStates = initRoleStates();
+        this.stateMoves = initMoves();
     }
 
-
-    public ObjectWrapper<Task> createTask(long contributorId, Date startDate) {
+    public ObjectWrapper<Task> createTask(long contributorId, String type, Date startDate) {
         ObjectWrapper<Task> res = new ObjectWrapper<>();
         var ctr = mapper.getContributorById(contributorId);
         if (ctr == null) {
@@ -42,21 +46,40 @@ public class TaskDao extends BaseDao {
             return res;
         }
 
-        var task = new Task(contributorId, startDate);
 
+        TaskType taskType;
+        try {
+            taskType = TaskType.valueOf(type);
+        } catch (IllegalArgumentException ex) {
+            logger.error(ex.getMessage());
+            res.setMessage(ErrorMessageUtil.TASK_TYPE_UNKNOWN);
+            return res;
+        }
+
+        var usr = mapper.getUserById(ctr.getUserId());
+
+        if (!typeMatches(taskType, usr.getRoles())) {
+            logger.error(ErrorMessageUtil.TASK_TYPE_MISMATCH);
+            res.setMessage(ErrorMessageUtil.TASK_TYPE_MISMATCH);
+        }
+
+
+        var task = new Task(contributorId, taskType, startDate);
         mapper.insertUpdateTask(task);
         logger.info("Created a task with id: " + task.getId());
 
         res.setObject(task);
+
+
         return res;
     }
 
-    public ObjectWrapper<Task> updateTaskContributor(long taskId,long contributorId) {
+    public ObjectWrapper<Task> updateTask(long taskId, long contributorId, String type) {
         ObjectWrapper<Task> res = new ObjectWrapper<>();
 
         var task = mapper.getTaskById(taskId);
-        if (task==null){
-            logger.info(ErrorMessageUtil.TASK_NOT_EXISTS+ "with id: "+taskId);
+        if (task == null) {
+            logger.info(ErrorMessageUtil.TASK_NOT_EXISTS + "with id: " + taskId);
             res.setMessage(ErrorMessageUtil.TASK_NOT_EXISTS);
             return res;
         }
@@ -69,6 +92,24 @@ public class TaskDao extends BaseDao {
         }
         task.setContributorId(contributorId);
 
+        if (type != null && !type.isBlank()) {
+            TaskType taskType;
+            try {
+                taskType = TaskType.valueOf(type);
+            } catch (IllegalArgumentException ex) {
+                logger.error(ex.getMessage());
+                res.setMessage(ErrorMessageUtil.TASK_TYPE_UNKNOWN);
+                return res;
+            }
+
+            var usr = mapper.getUserById(ctr.getUserId());
+            if (!typeMatches(taskType, usr.getRoles())) {
+                logger.error(ErrorMessageUtil.TASK_TYPE_MISMATCH);
+                res.setMessage(ErrorMessageUtil.TASK_TYPE_MISMATCH);
+            }
+            task.setType(taskType);
+        }
+
         mapper.insertUpdateTask(task);
         logger.info("Updated a task with id: " + task.getId());
 
@@ -77,23 +118,23 @@ public class TaskDao extends BaseDao {
     }
 
 
-    public ObjectWrapper<Task> updateTaskStorypoints(long taskId,Integer storyPoints) {
+    public ObjectWrapper<Task> updateTaskStoryPoints(long taskId, Integer storyPoints) {
         ObjectWrapper<Task> res = new ObjectWrapper<>();
 
         var task = mapper.getTaskById(taskId);
-        if (task==null){
-            logger.info(ErrorMessageUtil.TASK_NOT_EXISTS+ "with id: "+taskId);
+        if (task == null) {
+            logger.info(ErrorMessageUtil.TASK_NOT_EXISTS + "with id: " + taskId);
             res.setMessage(ErrorMessageUtil.TASK_NOT_EXISTS);
             return res;
         }
 
-        if (storyPoints==null){
-            logger.info(ErrorMessageUtil.STORY_POINTS_NOT_SET);
-            res.setMessage(ErrorMessageUtil.STORY_POINTS_NOT_SET);
+        if (storyPoints == null) {
+            logger.info(ErrorMessageUtil.TASK_STORY_POINTS_NOT_SET);
+            res.setMessage(ErrorMessageUtil.TASK_STORY_POINTS_NOT_SET);
             return res;
         }
 
-        mapper.updateTaskStoryPoints(taskId,storyPoints);
+        mapper.updateTaskStoryPoints(taskId, storyPoints);
         logger.info("Updated a task  story points for id: " + task.getId());
         task.setStoryPoints(storyPoints);
         res.setObject(task);
@@ -101,24 +142,68 @@ public class TaskDao extends BaseDao {
         return res;
     }
 
-    //TODO: for task state update in case of manager check if he is owner of the project,check if user deleted
+    //TODO: for task state update check owner of the project,check if user deleted
+    public ObjectWrapper<Task> updateTaskState(long taskId, TaskState state) {
+        ObjectWrapper<Task> res = new ObjectWrapper<>();
+
+        var task = mapper.getTaskById(taskId);
+        if (task == null) {
+            logger.info(ErrorMessageUtil.TASK_NOT_EXISTS + "with id: " + taskId);
+            res.setMessage(ErrorMessageUtil.TASK_NOT_EXISTS);
+            return res;
+        }
+
+        if (task.getTaskState() == TaskState.Completed) {
+            logger.info(ErrorMessageUtil.TASK_ALREADY_COMPLETED);
+            res.setMessage(ErrorMessageUtil.TASK_ALREADY_COMPLETED);
+
+            return res;
+        }
+
+        if (state == TaskState.Created) {
+            logger.info(ErrorMessageUtil.TASK_ALREADY_CREATED);
+            res.setMessage(ErrorMessageUtil.TASK_ALREADY_CREATED);
+
+            return res;
+        }
+
+        if (state == TaskState.Paused) {
+            task.setPrevState(task.getTaskState());
+            task.setTaskState(TaskState.Paused);
+        }
+
+        if ((task.getTaskState() == TaskState.Paused) && (task.getPrevState() != state)) {
+            logger.info(ErrorMessageUtil.TASK_WRONG_STATE_AFTER_PAUSE);
+            res.setMessage(ErrorMessageUtil.TASK_WRONG_STATE_AFTER_PAUSE);
+
+            return res;
+        }
+
+        mapper.updateTaskState(taskId, state, task.getPrevState());
+        logger.info("Updated task state to " + state.name() + " for id: " + taskId);
+        return res;
+    }
+
+
     //TODO: update task sprint
 
 
-    public boolean deleteTask(long id){
+    public boolean deleteTask(long id) {
 
-        if (mapper.getTaskById(id)==null){
-            logger.info(ErrorMessageUtil.TASK_NOT_EXISTS+ "with id: "+id);
+        if (mapper.getTaskById(id) == null) {
+            logger.info(ErrorMessageUtil.TASK_NOT_EXISTS + "with id: " + id);
             return false;
         }
 
         mapper.deleteTask(id);
-        logger.info("Deleted task with id: "+id);
+        logger.info("Deleted task with id: " + id);
         return true;
     }
 
 
-    private void fillPermitted() {
+    private Map<UserRole, List<TaskState>> initRoleStates() {
+        Map<UserRole, List<TaskState>> roleStates = new HashMap<>();
+
         for (UserRole ur : EnumSet.allOf(UserRole.class)) {
             switch (ur) {
                 case Developer:
@@ -135,15 +220,54 @@ public class TaskDao extends BaseDao {
                             TaskState.Paused, TaskState.Completed);
                     roleStates.put(ur, devOpsStates);
                     break;
-                case Manager:
-                    var managerStates = List.of(TaskState.InDevelopment,
-                            TaskState.InDeployment, TaskState.Paused,
-                            TaskState.InCodeReview, TaskState.InTest, TaskState.Completed);
-                    roleStates.put(ur, managerStates);
+            }
+        }
+
+        return roleStates;
+    }
+
+
+    private Map<TaskState, List<TaskState>> initMoves() {
+        Map<TaskState, List<TaskState>> stateMoves = new HashMap<>();
+
+        for (TaskState ts : EnumSet.allOf(TaskState.class)) {
+            switch (ts) {
+                case Created:
+                    stateMoves.put(ts, List.of(TaskState.InTest, TaskState.InDeployment, TaskState.InDevelopment));
+                    break;
+                case InDevelopment:
+                    stateMoves.put(ts, List.of(TaskState.InCodeReview));
+                    break;
+                case InCodeReview:
+                    stateMoves.put(ts, List.of(TaskState.InDevelopment, TaskState.InTest));
+                    break;
+                case InTest:
+                    stateMoves.put(ts, List.of(TaskState.InDevelopment, TaskState.InDeployment));
+                    break;
+                case InDeployment:
+                    stateMoves.put(ts, List.of(TaskState.InDevelopment, TaskState.InTest, TaskState.Completed));
                     break;
             }
         }
+
+        return stateMoves;
     }
 
+
+    private boolean typeMatches(TaskType type, String roles) {
+        var rolesList = List.of(roles.split(";"));
+
+
+        switch (type) {
+            case Development:
+                return rolesList.contains(Developer.name());
+            case DevOps:
+                return rolesList.contains(DevOps.name());
+            case Testing:
+                return rolesList.contains(QA.name());
+            default:
+                return false;
+        }
+    }
 
 }

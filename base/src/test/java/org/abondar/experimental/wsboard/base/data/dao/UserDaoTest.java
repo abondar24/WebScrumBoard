@@ -16,7 +16,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
 
@@ -93,7 +92,7 @@ public class UserDaoTest {
 
         var usr = userDao.createUser(login, password, email, firstName, lastName, roles);
 
-        assertEquals(ErrorMessageUtil.NO_ROLES, usr.getMessage());
+        assertEquals(ErrorMessageUtil.USER_NO_ROLES, usr.getMessage());
         assertNull(usr.getObject());
 
         mapper.deleteUsers();
@@ -185,7 +184,7 @@ public class UserDaoTest {
 
         var usr = userDao.createUser(login, password, email, firstName, lastName, roles);
         usr = userDao.updatePassword("randomPwd", "newPed", usr.getObject().getId());
-        assertEquals(ErrorMessageUtil.UNAUTHORIZED, usr.getMessage());
+        assertEquals(ErrorMessageUtil.USER_UNAUTHORIZED, usr.getMessage());
 
         mapper.deleteUsers();
     }
@@ -203,7 +202,7 @@ public class UserDaoTest {
 
         var usr = userDao.createUser(login, password, email, firstName, lastName, roles);
 
-        usr = userDao.updateUser(usr.getObject().getId(), "name1", "name2", "email1@email.com", List.of(UserRole.Manager.name()));
+        usr = userDao.updateUser(usr.getObject().getId(), "name1", "name2", "email1@email.com", List.of(UserRole.Developer.name()));
         assertNull(usr.getMessage());
 
 
