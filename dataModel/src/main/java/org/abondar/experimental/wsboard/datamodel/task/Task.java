@@ -1,4 +1,4 @@
-package org.abondar.experimental.wsboard.datamodel;
+package org.abondar.experimental.wsboard.datamodel.task;
 
 import java.util.Date;
 
@@ -13,12 +13,14 @@ public class Task {
     private Date startDate;
     private Date endDate;
     private long sprintId;
+    private TaskType type;
 
 
     public Task(){}
 
-    public Task(long contributorId,Date startDate) {
+    public Task(long contributorId, TaskType type, Date startDate) {
         this.contributorId = contributorId;
+        this.type = type;
         this.startDate = startDate;
     }
 
@@ -86,6 +88,14 @@ public class Task {
         this.prevState = prevState;
     }
 
+    public TaskType getType() {
+        return type;
+    }
+
+    public void setType(TaskType type) {
+        this.type = type;
+    }
+
     @Override
     public String toString() {
         return "Task{" +
@@ -97,6 +107,7 @@ public class Task {
                 ", startDate=" + startDate +
                 ", endDate=" + endDate +
                 ", sprintId=" + sprintId +
+                ", type=" + type +
                 '}';
     }
 }

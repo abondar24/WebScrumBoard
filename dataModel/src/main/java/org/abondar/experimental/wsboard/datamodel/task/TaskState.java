@@ -1,4 +1,4 @@
-package org.abondar.experimental.wsboard.datamodel;
+package org.abondar.experimental.wsboard.datamodel.task;
 
 public enum TaskState {
 

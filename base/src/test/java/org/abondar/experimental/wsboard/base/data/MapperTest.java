@@ -2,6 +2,9 @@ package org.abondar.experimental.wsboard.base.data;
 
 import org.abondar.experimental.wsboard.base.Main;
 import org.abondar.experimental.wsboard.datamodel.*;
+import org.abondar.experimental.wsboard.datamodel.task.Task;
+import org.abondar.experimental.wsboard.datamodel.task.TaskState;
+import org.abondar.experimental.wsboard.datamodel.task.TaskType;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
@@ -367,7 +370,7 @@ public class MapperTest {
         var task = createTask(contributor.getId());
 
 
-        mapper.updateTaskState(task.getId(),TaskState.InDevelopment,task.getTaskState());
+        mapper.updateTaskState(task.getId(), TaskState.InDevelopment, task.getTaskState());
 
         var res = mapper.getTaskById(task.getId());
         assertEquals(task.getTaskState(), res.getPrevState());
@@ -467,7 +470,7 @@ public class MapperTest {
     }
 
     private Task createTask(long contributorId) {
-        var task = new Task(contributorId, new Date());
+        var task = new Task(contributorId, TaskType.Development, new Date());
         mapper.insertUpdateTask(task);
         logger.info("Created task with id:" + task.getId());
         return task;

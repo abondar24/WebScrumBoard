@@ -2,6 +2,8 @@ package org.abondar.experimental.wsboard.base.data;
 
 
 import org.abondar.experimental.wsboard.datamodel.*;
+import org.abondar.experimental.wsboard.datamodel.task.Task;
+import org.abondar.experimental.wsboard.datamodel.task.TaskState;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -28,7 +30,7 @@ public interface DataMapper {
 
     void updateTaskEndDate(@Param("id")Long id, @Param("endDate") Date endDate);
 
-    void updateTaskState(@Param("id")Long id, @Param("taskState") TaskState taskState,@Param("prevState") TaskState prevState);
+    void updateTaskState(@Param("id") Long id, @Param("taskState") TaskState taskState, @Param("prevState") TaskState prevState);
 
     User getUserByLogin(@Param("login") String login);
 
