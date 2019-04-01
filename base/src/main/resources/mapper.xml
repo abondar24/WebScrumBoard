@@ -63,6 +63,7 @@
         <result column="story_points" property="storyPoints"/>
         <result column="sprint_id" property="sprintId"/>
         <result column="task_type" property="type"/>
+        <result column="dev_ops_enabled" property="devOpsEnabled"/>
     </resultMap>
 
     <resultMap id="sprintMap" type="Sprint">
@@ -120,10 +121,11 @@
 
 
     <insert id="insertUpdateTask" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
-        INSERT INTO task (contributor_id, task_type, start_date)
+        INSERT INTO task (contributor_id, task_type, start_date, dev_ops_enabled)
         VALUES (#{task.contributorId},
                 #{task.type},
-                #{task.startDate})
+                #{task.startDate},
+                #{task.devOpsEnabled})
         ON CONFLICT (id) DO UPDATE SET
                                        contributor_id = #{task.contributorId},
                                        task_type      = #{task.type};

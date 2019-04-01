@@ -14,14 +14,16 @@ public class Task {
     private Date endDate;
     private long sprintId;
     private TaskType type;
+    private boolean devOpsEnabled;
 
 
     public Task(){}
 
-    public Task(long contributorId, TaskType type, Date startDate) {
+    public Task(long contributorId, TaskType type, Date startDate, boolean devOpsEnabled) {
         this.contributorId = contributorId;
         this.type = type;
         this.startDate = startDate;
+        this.devOpsEnabled = devOpsEnabled;
     }
 
     public long getId() {
@@ -94,6 +96,15 @@ public class Task {
 
     public void setType(TaskType type) {
         this.type = type;
+    }
+
+
+    public boolean isDevOpsEnabled() {
+        return devOpsEnabled;
+    }
+
+    public void setDevOpsEnabled(boolean devOpsEnabled) {
+        this.devOpsEnabled = devOpsEnabled;
     }
 
     @Override

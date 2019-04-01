@@ -1,0 +1,1 @@
+ALTER TABLE task ADD COLUMN dev_ops_enabled BOOLEAN;

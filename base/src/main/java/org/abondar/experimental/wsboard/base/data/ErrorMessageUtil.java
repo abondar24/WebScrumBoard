@@ -24,6 +24,10 @@ public class ErrorMessageUtil {
     public static final String TASK_WRONG_STATE_AFTER_PAUSE = "Task was paused in different state";
     public static final String TASK_TYPE_MISMATCH = "Task type doesn't match contributor role";
     public static final String TASK_TYPE_UNKNOWN = "Task type is unknown";
+    public static final String TASK_STATE_UNKNOWN = "Task state not exists";
+    public static final String TASK_COMPLETED_NOT_SUPPORTED = "Task state completed not supported for this type";
+    public static final String TASK_NO_NEXT_STATES = "Task has no states to update to";
+    public static final String TASK_STATE_NOT_FOUND = "Task state not found";
 
     private ErrorMessageUtil(){}
 

@@ -484,7 +484,7 @@ public class MapperTest {
     }
 
     private Task createTask(long contributorId) {
-        var task = new Task(contributorId, TaskType.Development, new Date());
+        var task = new Task(contributorId, TaskType.Development, new Date(), true);
         mapper.insertUpdateTask(task);
         logger.info("Created task with id:" + task.getId());
         return task;
