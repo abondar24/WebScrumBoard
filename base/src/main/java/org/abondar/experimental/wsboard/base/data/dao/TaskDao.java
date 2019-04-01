@@ -6,7 +6,6 @@ import org.abondar.experimental.wsboard.base.data.ObjectWrapper;
 import org.abondar.experimental.wsboard.base.data.event.EventPublisher;
 import org.abondar.experimental.wsboard.datamodel.task.Task;
 import org.abondar.experimental.wsboard.datamodel.task.TaskState;
-import org.abondar.experimental.wsboard.datamodel.task.TaskType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,16 +18,16 @@ public class TaskDao extends BaseDao {
 
     private static Logger logger = LoggerFactory.getLogger(TaskDao.class);
 
-
+/*
     private Map<TaskState, List<TaskState>> devTaskMoves;
     private Map<TaskState, List<TaskState>> testTaskMoves;
     private Map<TaskState, List<TaskState>> devOpsTaskMoves;
     private Map<TaskType, Map<TaskState, List<TaskState>>> typeMoves;
-
+*/
 
     public TaskDao(DataMapper mapper, EventPublisher eventPublisher) {
         super(mapper, eventPublisher);
-
+/*
         this.devTaskMoves = initDevMoves();
         this.testTaskMoves = initTestMoves();
         this.devOpsTaskMoves = initDevOpsMoves();
@@ -37,9 +36,10 @@ public class TaskDao extends BaseDao {
         typeMoves.put(TaskType.Development, devTaskMoves);
         typeMoves.put(TaskType.Testing, testTaskMoves);
         typeMoves.put(TaskType.DevOps, devOpsTaskMoves);
+        */
     }
 
-    public ObjectWrapper<Task> createTask(long contributorId, String type, Date startDate, boolean devOpsEnabled) {
+    public ObjectWrapper<Task> createTask(long contributorId, Date startDate, boolean devOpsEnabled) {
         ObjectWrapper<Task> res = new ObjectWrapper<>();
         var ctr = mapper.getContributorById(contributorId);
         if (ctr == null) {
@@ -61,28 +61,9 @@ public class TaskDao extends BaseDao {
         }
 
 
-        TaskType taskType;
-        try {
-            taskType = TaskType.valueOf(type);
-        } catch (IllegalArgumentException ex) {
-            logger.error(ex.getMessage());
-            res.setMessage(ErrorMessageUtil.TASK_TYPE_UNKNOWN);
-            return res;
-        }
-
-        var usr = mapper.getUserById(ctr.getUserId());
-
-        if (!typeMatches(taskType, usr.getRoles())) {
-            logger.error(ErrorMessageUtil.TASK_TYPE_MISMATCH);
-            res.setMessage(ErrorMessageUtil.TASK_TYPE_MISMATCH);
-        }
+        var task = new Task(contributorId, startDate, devOpsEnabled);
 
 
-        var task = new Task(contributorId, taskType, startDate, devOpsEnabled);
-
-        if (taskType == TaskType.DevOps) {
-            task.setDevOpsEnabled(true);
-        }
 
         mapper.insertUpdateTask(task);
         logger.info("Created a task with id: " + task.getId());
@@ -93,7 +74,7 @@ public class TaskDao extends BaseDao {
         return res;
     }
 
-    public ObjectWrapper<Task> updateTask(long taskId, long contributorId, String type) {
+    public ObjectWrapper<Task> updateTask(long taskId, long contributorId) {
         ObjectWrapper<Task> res = new ObjectWrapper<>();
 
         var task = mapper.getTaskById(taskId);
@@ -118,23 +99,6 @@ public class TaskDao extends BaseDao {
 
         task.setContributorId(contributorId);
 
-        if (type != null && !type.isBlank()) {
-            TaskType taskType;
-            try {
-                taskType = TaskType.valueOf(type);
-            } catch (IllegalArgumentException ex) {
-                logger.error(ex.getMessage());
-                res.setMessage(ErrorMessageUtil.TASK_TYPE_UNKNOWN);
-                return res;
-            }
-
-            var usr = mapper.getUserById(ctr.getUserId());
-            if (!typeMatches(taskType, usr.getRoles())) {
-                logger.error(ErrorMessageUtil.TASK_TYPE_MISMATCH);
-                res.setMessage(ErrorMessageUtil.TASK_TYPE_MISMATCH);
-            }
-            task.setType(taskType);
-        }
 
         mapper.insertUpdateTask(task);
         logger.info("Updated a task with id: " + task.getId());
@@ -213,42 +177,32 @@ public class TaskDao extends BaseDao {
             return res;
         }
 
-        if ((task.getType() == TaskType.Development) && taskState == TaskState.Completed) {
-            logger.info(ErrorMessageUtil.TASK_COMPLETED_NOT_SUPPORTED);
-            res.setMessage(ErrorMessageUtil.TASK_COMPLETED_NOT_SUPPORTED);
-
-            return res;
-        }
 
         var ctr = mapper.getContributorById(task.getContributorId());
         var usr = mapper.getUserById(ctr.getUserId());
 
         if (!ctr.isOwner()) {
+          /*
             var stateMoves = typeMoves.get(task.getType());
-            var nextStates = stateMoves.get(taskState);
 
-            if (nextStates.isEmpty()) {
+            if (stateMoves.isEmpty()) {
                 logger.info(ErrorMessageUtil.TASK_NO_NEXT_STATES);
                 res.setMessage(ErrorMessageUtil.TASK_NO_NEXT_STATES);
 
                 return res;
             }
 
-            if (!nextStates.contains(taskState)) {
+            if (!stateMoves.contains(taskState)) {
 
             }
-
+            */
 
         }
 
-
-        mapper.updateTaskState(taskId, taskState, task.getPrevState());
-        logger.info("Updated task state to " + taskState.name() + " for id: " + taskId);
         return res;
     }
 
 
-    //TODO: update task sprint
 
 
     public boolean deleteTask(long id) {
@@ -264,79 +218,5 @@ public class TaskDao extends BaseDao {
     }
 
 
-    private Map<TaskState, List<TaskState>> initDevMoves() {
-        Map<TaskState, List<TaskState>> stateMoves = new HashMap<>();
-
-        for (TaskState ts : EnumSet.allOf(TaskState.class)) {
-            switch (ts) {
-                case Created:
-                    stateMoves.put(ts, List.of(TaskState.InDevelopment));
-                    break;
-                case InDevelopment:
-                    stateMoves.put(ts, List.of(TaskState.InCodeReview));
-                    break;
-                case InCodeReview:
-                    stateMoves.put(ts, List.of(TaskState.InDevelopment, TaskState.InTest));
-                    break;
-            }
-        }
-
-        return stateMoves;
-    }
-
-
-    private Map<TaskState, List<TaskState>> initTestMoves() {
-        Map<TaskState, List<TaskState>> stateMoves = new HashMap<>();
-
-        for (TaskState ts : EnumSet.allOf(TaskState.class)) {
-            switch (ts) {
-                case Created:
-                    stateMoves.put(ts, List.of(TaskState.InTest, TaskState.InDeployment));
-                    break;
-                case InTest:
-                    stateMoves.put(ts, List.of(TaskState.InDeployment, TaskState.Completed));
-                    break;
-                case InDeployment:
-                    stateMoves.put(ts, List.of(TaskState.InTest, TaskState.Completed));
-                    break;
-            }
-        }
-
-        return stateMoves;
-    }
-
-    private Map<TaskState, List<TaskState>> initDevOpsMoves() {
-        Map<TaskState, List<TaskState>> stateMoves = new HashMap<>();
-
-        for (TaskState ts : EnumSet.allOf(TaskState.class)) {
-            switch (ts) {
-                case Created:
-                    stateMoves.put(ts, List.of(TaskState.InDeployment));
-                    break;
-                case InDeployment:
-                    stateMoves.put(ts, List.of(TaskState.Completed));
-                    break;
-            }
-        }
-
-        return stateMoves;
-    }
-
-
-    private boolean typeMatches(TaskType type, String roles) {
-        var rolesList = List.of(roles.split(";"));
-
-
-        switch (type) {
-            case Development:
-                return rolesList.contains(Developer.name());
-            case DevOps:
-                return rolesList.contains(DevOps.name());
-            case Testing:
-                return rolesList.contains(QA.name());
-            default:
-                return false;
-        }
-    }
 
 }

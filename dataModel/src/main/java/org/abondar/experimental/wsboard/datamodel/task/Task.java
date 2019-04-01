@@ -13,15 +13,13 @@ public class Task {
     private Date startDate;
     private Date endDate;
     private long sprintId;
-    private TaskType type;
     private boolean devOpsEnabled;
 
 
     public Task(){}
 
-    public Task(long contributorId, TaskType type, Date startDate, boolean devOpsEnabled) {
+    public Task(long contributorId, Date startDate, boolean devOpsEnabled) {
         this.contributorId = contributorId;
-        this.type = type;
         this.startDate = startDate;
         this.devOpsEnabled = devOpsEnabled;
     }
@@ -90,14 +88,6 @@ public class Task {
         this.prevState = prevState;
     }
 
-    public TaskType getType() {
-        return type;
-    }
-
-    public void setType(TaskType type) {
-        this.type = type;
-    }
-
 
     public boolean isDevOpsEnabled() {
         return devOpsEnabled;
@@ -118,7 +108,6 @@ public class Task {
                 ", startDate=" + startDate +
                 ", endDate=" + endDate +
                 ", sprintId=" + sprintId +
-                ", type=" + type +
                 '}';
     }
 }
