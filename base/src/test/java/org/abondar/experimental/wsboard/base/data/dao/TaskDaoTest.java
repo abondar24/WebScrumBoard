@@ -600,7 +600,7 @@ public class TaskDaoTest {
 
 
     @Test
-    public void getTaskByTest() throws Exception {
+    public void getTaskByIdTest() throws Exception {
         logger.info("Delete task test");
 
         var login = "login";
@@ -623,6 +623,35 @@ public class TaskDaoTest {
         var res = dao.getTaskById(task.getObject().getId());
 
         assertEquals(task.getObject().getId(), res.getObject().getId());
+
+        cleanData();
+    }
+
+    @Test
+    public void getTasksForProjectTest() throws Exception {
+        logger.info("Get tasks for project test");
+
+        var login = "login";
+        var email = "email@email.com";
+        var password = "pwd";
+        var firstName = "fname";
+        var lastName = "lname";
+        var roles = List.of(UserRole.Developer.name(), UserRole.DevOps.name());
+
+        var usr = userDao.createUser(login, password, email, firstName, lastName, roles);
+
+        var name = "test";
+        var startDate = new Date();
+        var prj = projectDao.createProject(name, startDate);
+        prj = projectDao.updateProject(prj.getObject().getId(), null, null, true, null);
+
+        var contr = contributorDao.createContributor(usr.getObject().getId(), prj.getObject().getId(), false);
+
+        var task = dao.createTask(contr.getObject().getId(), new Date(), true);
+        var res = dao.getTasksForProject(prj.getObject().getId(), 0, 1);
+
+        assertEquals(1, res.getObject().size());
+        assertEquals(task.getObject().getId(), res.getObject().get(0).getId());
 
         cleanData();
     }

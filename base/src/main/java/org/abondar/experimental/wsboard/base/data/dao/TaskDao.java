@@ -236,6 +236,23 @@ public class TaskDao extends BaseDao {
     }
 
 
+    public ObjectWrapper<List<Task>> getTasksForProject(long projectId, int offset, int limit) {
+        ObjectWrapper<List<Task>> res = new ObjectWrapper<>();
+
+        var prj = mapper.getProjectById(projectId);
+        if (prj == null) {
+            logger.info(ErrorMessageUtil.PROJECT_NOT_EXISTS + "with id: " + projectId);
+            res.setMessage(ErrorMessageUtil.PROJECT_NOT_EXISTS);
+            return res;
+        }
+
+        var tasks = mapper.getTasksForProject(projectId, offset, limit);
+        logger.info("Found tasks for project with id: " + projectId);
+        res.setObject(tasks);
+
+        return res;
+    }
+
     private Map<TaskState, List<TaskState>> initMoves() {
         Map<TaskState, List<TaskState>> stateMoves = new HashMap<>();
 
