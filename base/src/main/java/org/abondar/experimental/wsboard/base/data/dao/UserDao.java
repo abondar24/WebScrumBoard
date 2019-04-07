@@ -73,8 +73,8 @@ public class UserDao extends BaseDao {
 
         usr = mapper.getUserById(userId);
         if (usr == null) {
-            logger.error(ErrorMessageUtil.USER_NOT_EXIST + " with id: " + userId);
-            res.setMessage(ErrorMessageUtil.USER_NOT_EXIST);
+            logger.error(ErrorMessageUtil.USER_NOT_EXISTS + " with id: " + userId);
+            res.setMessage(ErrorMessageUtil.USER_NOT_EXISTS);
 
             return res;
         }
@@ -93,8 +93,8 @@ public class UserDao extends BaseDao {
 
         var usr = mapper.getUserById(userId);
         if (usr == null) {
-            logger.error(ErrorMessageUtil.USER_NOT_EXIST + " with id: " + userId);
-            res.setMessage(ErrorMessageUtil.USER_NOT_EXIST);
+            logger.error(ErrorMessageUtil.USER_NOT_EXISTS + " with id: " + userId);
+            res.setMessage(ErrorMessageUtil.USER_NOT_EXISTS);
             res.setObject(null);
 
             return res;
@@ -122,8 +122,8 @@ public class UserDao extends BaseDao {
 
         var usr = mapper.getUserById(id);
         if (usr == null) {
-            logger.error(ErrorMessageUtil.USER_NOT_EXIST + " with id: " + id);
-            res.setMessage(ErrorMessageUtil.USER_NOT_EXIST);
+            logger.error(ErrorMessageUtil.USER_NOT_EXISTS + " with id: " + id);
+            res.setMessage(ErrorMessageUtil.USER_NOT_EXISTS);
 
             return res;
         }
@@ -155,8 +155,8 @@ public class UserDao extends BaseDao {
 
         var usr = mapper.getUserById(id);
         if (usr == null) {
-            logger.error(ErrorMessageUtil.USER_NOT_EXIST + " with id: " + id);
-            res.setMessage(ErrorMessageUtil.USER_NOT_EXIST);
+            logger.error(ErrorMessageUtil.USER_NOT_EXISTS + " with id: " + id);
+            res.setMessage(ErrorMessageUtil.USER_NOT_EXISTS);
 
             return res;
         }
@@ -181,8 +181,8 @@ public class UserDao extends BaseDao {
 
         var usr = mapper.getUserById(id);
         if (usr == null) {
-            logger.error(ErrorMessageUtil.USER_NOT_EXIST + " with id: " + id);
-            res.setMessage(ErrorMessageUtil.USER_NOT_EXIST);
+            logger.error(ErrorMessageUtil.USER_NOT_EXISTS + " with id: " + id);
+            res.setMessage(ErrorMessageUtil.USER_NOT_EXISTS);
 
             return res;
         }
@@ -210,9 +210,9 @@ public class UserDao extends BaseDao {
 
         var usr = mapper.getUserByLogin(login);
         if (usr == null) {
-            logger.error(ErrorMessageUtil.USER_NOT_EXIST + "with login: " + login);
+            logger.error(ErrorMessageUtil.USER_NOT_EXISTS + "with login: " + login);
 
-            return ErrorMessageUtil.USER_NOT_EXIST;
+            return ErrorMessageUtil.USER_NOT_EXISTS;
         }
 
         if (!PasswordUtil.verifyPassword(password, usr.getPassword())) {
@@ -228,9 +228,9 @@ public class UserDao extends BaseDao {
 
         var usr = mapper.getUserById(id);
         if (usr == null) {
-            logger.error(ErrorMessageUtil.USER_NOT_EXIST + " with id: " + id);
+            logger.error(ErrorMessageUtil.USER_NOT_EXISTS + " with id: " + id);
 
-            return ErrorMessageUtil.USER_NOT_EXIST;
+            return ErrorMessageUtil.USER_NOT_EXISTS;
         }
 
         return "";

@@ -6,7 +6,6 @@ import org.abondar.experimental.wsboard.base.data.ObjectWrapper;
 import org.abondar.experimental.wsboard.base.data.event.EventPublisher;
 import org.abondar.experimental.wsboard.datamodel.Contributor;
 import org.abondar.experimental.wsboard.datamodel.User;
-import org.abondar.experimental.wsboard.datamodel.UserRole;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,8 +25,8 @@ public class ContributorDao extends BaseDao {
         ObjectWrapper<Contributor> res = new ObjectWrapper<>();
 
         if (mapper.getUserById(userId) == null) {
-            logger.error(ErrorMessageUtil.USER_NOT_EXIST + "with id: " + userId);
-            res.setMessage(ErrorMessageUtil.USER_NOT_EXIST);
+            logger.error(ErrorMessageUtil.USER_NOT_EXISTS + "with id: " + userId);
+            res.setMessage(ErrorMessageUtil.USER_NOT_EXISTS);
             return res;
         }
 

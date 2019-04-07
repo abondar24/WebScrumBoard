@@ -656,6 +656,64 @@ public class TaskDaoTest {
         cleanData();
     }
 
+    @Test
+    public void getTasksForContributorTest() throws Exception {
+        logger.info("Get tasks for contributor test");
+
+        var login = "login";
+        var email = "email@email.com";
+        var password = "pwd";
+        var firstName = "fname";
+        var lastName = "lname";
+        var roles = List.of(UserRole.Developer.name(), UserRole.DevOps.name());
+
+        var usr = userDao.createUser(login, password, email, firstName, lastName, roles);
+
+        var name = "test";
+        var startDate = new Date();
+        var prj = projectDao.createProject(name, startDate);
+        prj = projectDao.updateProject(prj.getObject().getId(), null, null, true, null);
+
+        var contr = contributorDao.createContributor(usr.getObject().getId(), prj.getObject().getId(), false);
+
+        var task = dao.createTask(contr.getObject().getId(), new Date(), true);
+        var res = dao.getTasksForContributor(contr.getObject().getId(), 0, 1);
+
+        assertEquals(1, res.getObject().size());
+        assertEquals(task.getObject().getId(), res.getObject().get(0).getId());
+
+        cleanData();
+    }
+
+    @Test
+    public void getTasksForUserTest() throws Exception {
+        logger.info("Get tasks for user test");
+
+        var login = "login";
+        var email = "email@email.com";
+        var password = "pwd";
+        var firstName = "fname";
+        var lastName = "lname";
+        var roles = List.of(UserRole.Developer.name(), UserRole.DevOps.name());
+
+        var usr = userDao.createUser(login, password, email, firstName, lastName, roles);
+
+        var name = "test";
+        var startDate = new Date();
+        var prj = projectDao.createProject(name, startDate);
+        prj = projectDao.updateProject(prj.getObject().getId(), null, null, true, null);
+
+        var contr = contributorDao.createContributor(usr.getObject().getId(), prj.getObject().getId(), false);
+
+        var task = dao.createTask(contr.getObject().getId(), new Date(), true);
+        var res = dao.getTasksForUser(usr.getObject().getId(), 0, 1);
+
+        assertEquals(1, res.getObject().size());
+        assertEquals(task.getObject().getId(), res.getObject().get(0).getId());
+
+        cleanData();
+    }
+
     private void cleanData() {
         mapper.deleteTasks();
         mapper.deleteSprints();

@@ -253,6 +253,40 @@ public class TaskDao extends BaseDao {
         return res;
     }
 
+    public ObjectWrapper<List<Task>> getTasksForContributor(long ctrId, int offset, int limit) {
+        ObjectWrapper<List<Task>> res = new ObjectWrapper<>();
+
+        var ctr = mapper.getContributorById(ctrId);
+        if (ctr == null) {
+            logger.info(ErrorMessageUtil.CONTRIBUTOR_NOT_EXISTS + "with id: " + ctrId);
+            res.setMessage(ErrorMessageUtil.CONTRIBUTOR_NOT_EXISTS);
+            return res;
+        }
+
+        var tasks = mapper.getTasksForContributor(ctrId, offset, limit);
+        logger.info("Found tasks for contributor with id: " + ctrId);
+        res.setObject(tasks);
+
+        return res;
+    }
+
+    public ObjectWrapper<List<Task>> getTasksForUser(long usrId, int offset, int limit) {
+        ObjectWrapper<List<Task>> res = new ObjectWrapper<>();
+
+        var usr = mapper.getUserById(usrId);
+        if (usr == null) {
+            logger.info(ErrorMessageUtil.USER_NOT_EXISTS + "with id: " + usrId);
+            res.setMessage(ErrorMessageUtil.USER_NOT_EXISTS);
+            return res;
+        }
+
+        var tasks = mapper.getTasksForUser(usrId, offset, limit);
+        logger.info("Found tasks for user with id: " + usrId);
+        res.setObject(tasks);
+
+        return res;
+    }
+
     private Map<TaskState, List<TaskState>> initMoves() {
         Map<TaskState, List<TaskState>> stateMoves = new HashMap<>();
 

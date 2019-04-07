@@ -140,7 +140,7 @@ public class UserDaoTest {
         logger.info("Update user login not exists test");
 
         var usr = userDao.updateLogin("login", 1);
-        assertEquals(ErrorMessageUtil.USER_NOT_EXIST, usr.getMessage());
+        assertEquals(ErrorMessageUtil.USER_NOT_EXISTS, usr.getMessage());
 
     }
 
@@ -167,7 +167,7 @@ public class UserDaoTest {
         logger.info("Update user password user not found test");
 
         var usr = userDao.updatePassword("pwd", "newPed", 100);
-        assertEquals(ErrorMessageUtil.USER_NOT_EXIST, usr.getMessage());
+        assertEquals(ErrorMessageUtil.USER_NOT_EXISTS, usr.getMessage());
 
     }
 
