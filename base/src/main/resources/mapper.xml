@@ -124,7 +124,8 @@
         VALUES (#{task.contributorId},
                 #{task.startDate},
                 #{task.devOpsEnabled})
-        ON CONFLICT (id) DO UPDATE SET contributor_id = #{task.contributorId};
+        ON CONFLICT (id) DO UPDATE SET contributor_id  = #{task.contributorId},
+                                       dev_ops_enabled = #{task.devOpsEnabled};
     </insert>
 
     <insert id="insertUpdateSprint" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
