@@ -220,6 +220,21 @@ public class TaskDao extends BaseDao {
         return true;
     }
 
+    public ObjectWrapper<Task> getTaskById(long taskId) {
+        ObjectWrapper<Task> res = new ObjectWrapper<>();
+
+        var task = mapper.getTaskById(taskId);
+        if (task == null) {
+            logger.info(ErrorMessageUtil.TASK_NOT_EXISTS + "with id: " + taskId);
+            res.setMessage(ErrorMessageUtil.TASK_NOT_EXISTS);
+            return res;
+        }
+
+        logger.info("Found task with id: " + taskId);
+        res.setObject(task);
+        return res;
+    }
+
 
     private Map<TaskState, List<TaskState>> initMoves() {
         Map<TaskState, List<TaskState>> stateMoves = new HashMap<>();

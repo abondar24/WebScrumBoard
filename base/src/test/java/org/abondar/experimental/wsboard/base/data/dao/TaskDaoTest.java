@@ -598,6 +598,35 @@ public class TaskDaoTest {
 
     //TODO: delete task with sprint test
 
+
+    @Test
+    public void getTaskByTest() throws Exception {
+        logger.info("Delete task test");
+
+        var login = "login";
+        var email = "email@email.com";
+        var password = "pwd";
+        var firstName = "fname";
+        var lastName = "lname";
+        var roles = List.of(UserRole.Developer.name(), UserRole.DevOps.name());
+
+        var usr = userDao.createUser(login, password, email, firstName, lastName, roles);
+
+        var name = "test";
+        var startDate = new Date();
+        var prj = projectDao.createProject(name, startDate);
+        prj = projectDao.updateProject(prj.getObject().getId(), null, null, true, null);
+
+        var contr = contributorDao.createContributor(usr.getObject().getId(), prj.getObject().getId(), false);
+
+        var task = dao.createTask(contr.getObject().getId(), new Date(), true);
+        var res = dao.getTaskById(task.getObject().getId());
+
+        assertEquals(task.getObject().getId(), res.getObject().getId());
+
+        cleanData();
+    }
+
     private void cleanData() {
         mapper.deleteTasks();
         mapper.deleteSprints();
