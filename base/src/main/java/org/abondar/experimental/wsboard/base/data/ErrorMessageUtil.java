@@ -27,6 +27,7 @@ public class ErrorMessageUtil {
     public static final String TASK_CONTRIBUTOR_UPDATE = "Task contributor must be changed";
     public static final String TASK_MOVE_NOT_AVAILABLE = "Task can't be moved to selected state";
     public static final String SPRINT_EXISTS = "Sprint with such name exists";
+    public static final String SPRINT_NOT_EXISTS = "Sprint not found";
 
     private ErrorMessageUtil(){}
 

@@ -67,7 +67,7 @@ public interface DataMapper {
 
     Sprint getSprintById(@Param("id")long id);
 
-    List<Sprint> getAllSprints(@Param("offset") int offset, @Param("limit") int limit);
+    List<Sprint> getSprints(@Param("offset") int offset, @Param("limit") int limit);
 
 
     void deleteTask(@Param("id") long id);

@@ -339,7 +339,7 @@
         WHERE sp.name=#{name}
     </select>
 
-    <select id="getAllSprints" resultMap="sprintMap">
+    <select id="getSprints" resultMap="sprintMap">
         SELECT *
         FROM
         <include refid="sprintTable"/>

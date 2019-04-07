@@ -322,7 +322,7 @@ public class MapperTest {
         createSprint();
         createSprint();
 
-        var sprints = mapper.getAllSprints(0, 3);
+        var sprints = mapper.getSprints(0, 3);
         assertEquals(3, sprints.size());
 
         cleanData();

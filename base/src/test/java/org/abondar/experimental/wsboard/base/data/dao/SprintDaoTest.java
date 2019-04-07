@@ -77,4 +77,67 @@ public class SprintDaoTest {
     }
 
 
+    @Test
+    public void updateSprintTest() {
+        logger.info("Update sprint test");
+        var sp = sprintDao.createSprint("test", new Date(), new Date());
+
+        var startDate = new Date();
+        var endDate = new Date();
+        var res = sprintDao.updateSprint(sp.getObject().getId(), null, startDate, endDate);
+
+        assertEquals(startDate, res.getObject().getStartDate());
+        assertEquals(endDate, res.getObject().getEndDate());
+
+        mapper.deleteSprints();
+    }
+
+
+    @Test
+    public void updateSprintNotFoundTest() {
+        logger.info("Update sprint not found test");
+        var res = sprintDao.updateSprint(100, null, null, null);
+
+        assertEquals(ErrorMessageUtil.SPRINT_NOT_EXISTS, res.getMessage());
+
+    }
+
+    @Test
+    public void updateSprintNameExistsTest() {
+        logger.info("Update sprint name exists test");
+        var sp = sprintDao.createSprint("test", new Date(), new Date());
+
+        var res = sprintDao.updateSprint(sp.getObject().getId(), sp.getObject().getName(),
+                null, null);
+
+        assertEquals(ErrorMessageUtil.SPRINT_EXISTS, res.getMessage());
+
+        mapper.deleteSprints();
+    }
+
+    @Test
+    public void getSprintByIdTest() {
+        logger.info("Get sprint by id test");
+        var sp = sprintDao.createSprint("test", new Date(), new Date());
+
+        var res = sprintDao.getSprintById(sp.getObject().getId());
+
+        assertEquals(sp.getObject().getName(), res.getObject().getName());
+
+        mapper.deleteSprints();
+    }
+
+
+    @Test
+    public void getSprintsTest() {
+        logger.info("Get sprints test");
+        var sp = sprintDao.createSprint("test", new Date(), new Date());
+
+        var res = sprintDao.getSprints(0, 1);
+
+        assertEquals(1, res.getObject().size());
+        assertEquals(sp.getObject().getName(), res.getObject().get(0).getName());
+
+        mapper.deleteSprints();
+    }
 }
