@@ -108,4 +108,18 @@ public class SprintDao extends BaseDao {
     }
 
 
+    public boolean deleteSprint(long sprintId) {
+
+        var sprint = mapper.getSprintById(sprintId);
+        if (sprint == null) {
+            logger.error(ErrorMessageUtil.SPRINT_NOT_EXISTS);
+            return false;
+        }
+
+        mapper.deleteSprint(sprintId);
+        logger.info("Deleted sprint with id: " + sprint.getId());
+
+        return true;
+    }
+
 }

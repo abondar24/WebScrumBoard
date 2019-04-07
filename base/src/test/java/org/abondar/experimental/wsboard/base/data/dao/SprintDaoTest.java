@@ -140,4 +140,15 @@ public class SprintDaoTest {
 
         mapper.deleteSprints();
     }
+
+
+    @Test
+    public void deleteSprintTest() {
+        logger.info("Delete sprint test");
+        var sp = sprintDao.createSprint("test", new Date(), new Date());
+
+        var res = sprintDao.deleteSprint(sp.getObject().getId());
+
+        assertTrue(res);
+    }
 }
