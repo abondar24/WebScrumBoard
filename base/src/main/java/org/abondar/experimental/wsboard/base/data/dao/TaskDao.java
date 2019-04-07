@@ -155,10 +155,6 @@ public class TaskDao extends BaseDao {
             return res;
         }
 
-        if (taskState == TaskState.Paused) {
-            task.setPrevState(task.getTaskState());
-            task.setTaskState(TaskState.Paused);
-        }
 
         if ((task.getTaskState() == TaskState.Paused) && (task.getPrevState() != taskState)) {
             logger.info(ErrorMessageUtil.TASK_WRONG_STATE_AFTER_PAUSE);
@@ -180,15 +176,14 @@ public class TaskDao extends BaseDao {
 
         if (!ctr.isOwner()) {
 
-            var moves = stateMoves.get(task.getTaskState());
-            if (moves.isEmpty()) {
-                res.setMessage(ErrorMessageUtil.TASK_STATE_NO_MOVE);
-                return res;
-            }
+            if (taskState != TaskState.Completed) {
+                var moves = stateMoves.get(task.getTaskState());
 
-            if (!moves.contains(taskState)) {
-                res.setMessage(ErrorMessageUtil.TASK_STATE_NOT_AVAILABLE);
-                return res;
+                if (!moves.contains(taskState)) {
+                    res.setMessage(ErrorMessageUtil.TASK_MOVE_NOT_AVAILABLE);
+                    return res;
+                }
+
             }
 
             if (!stateMatches(taskState, usr.getRoles())) {
@@ -232,19 +227,19 @@ public class TaskDao extends BaseDao {
         for (TaskState ts : EnumSet.allOf(TaskState.class)) {
             switch (ts) {
                 case Created:
-                    stateMoves.put(ts, List.of(TaskState.InTest, TaskState.InDeployment, TaskState.InDevelopment));
+                    stateMoves.put(ts, List.of(TaskState.InTest, TaskState.InDeployment, TaskState.InDevelopment, TaskState.Paused));
                     break;
                 case InDevelopment:
-                    stateMoves.put(ts, List.of(TaskState.InCodeReview));
+                    stateMoves.put(ts, List.of(TaskState.InCodeReview, TaskState.Paused));
                     break;
                 case InCodeReview:
-                    stateMoves.put(ts, List.of(TaskState.InDevelopment, TaskState.InTest));
+                    stateMoves.put(ts, List.of(TaskState.InDevelopment, TaskState.InTest, TaskState.Paused));
                     break;
                 case InTest:
-                    stateMoves.put(ts, List.of(TaskState.InDevelopment, TaskState.InDeployment));
+                    stateMoves.put(ts, List.of(TaskState.InDevelopment, TaskState.InDeployment, TaskState.Paused, TaskState.Completed));
                     break;
                 case InDeployment:
-                    stateMoves.put(ts, List.of(TaskState.InDevelopment, TaskState.InTest, TaskState.Completed));
+                    stateMoves.put(ts, List.of(TaskState.InDevelopment, TaskState.InTest, TaskState.Completed, TaskState.Paused));
                     break;
             }
         }

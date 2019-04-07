@@ -21,8 +21,7 @@ import java.util.List;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNull;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(classes = Main.class)
 @ExtendWith(SpringExtension.class)
@@ -280,7 +279,6 @@ public class TaskDaoTest {
     }
 
 
-    //TODO: add tests for all edge cases
     @Test
     public void updateTaskStateTest() throws Exception {
         logger.info("Update task state test");
@@ -305,8 +303,257 @@ public class TaskDaoTest {
         var res = dao.updateTaskState(task.getObject().getId(), TaskState.InDevelopment.name());
 
         assertNull(res.getMessage());
-        assertEquals(res.getObject().getTaskState(), TaskState.InDevelopment);
-        assertEquals(res.getObject().getPrevState(), TaskState.Created);
+        assertEquals(TaskState.InDevelopment, res.getObject().getTaskState());
+        assertEquals(TaskState.Created, res.getObject().getPrevState());
+
+        cleanData();
+    }
+
+
+    @Test
+    public void updateTaskStateUnknownTest() throws Exception {
+        logger.info("Update task state unknown test");
+
+        var login = "login";
+        var email = "email@email.com";
+        var password = "pwd";
+        var firstName = "fname";
+        var lastName = "lname";
+        var roles = List.of(UserRole.Developer.name(), UserRole.DevOps.name());
+
+        var usr = userDao.createUser(login, password, email, firstName, lastName, roles);
+
+        var name = "test";
+        var startDate = new Date();
+        var prj = projectDao.createProject(name, startDate);
+        prj = projectDao.updateProject(prj.getObject().getId(), null, null, true, null);
+
+        var contr = contributorDao.createContributor(usr.getObject().getId(), prj.getObject().getId(), false);
+        var task = dao.createTask(contr.getObject().getId(), new Date(), false);
+
+        var res = dao.updateTaskState(task.getObject().getId(), "test");
+
+        assertEquals(ErrorMessageUtil.TASK_STATE_UNKNOWN, res.getMessage());
+
+        cleanData();
+    }
+
+    @Test
+    public void updateTaskStateNotExistsTest() throws Exception {
+        logger.info("Update task state task not exists test");
+
+        var res = dao.updateTaskState(100, TaskState.InDeployment.name());
+
+        assertEquals(ErrorMessageUtil.TASK_NOT_EXISTS, res.getMessage());
+
+    }
+
+    @Test
+    public void updateTaskStateAlreadyCompletedTest() throws Exception {
+        logger.info("Update task state already completed test");
+
+        var login = "login";
+        var email = "email@email.com";
+        var password = "pwd";
+        var firstName = "fname";
+        var lastName = "lname";
+        var roles = List.of(UserRole.Developer.name(), UserRole.DevOps.name());
+
+        var usr = userDao.createUser(login, password, email, firstName, lastName, roles);
+
+        var name = "test";
+        var startDate = new Date();
+        var prj = projectDao.createProject(name, startDate);
+        prj = projectDao.updateProject(prj.getObject().getId(), null, null, true, null);
+
+        var contr = contributorDao.createContributor(usr.getObject().getId(), prj.getObject().getId(), false);
+        var task = dao.createTask(contr.getObject().getId(), new Date(), false);
+        dao.updateTaskState(task.getObject().getId(), TaskState.InTest.name());
+        dao.updateTaskState(task.getObject().getId(), TaskState.Completed.name());
+
+        var res = dao.updateTaskState(task.getObject().getId(), TaskState.InDevelopment.name());
+
+        assertEquals(ErrorMessageUtil.TASK_ALREADY_COMPLETED, res.getMessage());
+
+        cleanData();
+    }
+
+    @Test
+    public void updateTaskStateAlreadyCreatedTest() throws Exception {
+        logger.info("Update task state already created test");
+
+        var login = "login";
+        var email = "email@email.com";
+        var password = "pwd";
+        var firstName = "fname";
+        var lastName = "lname";
+        var roles = List.of(UserRole.Developer.name(), UserRole.DevOps.name());
+
+        var usr = userDao.createUser(login, password, email, firstName, lastName, roles);
+
+        var name = "test";
+        var startDate = new Date();
+        var prj = projectDao.createProject(name, startDate);
+        prj = projectDao.updateProject(prj.getObject().getId(), null, null, true, null);
+
+        var contr = contributorDao.createContributor(usr.getObject().getId(), prj.getObject().getId(), false);
+        var task = dao.createTask(contr.getObject().getId(), new Date(), false);
+
+        var res = dao.updateTaskState(task.getObject().getId(), TaskState.Created.name());
+
+        assertEquals(ErrorMessageUtil.TASK_ALREADY_CREATED, res.getMessage());
+
+        cleanData();
+    }
+
+    @Test
+    public void updateTaskStatePausedTest() throws Exception {
+        logger.info("Update task state paused test");
+
+        var login = "login";
+        var email = "email@email.com";
+        var password = "pwd";
+        var firstName = "fname";
+        var lastName = "lname";
+        var roles = List.of(UserRole.Developer.name(), UserRole.DevOps.name());
+
+        var usr = userDao.createUser(login, password, email, firstName, lastName, roles);
+
+        var name = "test";
+        var startDate = new Date();
+        var prj = projectDao.createProject(name, startDate);
+        prj = projectDao.updateProject(prj.getObject().getId(), null, null, true, null);
+
+        var contr = contributorDao.createContributor(usr.getObject().getId(), prj.getObject().getId(), false);
+        var task = dao.createTask(contr.getObject().getId(), new Date(), false);
+        dao.updateTaskState(task.getObject().getId(), TaskState.Paused.name());
+
+        var res = dao.updateTaskState(task.getObject().getId(), TaskState.InDevelopment.name());
+
+        assertEquals(ErrorMessageUtil.TASK_WRONG_STATE_AFTER_PAUSE, res.getMessage());
+
+        cleanData();
+    }
+
+
+    @Test
+    public void updateTaskStateNoDevOpsTest() throws Exception {
+        logger.info("Update task state no dev ops test");
+
+        var login = "login";
+        var email = "email@email.com";
+        var password = "pwd";
+        var firstName = "fname";
+        var lastName = "lname";
+        var roles = List.of(UserRole.Developer.name(), UserRole.DevOps.name());
+
+        var usr = userDao.createUser(login, password, email, firstName, lastName, roles);
+
+        var name = "test";
+        var startDate = new Date();
+        var prj = projectDao.createProject(name, startDate);
+        prj = projectDao.updateProject(prj.getObject().getId(), null, null, true, null);
+
+        var contr = contributorDao.createContributor(usr.getObject().getId(), prj.getObject().getId(), false);
+        var task = dao.createTask(contr.getObject().getId(), new Date(), false);
+
+        var res = dao.updateTaskState(task.getObject().getId(), TaskState.InDeployment.name());
+
+        assertEquals(ErrorMessageUtil.TASK_DEV_OPS_NOT_ENABLED, res.getMessage());
+
+        cleanData();
+    }
+
+    @Test
+    public void updateTaskStateNoMovesTest() throws Exception {
+        logger.info("Update task state no moves test");
+
+        var login = "login";
+        var email = "email@email.com";
+        var password = "pwd";
+        var firstName = "fname";
+        var lastName = "lname";
+        var roles = List.of(UserRole.Developer.name(), UserRole.DevOps.name());
+
+        var usr = userDao.createUser(login, password, email, firstName, lastName, roles);
+
+        var name = "test";
+        var startDate = new Date();
+        var prj = projectDao.createProject(name, startDate);
+        prj = projectDao.updateProject(prj.getObject().getId(), null, null, true, null);
+
+        var contr = contributorDao.createContributor(usr.getObject().getId(), prj.getObject().getId(), false);
+        var task = dao.createTask(contr.getObject().getId(), new Date(), false);
+
+        var res = dao.updateTaskState(task.getObject().getId(), TaskState.InCodeReview.name());
+
+        assertEquals(ErrorMessageUtil.TASK_MOVE_NOT_AVAILABLE, res.getMessage());
+
+        cleanData();
+    }
+
+    @Test
+    public void updateTaskStateRoleUpdateNeededTest() throws Exception {
+        logger.info("Update task state role update needed test");
+
+        var login = "login";
+        var email = "email@email.com";
+        var password = "pwd";
+        var firstName = "fname";
+        var lastName = "lname";
+        var roles = List.of(UserRole.Developer.name(), UserRole.DevOps.name());
+
+        var usr = userDao.createUser(login, password, email, firstName, lastName, roles);
+
+        var name = "test";
+        var startDate = new Date();
+        var prj = projectDao.createProject(name, startDate);
+        prj = projectDao.updateProject(prj.getObject().getId(), null, null, true, null);
+
+        var contr = contributorDao.createContributor(usr.getObject().getId(), prj.getObject().getId(), false);
+        var task = dao.createTask(contr.getObject().getId(), new Date(), false);
+        dao.updateTaskState(task.getObject().getId(), TaskState.InDevelopment.name());
+        dao.updateTaskState(task.getObject().getId(), TaskState.InCodeReview.name());
+
+        var res = dao.updateTaskState(task.getObject().getId(), TaskState.InTest.name());
+
+        assertEquals(ErrorMessageUtil.TASK_CONTRIBUTOR_UPDATE, res.getMessage());
+        assertNotNull(res.getObject());
+        assertEquals(TaskState.InTest, res.getObject().getTaskState());
+        assertEquals(TaskState.InCodeReview, res.getObject().getPrevState());
+
+        cleanData();
+    }
+
+    @Test
+    public void updateTaskStateCompletedEndDateTest() throws Exception {
+        logger.info("Update task state completed end date test");
+
+        var login = "login";
+        var email = "email@email.com";
+        var password = "pwd";
+        var firstName = "fname";
+        var lastName = "lname";
+        var roles = List.of(UserRole.Developer.name(), UserRole.DevOps.name());
+
+        var usr = userDao.createUser(login, password, email, firstName, lastName, roles);
+
+        var name = "test";
+        var startDate = new Date();
+        var prj = projectDao.createProject(name, startDate);
+        prj = projectDao.updateProject(prj.getObject().getId(), null, null, true, null);
+
+        var contr = contributorDao.createContributor(usr.getObject().getId(), prj.getObject().getId(), false);
+        var task = dao.createTask(contr.getObject().getId(), new Date(), false);
+        dao.updateTaskState(task.getObject().getId(), TaskState.InDevelopment.name());
+        dao.updateTaskState(task.getObject().getId(), TaskState.InCodeReview.name());
+        dao.updateTaskState(task.getObject().getId(), TaskState.InTest.name());
+
+        var res = dao.updateTaskState(task.getObject().getId(), TaskState.Completed.name());
+
+
+        assertEquals(TaskState.Completed, res.getObject().getTaskState());
+        assertNotNull(res.getObject().getEndDate());
 
         cleanData();
     }

@@ -25,9 +25,7 @@ public class ErrorMessageUtil {
     public static final String TASK_STATE_UNKNOWN = "Task state not exists";
     public static final String TASK_DEV_OPS_NOT_ENABLED = "Task doesn't require dev ops";
     public static final String TASK_CONTRIBUTOR_UPDATE = "Task contributor must be changed";
-    public static final String TASK_STATE_NOT_AVAILABLE = "Task can't be moved to selected state";
-    public static final String TASK_STATE_NO_MOVE = "Task state can't be moved to a different state";
-    public static final String TASK_REVIEW_UNAVAILABLE = "Task can't be moved to code review";
+    public static final String TASK_MOVE_NOT_AVAILABLE = "Task can't be moved to selected state";
 
     private ErrorMessageUtil(){}
 
