@@ -287,6 +287,10 @@ public class TaskDao extends BaseDao {
         return res;
     }
 
+    //TODO: update task sprint
+    //TODO: get tasks for sprint
+
+
     private Map<TaskState, List<TaskState>> initMoves() {
         Map<TaskState, List<TaskState>> stateMoves = new HashMap<>();
 

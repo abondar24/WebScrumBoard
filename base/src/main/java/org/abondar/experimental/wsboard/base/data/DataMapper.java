@@ -1,7 +1,10 @@
 package org.abondar.experimental.wsboard.base.data;
 
 
-import org.abondar.experimental.wsboard.datamodel.*;
+import org.abondar.experimental.wsboard.datamodel.Contributor;
+import org.abondar.experimental.wsboard.datamodel.Project;
+import org.abondar.experimental.wsboard.datamodel.Sprint;
+import org.abondar.experimental.wsboard.datamodel.User;
 import org.abondar.experimental.wsboard.datamodel.task.Task;
 import org.abondar.experimental.wsboard.datamodel.task.TaskState;
 import org.apache.ibatis.annotations.Mapper;
@@ -59,6 +62,8 @@ public interface DataMapper {
     List<Task> getTasksForUser(@Param("userId") long userId, @Param("offset") int offset, @Param("limit") int limit);
 
     List<Task> getTasksForSprint(@Param("sprintId") long sprintId, @Param("offset") int offset, @Param("limit") int limit);
+
+    Sprint getSprintByName(@Param("name") String name);
 
     Sprint getSprintById(@Param("id")long id);
 

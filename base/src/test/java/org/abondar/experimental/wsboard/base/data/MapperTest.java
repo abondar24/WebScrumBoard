@@ -304,6 +304,17 @@ public class MapperTest {
     }
 
     @Test
+    public void getSprintByNameTest() {
+        logger.info("Get sprint by name test");
+
+        var sprint = createSprint();
+        var res = mapper.getSprintByName(sprint.getName());
+        assertEquals(sprint.getName(), res.getName());
+
+        cleanData();
+    }
+
+    @Test
     public void getAllSprintsTest() {
         logger.info("Get all sprints test");
 

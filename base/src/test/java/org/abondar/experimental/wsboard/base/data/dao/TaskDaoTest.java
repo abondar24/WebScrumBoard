@@ -714,6 +714,8 @@ public class TaskDaoTest {
         cleanData();
     }
 
+    //TODO: update task sprint test
+
     private void cleanData() {
         mapper.deleteTasks();
         mapper.deleteSprints();

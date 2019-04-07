@@ -331,6 +331,14 @@
         WHERE sp.id=#{id}
     </select>
 
+    <select id="getSprintByName" resultMap="sprintMap">
+        SELECT *
+        FROM
+        <include refid="sprintTable"/>
+
+        WHERE sp.name=#{name}
+    </select>
+
     <select id="getAllSprints" resultMap="sprintMap">
         SELECT *
         FROM

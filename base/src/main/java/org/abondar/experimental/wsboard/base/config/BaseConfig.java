@@ -38,6 +38,11 @@ public class BaseConfig {
         return new TaskDao(mapper(sqlSessionFactory), eventPublisher());
     }
 
+    @Bean(name = "sprintDao")
+    public BaseDao sprintDao(SqlSessionFactory sqlSessionFactory) {
+        return new SprintDao(mapper(sqlSessionFactory), eventPublisher());
+    }
+
     @Bean
     public EventPublisher eventPublisher() {
         return new EventPublisher();
