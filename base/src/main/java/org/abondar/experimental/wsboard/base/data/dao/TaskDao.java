@@ -208,6 +208,32 @@ public class TaskDao extends BaseDao {
     }
 
 
+    public ObjectWrapper<Task> updateTaskSprint(long taskId, long sprintId) {
+        ObjectWrapper<Task> res = new ObjectWrapper<>();
+
+        var task = mapper.getTaskById(taskId);
+        if (task == null) {
+            logger.info(ErrorMessageUtil.TASK_NOT_EXISTS + " with id: " + taskId);
+            res.setMessage(ErrorMessageUtil.TASK_NOT_EXISTS);
+            return res;
+        }
+
+        var sprint = mapper.getSprintById(sprintId);
+        if (sprint == null) {
+            logger.info(ErrorMessageUtil.SPRINT_NOT_EXISTS + "with id: " + sprintId);
+            res.setMessage(ErrorMessageUtil.SPRINT_NOT_EXISTS);
+            return res;
+        }
+
+        mapper.updateTaskSprint(taskId, sprintId);
+        logger.info("Updated task sprint for id: " + task.getId());
+        task.setSprintId(sprintId);
+        res.setObject(task);
+
+        return res;
+    }
+
+
     public boolean deleteTask(long id) {
 
         if (mapper.getTaskById(id) == null) {
@@ -287,8 +313,22 @@ public class TaskDao extends BaseDao {
         return res;
     }
 
-    //TODO: update task sprint
-    //TODO: get tasks for sprint
+    public ObjectWrapper<List<Task>> getTasksForSprint(long sprintId, int offset, int limit) {
+        ObjectWrapper<List<Task>> res = new ObjectWrapper<>();
+
+        var sprint = mapper.getSprintById(sprintId);
+        if (sprint == null) {
+            logger.info(ErrorMessageUtil.SPRINT_NOT_EXISTS + " with id: " + sprintId);
+            res.setMessage(ErrorMessageUtil.SPRINT_NOT_EXISTS);
+            return res;
+        }
+
+        var tasks = mapper.getTasksForSprint(sprintId, offset, limit);
+        logger.info("Found tasks for sprint with id: " + sprintId);
+        res.setObject(tasks);
+
+        return res;
+    }
 
 
     private Map<TaskState, List<TaskState>> initMoves() {

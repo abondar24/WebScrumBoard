@@ -49,6 +49,11 @@ public class TaskDaoTest {
     @Qualifier("contributorDao")
     private ContributorDao contributorDao;
 
+    @Autowired
+    @Qualifier("sprintDao")
+    private SprintDao sprintDao;
+
+
     @Test
     public void createTaskTest() throws Exception {
         logger.info("Create task test");
@@ -245,6 +250,37 @@ public class TaskDaoTest {
 
         assertNull(res.getMessage());
         assertEquals(storyPoints, res.getObject().getStoryPoints());
+
+        cleanData();
+    }
+
+
+    @Test
+    public void updateTaskSprintTest() throws Exception {
+        logger.info("Update task sprint test");
+
+        var login = "login";
+        var email = "email@email.com";
+        var password = "pwd";
+        var firstName = "fname";
+        var lastName = "lname";
+        var roles = List.of(UserRole.Developer.name(), UserRole.DevOps.name());
+
+        var usr = userDao.createUser(login, password, email, firstName, lastName, roles);
+
+        var name = "test";
+        var startDate = new Date();
+        var prj = projectDao.createProject(name, startDate);
+        prj = projectDao.updateProject(prj.getObject().getId(), null, null, true, null);
+
+        var contr = contributorDao.createContributor(usr.getObject().getId(), prj.getObject().getId(), false);
+        var task = dao.createTask(contr.getObject().getId(), new Date(), true);
+        var sprint = sprintDao.createSprint("test", new Date(), new Date());
+
+        var res = dao.updateTaskSprint(task.getObject().getId(), sprint.getObject().getId());
+
+        assertNull(res.getMessage());
+        assertEquals(sprint.getObject().getId(), res.getObject().getSprintId());
 
         cleanData();
     }
@@ -714,7 +750,38 @@ public class TaskDaoTest {
         cleanData();
     }
 
-    //TODO: update task sprint test
+    @Test
+    public void getTasksForSprintTest() throws Exception {
+        logger.info("Get tasks for sprint test");
+
+        var login = "login";
+        var email = "email@email.com";
+        var password = "pwd";
+        var firstName = "fname";
+        var lastName = "lname";
+        var roles = List.of(UserRole.Developer.name(), UserRole.DevOps.name());
+
+        var usr = userDao.createUser(login, password, email, firstName, lastName, roles);
+
+        var name = "test";
+        var startDate = new Date();
+        var prj = projectDao.createProject(name, startDate);
+        prj = projectDao.updateProject(prj.getObject().getId(), null, null, true, null);
+
+        var contr = contributorDao.createContributor(usr.getObject().getId(), prj.getObject().getId(), false);
+
+        var task = dao.createTask(contr.getObject().getId(), new Date(), true);
+        var sprint = sprintDao.createSprint("test", new Date(), new Date());
+
+        task = dao.updateTaskSprint(task.getObject().getId(), sprint.getObject().getId());
+
+        var res = dao.getTasksForSprint(sprint.getObject().getId(), 0, 1);
+
+        assertEquals(1, res.getObject().size());
+        assertEquals(task.getObject().getId(), res.getObject().get(0).getId());
+
+        cleanData();
+    }
 
     private void cleanData() {
         mapper.deleteTasks();
