@@ -3,8 +3,9 @@ package org.abondar.experimental.wsboard.base.data.dao;
 import org.abondar.experimental.wsboard.base.Main;
 import org.abondar.experimental.wsboard.base.data.DataMapper;
 import org.abondar.experimental.wsboard.base.data.ErrorMessageUtil;
-import org.abondar.experimental.wsboard.datamodel.Contributor;
+import org.abondar.experimental.wsboard.base.data.ObjectWrapper;
 import org.abondar.experimental.wsboard.datamodel.Project;
+import org.abondar.experimental.wsboard.datamodel.User;
 import org.abondar.experimental.wsboard.datamodel.UserRole;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,7 +21,8 @@ import java.util.Date;
 import java.util.List;
 
 import static org.junit.Assert.assertNull;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest(classes = Main.class)
 @ExtendWith(SpringExtension.class)
@@ -36,20 +38,19 @@ public class UserDaoTest {
     @Qualifier("userDao")
     private UserDao userDao;
 
+    @Autowired
+    @Qualifier("projectDao")
+    private ProjectDao projectDao;
+
+    @Autowired
+    @Qualifier("contributorDao")
+    private ContributorDao contributorDao;
 
     @Test
     public void createUserTest() throws Exception {
         logger.info("Create user test");
 
-        var login = "login";
-        var email = "email@email.com";
-        var password = "pwd";
-        var firstName = "fname";
-        var lastName = "lname";
-        var roles = List.of(UserRole.Developer.name(), UserRole.DevOps.name());
-
-        assertNotNull(userDao);
-        var usr = userDao.createUser(login, password, email, firstName, lastName, roles);
+        var usr = createUser();
 
         assertNull(usr.getMessage());
         assertTrue(usr.getObject().getId() > 0);
@@ -62,15 +63,8 @@ public class UserDaoTest {
     public void createUserLoginExistsTest() throws Exception {
         logger.info("Create user test");
 
-        var login = "login";
-        var email = "email@email.com";
-        var password = "pwd";
-        var firstName = "fname";
-        var lastName = "lname";
-        var roles = List.of(UserRole.Developer.name(), UserRole.DevOps.name());
-
-        var usr = userDao.createUser(login, password, email, firstName, lastName, roles);
-        var usr1 = userDao.createUser(login, password, email, firstName, lastName, roles);
+        var usr = createUser();
+        var usr1 = createUser();
 
 
         assertEquals(ErrorMessageUtil.USER_EXISTS, usr1.getMessage());
@@ -102,14 +96,7 @@ public class UserDaoTest {
     public void updateUserLoginTest() throws Exception {
         logger.info("Update user login test");
 
-        var login = "login";
-        var email = "email@email.com";
-        var password = "pwd";
-        var firstName = "fname";
-        var lastName = "lname";
-        var roles = List.of(UserRole.Developer.name(), UserRole.DevOps.name());
-
-        var usr = userDao.createUser(login, password, email, firstName, lastName, roles);
+        var usr = createUser();
         usr = userDao.updateLogin("login1", usr.getObject().getId());
         assertNull(usr.getMessage());
 
@@ -120,15 +107,8 @@ public class UserDaoTest {
     public void updateUserLoginExistsTest() throws Exception {
         logger.info("Update user login exists test");
 
-        var login = "login";
-        var email = "email@email.com";
-        var password = "pwd";
-        var firstName = "fname";
-        var lastName = "lname";
-        var roles = List.of(UserRole.Developer.name(), UserRole.DevOps.name());
-
-        var usr = userDao.createUser(login, password, email, firstName, lastName, roles);
-        usr = userDao.updateLogin(login, usr.getObject().getId());
+        var usr = createUser();
+        usr = userDao.updateLogin(usr.getObject().getLogin(), usr.getObject().getId());
         assertEquals(ErrorMessageUtil.USER_EXISTS, usr.getMessage());
 
         mapper.deleteUsers();
@@ -148,15 +128,8 @@ public class UserDaoTest {
     public void updatePasswordTest() throws Exception {
         logger.info("Update user password test");
 
-        var login = "login";
-        var email = "email@email.com";
-        var password = "pwd";
-        var firstName = "fname";
-        var lastName = "lname";
-        var roles = List.of(UserRole.Developer.name(), UserRole.DevOps.name());
-
-        var usr = userDao.createUser(login, password, email, firstName, lastName, roles);
-        usr = userDao.updatePassword(password, "newPed", usr.getObject().getId());
+        var usr = createUser();
+        usr = userDao.updatePassword("pwd", "newPwd", usr.getObject().getId());
         assertNull(usr.getMessage());
 
         mapper.deleteUsers();
@@ -166,7 +139,7 @@ public class UserDaoTest {
     public void updatePasswordUserNotFoundTest() throws Exception {
         logger.info("Update user password user not found test");
 
-        var usr = userDao.updatePassword("pwd", "newPed", 100);
+        var usr = userDao.updatePassword("pwd", "newPwd", 100);
         assertEquals(ErrorMessageUtil.USER_NOT_EXISTS, usr.getMessage());
 
     }
@@ -175,14 +148,7 @@ public class UserDaoTest {
     public void updatePasswordUnathorizedTest() throws Exception {
         logger.info("Update user password unauthorized test");
 
-        var login = "login";
-        var email = "email@email.com";
-        var password = "pwd";
-        var firstName = "fname";
-        var lastName = "lname";
-        var roles = List.of(UserRole.Developer.name(), UserRole.DevOps.name());
-
-        var usr = userDao.createUser(login, password, email, firstName, lastName, roles);
+        var usr = createUser();
         usr = userDao.updatePassword("randomPwd", "newPed", usr.getObject().getId());
         assertEquals(ErrorMessageUtil.USER_UNAUTHORIZED, usr.getMessage());
 
@@ -193,15 +159,7 @@ public class UserDaoTest {
     public void updateUserTest() throws Exception {
         logger.info("Update user password test");
 
-        var login = "login";
-        var email = "email@email.com";
-        var password = "pwd";
-        var firstName = "fname";
-        var lastName = "lname";
-        var roles = List.of(UserRole.Developer.name(), UserRole.DevOps.name());
-
-        var usr = userDao.createUser(login, password, email, firstName, lastName, roles);
-
+        var usr = createUser();
         usr = userDao.updateUser(usr.getObject().getId(), "name1", "name2", "email1@email.com", List.of(UserRole.Developer.name()));
         assertNull(usr.getMessage());
 
@@ -214,14 +172,7 @@ public class UserDaoTest {
     public void updateUserNullFieldTest() throws Exception {
         logger.info("Update user password test");
 
-        var login = "login";
-        var email = "email@email.com";
-        var password = "pwd";
-        var firstName = "fname";
-        var lastName = "lname";
-        var roles = List.of(UserRole.Developer.name(), UserRole.DevOps.name());
-
-        var usr = userDao.createUser(login, password, email, firstName, lastName, roles);
+        var usr = createUser();
 
         usr = userDao.updateUser(usr.getObject().getId(), null, null, null, List.of());
         assertNull(usr.getMessage());
@@ -234,18 +185,9 @@ public class UserDaoTest {
     public void updateUserEmptyFieldTest() throws Exception {
         logger.info("Update user password test");
 
-        var login = "login";
-        var email = "email@email.com";
-        var password = "pwd";
-        var firstName = "fname";
-        var lastName = "lname";
-        var roles = List.of(UserRole.Developer.name(), UserRole.DevOps.name());
-
-        var usr = userDao.createUser(login, password, email, firstName, lastName, roles);
-
+        var usr = createUser();
         usr = userDao.updateUser(usr.getObject().getId(), null, "", null, List.of());
         assertNull(usr.getMessage());
-
 
         mapper.deleteUsers();
     }
@@ -255,14 +197,7 @@ public class UserDaoTest {
     public void updateUserAvatarTest() throws Exception {
         logger.info("Update user password test");
 
-        var login = "login";
-        var email = "email@email.com";
-        var password = "pwd";
-        var firstName = "fname";
-        var lastName = "lname";
-        var roles = List.of(UserRole.Developer.name(), UserRole.DevOps.name());
-
-        var usr = userDao.createUser(login, password, email, firstName, lastName, roles);
+        var usr = createUser();
 
         var avatar = new byte[512];
         usr = userDao.updateUserAvatar(usr.getObject().getId(), avatar);
@@ -275,14 +210,7 @@ public class UserDaoTest {
     public void updateUserAvatarNullTest() throws Exception {
         logger.info("Update user password test");
 
-        var login = "login";
-        var email = "email@email.com";
-        var password = "pwd";
-        var firstName = "fname";
-        var lastName = "lname";
-        var roles = List.of(UserRole.Developer.name(), UserRole.DevOps.name());
-
-        var usr = userDao.createUser(login, password, email, firstName, lastName, roles);
+        var usr = createUser();
 
         usr = userDao.updateUserAvatar(usr.getObject().getId(), null);
         assertEquals(ErrorMessageUtil.USER_AVATAR_EMPTY, usr.getMessage());
@@ -294,15 +222,7 @@ public class UserDaoTest {
     public void updateUserAvatarEmptyTest() throws Exception {
         logger.info("Update user password test");
 
-        var login = "login";
-        var email = "email@email.com";
-        var password = "pwd";
-        var firstName = "fname";
-        var lastName = "lname";
-        var roles = List.of(UserRole.Developer.name(), UserRole.DevOps.name());
-
-        var usr = userDao.createUser(login, password, email, firstName, lastName, roles);
-
+        var usr = createUser();
         var avatar = new byte[]{};
         usr = userDao.updateUserAvatar(usr.getObject().getId(), avatar);
         assertEquals(ErrorMessageUtil.USER_AVATAR_EMPTY, usr.getMessage());
@@ -314,23 +234,11 @@ public class UserDaoTest {
     public void deleteUserTest() throws Exception {
         logger.info("Delete user test");
 
-        var login = "login";
-        var email = "email@email.com";
-        var password = "pwd";
-        var firstName = "fname";
-        var lastName = "lname";
-        var roles = List.of(UserRole.Developer.name(), UserRole.DevOps.name());
-
-        var usr = userDao.createUser(login, password, email, firstName, lastName, roles);
-
+        var usr = createUser();
         usr = userDao.updateUserAvatar(usr.getObject().getId(), new byte[512]);
 
-        var project = new Project("test", new Date());
-        project.setActive(true);
-        mapper.insertUpdateProject(project);
-
-        var contributor = new Contributor(usr.getObject().getId(), project.getId(), false);
-        mapper.insertUpdateContributor(contributor);
+        var project = createProject();
+        contributorDao.createContributor(usr.getObject().getId(), project.getObject().getId(), false);
 
         usr = userDao.deleteUser(usr.getObject().getId());
 
@@ -346,22 +254,11 @@ public class UserDaoTest {
     public void deleteUserIsOwnerTest() throws Exception {
         logger.info("Delete user is owner test");
 
-        var login = "login";
-        var email = "email@email.com";
-        var password = "pwd";
-        var firstName = "fname";
-        var lastName = "lname";
-        var roles = List.of(UserRole.Developer.name(), UserRole.DevOps.name());
-
-        var usr = userDao.createUser(login, password, email, firstName, lastName, roles);
+        var usr = createUser();
         usr = userDao.updateUserAvatar(usr.getObject().getId(), new byte[512]);
 
-        var project = new Project("test", new Date());
-        project.setActive(true);
-        mapper.insertUpdateProject(project);
-
-        var contributor = new Contributor(usr.getObject().getId(), project.getId(), true);
-        mapper.insertUpdateContributor(contributor);
+        var project = createProject();
+        contributorDao.createContributor(usr.getObject().getId(), project.getObject().getId(), true);
 
         usr = userDao.deleteUser(usr.getObject().getId());
 
@@ -376,26 +273,13 @@ public class UserDaoTest {
     public void deleteUserContributorTest() throws Exception {
         logger.info("Delete user contributor test");
 
-        var login = "login";
-        var email = "email@email.com";
-        var password = "pwd";
-        var firstName = "fname";
-        var lastName = "lname";
-        var roles = List.of(UserRole.Developer.name(), UserRole.DevOps.name());
-
-        var usr = userDao.createUser(login, password, email, firstName, lastName, roles);
+        var usr = createUser();
         usr = userDao.updateUserAvatar(usr.getObject().getId(), new byte[512]);
 
-        var project = new Project("test", new Date());
-        project.setActive(true);
-        mapper.insertUpdateProject(project);
-
-
-        var contributor = new Contributor(usr.getObject().getId(), project.getId(), false);
-        mapper.insertUpdateContributor(contributor);
+        var project = createProject();
+        contributorDao.createContributor(usr.getObject().getId(), project.getObject().getId(), false);
 
         usr = userDao.deleteUser(usr.getObject().getId());
-
 
         assertNull(usr.getMessage());
 
@@ -407,17 +291,10 @@ public class UserDaoTest {
 
     @Test
     public void loginUserTest() throws Exception {
-        logger.info("Update user password test");
+        logger.info("Login user test");
 
-        var login = "login";
-        var email = "email@email.com";
-        var password = "pwd";
-        var firstName = "fname";
-        var lastName = "lname";
-        var roles = List.of(UserRole.Developer.name(), UserRole.DevOps.name());
-
-        userDao.createUser(login, password, email, firstName, lastName, roles);
-        var res = userDao.loginUser(login, password);
+        var usr = createUser();
+        var res = userDao.loginUser(usr.getObject().getLogin(), "pwd");
 
         assertTrue(res.isBlank());
 
@@ -428,14 +305,7 @@ public class UserDaoTest {
     public void logoutUserTest() throws Exception {
         logger.info("Update user password test");
 
-        var login = "login";
-        var email = "email@email.com";
-        var password = "pwd";
-        var firstName = "fname";
-        var lastName = "lname";
-        var roles = List.of(UserRole.Developer.name(), UserRole.DevOps.name());
-
-        var usr = userDao.createUser(login, password, email, firstName, lastName, roles);
+        var usr = createUser();
         var res = userDao.logoutUser(usr.getObject().getId());
 
         assertTrue(res.isBlank());
@@ -443,5 +313,21 @@ public class UserDaoTest {
         mapper.deleteUsers();
     }
 
+
+    private ObjectWrapper<User> createUser() throws Exception {
+        var login = "login";
+        var email = "email@email.com";
+        var password = "pwd";
+        var firstName = "fname";
+        var lastName = "lname";
+        var roles = List.of(UserRole.Developer.name(), UserRole.DevOps.name());
+
+        return userDao.createUser(login, password, email, firstName, lastName, roles);
+    }
+
+    private ObjectWrapper<Project> createProject() {
+        var project = projectDao.createProject("test", new Date());
+        return projectDao.updateProject(project.getObject().getId(), null, null, true, null);
+    }
 
 }

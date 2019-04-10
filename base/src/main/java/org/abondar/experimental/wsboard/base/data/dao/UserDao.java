@@ -95,16 +95,12 @@ public class UserDao extends BaseDao {
         if (usr == null) {
             logger.error(ErrorMessageUtil.USER_NOT_EXISTS + " with id: " + userId);
             res.setMessage(ErrorMessageUtil.USER_NOT_EXISTS);
-            res.setObject(null);
-
             return res;
         }
 
         if (!PasswordUtil.verifyPassword(oldPassword, usr.getPassword())) {
             logger.error(ErrorMessageUtil.USER_UNAUTHORIZED);
             res.setMessage(ErrorMessageUtil.USER_UNAUTHORIZED);
-            res.setObject(null);
-
             return res;
         }
         usr.setPassword(PasswordUtil.createHash(newPassword));
