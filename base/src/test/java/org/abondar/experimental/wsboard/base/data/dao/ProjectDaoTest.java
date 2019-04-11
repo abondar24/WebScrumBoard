@@ -3,6 +3,8 @@ package org.abondar.experimental.wsboard.base.data.dao;
 import org.abondar.experimental.wsboard.base.Main;
 import org.abondar.experimental.wsboard.base.data.DataMapper;
 import org.abondar.experimental.wsboard.base.data.ErrorMessageUtil;
+import org.abondar.experimental.wsboard.base.data.ObjectWrapper;
+import org.abondar.experimental.wsboard.datamodel.Project;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
@@ -40,10 +42,7 @@ public class ProjectDaoTest {
     public void createProjectTest() {
         logger.info("Create project test");
 
-        var name = "test";
-        var startDate = new Date();
-
-        var prj = dao.createProject(name, startDate);
+        var prj = createProject();
 
         assertNull(prj.getMessage());
         assertTrue(prj.getObject().getId() > 0);
@@ -56,12 +55,8 @@ public class ProjectDaoTest {
     public void createProjectExistsTest() {
         logger.info("Create project test");
 
-        var name = "test";
-        var startDate = new Date();
-
-        dao.createProject(name, startDate);
-        var prj1 = dao.createProject(name, startDate);
-
+        createProject();
+        var prj1 = createProject();
 
         assertEquals(ErrorMessageUtil.PROJECT_EXISTS, prj1.getMessage());
         assertNull(prj1.getObject());
@@ -74,9 +69,7 @@ public class ProjectDaoTest {
     public void updateProjectTest() {
         logger.info("Update project test");
 
-        var name = "test";
-        var startDate = new Date();
-        var prj = dao.createProject(name, startDate);
+        var prj = createProject();
 
         prj = dao.updateProject(prj.getObject().getId(), "newTest", "github.com/aaaa/aaa.git", true, null);
 
@@ -88,10 +81,7 @@ public class ProjectDaoTest {
     public void updateProjectInactiveTest() {
         logger.info("Update project test");
 
-        var name = "test";
-        var startDate = new Date();
-        var prj = dao.createProject(name, startDate);
-
+        var prj = createProject();
         prj = dao.updateProject(prj.getObject().getId(), "newTest", "github.com/aaaa/aaa.git", false, new Date());
 
         assertNull(prj.getMessage());
@@ -102,10 +92,7 @@ public class ProjectDaoTest {
     public void updateProjectInactiveNullTest() {
         logger.info("Update project inactive null end date test");
 
-        var name = "test";
-        var startDate = new Date();
-        var prj = dao.createProject(name, startDate);
-
+        var prj = createProject();
         prj = dao.updateProject(prj.getObject().getId(), "newTest", "github.com/aaaa/aaa.git", false, null);
 
         assertEquals(ErrorMessageUtil.PROJECT_WRONG_END_DATE, prj.getMessage());
@@ -116,10 +103,7 @@ public class ProjectDaoTest {
     public void updateProjectInactiveWrongDateTest() {
         logger.info("Update project inactive wrong end date test");
 
-        var name = "test";
-        var startDate = new Date();
-        var prj = dao.createProject(name, startDate);
-
+        var prj = createProject();
         prj = dao.updateProject(prj.getObject().getId(), "newTest", "github.com/aaaa/aaa.git", false, yesterday());
 
         assertEquals(ErrorMessageUtil.PROJECT_WRONG_END_DATE, prj.getMessage());
@@ -131,10 +115,7 @@ public class ProjectDaoTest {
     public void updateProjectNullTest() {
         logger.info("Update project null test");
 
-        var name = "test";
-        var startDate = new Date();
-        var prj = dao.createProject(name, startDate);
-
+        var prj = createProject();
         prj = dao.updateProject(prj.getObject().getId(), null, null, null, null);
 
         assertNull(prj.getMessage());
@@ -146,10 +127,7 @@ public class ProjectDaoTest {
     public void deleteProjectTest() {
         logger.info("Delete project test");
 
-        var name = "test";
-        var startDate = new Date();
-        var prj = dao.createProject(name, startDate);
-
+        var prj = createProject();
         var res = dao.deleteProject(prj.getObject().getId());
 
         assertNull(res.getMessage());
@@ -162,10 +140,7 @@ public class ProjectDaoTest {
     public void findProjectByIdTest() {
         logger.info("Find project by id test");
 
-        var name = "test";
-        var startDate = new Date();
-        var prj = dao.createProject(name, startDate);
-
+        var prj = createProject();
         var res = dao.findProjectById(prj.getObject().getId());
         assertEquals(prj.getObject().getName(), res.getObject().getName());
         assertEquals(prj.getObject().getStartDate(), res.getObject().getStartDate());
@@ -194,5 +169,12 @@ public class ProjectDaoTest {
         return cal.getTime();
     }
 
+
+    private ObjectWrapper<Project> createProject() {
+        var name = "test";
+        var startDate = new Date();
+
+        return dao.createProject(name, startDate);
+    }
 
 }
