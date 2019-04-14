@@ -13,7 +13,6 @@
         <cxf.version>3.3.0</cxf.version>
         <junit.version>5.3.2</junit.version>
         <jaxb.version>2.3.1</jaxb.version>
-        <jdk.home>/usr/lib/jvm/zulu-11-amd64</jdk.home>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <packaging>pom</packaging>
@@ -118,7 +117,7 @@
                 <version>3.0.0-M3</version>
                 <configuration>
                     <forkCount>0</forkCount>
-                    <jvm>${jdk.home}/bin/java</jvm>
+
                     <argLine>-Xmx1024m -XX:MaxPermSize=256m</argLine>
                 </configuration>
             </plugin>
