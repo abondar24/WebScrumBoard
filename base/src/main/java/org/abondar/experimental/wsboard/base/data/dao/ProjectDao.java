@@ -3,7 +3,6 @@ package org.abondar.experimental.wsboard.base.data.dao;
 import org.abondar.experimental.wsboard.base.data.DataMapper;
 import org.abondar.experimental.wsboard.base.data.ErrorMessageUtil;
 import org.abondar.experimental.wsboard.base.data.ObjectWrapper;
-import org.abondar.experimental.wsboard.base.data.event.EventPublisher;
 import org.abondar.experimental.wsboard.datamodel.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,8 +15,8 @@ public class ProjectDao extends BaseDao {
     private static Logger logger = LoggerFactory.getLogger(ProjectDao.class);
 
 
-    public ProjectDao(DataMapper mapper, EventPublisher eventPublisher) {
-       super(mapper,eventPublisher);
+    public ProjectDao(DataMapper mapper) {
+        super(mapper);
     }
 
 
@@ -33,7 +32,7 @@ public class ProjectDao extends BaseDao {
         }
 
         prj = new Project(name, startDate);
-        mapper.insertUpdateProject(prj);
+        mapper.insertProject(prj);
 
         logger.info("Project successfully created with id: " + prj.getId());
         res.setObject(prj);
@@ -72,7 +71,7 @@ public class ProjectDao extends BaseDao {
             }
         }
 
-        mapper.insertUpdateProject(prj);
+        mapper.updateProject(prj);
         logger.info("Project successfully updated");
 
         res.setObject(prj);

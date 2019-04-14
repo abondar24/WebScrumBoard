@@ -21,9 +21,10 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.util.Date;
 import java.util.List;
 
-import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
 
 @SpringBootTest(classes = Main.class)
 @ExtendWith(SpringExtension.class)
@@ -117,9 +118,11 @@ public class ContributorDaoTest {
         var prj = createProject(true);
 
         var contr = contributorDao.createContributor(usr.getObject().getId(), prj.getObject().getId(), false);
-        contr = contributorDao.updateContributorAsOwner(contr.getObject().getId(), true, true);
+        var id = contr.getObject().getId();
+        contr = contributorDao.updateContributor(contr.getObject().getId(), true, true);
 
         assertNull(contr.getMessage());
+        assertEquals(id, contr.getObject().getId());
 
         cleanData();
     }
@@ -129,10 +132,9 @@ public class ContributorDaoTest {
     public void updateContributorAsOwnerContributorNotExistsTest() {
         logger.info("Update contributor as owner contributor not exists");
 
-        var contr = contributorDao.updateContributorAsOwner(100, false, true);
+        var contr = contributorDao.updateContributor(100, false, true);
 
         assertEquals(ErrorMessageUtil.CONTRIBUTOR_NOT_EXISTS, contr.getMessage());
-        assertNull(contr.getObject());
 
         cleanData();
     }
@@ -145,7 +147,7 @@ public class ContributorDaoTest {
         var prj = createProject(true);
 
         var contr = contributorDao.createContributor(usr.getObject().getId(), prj.getObject().getId(), true);
-        contr = contributorDao.updateContributorAsOwner(contr.getObject().getId(), true, true);
+        contr = contributorDao.updateContributor(contr.getObject().getId(), true, true);
 
         assertEquals(ErrorMessageUtil.PROJECT_HAS_OWNER, contr.getMessage());
         assertNull(contr.getObject());
@@ -161,7 +163,7 @@ public class ContributorDaoTest {
         var prj = createProject(true);
 
         var contr = contributorDao.createContributor(usr.getObject().getId(), prj.getObject().getId(), false);
-        contr = contributorDao.updateContributorAsOwner(contr.getObject().getId(), false, true);
+        contr = contributorDao.updateContributor(contr.getObject().getId(), false, true);
 
         assertEquals(ErrorMessageUtil.PROJECT_HAS_NO_OWNER, contr.getMessage());
         assertNull(contr.getObject());
@@ -177,9 +179,12 @@ public class ContributorDaoTest {
         var prj = createProject(true);
 
         var contr = contributorDao.createContributor(usr.getObject().getId(), prj.getObject().getId(), false);
-        contr = contributorDao.updateContributorAsOwner(contr.getObject().getId(), null, null);
+        var id = contr.getObject().getId();
+
+        contr = contributorDao.updateContributor(contr.getObject().getId(), null, null);
 
         assertNull(contr.getMessage());
+        assertEquals(id, contr.getObject().getId());
 
         cleanData();
     }

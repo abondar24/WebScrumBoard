@@ -20,9 +20,11 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.util.Date;
 import java.util.List;
 
-import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
 
 @SpringBootTest(classes = Main.class)
 @ExtendWith(SpringExtension.class)
@@ -97,8 +99,11 @@ public class UserDaoTest {
         logger.info("Update user login test");
 
         var usr = createUser();
+        var id = usr.getObject().getId();
         usr = userDao.updateLogin("login1", usr.getObject().getId());
+
         assertNull(usr.getMessage());
+        assertEquals(id, usr.getObject().getId());
 
         mapper.deleteUsers();
     }
@@ -129,9 +134,11 @@ public class UserDaoTest {
         logger.info("Update user password test");
 
         var usr = createUser();
+        var id = usr.getObject().getId();
         usr = userDao.updatePassword("pwd", "newPwd", usr.getObject().getId());
-        assertNull(usr.getMessage());
 
+        assertNull(usr.getMessage());
+        assertEquals(id, usr.getObject().getId());
         mapper.deleteUsers();
     }
 
@@ -151,18 +158,20 @@ public class UserDaoTest {
         var usr = createUser();
         usr = userDao.updatePassword("randomPwd", "newPed", usr.getObject().getId());
         assertEquals(ErrorMessageUtil.USER_UNAUTHORIZED, usr.getMessage());
-
         mapper.deleteUsers();
     }
 
     @Test
     public void updateUserTest() throws Exception {
-        logger.info("Update user password test");
+        logger.info("Update user test");
 
         var usr = createUser();
-        usr = userDao.updateUser(usr.getObject().getId(), "name1", "name2", "email1@email.com", List.of(UserRole.Developer.name()));
-        assertNull(usr.getMessage());
+        var id = usr.getObject().getId();
+        usr = userDao.updateUser(usr.getObject().getId(), "name1", "name2",
+                "email1@email.com", List.of(UserRole.Developer.name()), new byte[1024]);
 
+        assertNull(usr.getMessage());
+        assertEquals(id, usr.getObject().getId());
 
         mapper.deleteUsers();
     }
@@ -173,10 +182,11 @@ public class UserDaoTest {
         logger.info("Update user password test");
 
         var usr = createUser();
+        var id = usr.getObject().getId();
+        usr = userDao.updateUser(usr.getObject().getId(), null, null, null, List.of(), null);
 
-        usr = userDao.updateUser(usr.getObject().getId(), null, null, null, List.of());
         assertNull(usr.getMessage());
-
+        assertEquals(id, usr.getObject().getId());
 
         mapper.deleteUsers();
     }
@@ -186,37 +196,15 @@ public class UserDaoTest {
         logger.info("Update user password test");
 
         var usr = createUser();
-        usr = userDao.updateUser(usr.getObject().getId(), null, "", null, List.of());
+        var id = usr.getObject().getId();
+
+        usr = userDao.updateUser(usr.getObject().getId(), null, "", null, List.of(), null);
         assertNull(usr.getMessage());
+        assertEquals(id, usr.getObject().getId());
 
         mapper.deleteUsers();
     }
 
-
-    @Test
-    public void updateUserAvatarTest() throws Exception {
-        logger.info("Update user password test");
-
-        var usr = createUser();
-
-        var avatar = new byte[512];
-        usr = userDao.updateUserAvatar(usr.getObject().getId(), avatar);
-        assertNull(usr.getMessage());
-
-        mapper.deleteUsers();
-    }
-
-    @Test
-    public void updateUserAvatarNullTest() throws Exception {
-        logger.info("Update user password test");
-
-        var usr = createUser();
-
-        usr = userDao.updateUserAvatar(usr.getObject().getId(), null);
-        assertEquals(ErrorMessageUtil.USER_AVATAR_EMPTY, usr.getMessage());
-
-        mapper.deleteUsers();
-    }
 
     @Test
     public void updateUserAvatarEmptyTest() throws Exception {
@@ -224,7 +212,8 @@ public class UserDaoTest {
 
         var usr = createUser();
         var avatar = new byte[]{};
-        usr = userDao.updateUserAvatar(usr.getObject().getId(), avatar);
+        usr = userDao.updateUser(usr.getObject().getId(), null, "", null, List.of(), avatar);
+
         assertEquals(ErrorMessageUtil.USER_AVATAR_EMPTY, usr.getMessage());
 
         mapper.deleteUsers();
@@ -235,15 +224,19 @@ public class UserDaoTest {
         logger.info("Delete user test");
 
         var usr = createUser();
-        usr = userDao.updateUserAvatar(usr.getObject().getId(), new byte[512]);
 
         var project = createProject();
-        contributorDao.createContributor(usr.getObject().getId(), project.getObject().getId(), false);
+        contributorDao.createContributor(usr.getObject().getId(), project.getObject().getId(), true);
 
-        usr = userDao.deleteUser(usr.getObject().getId());
+        var delUser = userDao.createUser("usr1", "pwd", "ss",
+                "fname", "lname", List.of(UserRole.Developer.name()));
+        contributorDao.createContributor(delUser.getObject().getId(), project.getObject().getId(), false);
 
-        assertNull(usr.getMessage());
-        assertEquals("deleted", usr.getObject().getLogin());
+        delUser = userDao.deleteUser(delUser.getObject().getId());
+
+
+        assertNull(delUser.getMessage());
+        assertEquals("deleted", delUser.getObject().getLogin());
 
         mapper.deleteContributors();
         mapper.deleteUsers();
@@ -255,7 +248,6 @@ public class UserDaoTest {
         logger.info("Delete user is owner test");
 
         var usr = createUser();
-        usr = userDao.updateUserAvatar(usr.getObject().getId(), new byte[512]);
 
         var project = createProject();
         contributorDao.createContributor(usr.getObject().getId(), project.getObject().getId(), true);
@@ -274,14 +266,19 @@ public class UserDaoTest {
         logger.info("Delete user contributor test");
 
         var usr = createUser();
-        usr = userDao.updateUserAvatar(usr.getObject().getId(), new byte[512]);
 
         var project = createProject();
-        contributorDao.createContributor(usr.getObject().getId(), project.getObject().getId(), false);
+        contributorDao.createContributor(usr.getObject().getId(), project.getObject().getId(), true);
 
-        usr = userDao.deleteUser(usr.getObject().getId());
+        var delUsr = userDao.createUser("testLogin", "psw", "aaa",
+                "aa", "aa", List.of(UserRole.Developer.name()));
+        var ctr = contributorDao.createContributor(delUsr.getObject().getId(), project.getObject().getId(), false);
+
+        usr = userDao.deleteUser(delUsr.getObject().getId());
+        var ctrObj = mapper.getContributorById(ctr.getObject().getId());
 
         assertNull(usr.getMessage());
+        assertFalse(ctrObj.isActive());
 
         mapper.deleteContributors();
         mapper.deleteProjects();

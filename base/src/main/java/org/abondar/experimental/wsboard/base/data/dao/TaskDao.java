@@ -3,15 +3,20 @@ package org.abondar.experimental.wsboard.base.data.dao;
 import org.abondar.experimental.wsboard.base.data.DataMapper;
 import org.abondar.experimental.wsboard.base.data.ErrorMessageUtil;
 import org.abondar.experimental.wsboard.base.data.ObjectWrapper;
-import org.abondar.experimental.wsboard.base.data.event.EventPublisher;
 import org.abondar.experimental.wsboard.datamodel.task.Task;
 import org.abondar.experimental.wsboard.datamodel.task.TaskState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.Date;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import static org.abondar.experimental.wsboard.datamodel.UserRole.*;
+import static org.abondar.experimental.wsboard.datamodel.UserRole.DevOps;
+import static org.abondar.experimental.wsboard.datamodel.UserRole.Developer;
+import static org.abondar.experimental.wsboard.datamodel.UserRole.QA;
 
 
 public class TaskDao extends BaseDao {
@@ -21,8 +26,8 @@ public class TaskDao extends BaseDao {
 
     private Map<TaskState, List<TaskState>> stateMoves;
 
-    public TaskDao(DataMapper mapper, EventPublisher eventPublisher) {
-        super(mapper, eventPublisher);
+    public TaskDao(DataMapper mapper) {
+        super(mapper);
 
         this.stateMoves = initMoves();
     }
@@ -52,7 +57,7 @@ public class TaskDao extends BaseDao {
         var task = new Task(contributorId, startDate, devOpsEnabled);
 
 
-        mapper.insertUpdateTask(task);
+        mapper.insertTask(task);
         logger.info("Created a task with id: " + task.getId());
 
         res.setObject(task);
@@ -61,7 +66,7 @@ public class TaskDao extends BaseDao {
         return res;
     }
 
-    public ObjectWrapper<Task> updateTask(long taskId, long contributorId, Boolean devOpsEnabled) {
+    public ObjectWrapper<Task> updateTask(long taskId, Long contributorId, Boolean devOpsEnabled, Integer storyPoints) {
         ObjectWrapper<Task> res = new ObjectWrapper<>();
 
         var task = mapper.getTaskById(taskId);
@@ -71,34 +76,41 @@ public class TaskDao extends BaseDao {
             return res;
         }
 
-        var ctr = mapper.getContributorById(contributorId);
-        if (ctr == null) {
-            logger.error(ErrorMessageUtil.CONTRIBUTOR_NOT_EXISTS);
-            res.setMessage(ErrorMessageUtil.CONTRIBUTOR_NOT_EXISTS);
-            return res;
-        }
+        if (contributorId != null) {
+            var ctr = mapper.getContributorById(contributorId);
+            if (ctr == null) {
+                logger.error(ErrorMessageUtil.CONTRIBUTOR_NOT_EXISTS);
+                res.setMessage(ErrorMessageUtil.CONTRIBUTOR_NOT_EXISTS);
+                return res;
+            }
 
-        if (!ctr.isActive()) {
-            logger.error(ErrorMessageUtil.CONTRIBUTOR_NOT_EXISTS);
-            res.setMessage(ErrorMessageUtil.CONTRIBUTOR_NOT_EXISTS);
-            return res;
-        }
+            if (!ctr.isActive()) {
+                logger.error(ErrorMessageUtil.CONTRIBUTOR_NOT_EXISTS);
+                res.setMessage(ErrorMessageUtil.CONTRIBUTOR_NOT_EXISTS);
+                return res;
+            }
 
-        task.setContributorId(contributorId);
+            task.setContributorId(contributorId);
+
+        }
 
         if (devOpsEnabled != null) {
             task.setDevOpsEnabled(devOpsEnabled);
         }
 
-        mapper.insertUpdateTask(task);
+        if (storyPoints != null) {
+            task.setStoryPoints(storyPoints);
+        }
+
+
+        mapper.updateTask(task);
         logger.info("Updated a task with id: " + task.getId());
 
         res.setObject(task);
         return res;
     }
 
-
-    public ObjectWrapper<Task> updateTaskStoryPoints(long taskId, Integer storyPoints) {
+    public ObjectWrapper<Task> updateTaskSprint(long taskId, long sprintId) {
         ObjectWrapper<Task> res = new ObjectWrapper<>();
 
         var task = mapper.getTaskById(taskId);
@@ -108,19 +120,21 @@ public class TaskDao extends BaseDao {
             return res;
         }
 
-        if (storyPoints == null) {
-            logger.info(ErrorMessageUtil.TASK_STORY_POINTS_NOT_SET);
-            res.setMessage(ErrorMessageUtil.TASK_STORY_POINTS_NOT_SET);
+        var sprint = mapper.getSprintById(sprintId);
+        if (sprint == null) {
+            logger.info(ErrorMessageUtil.SPRINT_NOT_EXISTS + "with id: " + sprintId);
+            res.setMessage(ErrorMessageUtil.SPRINT_NOT_EXISTS);
             return res;
         }
 
-        mapper.updateTaskStoryPoints(taskId, storyPoints);
-        logger.info("Updated a task  story points for id: " + task.getId());
-        task.setStoryPoints(storyPoints);
+        mapper.updateTaskSprint(taskId, sprintId);
+        logger.info("Updated task sprint for id: " + task.getId());
+        task.setSprintId(sprintId);
         res.setObject(task);
 
         return res;
     }
+
 
     public ObjectWrapper<Task> updateTaskState(long taskId, String state) {
         ObjectWrapper<Task> res = new ObjectWrapper<>();
@@ -192,44 +206,17 @@ public class TaskDao extends BaseDao {
 
         }
 
-        mapper.updateTaskState(task.getId(), taskState, task.getPrevState());
         task.setPrevState(task.getTaskState());
         task.setTaskState(taskState);
 
         if (taskState == TaskState.Completed) {
             var endDate = new Date();
-            mapper.updateTaskEndDate(task.getId(), endDate);
             task.setEndDate(endDate);
         }
 
+        mapper.updateTask(task);
         logger.info("Updated task state to " + taskState.name() + " for id: " + taskId);
         res.setObject(task);
-        return res;
-    }
-
-
-    public ObjectWrapper<Task> updateTaskSprint(long taskId, long sprintId) {
-        ObjectWrapper<Task> res = new ObjectWrapper<>();
-
-        var task = mapper.getTaskById(taskId);
-        if (task == null) {
-            logger.info(ErrorMessageUtil.TASK_NOT_EXISTS + " with id: " + taskId);
-            res.setMessage(ErrorMessageUtil.TASK_NOT_EXISTS);
-            return res;
-        }
-
-        var sprint = mapper.getSprintById(sprintId);
-        if (sprint == null) {
-            logger.info(ErrorMessageUtil.SPRINT_NOT_EXISTS + "with id: " + sprintId);
-            res.setMessage(ErrorMessageUtil.SPRINT_NOT_EXISTS);
-            return res;
-        }
-
-        mapper.updateTaskSprint(taskId, sprintId);
-        logger.info("Updated task sprint for id: " + task.getId());
-        task.setSprintId(sprintId);
-        res.setObject(task);
-
         return res;
     }
 

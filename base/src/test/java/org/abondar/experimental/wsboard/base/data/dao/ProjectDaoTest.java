@@ -18,9 +18,10 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.util.Calendar;
 import java.util.Date;
 
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 
 @SpringBootTest(classes = Main.class)
 @ExtendWith(SpringExtension.class)
@@ -70,10 +71,12 @@ public class ProjectDaoTest {
         logger.info("Update project test");
 
         var prj = createProject();
-
+        var id = prj.getObject().getId();
         prj = dao.updateProject(prj.getObject().getId(), "newTest", "github.com/aaaa/aaa.git", true, null);
 
         assertNull(prj.getMessage());
+        assertEquals(id, prj.getObject().getId());
+
         mapper.deleteProjects();
     }
 
@@ -82,9 +85,13 @@ public class ProjectDaoTest {
         logger.info("Update project test");
 
         var prj = createProject();
+        var id = prj.getObject().getId();
+
         prj = dao.updateProject(prj.getObject().getId(), "newTest", "github.com/aaaa/aaa.git", false, new Date());
 
         assertNull(prj.getMessage());
+        assertEquals(id, prj.getObject().getId());
+
         mapper.deleteProjects();
     }
 
@@ -116,9 +123,12 @@ public class ProjectDaoTest {
         logger.info("Update project null test");
 
         var prj = createProject();
+        var id = prj.getObject().getId();
+
         prj = dao.updateProject(prj.getObject().getId(), null, null, null, null);
 
         assertNull(prj.getMessage());
+        assertEquals(id, prj.getObject().getId());
         mapper.deleteProjects();
     }
 

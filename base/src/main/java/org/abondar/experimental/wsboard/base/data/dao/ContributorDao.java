@@ -3,7 +3,6 @@ package org.abondar.experimental.wsboard.base.data.dao;
 import org.abondar.experimental.wsboard.base.data.DataMapper;
 import org.abondar.experimental.wsboard.base.data.ErrorMessageUtil;
 import org.abondar.experimental.wsboard.base.data.ObjectWrapper;
-import org.abondar.experimental.wsboard.base.data.event.EventPublisher;
 import org.abondar.experimental.wsboard.datamodel.Contributor;
 import org.abondar.experimental.wsboard.datamodel.User;
 import org.slf4j.Logger;
@@ -16,8 +15,8 @@ public class ContributorDao extends BaseDao {
     private static Logger logger = LoggerFactory.getLogger(ContributorDao.class);
 
 
-    public ContributorDao(DataMapper mapper, EventPublisher eventPublisher) {
-        super(mapper, eventPublisher);
+    public ContributorDao(DataMapper mapper) {
+        super(mapper);
     }
 
 
@@ -58,14 +57,14 @@ public class ContributorDao extends BaseDao {
 
 
         var ctr = new Contributor(userId, projectId, isOwner);
-        mapper.insertUpdateContributor(ctr);
+        mapper.insertContributor(ctr);
         logger.info("Contributor created with id: " + ctr.getId());
         res.setObject(ctr);
 
         return res;
     }
 
-    public ObjectWrapper<Contributor> updateContributorAsOwner(long contributorId, Boolean isOwner, Boolean isActive) {
+    public ObjectWrapper<Contributor> updateContributor(long contributorId, Boolean isOwner, Boolean isActive) {
         ObjectWrapper<Contributor> res = new ObjectWrapper<>();
 
         var ctr = mapper.getContributorById(contributorId);
@@ -100,8 +99,7 @@ public class ContributorDao extends BaseDao {
             ctr.setActive(isActive);
         }
 
-        mapper.insertUpdateContributor(ctr);
-
+        mapper.updateContributor(ctr);
 
         logger.info("Contributor updated with id: " + ctr.getId());
         res.setObject(ctr);

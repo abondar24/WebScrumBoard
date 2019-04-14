@@ -6,34 +6,34 @@ import org.abondar.experimental.wsboard.datamodel.Project;
 import org.abondar.experimental.wsboard.datamodel.Sprint;
 import org.abondar.experimental.wsboard.datamodel.User;
 import org.abondar.experimental.wsboard.datamodel.task.Task;
-import org.abondar.experimental.wsboard.datamodel.task.TaskState;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
-import java.util.Date;
 import java.util.List;
 
 @Mapper
 public interface DataMapper {
-    void insertUpdateUser(@Param("user") User user);
+    void insertUser(@Param("user") User user);
 
-    void insertUpdateProject(@Param("project") Project project);
+    void insertProject(@Param("project") Project project);
 
-    void insertUpdateTask(@Param("task") Task task);
+    void insertTask(@Param("task") Task task);
 
-    void insertUpdateContributor(@Param("contributor") Contributor contributor);
+    void insertContributor(@Param("contributor") Contributor contributor);
 
-    void insertUpdateSprint(@Param("sprint")Sprint sprint);
+    void insertSprint(@Param("sprint") Sprint sprint);
 
-    void updateUserAvatar(@Param("id") Long id, @Param("avatar") byte[] avatar);
+    void updateUser(@Param("user") User user);
+
+    void updateProject(@Param("project") Project project);
+
+    void updateContributor(@Param("contributor") Contributor contributor);
+
+    void updateTask(@Param("task") Task task);
+
+    void updateSprint(@Param("sprint") Sprint sprint);
 
     void updateTaskSprint(@Param("id")Long id,@Param("sprintId") long sprintId);
-
-    void updateTaskStoryPoints(@Param("id")Long id,@Param("storyPoints") int storyPoints);
-
-    void updateTaskEndDate(@Param("id")Long id, @Param("endDate") Date endDate);
-
-    void updateTaskState(@Param("id") Long id, @Param("taskState") TaskState taskState, @Param("prevState") TaskState prevState);
 
     User getUserByLogin(@Param("login") String login);
 

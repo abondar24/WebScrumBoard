@@ -3,7 +3,6 @@ package org.abondar.experimental.wsboard.base.data.dao;
 import org.abondar.experimental.wsboard.base.data.DataMapper;
 import org.abondar.experimental.wsboard.base.data.ErrorMessageUtil;
 import org.abondar.experimental.wsboard.base.data.ObjectWrapper;
-import org.abondar.experimental.wsboard.base.data.event.EventPublisher;
 import org.abondar.experimental.wsboard.datamodel.Sprint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,8 +14,8 @@ public class SprintDao extends BaseDao {
 
     private static Logger logger = LoggerFactory.getLogger(SprintDao.class);
 
-    public SprintDao(DataMapper mapper, EventPublisher eventPublisher) {
-        super(mapper, eventPublisher);
+    public SprintDao(DataMapper mapper) {
+        super(mapper);
     }
 
 
@@ -33,7 +32,7 @@ public class SprintDao extends BaseDao {
 
         sprint = new Sprint(name, startDate, endDate);
 
-        mapper.insertUpdateSprint(sprint);
+        mapper.insertSprint(sprint);
         logger.info("Created sprint with id: " + sprint.getId());
 
         res.setObject(sprint);
@@ -71,7 +70,7 @@ public class SprintDao extends BaseDao {
             sprint.setEndDate(startDate);
         }
 
-        mapper.insertUpdateSprint(sprint);
+        mapper.updateSprint(sprint);
         logger.info("Updated sprint with id: " + sprint.getId());
 
         res.setObject(sprint);

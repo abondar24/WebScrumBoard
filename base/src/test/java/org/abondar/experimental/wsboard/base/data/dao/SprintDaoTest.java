@@ -16,7 +16,10 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Date;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 @SpringBootTest(classes = Main.class)
@@ -81,11 +84,12 @@ public class SprintDaoTest {
     public void updateSprintTest() {
         logger.info("Update sprint test");
         var sp = sprintDao.createSprint("test", new Date(), new Date());
-
+        var id = sp.getObject().getId();
         var startDate = new Date();
         var endDate = new Date();
         var res = sprintDao.updateSprint(sp.getObject().getId(), null, startDate, endDate);
 
+        assertEquals(id, res.getObject().getId());
         assertEquals(startDate, res.getObject().getStartDate());
         assertEquals(endDate, res.getObject().getEndDate());
 

@@ -3,7 +3,6 @@ package org.abondar.experimental.wsboard.base.data.dao;
 import org.abondar.experimental.wsboard.base.data.DataMapper;
 import org.abondar.experimental.wsboard.base.data.ErrorMessageUtil;
 import org.abondar.experimental.wsboard.base.data.ObjectWrapper;
-import org.abondar.experimental.wsboard.base.data.event.EventPublisher;
 import org.abondar.experimental.wsboard.base.password.PasswordUtil;
 import org.abondar.experimental.wsboard.datamodel.User;
 import org.abondar.experimental.wsboard.datamodel.UserRole;
@@ -18,9 +17,12 @@ public class UserDao extends BaseDao {
 
     private static Logger logger = LoggerFactory.getLogger(UserDao.class);
 
+    private ContributorDao contributorDao;
 
-    public UserDao(DataMapper mapper, EventPublisher eventPublisher) {
-        super(mapper, eventPublisher);
+
+    public UserDao(DataMapper mapper, BaseDao contributorDao) {
+        super(mapper);
+        this.contributorDao = (ContributorDao) contributorDao;
     }
 
     public ObjectWrapper<User> createUser(String login, String password, String email, String firstName,
@@ -46,7 +48,7 @@ public class UserDao extends BaseDao {
         }
 
         usr = new User(login, email, firstName, lastName, pwdHash, userRoles);
-        mapper.insertUpdateUser(usr);
+        mapper.insertUser(usr);
 
         logger.info("User successfully created with id: " + usr.getId());
         res.setObject(usr);
@@ -80,7 +82,7 @@ public class UserDao extends BaseDao {
         }
 
         usr.setLogin(login);
-        mapper.insertUpdateUser(usr);
+        mapper.updateUser(usr);
 
         logger.info("User login updated for user: " + usr.getId());
         res.setObject(usr);
@@ -104,7 +106,7 @@ public class UserDao extends BaseDao {
             return res;
         }
         usr.setPassword(PasswordUtil.createHash(newPassword));
-        mapper.insertUpdateUser(usr);
+        mapper.updateUser(usr);
 
         logger.info("Password updated for user: " + usr.getId());
 
@@ -113,7 +115,8 @@ public class UserDao extends BaseDao {
     }
 
     public ObjectWrapper<User> updateUser(Long id, String firstName,
-                                          String lastName, String email, List<String> roles) {
+                                          String lastName, String email,
+                                          List<String> roles, byte[] avatar) {
         ObjectWrapper<User> res = new ObjectWrapper<>();
 
         var usr = mapper.getUserById(id);
@@ -141,36 +144,17 @@ public class UserDao extends BaseDao {
             usr.setRoles(userRoles);
         }
 
-        res.setObject(usr);
-        return res;
-    }
-
-
-    public ObjectWrapper<User> updateUserAvatar(Long id, byte[] avatar) {
-        ObjectWrapper<User> res = new ObjectWrapper<>();
-
-        var usr = mapper.getUserById(id);
-        if (usr == null) {
-            logger.error(ErrorMessageUtil.USER_NOT_EXISTS + " with id: " + id);
-            res.setMessage(ErrorMessageUtil.USER_NOT_EXISTS);
-
-            return res;
-        }
-
-        if (avatar == null || avatar.length == 0) {
+        if (avatar != null && avatar.length == 0) {
             logger.error(ErrorMessageUtil.USER_AVATAR_EMPTY);
             res.setMessage(ErrorMessageUtil.USER_AVATAR_EMPTY);
 
             return res;
         }
 
-
-        mapper.updateUserAvatar(id, avatar);
-        usr = mapper.getUserById(id);
-
         res.setObject(usr);
         return res;
     }
+
 
     public ObjectWrapper<User> deleteUser(Long id) {
         ObjectWrapper<User> res = new ObjectWrapper<>();
@@ -184,19 +168,29 @@ public class UserDao extends BaseDao {
         }
 
         var contributor = mapper.getContributorByUserId(id);
-        if (contributor.isOwner()) {
-            logger.error(ErrorMessageUtil.USER_IS_PROJECT_OWNER);
-            res.setMessage(ErrorMessageUtil.USER_IS_PROJECT_OWNER);
+        if (contributor != null) {
+            if (contributor.isOwner()) {
+                logger.error(ErrorMessageUtil.USER_IS_PROJECT_OWNER);
+                res.setMessage(ErrorMessageUtil.USER_IS_PROJECT_OWNER);
 
-            return res;
+                return res;
+            }
+
+            usr.setDeleted();
+
+            var ctr = contributorDao.updateContributor(contributor.getId(), contributor.isOwner(), false);
+
+            if (ctr.getMessage() != null) {
+                logger.error(ctr.getMessage());
+                res.setMessage(ctr.getMessage());
+
+                return res;
+            }
         }
 
-        eventPublisher.publishContributorUpdate(contributor.getId(), contributor.isOwner());
 
-        usr.setDeleted();
-
-        mapper.updateUserAvatar(id, usr.getAvatar());
-        mapper.insertUpdateUser(usr);
+        mapper.insertUser(usr);
+        logger.info("User with id: " + usr.getId() + " marked as deleted");
 
         res.setObject(usr);
         return res;

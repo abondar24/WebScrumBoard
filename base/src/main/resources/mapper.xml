@@ -73,7 +73,7 @@
     </resultMap>
 
 
-    <insert id="insertUpdateUser" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+    <insert id="insertUser" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
         INSERT INTO wsuser (login, email, first_name, last_name, password, roles)
         VALUES (#{user.login},
                 #{user.email},
@@ -81,69 +81,94 @@
                 #{user.lastName},
                 #{user.password},
                 #{user.roles})
-        ON CONFLICT (id) DO UPDATE SET
-            login = #{user.login},
-            email = #{user.email},
-            first_name = #{user.firstName},
-            last_name = #{user.lastName},
-            password = #{user.password},
-            roles = #{user.roles};
+        ON CONFLICT (id) DO NOTHING;
     </insert>
 
-    <insert id="insertUpdateProject" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+    <insert id="insertProject" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
         INSERT INTO project (name, start_date, end_date, repository, is_active)
         VALUES (#{project.name},
                 #{project.startDate},
                 #{project.endDate},
                 #{project.repository},
                 #{project.isActive})
-        ON CONFLICT (id) DO UPDATE SET
-            name = #{project.name},
-            start_date = #{project.startDate},
-            end_date = #{project.endDate},
-            repository = #{project.repository},
-            is_active = #{project.isActive}
+        ON CONFLICT (id) DO NOTHING;
     </insert>
 
-    <insert id="insertUpdateContributor" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
-        INSERT INTO contributor (user_id, project_id, is_owner,is_active)
+    <insert id="insertContributor" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+        INSERT INTO contributor (user_id, project_id, is_owner, is_active)
         VALUES (#{contributor.userId},
                 #{contributor.projectId},
                 #{contributor.isOwner},
                 #{contributor.isActive})
-        ON CONFLICT (id) DO UPDATE SET
-            user_id = #{contributor.userId},
-            project_id = #{contributor.projectId},
-            is_owner = #{contributor.isOwner},
-            is_active = #{contributor.isActive}
+        ON CONFLICT (id) DO NOTHING;
     </insert>
 
 
-    <insert id="insertUpdateTask" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+    <insert id="insertTask" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
         INSERT INTO task (contributor_id, start_date, dev_ops_enabled)
         VALUES (#{task.contributorId},
                 #{task.startDate},
                 #{task.devOpsEnabled})
-        ON CONFLICT (id) DO UPDATE SET contributor_id  = #{task.contributorId},
-                                       dev_ops_enabled = #{task.devOpsEnabled};
+        ON CONFLICT (id) DO NOTHING;
     </insert>
 
-    <insert id="insertUpdateSprint" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+    <insert id="insertSprint" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
         INSERT INTO sprint (name, start_date, end_date)
         VALUES (#{sprint.name},
                 #{sprint.startDate},
                 #{sprint.endDate})
-        ON CONFLICT (id) DO UPDATE SET
-            name = #{sprint.name},
-            start_date = #{sprint.startDate},
-            end_date = #{sprint.endDate}
+        ON CONFLICT (id) DO NOTHING;
     </insert>
 
 
-    <update id="updateUserAvatar">
+    <update id="updateUser">
         UPDATE wsuser
-        SET avatar = #{avatar}
-        WHERE id = #{id}
+        SET login      = #{user.login},
+            email      = #{user.email},
+            first_name = #{user.firstName},
+            last_name  = #{user.lastName},
+            password   = #{user.password},
+            roles      = #{user.roles},
+            avatar     = #{user.avatar}
+        WHERE id = #{user.id}
+    </update>
+
+    <update id="updateProject">
+        UPDATE project
+        SET name       = #{project.name},
+            start_date = #{project.startDate},
+            end_date   = #{project.endDate},
+            repository = #{project.repository},
+            is_active  = #{project.isActive}
+        WHERE id = #{project.id}
+    </update>
+
+    <update id="updateContributor">
+        UPDATE contributor
+        SET user_id    = #{contributor.userId},
+            project_id = #{contributor.projectId},
+            is_owner   = #{contributor.isOwner},
+            is_active  = #{contributor.isActive}
+        WHERE id = #{contributor.id}
+    </update>
+
+    <update id="updateSprint">
+        UPDATE sprint
+        SET name       = #{sprint.name},
+            start_date = #{sprint.startDate},
+            end_date   = #{sprint.endDate}
+        WHERE id = #{sprint.id}
+    </update>
+
+    <update id="updateTask" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+        UPDATE task
+        SET contributor_id  = #{task.contributorId},
+            dev_ops_enabled = #{task.devOpsEnabled},
+            story_points    = #{task.storyPoints},
+            end_date        = #{task.endDate},
+            task_state      = #{task.taskState},
+            prev_state      = #{task.prevState}
+        WHERE id = #{task.id}
     </update>
 
     <update id="updateTaskSprint">
@@ -151,25 +176,6 @@
         SET sprint_id = #{sprintId}
         WHERE id = #{id}
     </update>
-
-    <update id="updateTaskStoryPoints">
-        UPDATE task
-        SET story_points = #{storyPoints}
-        WHERE id = #{id}
-    </update>
-
-    <update id="updateTaskEndDate">
-        UPDATE task
-        SET end_date = #{endDate}
-        WHERE id = #{id}
-    </update>
-
-    <update id="updateTaskState">
-        UPDATE task
-        SET task_state = #{taskState}, prev_state = #{prevState}
-        WHERE id = #{id}
-    </update>
-
 
     <select id="getUserByLogin" resultMap="userMap">
         SELECT *
@@ -369,7 +375,6 @@
         DELETE FROM
         <include refid="contributorTable"/>
     </delete>
-
 
 
     <delete id="deleteTasks">
