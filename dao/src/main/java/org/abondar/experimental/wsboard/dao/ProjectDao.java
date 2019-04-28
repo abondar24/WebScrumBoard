@@ -1,8 +1,8 @@
-package org.abondar.experimental.wsboard.base.data.dao;
+package org.abondar.experimental.wsboard.dao;
 
-import org.abondar.experimental.wsboard.base.data.DataMapper;
-import org.abondar.experimental.wsboard.base.data.ErrorMessageUtil;
-import org.abondar.experimental.wsboard.base.data.ObjectWrapper;
+import org.abondar.experimental.wsboard.dao.data.DataMapper;
+import org.abondar.experimental.wsboard.dao.data.ErrorMessageUtil;
+import org.abondar.experimental.wsboard.dao.data.ObjectWrapper;
 import org.abondar.experimental.wsboard.datamodel.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

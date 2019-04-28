@@ -1,4 +1,4 @@
-package org.abondar.experimental.wsboard.base.data;
+package org.abondar.experimental.wsboard.dao.data;
 
 public class ObjectWrapper<T> {
 

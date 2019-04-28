@@ -1,20 +1,19 @@
-package org.abondar.experimental.wsboard.base.config;
+package org.abondar.experimental.wsboard.dao.config;
 
-import org.abondar.experimental.wsboard.base.data.DataMapper;
-import org.abondar.experimental.wsboard.base.data.dao.BaseDao;
-import org.abondar.experimental.wsboard.base.data.dao.ContributorDao;
-import org.abondar.experimental.wsboard.base.data.dao.ProjectDao;
-import org.abondar.experimental.wsboard.base.data.dao.SprintDao;
-import org.abondar.experimental.wsboard.base.data.dao.TaskDao;
-import org.abondar.experimental.wsboard.base.data.dao.UserDao;
+import org.abondar.experimental.wsboard.dao.BaseDao;
+import org.abondar.experimental.wsboard.dao.ContributorDao;
+import org.abondar.experimental.wsboard.dao.ProjectDao;
+import org.abondar.experimental.wsboard.dao.SprintDao;
+import org.abondar.experimental.wsboard.dao.TaskDao;
+import org.abondar.experimental.wsboard.dao.UserDao;
+import org.abondar.experimental.wsboard.dao.data.DataMapper;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class BaseConfig {
-
+public class DaoConfig {
     @Bean
     public DataMapper mapper(SqlSessionFactory sqlSessionFactory) {
         SqlSessionTemplate sessionTemplate = new SqlSessionTemplate(sqlSessionFactory);

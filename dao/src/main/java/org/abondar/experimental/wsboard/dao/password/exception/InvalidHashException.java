@@ -1,4 +1,4 @@
-package org.abondar.experimental.wsboard.base.password.exception;
+package org.abondar.experimental.wsboard.dao.password.exception;
 
 @SuppressWarnings("serial")
 public class InvalidHashException extends Exception{

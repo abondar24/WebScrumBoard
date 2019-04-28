@@ -23,6 +23,7 @@
         <module>webService</module>
         <module>email</module>
         <module>ui</module>
+        <module>dao</module>
     </modules>
 
     <dependencyManagement>
@@ -132,7 +133,7 @@
                         </goals>
                         <configuration>
                             <classifier>exec</classifier>
-                            <mainClass>org.abondar.experimental.wsboard.base.Main</mainClass>
+                            <mainClass>Main</mainClass>
                         </configuration>
                     </execution>
                 </executions>
