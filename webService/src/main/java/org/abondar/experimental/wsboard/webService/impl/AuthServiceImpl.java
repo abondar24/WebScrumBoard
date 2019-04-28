@@ -1,9 +1,10 @@
 package org.abondar.experimental.wsboard.webService.impl;
 
-import org.abondar.experimental.wsboard.base.password.exception.CannotPerformOperationException;
-import org.abondar.experimental.wsboard.base.password.exception.InvalidHashException;
-import org.abondar.experimental.wsboard.base.password.exception.InvalidPasswordException;
 import org.abondar.experimental.wsboard.dao.data.DataMapper;
+import org.abondar.experimental.wsboard.dao.password.PasswordUtil;
+import org.abondar.experimental.wsboard.dao.password.exception.CannotPerformOperationException;
+import org.abondar.experimental.wsboard.dao.password.exception.InvalidHashException;
+import org.abondar.experimental.wsboard.dao.password.exception.InvalidPasswordException;
 import org.abondar.experimental.wsboard.datamodel.User;
 import org.abondar.experimental.wsboard.webService.service.AuthService;
 import org.apache.cxf.common.util.Base64Utility;
@@ -20,8 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-
-import static org.abondar.experimental.wsboard.base.password.PasswordUtil.verifyPassword;
 
 public class AuthServiceImpl implements AuthService {
     @Autowired
@@ -78,7 +77,7 @@ public class AuthServiceImpl implements AuthService {
         }
         if (user.getPassword().startsWith("sha1:64000")) {
             try {
-                if (!verifyPassword(password, user.getPassword())) {
+                if (!PasswordUtil.verifyPassword(password, user.getPassword())) {
                     throw new InvalidPasswordException("Password verification failed!");
                 }
             } catch (CannotPerformOperationException | InvalidHashException ex) {

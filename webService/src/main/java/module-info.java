@@ -20,9 +20,9 @@ module org.abondar.experimental.wsboard.webService {
     requires com.fasterxml.jackson.databind;
     requires com.fasterxml.jackson.jaxrs.json;
     requires java.ws.rs;
-    requires tomcat.embed.core;
+    requires javax.servlet.api;
 
-    //exports org.abondar.experimental.wsboard.webService.config;
-    //exports org.abondar.experimental.wsboard.webService.service;
-    //exports org.abondar.experimental.wsboard.webService.security;
+    exports org.abondar.experimental.wsboard.webService.config;
+    exports org.abondar.experimental.wsboard.webService.service;
+    exports org.abondar.experimental.wsboard.webService.security;
 }

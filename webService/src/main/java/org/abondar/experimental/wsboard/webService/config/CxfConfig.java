@@ -11,27 +11,22 @@ import org.abondar.experimental.wsboard.webService.service.RestService;
 import org.apache.cxf.Bus;
 import org.apache.cxf.bus.spring.SpringBus;
 import org.apache.cxf.endpoint.Server;
-import org.apache.cxf.ext.logging.LoggingOutInterceptor;
 import org.apache.cxf.interceptor.security.SecureAnnotationsInterceptor;
 import org.apache.cxf.jaxrs.JAXRSServerFactoryBean;
 import org.apache.cxf.jaxrs.swagger.Swagger2Feature;
 import org.apache.cxf.rs.security.jose.jwa.SignatureAlgorithm;
 import org.apache.cxf.rs.security.jose.jws.HmacJwsSignatureVerifier;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.PreferencesPlaceholderConfigurer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.ImportResource;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
-@ImportResource({"classpath:META-INF/cxf/cxf.xml"})
 public class CxfConfig implements WebMvcConfigurer {
 
     @Value("${cxf.jwt.signature}")
@@ -58,19 +53,18 @@ public class CxfConfig implements WebMvcConfigurer {
     }
 
 
-    @Autowired
     @Bean
     public Server jaxRsServer(JacksonJsonProvider jsonProvider, AuthService authService) {
 
 
         JAXRSServerFactoryBean factory = new JAXRSServerFactoryBean();
         factory.setBus(springBus());
-        factory.setServiceBean(restService(authService));
+        // factory.setServiceBean(restService(authService));
 
         factory.setProvider(jsonProvider);
-        factory.setProvider(authenticationFilter(authService));
-        factory.setInInterceptors(Arrays.asList(new LoggingOutInterceptor(), secureAnnotationsInterceptor()));
-        factory.setOutInterceptors(Collections.singletonList(new LoggingOutInterceptor()));
+        //factory.setProvider(authenticationFilter(authService));
+        //factory.setInInterceptors(Arrays.asList(new LoggingOutInterceptor(), secureAnnotationsInterceptor()));
+        //factory.setOutInterceptors(Collections.singletonList(new LoggingOutInterceptor()));
 
         factory.setFeatures(Collections.singletonList(createSwaggerFeature()));
         Map<Object, Object> extMappings = new HashMap<>();
@@ -79,7 +73,7 @@ public class CxfConfig implements WebMvcConfigurer {
         Map<Object, Object> langMappings = new HashMap<>();
         langMappings.put("en", "en-gb");
         factory.setLanguageMappings(langMappings);
-        factory.setAddress("/todo_list");
+        factory.setAddress("/wsboard");
 
         return factory.create();
     }
@@ -98,8 +92,8 @@ public class CxfConfig implements WebMvcConfigurer {
     public Swagger2Feature createSwaggerFeature() {
         Swagger2Feature swagger2Feature = new Swagger2Feature();
         swagger2Feature.setPrettyPrint(true);
-        swagger2Feature.setHost("localhost:8080");
-        swagger2Feature.setBasePath("/cxf/todo_list");
+        swagger2Feature.setHost("localhost:8024");
+        swagger2Feature.setBasePath("/cxf/wsboard");
         return swagger2Feature;
     }
 

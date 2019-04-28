@@ -11,5 +11,6 @@ module org.abondar.experimental.wsboard.dao {
     exports org.abondar.experimental.wsboard.dao.config;
     exports org.abondar.experimental.wsboard.dao.data;
     exports org.abondar.experimental.wsboard.dao.password;
+    exports org.abondar.experimental.wsboard.dao.password.exception;
     exports org.abondar.experimental.wsboard.dao;
 }

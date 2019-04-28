@@ -14,11 +14,10 @@
     <dependencies>
         <dependency>
             <groupId>org.abondar.experimental.wsboard</groupId>
-            <artifactId>dao</artifactId>
+            <artifactId>webService</artifactId>
             <version>1.0</version>
             <scope>compile</scope>
         </dependency>
-
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
