@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.PreferencesPlaceholderConfigurer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.Collections;
@@ -27,6 +28,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
+@Component
 public class CxfConfig implements WebMvcConfigurer {
 
     @Value("${cxf.jwt.signature}")
