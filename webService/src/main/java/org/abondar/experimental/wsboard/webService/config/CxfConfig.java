@@ -61,7 +61,7 @@ public class CxfConfig implements WebMvcConfigurer {
 
         JAXRSServerFactoryBean factory = new JAXRSServerFactoryBean();
         factory.setBus(springBus());
-        // factory.setServiceBean(restService(authService));
+        factory.setServiceBean(restService(authService));
 
         factory.setProvider(jsonProvider);
         //factory.setProvider(authenticationFilter(authService));
