@@ -11,6 +11,11 @@ import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
+/**
+ * Interface for mybatis mapper
+ *
+ * @author a.bondar
+ */
 @Mapper
 public interface DataMapper {
     void insertUser(@Param("user") User user);

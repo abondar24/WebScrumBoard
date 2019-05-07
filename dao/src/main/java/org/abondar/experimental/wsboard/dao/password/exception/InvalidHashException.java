@@ -1,7 +1,12 @@
 package org.abondar.experimental.wsboard.dao.password.exception;
 
 @SuppressWarnings("serial")
-public class InvalidHashException extends Exception{
+/**
+ *
+ * Exception thrown if hash is wrong
+ * @author a.bondar
+ */
+public class InvalidHashException extends Exception {
 
     public InvalidHashException(String message) {
         super(message);

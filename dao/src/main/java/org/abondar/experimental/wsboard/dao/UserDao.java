@@ -4,6 +4,8 @@ import org.abondar.experimental.wsboard.dao.data.DataMapper;
 import org.abondar.experimental.wsboard.dao.data.ErrorMessageUtil;
 import org.abondar.experimental.wsboard.dao.data.ObjectWrapper;
 import org.abondar.experimental.wsboard.dao.password.PasswordUtil;
+import org.abondar.experimental.wsboard.dao.password.exception.CannotPerformOperationException;
+import org.abondar.experimental.wsboard.dao.password.exception.InvalidHashException;
 import org.abondar.experimental.wsboard.datamodel.User;
 import org.abondar.experimental.wsboard.datamodel.UserRole;
 import org.slf4j.Logger;
@@ -12,6 +14,11 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Data access object for user
+ *
+ * @author a.bondar
+ */
 public class UserDao extends BaseDao {
 
 
@@ -25,8 +32,20 @@ public class UserDao extends BaseDao {
         this.contributorDao = (ContributorDao) contributorDao;
     }
 
+    /**
+     * Create a new user
+     *
+     * @param login     - user login
+     * @param password  - user password
+     * @param email     - user email
+     * @param firstName - user first name
+     * @param lastName  - user last name
+     * @param roles     - list of user roles
+     * @return Object wrapper with user POJO or Object wrapper with error message
+     * @throws CannotPerformOperationException - password hash creation failed
+     */
     public ObjectWrapper<User> createUser(String login, String password, String email, String firstName,
-                                          String lastName, List<String> roles) throws Exception {
+                                          String lastName, List<String> roles) throws CannotPerformOperationException {
         ObjectWrapper<User> res = new ObjectWrapper<>();
         var usr = mapper.getUserByLogin(login);
 
@@ -56,6 +75,13 @@ public class UserDao extends BaseDao {
         return res;
     }
 
+    /**
+     * Update user login
+     * @param login - user login
+     * @param userId - user id
+     *
+     * @return Object wrapper with updated user POJO or Object wrapper with error message
+     */
     public ObjectWrapper<User> updateLogin(String login, long userId) {
         ObjectWrapper<User> res = new ObjectWrapper<>();
         if (login.isBlank()) {
@@ -90,7 +116,18 @@ public class UserDao extends BaseDao {
         return res;
     }
 
-    public ObjectWrapper<User> updatePassword(String oldPassword, String newPassword, long userId) throws Exception {
+    /**
+     * Update user password
+     *
+     * @param oldPassword - user password to be changed
+     * @param newPassword - user new password
+     * @param userId      - user id
+     * @return Object wrapper with updated user POJO or Object wrapper with error message
+     * @throws CannotPerformOperationException - password hash creation failed
+     * @throws InvalidHashException            - old user password doesn't match the one in db
+     */
+    public ObjectWrapper<User> updatePassword(String oldPassword, String newPassword, long userId)
+            throws CannotPerformOperationException, InvalidHashException {
         ObjectWrapper<User> res = new ObjectWrapper<>();
 
         var usr = mapper.getUserById(userId);
@@ -114,6 +151,17 @@ public class UserDao extends BaseDao {
         return res;
     }
 
+    /**
+     * Update user data
+     * @param id - user id
+     * @param firstName - user first name
+     * @param lastName - user last name
+     * @param email - user email
+     * @param roles - list of user roles
+     * @param avatar - user avatar
+     *
+     * @return Object wrapper with updated user POJO or Object wrapper with error message
+     */
     public ObjectWrapper<User> updateUser(Long id, String firstName,
                                           String lastName, String email,
                                           List<String> roles, byte[] avatar) {
@@ -155,7 +203,12 @@ public class UserDao extends BaseDao {
         return res;
     }
 
-
+    /**
+     * Mark user as deleted and set all its data as 'deleted'
+     * @param id - user id
+     *
+     * @return Object wrapper with updated user POJO or Object wrapper with error message
+     */
     public ObjectWrapper<User> deleteUser(Long id) {
         ObjectWrapper<User> res = new ObjectWrapper<>();
 
@@ -196,7 +249,17 @@ public class UserDao extends BaseDao {
         return res;
     }
 
-    public String loginUser(String login, String password) throws Exception {
+    /**
+     * Perform user log in
+     *
+     * @param login    - user login
+     * @param password - user password
+     * @return error message or empty string
+     * @throws CannotPerformOperationException - password hash decoding failed
+     * @throws InvalidHashException            - password doesn't match the one in db
+     */
+    public String loginUser(String login, String password)
+            throws CannotPerformOperationException, InvalidHashException {
 
         var usr = mapper.getUserByLogin(login);
         if (usr == null) {
@@ -214,6 +277,12 @@ public class UserDao extends BaseDao {
         return "";
     }
 
+    /**
+     * Perform user log out
+     * @param id - user login
+     *
+     * @return error message or empty string
+     */
     public String logoutUser(long id) {
 
         var usr = mapper.getUserById(id);
@@ -226,6 +295,12 @@ public class UserDao extends BaseDao {
         return "";
     }
 
+    /**
+     * Check if role exists in the list of available roles
+     * @param role - user role
+     *
+     * @return true if exists, or false doesn't
+     */
     private boolean containsRole(String role) {
         for (UserRole r : UserRole.values()) {
             if (r.name().equals(role)) {

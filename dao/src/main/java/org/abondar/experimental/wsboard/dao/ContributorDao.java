@@ -10,6 +10,11 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
+/**
+ * Data access object for contributor
+ *
+ * @author a.bondar
+ */
 public class ContributorDao extends BaseDao {
 
     private static Logger logger = LoggerFactory.getLogger(ContributorDao.class);
@@ -19,7 +24,14 @@ public class ContributorDao extends BaseDao {
         super(mapper);
     }
 
-
+    /**
+     * Create a new contributor
+     *
+     * @param userId    - user id
+     * @param projectId - project id to be assigned to
+     * @param isOwner   - is contributor a project owner?
+     * @return Object wrapper with contributor POJO or with error message
+     */
     public ObjectWrapper<Contributor> createContributor(long userId, long projectId, boolean isOwner) {
         ObjectWrapper<Contributor> res = new ObjectWrapper<>();
 
@@ -64,6 +76,14 @@ public class ContributorDao extends BaseDao {
         return res;
     }
 
+    /**
+     * Update an existing contributor
+     *
+     * @param contributorId - contributor id
+     * @param isOwner       - is contributor a project owner?
+     * @param isActive      - is contributor currently working on a project?
+     * @return Object wrapper with contributor POJO or with error message
+     */
     public ObjectWrapper<Contributor> updateContributor(long contributorId, Boolean isOwner, Boolean isActive) {
         ObjectWrapper<Contributor> res = new ObjectWrapper<>();
 
@@ -107,7 +127,12 @@ public class ContributorDao extends BaseDao {
         return res;
     }
 
-
+    /**
+     * Find a contributor who is a project owner
+     *
+     * @param projectId - project id
+     * @return Object wrapper with contributor POJO or with error message
+     */
     public ObjectWrapper<User> findProjectOwner(long projectId) {
         ObjectWrapper<User> res = new ObjectWrapper<>();
 
@@ -131,6 +156,14 @@ public class ContributorDao extends BaseDao {
         return res;
     }
 
+    /**
+     * Find the list of users who are project contributors with offset and limit
+     *
+     * @param projectId - project id
+     * @param offset    - beginning of the list
+     * @param limit     - end of the list
+     * @return Object wrapper with contributor POJO list or with error message
+     */
     public ObjectWrapper<List<User>> findProjectContributors(long projectId, int offset, int limit) {
         ObjectWrapper<List<User>> res = new ObjectWrapper<>();
 

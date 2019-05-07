@@ -18,7 +18,11 @@ import static org.abondar.experimental.wsboard.datamodel.UserRole.DevOps;
 import static org.abondar.experimental.wsboard.datamodel.UserRole.Developer;
 import static org.abondar.experimental.wsboard.datamodel.UserRole.QA;
 
-
+/**
+ * Data access object for task
+ *
+ * @author a.bondar
+ */
 public class TaskDao extends BaseDao {
 
     private static Logger logger = LoggerFactory.getLogger(TaskDao.class);
@@ -32,6 +36,14 @@ public class TaskDao extends BaseDao {
         this.stateMoves = initMoves();
     }
 
+    /**
+     * Create a new task
+     *
+     * @param contributorId - contributor id
+     * @param startDate     - start date of task
+     * @param devOpsEnabled - dev ops state to be ignored or not
+     * @return Object wrapper with task POJO or with error message
+     */
     public ObjectWrapper<Task> createTask(long contributorId, Date startDate, boolean devOpsEnabled) {
         ObjectWrapper<Task> res = new ObjectWrapper<>();
         var ctr = mapper.getContributorById(contributorId);
@@ -66,6 +78,16 @@ public class TaskDao extends BaseDao {
         return res;
     }
 
+
+    /**
+     * Create existing task
+     *
+     * @param taskId        - task id
+     * @param contributorId - contributor id
+     * @param devOpsEnabled - dev ops state to be ignored or not
+     * @param storyPoints   - task story points
+     * @return Object wrapper with task POJO or with error message
+     */
     public ObjectWrapper<Task> updateTask(long taskId, Long contributorId, Boolean devOpsEnabled, Integer storyPoints) {
         ObjectWrapper<Task> res = new ObjectWrapper<>();
 
@@ -110,6 +132,13 @@ public class TaskDao extends BaseDao {
         return res;
     }
 
+    /**
+     * Set a sprint to a task
+     *
+     * @param taskId   - task id
+     * @param sprintId - sprint id
+     * @return Object wrapper with task POJO or with error message
+     */
     public ObjectWrapper<Task> updateTaskSprint(long taskId, long sprintId) {
         ObjectWrapper<Task> res = new ObjectWrapper<>();
 
@@ -136,6 +165,13 @@ public class TaskDao extends BaseDao {
     }
 
 
+    /**
+     * Update state of task
+     *
+     * @param taskId - task id
+     * @param state  - new state
+     * @return Object wrapper with task POJO or with error message
+     */
     public ObjectWrapper<Task> updateTaskState(long taskId, String state) {
         ObjectWrapper<Task> res = new ObjectWrapper<>();
 
@@ -221,6 +257,12 @@ public class TaskDao extends BaseDao {
     }
 
 
+    /**
+     * Delete(hard) task
+     *
+     * @param id - task id
+     * @return true if task deleted , false if error
+     */
     public boolean deleteTask(long id) {
 
         if (mapper.getTaskById(id) == null) {
@@ -233,6 +275,12 @@ public class TaskDao extends BaseDao {
         return true;
     }
 
+    /**
+     * Find task by id
+     *
+     * @param taskId - task id
+     * @return Object wrapper with task POJO or with error message
+     */
     public ObjectWrapper<Task> getTaskById(long taskId) {
         ObjectWrapper<Task> res = new ObjectWrapper<>();
 
@@ -249,6 +297,14 @@ public class TaskDao extends BaseDao {
     }
 
 
+    /**
+     * Get the list of tasks for project with offset and limit
+     *
+     * @param projectId - project id
+     * @param offset    - start of list
+     * @param limit     - list size
+     * @return Object wrapper with task POJO list or with error message
+     */
     public ObjectWrapper<List<Task>> getTasksForProject(long projectId, int offset, int limit) {
         ObjectWrapper<List<Task>> res = new ObjectWrapper<>();
 
@@ -266,6 +322,14 @@ public class TaskDao extends BaseDao {
         return res;
     }
 
+    /**
+     * Get the list of tasks of contributor with offset and limit
+     *
+     * @param ctrId  - contributor id
+     * @param offset - start of list
+     * @param limit  - list size
+     * @return Object wrapper with task POJO list or with error message
+     */
     public ObjectWrapper<List<Task>> getTasksForContributor(long ctrId, int offset, int limit) {
         ObjectWrapper<List<Task>> res = new ObjectWrapper<>();
 
@@ -283,6 +347,14 @@ public class TaskDao extends BaseDao {
         return res;
     }
 
+    /**
+     * Get the list of tasks for user with offset and limit
+     *
+     * @param usrId  - user id
+     * @param offset - start of list
+     * @param limit  - list size
+     * @return Object wrapper with task POJO list or with error message
+     */
     public ObjectWrapper<List<Task>> getTasksForUser(long usrId, int offset, int limit) {
         ObjectWrapper<List<Task>> res = new ObjectWrapper<>();
 
@@ -300,6 +372,14 @@ public class TaskDao extends BaseDao {
         return res;
     }
 
+    /**
+     * Get the list of tasks for sprint with offset and limit
+     *
+     * @param sprintId - sprint id
+     * @param offset   - start of list
+     * @param limit    - list size
+     * @return Object wrapper with task POJO or with error message
+     */
     public ObjectWrapper<List<Task>> getTasksForSprint(long sprintId, int offset, int limit) {
         ObjectWrapper<List<Task>> res = new ObjectWrapper<>();
 
@@ -318,6 +398,11 @@ public class TaskDao extends BaseDao {
     }
 
 
+    /**
+     * Map each task state to the list of available states it can be moved to
+     *
+     * @return Map of states and available moves
+     */
     private Map<TaskState, List<TaskState>> initMoves() {
         Map<TaskState, List<TaskState>> stateMoves = new HashMap<>();
 
@@ -344,7 +429,11 @@ public class TaskDao extends BaseDao {
         return stateMoves;
     }
 
-
+    /**
+     * Checkk if current role can work with current state
+     *
+     * @return true - can work, false - can't work
+     */
     private boolean stateMatches(TaskState state, String roles) {
         var rolesList = List.of(roles.split(";"));
 

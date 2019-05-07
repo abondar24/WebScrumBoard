@@ -1,5 +1,10 @@
 package org.abondar.experimental.wsboard.dao.data;
 
+/**
+ * List of error messages
+ *
+ * @author a.bondar
+ */
 public class ErrorMessageUtil {
 
     public static final String USER_EXISTS = "User with login already exists";

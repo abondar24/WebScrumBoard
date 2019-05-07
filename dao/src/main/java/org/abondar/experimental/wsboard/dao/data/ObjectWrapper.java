@@ -1,5 +1,12 @@
 package org.abondar.experimental.wsboard.dao.data;
 
+/**
+ * Wrapper returned by data access objects
+ * Contains message and POJO
+ *
+ * @author a.bondar
+ */
+
 public class ObjectWrapper<T> {
 
     private String message;

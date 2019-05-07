@@ -9,7 +9,11 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Date;
 
-
+/**
+ * Data access object for project
+ *
+ * @author a.bondar
+ */
 public class ProjectDao extends BaseDao {
 
     private static Logger logger = LoggerFactory.getLogger(ProjectDao.class);
@@ -20,6 +24,13 @@ public class ProjectDao extends BaseDao {
     }
 
 
+    /**
+     * Create a new project
+     *
+     * @param name      - project name
+     * @param startDate - project start date
+     * @return Object wrapper with project pojo or with error message
+     */
     public ObjectWrapper<Project> createProject(String name, Date startDate) {
         ObjectWrapper<Project> res = new ObjectWrapper<>();
         var prj = mapper.getProjectByName(name);
@@ -40,6 +51,16 @@ public class ProjectDao extends BaseDao {
         return res;
     }
 
+    /**
+     * Update an existing project
+     *
+     * @param id       - project id
+     * @param name     - project name
+     * @param repo     - project git repository
+     * @param isActive - project currently active
+     * @param endDate  - project end date
+     * @return Object wrapper with project pojo or with error message
+     */
     public ObjectWrapper<Project> updateProject(Long id, String name, String repo,
                                                 Boolean isActive, Date endDate) {
         ObjectWrapper<Project> res = new ObjectWrapper<>();
@@ -55,14 +76,14 @@ public class ProjectDao extends BaseDao {
             prj.setName(name);
         }
 
-        if (repo!=null && !repo.isBlank()){
+        if (repo != null && !repo.isBlank()) {
             prj.setName(name);
         }
 
-        if (isActive!=null){
+        if (isActive != null) {
             prj.setActive(isActive);
-            if (!isActive){
-                if (endDate!=null && !prj.getStartDate().after(endDate)){
+            if (!isActive) {
+                if (endDate != null && !prj.getStartDate().after(endDate)) {
                     prj.setEndDate(endDate);
                 } else {
                     res.setMessage(ErrorMessageUtil.PROJECT_WRONG_END_DATE);
@@ -78,6 +99,12 @@ public class ProjectDao extends BaseDao {
         return res;
     }
 
+    /**
+     * Delete a project
+     *
+     * @param id - project id
+     * @return Object wrapper with project id or with error message
+     */
     public ObjectWrapper<Long> deleteProject(Long id) {
         ObjectWrapper<Long> res = new ObjectWrapper<>();
         var prj = mapper.getProjectById(id);
@@ -96,6 +123,12 @@ public class ProjectDao extends BaseDao {
     }
 
 
+    /**
+     * Find a project by id
+     *
+     * @param id - project id
+     * @return Object wrapper with project pojo or with error message
+     */
     public ObjectWrapper<Project> findProjectById(long id) {
         ObjectWrapper<Project> res = new ObjectWrapper<>();
         var prj = mapper.getProjectById(id);

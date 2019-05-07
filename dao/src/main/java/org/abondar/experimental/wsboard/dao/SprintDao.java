@@ -10,6 +10,11 @@ import org.slf4j.LoggerFactory;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Data access object for sprint
+ *
+ * @author a.bondar
+ */
 public class SprintDao extends BaseDao {
 
     private static Logger logger = LoggerFactory.getLogger(SprintDao.class);
@@ -19,6 +24,14 @@ public class SprintDao extends BaseDao {
     }
 
 
+    /**
+     * Create a new sprint
+     *
+     * @param name      - sprint name
+     * @param startDate - sprint start date
+     * @param endDate   - sprint end date
+     * @return Object wrapper with sprint POJO or with error message
+     */
     public ObjectWrapper<Sprint> createSprint(String name, Date startDate, Date endDate) {
         ObjectWrapper<Sprint> res = new ObjectWrapper<>();
 
@@ -39,6 +52,15 @@ public class SprintDao extends BaseDao {
         return res;
     }
 
+    /**
+     * Update existing sprint
+     *
+     * @param sprintId  - sprint id
+     * @param name      - sprint name
+     * @param startDate - sprint start date
+     * @param endDate   - sprint end date
+     * @return Object wrapper with sprint POJO or with error message
+     */
     public ObjectWrapper<Sprint> updateSprint(long sprintId, String name, Date startDate, Date endDate) {
         ObjectWrapper<Sprint> res = new ObjectWrapper<>();
 
@@ -77,6 +99,12 @@ public class SprintDao extends BaseDao {
         return res;
     }
 
+    /**
+     * Find a sprint by id
+     *
+     * @param sprintId - sprint id
+     * @return Object wrapper with sprint POJO or with error message
+     */
     public ObjectWrapper<Sprint> getSprintById(long sprintId) {
         ObjectWrapper<Sprint> res = new ObjectWrapper<>();
 
@@ -94,7 +122,13 @@ public class SprintDao extends BaseDao {
         return res;
     }
 
-
+    /**
+     * Get the list of sprints with offset and limit
+     *
+     * @param offset - start of list
+     * @param limit  - list size
+     * @return Object wrapper with sprint POJO list or with error message
+     */
     public ObjectWrapper<List<Sprint>> getSprints(int offset, int limit) {
         ObjectWrapper<List<Sprint>> res = new ObjectWrapper<>();
 
@@ -106,7 +140,12 @@ public class SprintDao extends BaseDao {
         return res;
     }
 
-
+    /**
+     * Delete a sprint
+     *
+     * @param sprintId - sprint id
+     * @return true if sprint deleted, false if error
+     */
     public boolean deleteSprint(long sprintId) {
 
         var sprint = mapper.getSprintById(sprintId);

@@ -12,6 +12,11 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * Data access objects configuration class
+ *
+ * @author a.bondar
+ */
 @Configuration
 public class DaoConfig {
     @Bean
