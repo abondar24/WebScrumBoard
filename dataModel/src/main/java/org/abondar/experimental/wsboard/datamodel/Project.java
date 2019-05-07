@@ -2,18 +2,23 @@ package org.abondar.experimental.wsboard.datamodel;
 
 import java.util.Date;
 
+/**
+ * POJO for Project data model
+ *
+ * @author a.bondar
+ */
 public class Project {
 
-   private long id;
-   private String name;
-   private Date startDate;
-   private Date endDate;
-   private String repository;
-   private boolean isActive;
+    private long id;
+    private String name;
+    private Date startDate;
+    private Date endDate;
+    private String repository;
+    private boolean isActive;
 
-   public Project(){
+    public Project(){
 
-   }
+    }
 
     public Project(String name, Date startDate) {
         this.name = name;

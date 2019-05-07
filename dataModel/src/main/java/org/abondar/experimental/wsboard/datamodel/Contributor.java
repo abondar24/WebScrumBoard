@@ -1,5 +1,9 @@
 package org.abondar.experimental.wsboard.datamodel;
 
+/*
+ * POJO for Contributor data model
+ * @author a.bondar
+ */
 public class Contributor {
 
     private long id;

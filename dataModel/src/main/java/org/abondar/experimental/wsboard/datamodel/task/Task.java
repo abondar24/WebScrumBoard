@@ -2,7 +2,11 @@ package org.abondar.experimental.wsboard.datamodel.task;
 
 import java.util.Date;
 
-
+/**
+ * POJO for Task data model
+ *
+ * @author a.bondar
+ */
 public class Task {
 
     private long id;

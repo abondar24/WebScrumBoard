@@ -1,5 +1,10 @@
 package org.abondar.experimental.wsboard.datamodel;
 
+/**
+ * POJO for User data model
+ *
+ * @author a.bondar
+ */
 public class User {
 
     private long id;

@@ -2,6 +2,11 @@ package org.abondar.experimental.wsboard.datamodel;
 
 import java.util.Date;
 
+/**
+ * POJO for Sprint data model
+ *
+ * @author a.bondar
+ */
 public class Sprint {
 
     private long id;
