@@ -1,4 +1,4 @@
-package org.abondar.experimental.wsboard.dao.password.exception;
+package org.abondar.experimental.wsboard.dao.exception;
 
 @SuppressWarnings("serial")
 /**

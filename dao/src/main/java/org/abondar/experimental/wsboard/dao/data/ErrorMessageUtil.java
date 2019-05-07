@@ -32,6 +32,7 @@ public class ErrorMessageUtil {
     public static final String TASK_MOVE_NOT_AVAILABLE = "Task can't be moved to selected state";
     public static final String SPRINT_EXISTS = "Sprint with such name exists";
     public static final String SPRINT_NOT_EXISTS = "Sprint not found";
+    public static final String BLANK_DATA = "Data for creation or updating is empty";
 
     private ErrorMessageUtil(){}
 

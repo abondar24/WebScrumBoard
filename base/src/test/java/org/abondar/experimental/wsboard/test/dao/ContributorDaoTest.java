@@ -58,7 +58,7 @@ public class ContributorDaoTest {
         var usr = createUser();
         var prj = createProject(true);
 
-        var contr = contributorDao.createContributor(usr.getObject().getId(), prj.getObject().getId(), true);
+        var contr = contributorDao.createContributor(usr.getId(), prj.getObject().getId(), true);
 
         assertNull(contr.getMessage());
         assertTrue(contr.getObject().getId() > 0);
@@ -74,7 +74,7 @@ public class ContributorDaoTest {
         var usr = createUser();
         var prj = createProject(true);
 
-        var contr = contributorDao.createContributor(usr.getObject().getId(), prj.getObject().getId(), false);
+        var contr = contributorDao.createContributor(usr.getId(), prj.getObject().getId(), false);
 
         assertNull(contr.getMessage());
         assertTrue(contr.getObject().getId() > 0);
@@ -90,7 +90,7 @@ public class ContributorDaoTest {
         var usr = createUser();
         var prj = createProject(false);
 
-        var contr = contributorDao.createContributor(usr.getObject().getId(), prj.getObject().getId(), false);
+        var contr = contributorDao.createContributor(usr.getId(), prj.getObject().getId(), false);
 
         assertEquals(ErrorMessageUtil.PROJECT_NOT_ACTIVE, contr.getMessage());
         assertNull(contr.getObject());
@@ -105,8 +105,8 @@ public class ContributorDaoTest {
         var usr = createUser();
         var prj = createProject(true);
 
-        var contr = contributorDao.createContributor(usr.getObject().getId(), prj.getObject().getId(), true);
-        contr = contributorDao.createContributor(usr.getObject().getId(), prj.getObject().getId(), true);
+        var contr = contributorDao.createContributor(usr.getId(), prj.getObject().getId(), true);
+        contr = contributorDao.createContributor(usr.getId(), prj.getObject().getId(), true);
 
         assertEquals(ErrorMessageUtil.PROJECT_HAS_OWNER, contr.getMessage());
         assertNull(contr.getObject());
@@ -122,7 +122,7 @@ public class ContributorDaoTest {
         var usr = createUser();
         var prj = createProject(true);
 
-        var contr = contributorDao.createContributor(usr.getObject().getId(), prj.getObject().getId(), false);
+        var contr = contributorDao.createContributor(usr.getId(), prj.getObject().getId(), false);
         var id = contr.getObject().getId();
         contr = contributorDao.updateContributor(contr.getObject().getId(), true, true);
 
@@ -151,7 +151,7 @@ public class ContributorDaoTest {
         var usr = createUser();
         var prj = createProject(true);
 
-        var contr = contributorDao.createContributor(usr.getObject().getId(), prj.getObject().getId(), true);
+        var contr = contributorDao.createContributor(usr.getId(), prj.getObject().getId(), true);
         contr = contributorDao.updateContributor(contr.getObject().getId(), true, true);
 
         assertEquals(ErrorMessageUtil.PROJECT_HAS_OWNER, contr.getMessage());
@@ -167,7 +167,7 @@ public class ContributorDaoTest {
         var usr = createUser();
         var prj = createProject(true);
 
-        var contr = contributorDao.createContributor(usr.getObject().getId(), prj.getObject().getId(), false);
+        var contr = contributorDao.createContributor(usr.getId(), prj.getObject().getId(), false);
         contr = contributorDao.updateContributor(contr.getObject().getId(), false, true);
 
         assertEquals(ErrorMessageUtil.PROJECT_HAS_NO_OWNER, contr.getMessage());
@@ -183,7 +183,7 @@ public class ContributorDaoTest {
         var usr = createUser();
         var prj = createProject(true);
 
-        var contr = contributorDao.createContributor(usr.getObject().getId(), prj.getObject().getId(), false);
+        var contr = contributorDao.createContributor(usr.getId(), prj.getObject().getId(), false);
         var id = contr.getObject().getId();
 
         contr = contributorDao.updateContributor(contr.getObject().getId(), null, null);
@@ -202,11 +202,11 @@ public class ContributorDaoTest {
         var usr = createUser();
         var prj = createProject(true);
 
-        contributorDao.createContributor(usr.getObject().getId(), prj.getObject().getId(), true);
+        contributorDao.createContributor(usr.getId(), prj.getObject().getId(), true);
 
         var ownr = contributorDao.findProjectOwner(prj.getObject().getId());
 
-        assertEquals(usr.getObject().getId(), ownr.getObject().getId());
+        assertEquals(usr.getId(), ownr.getObject().getId());
 
         cleanData();
     }
@@ -218,7 +218,7 @@ public class ContributorDaoTest {
         var usr = createUser();
         var prj = createProject(true);
 
-        contributorDao.createContributor(usr.getObject().getId(), prj.getObject().getId(), true);
+        contributorDao.createContributor(usr.getId(), prj.getObject().getId(), true);
         var contrs = contributorDao.findProjectContributors(prj.getObject().getId(), 0, 1);
 
         assertNull(contrs.getMessage());
@@ -229,7 +229,7 @@ public class ContributorDaoTest {
     }
 
 
-    private ObjectWrapper<User> createUser() throws Exception {
+    private User createUser() throws Exception {
         var login = "login";
         var email = "email@email.com";
         var password = "pwd";
