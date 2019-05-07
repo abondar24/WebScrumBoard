@@ -206,10 +206,10 @@ public class TaskDaoTest {
         var task = dao.createTask(contr.getObject().getId(), new Date(), true);
         var sprint = sprintDao.createSprint("test", new Date(), new Date());
 
-        var res = dao.updateTaskSprint(task.getObject().getId(), sprint.getObject().getId());
+        var res = dao.updateTaskSprint(task.getObject().getId(), sprint.getId());
 
         assertNull(res.getMessage());
-        assertEquals(sprint.getObject().getId(), res.getObject().getSprintId());
+        assertEquals(sprint.getId(), res.getObject().getSprintId());
 
         cleanData();
     }
@@ -422,7 +422,7 @@ public class TaskDaoTest {
 
         var task = dao.createTask(contr.getObject().getId(), new Date(), true);
         var sp = sprintDao.createSprint("test", new Date(), new Date());
-        dao.updateTaskSprint(task.getObject().getId(), sp.getObject().getId());
+        dao.updateTaskSprint(task.getObject().getId(), sp.getId());
 
 
         var res = dao.deleteTask(task.getObject().getId());
@@ -511,9 +511,9 @@ public class TaskDaoTest {
         var task = dao.createTask(contr.getObject().getId(), new Date(), true);
         var sprint = sprintDao.createSprint("test", new Date(), new Date());
 
-        task = dao.updateTaskSprint(task.getObject().getId(), sprint.getObject().getId());
+        task = dao.updateTaskSprint(task.getObject().getId(), sprint.getId());
 
-        var res = dao.getTasksForSprint(sprint.getObject().getId(), 0, 1);
+        var res = dao.getTasksForSprint(sprint.getId(), 0, 1);
 
         assertEquals(1, res.getObject().size());
         assertEquals(task.getObject().getId(), res.getObject().get(0).getId());

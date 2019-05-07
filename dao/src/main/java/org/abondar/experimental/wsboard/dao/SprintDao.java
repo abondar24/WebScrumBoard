@@ -2,7 +2,7 @@ package org.abondar.experimental.wsboard.dao;
 
 import org.abondar.experimental.wsboard.dao.data.DataMapper;
 import org.abondar.experimental.wsboard.dao.data.ErrorMessageUtil;
-import org.abondar.experimental.wsboard.dao.data.ObjectWrapper;
+import org.abondar.experimental.wsboard.dao.exception.DataExistenceException;
 import org.abondar.experimental.wsboard.datamodel.Sprint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,17 +30,16 @@ public class SprintDao extends BaseDao {
      * @param name      - sprint name
      * @param startDate - sprint start date
      * @param endDate   - sprint end date
-     * @return Object wrapper with sprint POJO or with error message
+     * @return sprint POJO
      */
-    public ObjectWrapper<Sprint> createSprint(String name, Date startDate, Date endDate) {
-        ObjectWrapper<Sprint> res = new ObjectWrapper<>();
+    public Sprint createSprint(String name, Date startDate, Date endDate) throws DataExistenceException {
+
 
         var sprint = mapper.getSprintByName(name);
         if (sprint != null) {
             logger.error(ErrorMessageUtil.SPRINT_EXISTS);
-            res.setMessage(ErrorMessageUtil.SPRINT_EXISTS);
+            throw new DataExistenceException(ErrorMessageUtil.SPRINT_EXISTS);
 
-            return res;
         }
 
         sprint = new Sprint(name, startDate, endDate);
@@ -48,8 +47,7 @@ public class SprintDao extends BaseDao {
         mapper.insertSprint(sprint);
         logger.info("Created sprint with id: " + sprint.getId());
 
-        res.setObject(sprint);
-        return res;
+        return sprint;
     }
 
     /**
@@ -59,25 +57,21 @@ public class SprintDao extends BaseDao {
      * @param name      - sprint name
      * @param startDate - sprint start date
      * @param endDate   - sprint end date
-     * @return Object wrapper with sprint POJO or with error message
+     * @return sprint POJO
      */
-    public ObjectWrapper<Sprint> updateSprint(long sprintId, String name, Date startDate, Date endDate) {
-        ObjectWrapper<Sprint> res = new ObjectWrapper<>();
+    public Sprint updateSprint(long sprintId, String name, Date startDate, Date endDate) throws DataExistenceException {
 
         var sprint = mapper.getSprintById(sprintId);
         if (sprint == null) {
             logger.error(ErrorMessageUtil.SPRINT_NOT_EXISTS);
-            res.setMessage(ErrorMessageUtil.SPRINT_NOT_EXISTS);
-
-            return res;
+            throw new DataExistenceException(ErrorMessageUtil.SPRINT_NOT_EXISTS);
         }
 
         if (name != null && !name.isBlank()) {
             if (mapper.getSprintByName(name) != null) {
                 logger.error(ErrorMessageUtil.SPRINT_EXISTS);
-                res.setMessage(ErrorMessageUtil.SPRINT_EXISTS);
+                throw new DataExistenceException(ErrorMessageUtil.SPRINT_EXISTS);
 
-                return res;
             }
 
             sprint.setName(name);
@@ -95,31 +89,27 @@ public class SprintDao extends BaseDao {
         mapper.updateSprint(sprint);
         logger.info("Updated sprint with id: " + sprint.getId());
 
-        res.setObject(sprint);
-        return res;
+        return sprint;
     }
 
     /**
      * Find a sprint by id
      *
      * @param sprintId - sprint id
-     * @return Object wrapper with sprint POJO or with error message
+     * @return sprint POJO
      */
-    public ObjectWrapper<Sprint> getSprintById(long sprintId) {
-        ObjectWrapper<Sprint> res = new ObjectWrapper<>();
+    public Sprint getSprintById(long sprintId) throws DataExistenceException {
 
         var sprint = mapper.getSprintById(sprintId);
         if (sprint == null) {
             logger.error(ErrorMessageUtil.SPRINT_NOT_EXISTS);
-            res.setMessage(ErrorMessageUtil.SPRINT_NOT_EXISTS);
+            throw new DataExistenceException(ErrorMessageUtil.SPRINT_NOT_EXISTS);
 
-            return res;
         }
 
         logger.info("Found sprint with id: " + sprint.getId());
 
-        res.setObject(sprint);
-        return res;
+        return sprint;
     }
 
     /**
@@ -129,15 +119,12 @@ public class SprintDao extends BaseDao {
      * @param limit  - list size
      * @return Object wrapper with sprint POJO list or with error message
      */
-    public ObjectWrapper<List<Sprint>> getSprints(int offset, int limit) {
-        ObjectWrapper<List<Sprint>> res = new ObjectWrapper<>();
-
+    public List<Sprint> getSprints(int offset, int limit) {
         var sprints = mapper.getSprints(offset, limit);
 
         logger.info("Found sprints: " + sprints.size());
 
-        res.setObject(sprints);
-        return res;
+        return sprints;
     }
 
     /**
