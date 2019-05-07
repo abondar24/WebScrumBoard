@@ -3,8 +3,8 @@ package org.abondar.experimental.wsboard.test.dao;
 import org.abondar.experimental.wsboard.base.Main;
 import org.abondar.experimental.wsboard.dao.ProjectDao;
 import org.abondar.experimental.wsboard.dao.data.DataMapper;
-import org.abondar.experimental.wsboard.dao.data.ErrorMessageUtil;
-import org.abondar.experimental.wsboard.dao.data.ObjectWrapper;
+import org.abondar.experimental.wsboard.dao.exception.DataCreationException;
+import org.abondar.experimental.wsboard.dao.exception.DataExistenceException;
 import org.abondar.experimental.wsboard.datamodel.Project;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,7 +20,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
@@ -40,120 +40,113 @@ public class ProjectDaoTest {
 
 
     @Test
-    public void createProjectTest() {
+    public void createProjectTest() throws Exception {
         logger.info("Create project test");
 
         var prj = createProject();
 
-        assertNull(prj.getMessage());
-        assertTrue(prj.getObject().getId() > 0);
+        assertTrue(prj.getId() > 0);
 
         mapper.deleteProjects();
     }
 
 
     @Test
-    public void createProjectExistsTest() {
+    public void createProjectExistsTest() throws Exception {
         logger.info("Create project test");
 
         createProject();
-        var prj1 = createProject();
 
-        assertEquals(ErrorMessageUtil.PROJECT_EXISTS, prj1.getMessage());
-        assertNull(prj1.getObject());
 
+        assertThrows(DataExistenceException.class, this::createProject);
         mapper.deleteProjects();
     }
 
 
     @Test
-    public void updateProjectTest() {
+    public void updateProjectTest() throws Exception {
         logger.info("Update project test");
 
         var prj = createProject();
-        var id = prj.getObject().getId();
-        prj = dao.updateProject(prj.getObject().getId(), "newTest", "github.com/aaaa/aaa.git", true, null);
+        var id = prj.getId();
+        prj = dao.updateProject(prj.getId(), "newTest", "github.com/aaaa/aaa.git", true, null);
 
-        assertNull(prj.getMessage());
-        assertEquals(id, prj.getObject().getId());
+        assertEquals(id, prj.getId());
 
         mapper.deleteProjects();
     }
 
     @Test
-    public void updateProjectInactiveTest() {
+    public void updateProjectInactiveTest() throws Exception {
         logger.info("Update project test");
 
         var prj = createProject();
-        var id = prj.getObject().getId();
+        var id = prj.getId();
 
-        prj = dao.updateProject(prj.getObject().getId(), "newTest", "github.com/aaaa/aaa.git", false, new Date());
+        prj = dao.updateProject(prj.getId(), "newTest", "github.com/aaaa/aaa.git", false, new Date());
 
-        assertNull(prj.getMessage());
-        assertEquals(id, prj.getObject().getId());
+        assertEquals(id, prj.getId());
 
         mapper.deleteProjects();
     }
 
     @Test
-    public void updateProjectInactiveNullTest() {
+    public void updateProjectInactiveNullEndDateTest() throws Exception {
         logger.info("Update project inactive null end date test");
 
         var prj = createProject();
-        prj = dao.updateProject(prj.getObject().getId(), "newTest", "github.com/aaaa/aaa.git", false, null);
+        assertThrows(DataCreationException.class, () -> dao.updateProject(prj.getId(), "newTest",
+                "github.com/aaaa/aaa.git", false, null));
 
-        assertEquals(ErrorMessageUtil.PROJECT_WRONG_END_DATE, prj.getMessage());
         mapper.deleteProjects();
     }
 
     @Test
-    public void updateProjectInactiveWrongDateTest() {
+    public void updateProjectInactiveWrongDateTest() throws Exception {
         logger.info("Update project inactive wrong end date test");
 
         var prj = createProject();
-        prj = dao.updateProject(prj.getObject().getId(), "newTest", "github.com/aaaa/aaa.git", false, yesterday());
 
-        assertEquals(ErrorMessageUtil.PROJECT_WRONG_END_DATE, prj.getMessage());
+        assertThrows(DataCreationException.class, () -> dao.updateProject(prj.getId(), "newTest",
+                "github.com/aaaa/aaa.git", false, yesterday()));
         mapper.deleteProjects();
     }
 
 
     @Test
-    public void updateProjectNullTest() {
+    public void updateProjectNullTest() throws Exception {
         logger.info("Update project null test");
 
         var prj = createProject();
-        var id = prj.getObject().getId();
+        var id = prj.getId();
 
-        prj = dao.updateProject(prj.getObject().getId(), null, null, null, null);
+        prj = dao.updateProject(prj.getId(), null, null, null, null);
 
-        assertNull(prj.getMessage());
-        assertEquals(id, prj.getObject().getId());
+        assertEquals(id, prj.getId());
         mapper.deleteProjects();
     }
 
 
     @Test
-    public void deleteProjectTest() {
+    public void deleteProjectTest() throws Exception {
         logger.info("Delete project test");
 
         var prj = createProject();
-        var res = dao.deleteProject(prj.getObject().getId());
+        var res = dao.deleteProject(prj.getId());
 
-        assertNull(res.getMessage());
-        assertEquals(prj.getObject().getId(), (long) res.getObject());
+        assertEquals(prj.getId(), (long) res);
 
         mapper.deleteProjects();
     }
 
     @Test
-    public void findProjectByIdTest() {
+    public void findProjectByIdTest() throws Exception {
         logger.info("Find project by id test");
 
         var prj = createProject();
-        var res = dao.findProjectById(prj.getObject().getId());
-        assertEquals(prj.getObject().getName(), res.getObject().getName());
-        assertEquals(prj.getObject().getStartDate(), res.getObject().getStartDate());
+        var res = dao.findProjectById(prj.getId());
+        assertEquals(prj.getName(), res.getName());
+        assertEquals(prj.getStartDate(), res.getStartDate());
 
         mapper.deleteProjects();
 
@@ -164,12 +157,7 @@ public class ProjectDaoTest {
     public void findProjectNotFoundByIdTest() {
         logger.info("Find project not found by id test");
 
-        var prj = dao.findProjectById(100);
-
-        assertEquals(ErrorMessageUtil.PROJECT_NOT_EXISTS, prj.getMessage());
-        assertNull(prj.getObject());
-
-        mapper.deleteProjects();
+        assertThrows(DataExistenceException.class, () -> dao.findProjectById(100));
 
     }
 
@@ -180,7 +168,7 @@ public class ProjectDaoTest {
     }
 
 
-    private ObjectWrapper<Project> createProject() {
+    private Project createProject() throws Exception {
         var name = "test";
         var startDate = new Date();
 

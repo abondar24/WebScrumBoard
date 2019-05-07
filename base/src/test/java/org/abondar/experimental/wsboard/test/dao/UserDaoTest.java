@@ -5,7 +5,6 @@ import org.abondar.experimental.wsboard.dao.ContributorDao;
 import org.abondar.experimental.wsboard.dao.ProjectDao;
 import org.abondar.experimental.wsboard.dao.UserDao;
 import org.abondar.experimental.wsboard.dao.data.DataMapper;
-import org.abondar.experimental.wsboard.dao.data.ObjectWrapper;
 import org.abondar.experimental.wsboard.dao.exception.DataCreationException;
 import org.abondar.experimental.wsboard.dao.exception.DataExistenceException;
 import org.abondar.experimental.wsboard.dao.exception.InvalidPasswordException;
@@ -223,11 +222,11 @@ public class UserDaoTest {
         var usr = createUser();
 
         var project = createProject();
-        contributorDao.createContributor(usr.getId(), project.getObject().getId(), true);
+        contributorDao.createContributor(usr.getId(), project.getId(), true);
 
         var delUser = userDao.createUser("usr1", "pwd", "ss",
                 "fname", "lname", List.of(UserRole.Developer.name()));
-        contributorDao.createContributor(delUser.getId(), project.getObject().getId(), false);
+        contributorDao.createContributor(delUser.getId(), project.getId(), false);
 
         delUser = userDao.deleteUser(delUser.getId());
 
@@ -245,7 +244,7 @@ public class UserDaoTest {
         var usr = createUser();
 
         var project = createProject();
-        contributorDao.createContributor(usr.getId(), project.getObject().getId(), true);
+        contributorDao.createContributor(usr.getId(), project.getId(), true);
 
         assertThrows(DataCreationException.class, () -> userDao.deleteUser(usr.getId()));
 
@@ -261,11 +260,11 @@ public class UserDaoTest {
         var usr = createUser();
 
         var project = createProject();
-        contributorDao.createContributor(usr.getId(), project.getObject().getId(), true);
+        contributorDao.createContributor(usr.getId(), project.getId(), true);
 
         var delUsr = userDao.createUser("testLogin", "psw", "aaa",
                 "aa", "aa", List.of(UserRole.Developer.name()));
-        var ctr = contributorDao.createContributor(delUsr.getId(), project.getObject().getId(), false);
+        var ctr = contributorDao.createContributor(delUsr.getId(), project.getId(), false);
 
         userDao.deleteUser(delUsr.getId());
         var ctrObj = mapper.getContributorById(ctr.getObject().getId());
@@ -310,9 +309,9 @@ public class UserDaoTest {
         return userDao.createUser(login, password, email, firstName, lastName, roles);
     }
 
-    private ObjectWrapper<Project> createProject() {
+    private Project createProject() throws Exception {
         var project = projectDao.createProject("test", new Date());
-        return projectDao.updateProject(project.getObject().getId(), null, null, true, null);
+        return projectDao.updateProject(project.getId(), null, null, true, null);
     }
 
 }

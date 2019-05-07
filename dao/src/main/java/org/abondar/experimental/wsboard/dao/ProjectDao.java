@@ -2,7 +2,8 @@ package org.abondar.experimental.wsboard.dao;
 
 import org.abondar.experimental.wsboard.dao.data.DataMapper;
 import org.abondar.experimental.wsboard.dao.data.ErrorMessageUtil;
-import org.abondar.experimental.wsboard.dao.data.ObjectWrapper;
+import org.abondar.experimental.wsboard.dao.exception.DataCreationException;
+import org.abondar.experimental.wsboard.dao.exception.DataExistenceException;
 import org.abondar.experimental.wsboard.datamodel.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,26 +30,22 @@ public class ProjectDao extends BaseDao {
      *
      * @param name      - project name
      * @param startDate - project start date
-     * @return Object wrapper with project pojo or with error message
+     * @return project POJO
      */
-    public ObjectWrapper<Project> createProject(String name, Date startDate) {
-        ObjectWrapper<Project> res = new ObjectWrapper<>();
+    public Project createProject(String name, Date startDate) throws DataExistenceException {
         var prj = mapper.getProjectByName(name);
 
         if (prj != null) {
             logger.error(ErrorMessageUtil.PROJECT_EXISTS);
-            res.setMessage(ErrorMessageUtil.PROJECT_EXISTS);
+            throw new DataExistenceException(ErrorMessageUtil.PROJECT_EXISTS);
 
-            return res;
         }
 
         prj = new Project(name, startDate);
         mapper.insertProject(prj);
 
         logger.info("Project successfully created with id: " + prj.getId());
-        res.setObject(prj);
-
-        return res;
+        return prj;
     }
 
     /**
@@ -59,17 +56,16 @@ public class ProjectDao extends BaseDao {
      * @param repo     - project git repository
      * @param isActive - project currently active
      * @param endDate  - project end date
-     * @return Object wrapper with project pojo or with error message
+     * @return project POJO
      */
-    public ObjectWrapper<Project> updateProject(Long id, String name, String repo,
-                                                Boolean isActive, Date endDate) {
-        ObjectWrapper<Project> res = new ObjectWrapper<>();
+    public Project updateProject(Long id, String name, String repo,
+                                 Boolean isActive, Date endDate)
+            throws DataExistenceException, DataCreationException {
         var prj = mapper.getProjectById(id);
 
         if (prj == null) {
             logger.error(ErrorMessageUtil.PROJECT_NOT_EXISTS);
-            res.setMessage(ErrorMessageUtil.PROJECT_NOT_EXISTS);
-            return res;
+            throw new DataExistenceException(ErrorMessageUtil.PROJECT_NOT_EXISTS);
         }
 
         if (name != null && !name.isBlank()) {
@@ -86,8 +82,7 @@ public class ProjectDao extends BaseDao {
                 if (endDate != null && !prj.getStartDate().after(endDate)) {
                     prj.setEndDate(endDate);
                 } else {
-                    res.setMessage(ErrorMessageUtil.PROJECT_WRONG_END_DATE);
-                    return res;
+                    throw new DataCreationException(ErrorMessageUtil.PROJECT_WRONG_END_DATE);
                 }
             }
         }
@@ -95,31 +90,27 @@ public class ProjectDao extends BaseDao {
         mapper.updateProject(prj);
         logger.info("Project successfully updated");
 
-        res.setObject(prj);
-        return res;
+        return prj;
     }
 
     /**
      * Delete a project
      *
      * @param id - project id
-     * @return Object wrapper with project id or with error message
+     * @return project id
      */
-    public ObjectWrapper<Long> deleteProject(Long id) {
-        ObjectWrapper<Long> res = new ObjectWrapper<>();
+    public Long deleteProject(Long id) throws DataExistenceException {
         var prj = mapper.getProjectById(id);
 
         if (prj == null) {
             logger.error(ErrorMessageUtil.PROJECT_NOT_EXISTS);
-            res.setMessage(ErrorMessageUtil.PROJECT_NOT_EXISTS);
-
-            return res;
+            throw new DataExistenceException(ErrorMessageUtil.PROJECT_NOT_EXISTS);
         }
 
         mapper.deleteProject(id);
         logger.info("Project with id: " + id + " successfully updated");
-        res.setObject(id);
-        return res;
+
+        return id;
     }
 
 
@@ -129,21 +120,16 @@ public class ProjectDao extends BaseDao {
      * @param id - project id
      * @return Object wrapper with project pojo or with error message
      */
-    public ObjectWrapper<Project> findProjectById(long id) {
-        ObjectWrapper<Project> res = new ObjectWrapper<>();
+    public Project findProjectById(long id) throws DataExistenceException {
         var prj = mapper.getProjectById(id);
 
         if (prj == null) {
             logger.error(ErrorMessageUtil.PROJECT_NOT_EXISTS + "with id:" + id);
-            res.setMessage(ErrorMessageUtil.PROJECT_NOT_EXISTS);
-
-            return res;
+            throw new DataExistenceException(ErrorMessageUtil.PROJECT_NOT_EXISTS);
         }
 
         logger.info("Project found with id: " + prj.getId());
-        res.setObject(prj);
-
-        return res;
+        return prj;
     }
 
 }
