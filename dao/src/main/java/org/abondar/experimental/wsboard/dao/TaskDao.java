@@ -2,7 +2,8 @@ package org.abondar.experimental.wsboard.dao;
 
 import org.abondar.experimental.wsboard.dao.data.DataMapper;
 import org.abondar.experimental.wsboard.dao.data.ErrorMessageUtil;
-import org.abondar.experimental.wsboard.dao.data.ObjectWrapper;
+import org.abondar.experimental.wsboard.dao.exception.DataCreationException;
+import org.abondar.experimental.wsboard.dao.exception.DataExistenceException;
 import org.abondar.experimental.wsboard.datamodel.task.Task;
 import org.abondar.experimental.wsboard.datamodel.task.TaskState;
 import org.slf4j.Logger;
@@ -42,27 +43,23 @@ public class TaskDao extends BaseDao {
      * @param contributorId - contributor id
      * @param startDate     - start date of task
      * @param devOpsEnabled - dev ops state to be ignored or not
-     * @return Object wrapper with task POJO or with error message
+     * @return task POJO
+     * @throws DataExistenceException - contributor not exists or is not active
+     * @throws DataCreationException  - task start date not set
      */
-    public ObjectWrapper<Task> createTask(long contributorId, Date startDate, boolean devOpsEnabled) {
-        ObjectWrapper<Task> res = new ObjectWrapper<>();
-        var ctr = mapper.getContributorById(contributorId);
-        if (ctr == null) {
-            logger.error(ErrorMessageUtil.CONTRIBUTOR_NOT_EXISTS);
-            res.setMessage(ErrorMessageUtil.CONTRIBUTOR_NOT_EXISTS);
-            return res;
-        }
+    public Task createTask(long contributorId, Date startDate, boolean devOpsEnabled)
+            throws DataExistenceException, DataCreationException {
 
-        if (!ctr.isActive()) {
+        var ctr = mapper.getContributorById(contributorId);
+        if (ctr == null || !ctr.isActive()) {
             logger.error(ErrorMessageUtil.CONTRIBUTOR_NOT_EXISTS);
-            res.setMessage(ErrorMessageUtil.CONTRIBUTOR_NOT_EXISTS);
-            return res;
+            throw new DataExistenceException(ErrorMessageUtil.CONTRIBUTOR_NOT_EXISTS);
+
         }
 
         if (startDate == null) {
             logger.error(ErrorMessageUtil.TASK_START_DATE_NOT_SET);
-            res.setMessage(ErrorMessageUtil.TASK_START_DATE_NOT_SET);
-            return res;
+            throw new DataCreationException(ErrorMessageUtil.TASK_START_DATE_NOT_SET);
         }
 
 
@@ -72,10 +69,7 @@ public class TaskDao extends BaseDao {
         mapper.insertTask(task);
         logger.info("Created a task with id: " + task.getId());
 
-        res.setObject(task);
-
-
-        return res;
+        return task;
     }
 
 
@@ -86,31 +80,26 @@ public class TaskDao extends BaseDao {
      * @param contributorId - contributor id
      * @param devOpsEnabled - dev ops state to be ignored or not
      * @param storyPoints   - task story points
-     * @return Object wrapper with task POJO or with error message
+     * @return task POJO
+     * @throws DataExistenceException - task or contributor does not exist or contributor is not active
      */
-    public ObjectWrapper<Task> updateTask(long taskId, Long contributorId, Boolean devOpsEnabled, Integer storyPoints) {
-        ObjectWrapper<Task> res = new ObjectWrapper<>();
+    public Task updateTask(long taskId, Long contributorId, Boolean devOpsEnabled, Integer storyPoints)
+            throws DataExistenceException {
 
         var task = mapper.getTaskById(taskId);
         if (task == null) {
             logger.info(ErrorMessageUtil.TASK_NOT_EXISTS + "with id: " + taskId);
-            res.setMessage(ErrorMessageUtil.TASK_NOT_EXISTS);
-            return res;
+            throw new DataExistenceException(ErrorMessageUtil.TASK_NOT_EXISTS);
+
         }
 
         if (contributorId != null) {
             var ctr = mapper.getContributorById(contributorId);
-            if (ctr == null) {
+            if (ctr == null || !ctr.isActive()) {
                 logger.error(ErrorMessageUtil.CONTRIBUTOR_NOT_EXISTS);
-                res.setMessage(ErrorMessageUtil.CONTRIBUTOR_NOT_EXISTS);
-                return res;
+                throw new DataExistenceException(ErrorMessageUtil.CONTRIBUTOR_NOT_EXISTS);
             }
 
-            if (!ctr.isActive()) {
-                logger.error(ErrorMessageUtil.CONTRIBUTOR_NOT_EXISTS);
-                res.setMessage(ErrorMessageUtil.CONTRIBUTOR_NOT_EXISTS);
-                return res;
-            }
 
             task.setContributorId(contributorId);
 
@@ -128,8 +117,7 @@ public class TaskDao extends BaseDao {
         mapper.updateTask(task);
         logger.info("Updated a task with id: " + task.getId());
 
-        res.setObject(task);
-        return res;
+        return task;
     }
 
     /**
@@ -137,31 +125,27 @@ public class TaskDao extends BaseDao {
      *
      * @param taskId   - task id
      * @param sprintId - sprint id
-     * @return Object wrapper with task POJO or with error message
+     * @return task POJO
+     * @throws DataExistenceException - task or sprint doesn't exist
      */
-    public ObjectWrapper<Task> updateTaskSprint(long taskId, long sprintId) {
-        ObjectWrapper<Task> res = new ObjectWrapper<>();
-
+    public Task updateTaskSprint(long taskId, long sprintId) throws DataExistenceException {
         var task = mapper.getTaskById(taskId);
         if (task == null) {
             logger.info(ErrorMessageUtil.TASK_NOT_EXISTS + "with id: " + taskId);
-            res.setMessage(ErrorMessageUtil.TASK_NOT_EXISTS);
-            return res;
+            throw new DataExistenceException(ErrorMessageUtil.TASK_NOT_EXISTS);
         }
 
         var sprint = mapper.getSprintById(sprintId);
         if (sprint == null) {
             logger.info(ErrorMessageUtil.SPRINT_NOT_EXISTS + "with id: " + sprintId);
-            res.setMessage(ErrorMessageUtil.SPRINT_NOT_EXISTS);
-            return res;
+            throw new DataExistenceException(ErrorMessageUtil.SPRINT_NOT_EXISTS);
         }
 
         mapper.updateTaskSprint(taskId, sprintId);
         logger.info("Updated task sprint for id: " + task.getId());
         task.setSprintId(sprintId);
-        res.setObject(task);
 
-        return res;
+        return task;
     }
 
 
@@ -170,54 +154,47 @@ public class TaskDao extends BaseDao {
      *
      * @param taskId - task id
      * @param state  - new state
-     * @return Object wrapper with task POJO or with error message
+     * @return task POJO
+     * @throws DataExistenceException - task state unknown,task not exists
+     * @throws DataCreationException  - task already completed,task already completed,wrong state after pause,
+     *                                state devOps not enabled,task move not available
      */
-    public ObjectWrapper<Task> updateTaskState(long taskId, String state) {
-        ObjectWrapper<Task> res = new ObjectWrapper<>();
+    public Task updateTaskState(long taskId, String state)
+            throws DataExistenceException, DataCreationException {
 
         TaskState taskState;
         try {
             taskState = TaskState.valueOf(state);
         } catch (IllegalArgumentException ex) {
             logger.error(ex.getMessage());
-            res.setMessage(ErrorMessageUtil.TASK_STATE_UNKNOWN);
-            return res;
+            throw new DataExistenceException(ErrorMessageUtil.TASK_STATE_UNKNOWN);
         }
 
         var task = mapper.getTaskById(taskId);
         if (task == null) {
             logger.info(ErrorMessageUtil.TASK_NOT_EXISTS + "with id: " + taskId);
-            res.setMessage(ErrorMessageUtil.TASK_NOT_EXISTS);
-            return res;
+            throw new DataExistenceException(ErrorMessageUtil.TASK_NOT_EXISTS);
         }
 
         if (task.getTaskState() == TaskState.Completed) {
             logger.info(ErrorMessageUtil.TASK_ALREADY_COMPLETED);
-            res.setMessage(ErrorMessageUtil.TASK_ALREADY_COMPLETED);
-
-            return res;
+            throw new DataCreationException(ErrorMessageUtil.TASK_ALREADY_COMPLETED);
         }
 
         if (taskState == TaskState.Created) {
             logger.info(ErrorMessageUtil.TASK_ALREADY_CREATED);
-            res.setMessage(ErrorMessageUtil.TASK_ALREADY_CREATED);
-
-            return res;
+            throw new DataCreationException(ErrorMessageUtil.TASK_ALREADY_CREATED);
         }
 
 
         if ((task.getTaskState() == TaskState.Paused) && (task.getPrevState() != taskState)) {
             logger.info(ErrorMessageUtil.TASK_WRONG_STATE_AFTER_PAUSE);
-            res.setMessage(ErrorMessageUtil.TASK_WRONG_STATE_AFTER_PAUSE);
-
-            return res;
+            throw new DataCreationException(ErrorMessageUtil.TASK_WRONG_STATE_AFTER_PAUSE);
         }
 
         if (taskState == TaskState.InDeployment && !task.isDevOpsEnabled()) {
             logger.info(ErrorMessageUtil.TASK_DEV_OPS_NOT_ENABLED);
-            res.setMessage(ErrorMessageUtil.TASK_DEV_OPS_NOT_ENABLED);
-
-            return res;
+            throw new DataCreationException(ErrorMessageUtil.TASK_DEV_OPS_NOT_ENABLED);
         }
 
 
@@ -230,14 +207,13 @@ public class TaskDao extends BaseDao {
                 var moves = stateMoves.get(task.getTaskState());
 
                 if (!moves.contains(taskState)) {
-                    res.setMessage(ErrorMessageUtil.TASK_MOVE_NOT_AVAILABLE);
-                    return res;
+                    throw new DataCreationException(ErrorMessageUtil.TASK_MOVE_NOT_AVAILABLE);
                 }
 
             }
 
             if (!stateMatches(taskState, usr.getRoles())) {
-                res.setMessage(ErrorMessageUtil.TASK_CONTRIBUTOR_UPDATE);
+                throw new DataCreationException(ErrorMessageUtil.TASK_CONTRIBUTOR_UPDATE);
             }
 
         }
@@ -252,8 +228,8 @@ public class TaskDao extends BaseDao {
 
         mapper.updateTask(task);
         logger.info("Updated task state to " + taskState.name() + " for id: " + taskId);
-        res.setObject(task);
-        return res;
+
+        return task;
     }
 
 
@@ -279,21 +255,21 @@ public class TaskDao extends BaseDao {
      * Find task by id
      *
      * @param taskId - task id
-     * @return Object wrapper with task POJO or with error message
+     * @throws DataExistenceException - task not exists
+     * @return task POJO
      */
-    public ObjectWrapper<Task> getTaskById(long taskId) {
-        ObjectWrapper<Task> res = new ObjectWrapper<>();
+    public Task getTaskById(long taskId) throws DataExistenceException {
+
 
         var task = mapper.getTaskById(taskId);
         if (task == null) {
             logger.info(ErrorMessageUtil.TASK_NOT_EXISTS + "with id: " + taskId);
-            res.setMessage(ErrorMessageUtil.TASK_NOT_EXISTS);
-            return res;
+            throw new DataExistenceException(ErrorMessageUtil.TASK_NOT_EXISTS);
         }
 
         logger.info("Found task with id: " + taskId);
-        res.setObject(task);
-        return res;
+
+        return task;
     }
 
 
@@ -303,23 +279,21 @@ public class TaskDao extends BaseDao {
      * @param projectId - project id
      * @param offset    - start of list
      * @param limit     - list size
-     * @return Object wrapper with task POJO list or with error message
+     * @throws DataExistenceException - project not exists
+     * @return task POJO list
      */
-    public ObjectWrapper<List<Task>> getTasksForProject(long projectId, int offset, int limit) {
-        ObjectWrapper<List<Task>> res = new ObjectWrapper<>();
+    public List<Task> getTasksForProject(long projectId, int offset, int limit) throws DataExistenceException {
 
         var prj = mapper.getProjectById(projectId);
         if (prj == null) {
             logger.info(ErrorMessageUtil.PROJECT_NOT_EXISTS + "with id: " + projectId);
-            res.setMessage(ErrorMessageUtil.PROJECT_NOT_EXISTS);
-            return res;
+            throw new DataExistenceException(ErrorMessageUtil.PROJECT_NOT_EXISTS);
         }
 
         var tasks = mapper.getTasksForProject(projectId, offset, limit);
         logger.info("Found tasks for project with id: " + projectId);
-        res.setObject(tasks);
 
-        return res;
+        return tasks;
     }
 
     /**
@@ -328,23 +302,22 @@ public class TaskDao extends BaseDao {
      * @param ctrId  - contributor id
      * @param offset - start of list
      * @param limit  - list size
-     * @return Object wrapper with task POJO list or with error message
+     * @throws DataExistenceException - contributor not exists
+     * @return task POJO list
      */
-    public ObjectWrapper<List<Task>> getTasksForContributor(long ctrId, int offset, int limit) {
-        ObjectWrapper<List<Task>> res = new ObjectWrapper<>();
+    public List<Task> getTasksForContributor(long ctrId, int offset, int limit)
+            throws DataExistenceException {
 
         var ctr = mapper.getContributorById(ctrId);
         if (ctr == null) {
             logger.info(ErrorMessageUtil.CONTRIBUTOR_NOT_EXISTS + "with id: " + ctrId);
-            res.setMessage(ErrorMessageUtil.CONTRIBUTOR_NOT_EXISTS);
-            return res;
+            throw new DataExistenceException(ErrorMessageUtil.CONTRIBUTOR_NOT_EXISTS);
         }
 
         var tasks = mapper.getTasksForContributor(ctrId, offset, limit);
         logger.info("Found tasks for contributor with id: " + ctrId);
-        res.setObject(tasks);
 
-        return res;
+        return tasks;
     }
 
     /**
@@ -353,23 +326,22 @@ public class TaskDao extends BaseDao {
      * @param usrId  - user id
      * @param offset - start of list
      * @param limit  - list size
-     * @return Object wrapper with task POJO list or with error message
+     * @throws DataExistenceException - user not exists
+     * @return task POJO list
      */
-    public ObjectWrapper<List<Task>> getTasksForUser(long usrId, int offset, int limit) {
-        ObjectWrapper<List<Task>> res = new ObjectWrapper<>();
+    public List<Task> getTasksForUser(long usrId, int offset, int limit)
+            throws DataExistenceException {
 
         var usr = mapper.getUserById(usrId);
         if (usr == null) {
             logger.info(ErrorMessageUtil.USER_NOT_EXISTS + "with id: " + usrId);
-            res.setMessage(ErrorMessageUtil.USER_NOT_EXISTS);
-            return res;
+            throw new DataExistenceException(ErrorMessageUtil.USER_NOT_EXISTS);
         }
 
         var tasks = mapper.getTasksForUser(usrId, offset, limit);
         logger.info("Found tasks for user with id: " + usrId);
-        res.setObject(tasks);
 
-        return res;
+        return tasks;
     }
 
     /**
@@ -378,23 +350,21 @@ public class TaskDao extends BaseDao {
      * @param sprintId - sprint id
      * @param offset   - start of list
      * @param limit    - list size
+     * @throws DataExistenceException - sprint not exists
      * @return Object wrapper with task POJO or with error message
      */
-    public ObjectWrapper<List<Task>> getTasksForSprint(long sprintId, int offset, int limit) {
-        ObjectWrapper<List<Task>> res = new ObjectWrapper<>();
+    public List<Task> getTasksForSprint(long sprintId, int offset, int limit) throws DataExistenceException {
 
         var sprint = mapper.getSprintById(sprintId);
         if (sprint == null) {
             logger.info(ErrorMessageUtil.SPRINT_NOT_EXISTS + " with id: " + sprintId);
-            res.setMessage(ErrorMessageUtil.SPRINT_NOT_EXISTS);
-            return res;
+            throw new DataExistenceException(ErrorMessageUtil.SPRINT_NOT_EXISTS);
         }
 
         var tasks = mapper.getTasksForSprint(sprintId, offset, limit);
         logger.info("Found tasks for sprint with id: " + sprintId);
-        res.setObject(tasks);
 
-        return res;
+        return tasks;
     }
 
 
@@ -439,6 +409,10 @@ public class TaskDao extends BaseDao {
 
 
         switch (state) {
+            case Created:
+            case Paused:
+            case Completed:
+                return true;
             case InDevelopment:
             case InCodeReview:
                 return rolesList.contains(Developer.name());

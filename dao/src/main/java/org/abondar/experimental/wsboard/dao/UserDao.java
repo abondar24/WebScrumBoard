@@ -207,6 +207,8 @@ public class UserDao extends BaseDao {
             throw new DataCreationException(ErrorMessageUtil.USER_AVATAR_EMPTY);
         }
 
+        mapper.updateUser(usr);
+
         return usr;
     }
 
