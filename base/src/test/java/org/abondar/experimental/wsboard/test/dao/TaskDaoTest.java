@@ -69,7 +69,7 @@ public class TaskDaoTest {
         var prj = createProject(true);
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
 
-        var task = dao.createTask(contr.getObject().getId(), new Date(), true);
+        var task = dao.createTask(contr.getId(), new Date(), true);
 
         assertNull(task.getMessage());
 
@@ -96,10 +96,10 @@ public class TaskDaoTest {
         var usr = createUser();
         var prj = createProject(true);
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
-        userDao.deleteUser(contr.getObject().getUserId());
+        userDao.deleteUser(contr.getUserId());
 
-        contributorDao.updateContributor(contr.getObject().getId(), null, false);
-        var task = dao.createTask(contr.getObject().getId(), new Date(), true);
+        contributorDao.updateContributor(contr.getId(), null, false);
+        var task = dao.createTask(contr.getId(), new Date(), true);
 
         assertEquals(ErrorMessageUtil.CONTRIBUTOR_NOT_EXISTS, task.getMessage());
         cleanData();
@@ -114,7 +114,7 @@ public class TaskDaoTest {
         var prj = createProject(true);
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
 
-        var task = dao.createTask(contr.getObject().getId(), null, false);
+        var task = dao.createTask(contr.getId(), null, false);
 
         assertEquals(ErrorMessageUtil.TASK_START_DATE_NOT_SET, task.getMessage());
 
@@ -137,14 +137,14 @@ public class TaskDaoTest {
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
         var contr1 = contributorDao.createContributor(usr1.getId(), prj.getId(), false);
 
-        var task = dao.createTask(contr.getObject().getId(), new Date(), true);
+        var task = dao.createTask(contr.getId(), new Date(), true);
         var id = task.getObject().getId();
-        var res = dao.updateTask(task.getObject().getId(), contr1.getObject().getId(), true,
+        var res = dao.updateTask(task.getObject().getId(), contr1.getId(), true,
                 null);
 
         assertNull(res.getMessage());
         assertEquals(id, task.getObject().getId());
-        assertEquals(contr1.getObject().getId(), res.getObject().getContributorId());
+        assertEquals(contr1.getId(), res.getObject().getContributorId());
 
         cleanData();
     }
@@ -166,7 +166,7 @@ public class TaskDaoTest {
         var usr = createUser();
         var prj = createProject(true);
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
-        var task = dao.createTask(contr.getObject().getId(), new Date(), false);
+        var task = dao.createTask(contr.getId(), new Date(), false);
 
         var res = dao.updateTask(task.getObject().getId(), 100L, null, null);
 
@@ -183,7 +183,7 @@ public class TaskDaoTest {
         var usr = createUser();
         var prj = createProject(true);
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
-        var task = dao.createTask(contr.getObject().getId(), new Date(), true);
+        var task = dao.createTask(contr.getId(), new Date(), true);
 
         int storyPoints = 2;
         var res = dao.updateTask(task.getObject().getId(), null,
@@ -203,7 +203,7 @@ public class TaskDaoTest {
         var usr = createUser();
         var prj = createProject(true);
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
-        var task = dao.createTask(contr.getObject().getId(), new Date(), true);
+        var task = dao.createTask(contr.getId(), new Date(), true);
         var sprint = sprintDao.createSprint("test", new Date(), new Date());
 
         var res = dao.updateTaskSprint(task.getObject().getId(), sprint.getId());
@@ -222,7 +222,7 @@ public class TaskDaoTest {
         var usr = createUser();
         var prj = createProject(true);
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
-        var task = dao.createTask(contr.getObject().getId(), new Date(), false);
+        var task = dao.createTask(contr.getId(), new Date(), false);
 
         var res = dao.updateTaskState(task.getObject().getId(), TaskState.InDevelopment.name());
 
@@ -241,7 +241,7 @@ public class TaskDaoTest {
         var usr = createUser();
         var prj = createProject(true);
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
-        var task = dao.createTask(contr.getObject().getId(), new Date(), false);
+        var task = dao.createTask(contr.getId(), new Date(), false);
 
         var res = dao.updateTaskState(task.getObject().getId(), "test");
 
@@ -267,7 +267,7 @@ public class TaskDaoTest {
         var usr = createUser();
         var prj = createProject(true);
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
-        var task = dao.createTask(contr.getObject().getId(), new Date(), false);
+        var task = dao.createTask(contr.getId(), new Date(), false);
         dao.updateTaskState(task.getObject().getId(), TaskState.InTest.name());
         dao.updateTaskState(task.getObject().getId(), TaskState.Completed.name());
 
@@ -285,7 +285,7 @@ public class TaskDaoTest {
         var usr = createUser();
         var prj = createProject(true);
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
-        var task = dao.createTask(contr.getObject().getId(), new Date(), false);
+        var task = dao.createTask(contr.getId(), new Date(), false);
 
         var res = dao.updateTaskState(task.getObject().getId(), TaskState.Created.name());
 
@@ -301,7 +301,7 @@ public class TaskDaoTest {
         var usr = createUser();
         var prj = createProject(true);
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
-        var task = dao.createTask(contr.getObject().getId(), new Date(), false);
+        var task = dao.createTask(contr.getId(), new Date(), false);
         dao.updateTaskState(task.getObject().getId(), TaskState.Paused.name());
 
         var res = dao.updateTaskState(task.getObject().getId(), TaskState.InDevelopment.name());
@@ -319,7 +319,7 @@ public class TaskDaoTest {
         var usr = createUser();
         var prj = createProject(true);
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
-        var task = dao.createTask(contr.getObject().getId(), new Date(), false);
+        var task = dao.createTask(contr.getId(), new Date(), false);
 
         var res = dao.updateTaskState(task.getObject().getId(), TaskState.InDeployment.name());
 
@@ -335,7 +335,7 @@ public class TaskDaoTest {
         var usr = createUser();
         var prj = createProject(true);
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
-        var task = dao.createTask(contr.getObject().getId(), new Date(), false);
+        var task = dao.createTask(contr.getId(), new Date(), false);
 
         var res = dao.updateTaskState(task.getObject().getId(), TaskState.InCodeReview.name());
 
@@ -351,7 +351,7 @@ public class TaskDaoTest {
         var usr = createUser();
         var prj = createProject(true);
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
-        var task = dao.createTask(contr.getObject().getId(), new Date(), false);
+        var task = dao.createTask(contr.getId(), new Date(), false);
         dao.updateTaskState(task.getObject().getId(), TaskState.InDevelopment.name());
         dao.updateTaskState(task.getObject().getId(), TaskState.InCodeReview.name());
 
@@ -372,7 +372,7 @@ public class TaskDaoTest {
         var usr = createUser();
         var prj = createProject(true);
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
-        var task = dao.createTask(contr.getObject().getId(), new Date(), false);
+        var task = dao.createTask(contr.getId(), new Date(), false);
         dao.updateTaskState(task.getObject().getId(), TaskState.InDevelopment.name());
         dao.updateTaskState(task.getObject().getId(), TaskState.InCodeReview.name());
         dao.updateTaskState(task.getObject().getId(), TaskState.InTest.name());
@@ -394,7 +394,7 @@ public class TaskDaoTest {
         var prj = createProject(true);
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
 
-        var task = dao.createTask(contr.getObject().getId(), new Date(), true);
+        var task = dao.createTask(contr.getId(), new Date(), true);
         var res = dao.deleteTask(task.getObject().getId());
 
         Assertions.assertTrue(res);
@@ -420,7 +420,7 @@ public class TaskDaoTest {
         var prj = createProject(true);
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
 
-        var task = dao.createTask(contr.getObject().getId(), new Date(), true);
+        var task = dao.createTask(contr.getId(), new Date(), true);
         var sp = sprintDao.createSprint("test", new Date(), new Date());
         dao.updateTaskSprint(task.getObject().getId(), sp.getId());
 
@@ -441,7 +441,7 @@ public class TaskDaoTest {
         var prj = createProject(true);
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
 
-        var task = dao.createTask(contr.getObject().getId(), new Date(), true);
+        var task = dao.createTask(contr.getId(), new Date(), true);
         var res = dao.getTaskById(task.getObject().getId());
 
         assertEquals(task.getObject().getId(), res.getObject().getId());
@@ -457,7 +457,7 @@ public class TaskDaoTest {
         var prj = createProject(true);
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
 
-        var task = dao.createTask(contr.getObject().getId(), new Date(), true);
+        var task = dao.createTask(contr.getId(), new Date(), true);
         var res = dao.getTasksForProject(prj.getId(), 0, 1);
 
         assertEquals(1, res.getObject().size());
@@ -474,8 +474,8 @@ public class TaskDaoTest {
         var prj = createProject(true);
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
 
-        var task = dao.createTask(contr.getObject().getId(), new Date(), true);
-        var res = dao.getTasksForContributor(contr.getObject().getId(), 0, 1);
+        var task = dao.createTask(contr.getId(), new Date(), true);
+        var res = dao.getTasksForContributor(contr.getId(), 0, 1);
 
         assertEquals(1, res.getObject().size());
         assertEquals(task.getObject().getId(), res.getObject().get(0).getId());
@@ -491,7 +491,7 @@ public class TaskDaoTest {
         var prj = createProject(true);
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
 
-        var task = dao.createTask(contr.getObject().getId(), new Date(), true);
+        var task = dao.createTask(contr.getId(), new Date(), true);
         var res = dao.getTasksForUser(usr.getId(), 0, 1);
 
         assertEquals(1, res.getObject().size());
@@ -508,7 +508,7 @@ public class TaskDaoTest {
         var prj = createProject(true);
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
 
-        var task = dao.createTask(contr.getObject().getId(), new Date(), true);
+        var task = dao.createTask(contr.getId(), new Date(), true);
         var sprint = sprintDao.createSprint("test", new Date(), new Date());
 
         task = dao.updateTaskSprint(task.getObject().getId(), sprint.getId());

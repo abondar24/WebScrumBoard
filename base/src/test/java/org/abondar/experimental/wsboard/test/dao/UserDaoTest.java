@@ -267,7 +267,7 @@ public class UserDaoTest {
         var ctr = contributorDao.createContributor(delUsr.getId(), project.getId(), false);
 
         userDao.deleteUser(delUsr.getId());
-        var ctrObj = mapper.getContributorById(ctr.getObject().getId());
+        var ctrObj = mapper.getContributorById(ctr.getId());
 
         assertFalse(ctrObj.isActive());
 

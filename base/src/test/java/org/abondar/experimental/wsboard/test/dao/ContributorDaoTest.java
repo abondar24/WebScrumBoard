@@ -5,7 +5,8 @@ import org.abondar.experimental.wsboard.dao.ContributorDao;
 import org.abondar.experimental.wsboard.dao.ProjectDao;
 import org.abondar.experimental.wsboard.dao.UserDao;
 import org.abondar.experimental.wsboard.dao.data.DataMapper;
-import org.abondar.experimental.wsboard.dao.data.ErrorMessageUtil;
+import org.abondar.experimental.wsboard.dao.exception.DataCreationException;
+import org.abondar.experimental.wsboard.dao.exception.DataExistenceException;
 import org.abondar.experimental.wsboard.datamodel.Project;
 import org.abondar.experimental.wsboard.datamodel.User;
 import org.abondar.experimental.wsboard.datamodel.UserRole;
@@ -23,7 +24,7 @@ import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
@@ -59,8 +60,7 @@ public class ContributorDaoTest {
 
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), true);
 
-        assertNull(contr.getMessage());
-        assertTrue(contr.getObject().getId() > 0);
+        assertTrue(contr.getId() > 0);
 
         cleanData();
     }
@@ -75,8 +75,7 @@ public class ContributorDaoTest {
 
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
 
-        assertNull(contr.getMessage());
-        assertTrue(contr.getObject().getId() > 0);
+        assertTrue(contr.getId() > 0);
 
         cleanData();
     }
@@ -89,10 +88,8 @@ public class ContributorDaoTest {
         var usr = createUser();
         var prj = createProject(false);
 
-        var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
-
-        assertEquals(ErrorMessageUtil.PROJECT_NOT_ACTIVE, contr.getMessage());
-        assertNull(contr.getObject());
+        assertThrows(DataCreationException.class, () ->
+                contributorDao.createContributor(usr.getId(), prj.getId(), false));
 
         cleanData();
     }
@@ -104,11 +101,10 @@ public class ContributorDaoTest {
         var usr = createUser();
         var prj = createProject(true);
 
-        var contr = contributorDao.createContributor(usr.getId(), prj.getId(), true);
-        contr = contributorDao.createContributor(usr.getId(), prj.getId(), true);
+        contributorDao.createContributor(usr.getId(), prj.getId(), true);
 
-        assertEquals(ErrorMessageUtil.PROJECT_HAS_OWNER, contr.getMessage());
-        assertNull(contr.getObject());
+        assertThrows(DataCreationException.class, () ->
+                contributorDao.createContributor(usr.getId(), prj.getId(), true));
 
         cleanData();
     }
@@ -122,11 +118,10 @@ public class ContributorDaoTest {
         var prj = createProject(true);
 
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
-        var id = contr.getObject().getId();
-        contr = contributorDao.updateContributor(contr.getObject().getId(), true, true);
+        var id = contr.getId();
+        contr = contributorDao.updateContributor(contr.getId(), true, true);
 
-        assertNull(contr.getMessage());
-        assertEquals(id, contr.getObject().getId());
+        assertEquals(id, contr.getId());
 
         cleanData();
     }
@@ -136,9 +131,9 @@ public class ContributorDaoTest {
     public void updateContributorAsOwnerContributorNotExistsTest() {
         logger.info("Update contributor as owner contributor not exists");
 
-        var contr = contributorDao.updateContributor(100, false, true);
 
-        assertEquals(ErrorMessageUtil.CONTRIBUTOR_NOT_EXISTS, contr.getMessage());
+        assertThrows(DataExistenceException.class, () ->
+                contributorDao.updateContributor(100, false, true));
 
         cleanData();
     }
@@ -151,10 +146,10 @@ public class ContributorDaoTest {
         var prj = createProject(true);
 
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), true);
-        contr = contributorDao.updateContributor(contr.getObject().getId(), true, true);
 
-        assertEquals(ErrorMessageUtil.PROJECT_HAS_OWNER, contr.getMessage());
-        assertNull(contr.getObject());
+        assertThrows(DataCreationException.class, () ->
+                contributorDao.updateContributor(contr.getId(), true, true));
+
 
         cleanData();
     }
@@ -167,10 +162,10 @@ public class ContributorDaoTest {
         var prj = createProject(true);
 
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
-        contr = contributorDao.updateContributor(contr.getObject().getId(), false, true);
 
-        assertEquals(ErrorMessageUtil.PROJECT_HAS_NO_OWNER, contr.getMessage());
-        assertNull(contr.getObject());
+        assertThrows(DataCreationException.class, () ->
+                contributorDao.updateContributor(contr.getId(), false, true));
+
 
         cleanData();
     }
@@ -183,12 +178,11 @@ public class ContributorDaoTest {
         var prj = createProject(true);
 
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
-        var id = contr.getObject().getId();
+        var id = contr.getId();
 
-        contr = contributorDao.updateContributor(contr.getObject().getId(), null, null);
+        contr = contributorDao.updateContributor(id, null, null);
 
-        assertNull(contr.getMessage());
-        assertEquals(id, contr.getObject().getId());
+        assertEquals(id, contr.getId());
 
         cleanData();
     }
@@ -205,7 +199,7 @@ public class ContributorDaoTest {
 
         var ownr = contributorDao.findProjectOwner(prj.getId());
 
-        assertEquals(usr.getId(), ownr.getObject().getId());
+        assertEquals(usr.getId(), ownr.getId());
 
         cleanData();
     }
@@ -220,8 +214,7 @@ public class ContributorDaoTest {
         contributorDao.createContributor(usr.getId(), prj.getId(), true);
         var contrs = contributorDao.findProjectContributors(prj.getId(), 0, 1);
 
-        assertNull(contrs.getMessage());
-        assertEquals(1, contrs.getObject().size());
+        assertEquals(1, contrs.size());
 
 
         cleanData();
