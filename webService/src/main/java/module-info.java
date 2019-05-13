@@ -21,6 +21,8 @@ module org.abondar.experimental.wsboard.webService {
     requires com.fasterxml.jackson.jaxrs.json;
     requires java.ws.rs;
     requires javax.servlet.api;
+    requires java.annotation;
+
 
     exports org.abondar.experimental.wsboard.webService.config;
     exports org.abondar.experimental.wsboard.webService.service;

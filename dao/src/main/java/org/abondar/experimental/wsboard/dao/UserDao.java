@@ -218,7 +218,7 @@ public class UserDao extends BaseDao {
      * @param id - user id
      * @return user POJO
      */
-    public User deleteUser(Long id) throws DataExistenceException, DataCreationException {
+    public User deleteUser(long id) throws DataExistenceException, DataCreationException {
         var usr = mapper.getUserById(id);
         if (usr == null) {
             logger.error(ErrorMessageUtil.USER_NOT_EXISTS + " with id: " + id);
