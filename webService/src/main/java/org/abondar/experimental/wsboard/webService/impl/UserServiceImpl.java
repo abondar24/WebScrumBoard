@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.abondar.experimental.wsboard.dao.UserDao;
 import org.abondar.experimental.wsboard.dao.data.ErrorMessageUtil;
@@ -130,10 +131,36 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    //TODO: implement
+    @POST
+    @Consumes(MediaType.APPLICATION_OCTET_STREAM)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/update_avatar")
+    @Operation(
+            summary = "Update avatar",
+            description = "Update user avatar",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "User avatar updated",
+                            content = @Content(schema = @Schema(implementation = User.class))),
+                    @ApiResponse(responseCode = "204", description = "Avatar is empty"),
+                    @ApiResponse(responseCode = "404", description = "User with id not exists")
+            }
+    )
     @Override
-    public Response updateAvatar(long id, byte[] avatar) {
-        return null;
+    public Response updateAvatar(@QueryParam("id") @Parameter(description = "User ID", required = true) long id,
+                                 @RequestBody(description = "User avatar as byte array") byte[] avatar) {
+        try {
+            User user = dao.updateUser(id, null, null, null, null, avatar);
+
+            return Response.ok(user).build();
+        } catch (DataExistenceException ex) {
+            logger.error(ex.getMessage());
+            return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
+        } catch (DataCreationException ex) {
+            logger.error(ex.getMessage());
+            return Response.status(Response.Status.NO_CONTENT).entity(ex.getLocalizedMessage()).build();
+        }
     }
 
     @POST
