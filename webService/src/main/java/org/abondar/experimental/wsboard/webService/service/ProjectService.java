@@ -1,4 +1,4 @@
 package org.abondar.experimental.wsboard.webService.service;
 
-public interface ProjectService {
+public interface ProjectService extends RestService {
 }

@@ -22,6 +22,9 @@ module org.abondar.experimental.wsboard.webService {
     requires java.ws.rs;
     requires javax.servlet.api;
     requires java.annotation;
+    requires io.swagger.v3.core;
+    requires io.swagger.v3.jaxrs2;
+    requires io.swagger.v3.oas.annotations;
 
 
     exports org.abondar.experimental.wsboard.webService.config;

@@ -1,7 +1,7 @@
 package org.abondar.experimental.wsboard.webService.service;
 
 import org.abondar.experimental.wsboard.dao.exception.InvalidPasswordException;
-import org.abondar.experimental.wsboard.datamodel.User;
+import org.abondar.experimental.wsboard.datamodel.user.User;
 
 import java.util.Date;
 import java.util.List;

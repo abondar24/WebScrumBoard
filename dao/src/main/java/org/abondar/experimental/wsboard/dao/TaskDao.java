@@ -15,9 +15,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.abondar.experimental.wsboard.datamodel.UserRole.DevOps;
-import static org.abondar.experimental.wsboard.datamodel.UserRole.Developer;
-import static org.abondar.experimental.wsboard.datamodel.UserRole.QA;
+import static org.abondar.experimental.wsboard.datamodel.user.UserRole.DevOps;
+import static org.abondar.experimental.wsboard.datamodel.user.UserRole.Developer;
+import static org.abondar.experimental.wsboard.datamodel.user.UserRole.QA;
 
 /**
  * Data access object for task

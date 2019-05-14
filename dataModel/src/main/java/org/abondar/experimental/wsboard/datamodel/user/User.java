@@ -1,10 +1,13 @@
-package org.abondar.experimental.wsboard.datamodel;
+package org.abondar.experimental.wsboard.datamodel.user;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * POJO for User data model
  *
  * @author a.bondar
  */
+@Schema(name = "User", description = "User model")
 public class User {
 
     private long id;
@@ -27,6 +30,7 @@ public class User {
         this.roles = roles;
     }
 
+    @Schema(description = "user login")
     public String getLogin() {
         return login;
     }
@@ -35,6 +39,7 @@ public class User {
         this.login = login;
     }
 
+    @Schema(description = "user email")
     public String getEmail() {
         return email;
     }
@@ -43,6 +48,7 @@ public class User {
         this.email = email;
     }
 
+    @Schema(description = "user first name")
     public String getFirstName() {
         return firstName;
     }
@@ -51,6 +57,7 @@ public class User {
         this.firstName = firstName;
     }
 
+    @Schema(description = "user last name")
     public String getLastName() {
         return lastName;
     }
@@ -59,6 +66,7 @@ public class User {
         this.lastName = lastName;
     }
 
+    @Schema(description = "user password")
     public String getPassword() {
         return password;
     }
@@ -67,6 +75,7 @@ public class User {
         this.password = password;
     }
 
+    @Schema(description = "comma-separated list of roles", allowableValues = {"Developer", "QA", "DevOps"})
     public String getRoles() {
         return roles;
     }
@@ -75,6 +84,7 @@ public class User {
         this.roles = roles;
     }
 
+    @Schema(description = "user id generated after creation")
     public long getId() {
         return id;
     }
@@ -83,6 +93,7 @@ public class User {
         this.id = id;
     }
 
+    @Schema(description = "user avatar in byte array")
     public byte[] getAvatar() {
         return avatar;
     }

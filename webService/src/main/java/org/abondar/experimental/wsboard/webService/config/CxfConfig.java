@@ -8,8 +8,7 @@ import org.abondar.experimental.wsboard.webService.impl.UserServiceImpl;
 import org.abondar.experimental.wsboard.webService.security.TokenExpiredMapper;
 import org.abondar.experimental.wsboard.webService.security.TokenRenewalFilter;
 import org.abondar.experimental.wsboard.webService.service.AuthService;
-import org.abondar.experimental.wsboard.webService.service.ProjectService;
-import org.abondar.experimental.wsboard.webService.service.UserService;
+import org.abondar.experimental.wsboard.webService.service.RestService;
 import org.apache.cxf.Bus;
 import org.apache.cxf.bus.spring.SpringBus;
 import org.apache.cxf.endpoint.Server;
@@ -49,12 +48,12 @@ public class CxfConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    UserService userService(AuthService authService) {
+    RestService userService(AuthService authService) {
         return new UserServiceImpl(authService);
     }
 
     @Bean
-    ProjectService projectService() {
+    RestService projectService() {
         return new ProjectServiceImpl();
     }
 

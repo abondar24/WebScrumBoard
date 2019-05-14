@@ -8,8 +8,8 @@ import org.abondar.experimental.wsboard.dao.exception.DataExistenceException;
 import org.abondar.experimental.wsboard.dao.exception.InvalidHashException;
 import org.abondar.experimental.wsboard.dao.exception.InvalidPasswordException;
 import org.abondar.experimental.wsboard.dao.password.PasswordUtil;
-import org.abondar.experimental.wsboard.datamodel.User;
-import org.abondar.experimental.wsboard.datamodel.UserRole;
+import org.abondar.experimental.wsboard.datamodel.user.User;
+import org.abondar.experimental.wsboard.datamodel.user.UserRole;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
