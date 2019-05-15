@@ -25,7 +25,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Date;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -263,7 +262,7 @@ public class TaskDaoTest {
 
         var usr = createUser("");
         usr = userDao.updateUser(usr.getId(),null,null,null,
-                List.of(UserRole.Developer.name(), UserRole.DevOps.name(),UserRole.QA.name()),null);
+                UserRole.Developer.name() + ";" + UserRole.DevOps.name() + ";" + UserRole.QA.name(), null);
 
         var prj = createProject(true);
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
@@ -363,7 +362,7 @@ public class TaskDaoTest {
 
         var usr = createUser("");
         usr = userDao.updateUser(usr.getId(),null,null,null,
-                List.of(UserRole.Developer.name(), UserRole.DevOps.name(),UserRole.QA.name()),null);
+                UserRole.Developer.name() + ";" + UserRole.DevOps.name() + ";" + UserRole.QA.name(), null);
 
         var prj = createProject(true);
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);

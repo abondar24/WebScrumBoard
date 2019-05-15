@@ -22,7 +22,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Date;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -167,7 +166,7 @@ public class UserDaoTest {
         var usr = createUser();
         var id = usr.getId();
         usr = userDao.updateUser(usr.getId(), "name1", "name2",
-                "email1@email.com", List.of(UserRole.Developer.name()), new byte[1024]);
+                "email1@email.com", UserRole.Developer.name() + ";", new byte[1024]);
 
         assertEquals(id, usr.getId());
 
@@ -181,7 +180,7 @@ public class UserDaoTest {
 
         var usr = createUser();
         var id = usr.getId();
-        usr = userDao.updateUser(usr.getId(), null, null, null, List.of(), null);
+        usr = userDao.updateUser(usr.getId(), null, null, null, null, null);
 
         assertEquals(id, usr.getId());
 
@@ -195,7 +194,7 @@ public class UserDaoTest {
         var usr = createUser();
         var id = usr.getId();
 
-        usr = userDao.updateUser(usr.getId(), null, "", null, List.of(), null);
+        usr = userDao.updateUser(usr.getId(), null, "", null, null, null);
         assertEquals(id, usr.getId());
 
         mapper.deleteUsers();
@@ -210,7 +209,7 @@ public class UserDaoTest {
         var avatar = new byte[]{};
 
         assertThrows(DataCreationException.class, () ->
-                userDao.updateUser(usr.getId(), null, "", null, List.of(), avatar));
+                userDao.updateUser(usr.getId(), null, "", null, null, avatar));
 
         mapper.deleteUsers();
     }

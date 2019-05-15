@@ -13,9 +13,6 @@ import org.abondar.experimental.wsboard.datamodel.user.UserRole;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 /**
  * Data access object for user
  *
@@ -193,7 +190,7 @@ public class UserDao extends BaseDao {
      */
     public User updateUser(Long id, String firstName,
                            String lastName, String email,
-                           List<String> roles, byte[] avatar)
+                           String roles, byte[] avatar)
             throws DataExistenceException, DataCreationException {
 
         var usr = mapper.getUserById(id);
@@ -215,8 +212,26 @@ public class UserDao extends BaseDao {
         }
 
         if (roles != null && !roles.isEmpty()) {
-            var userRoles = roles.stream().filter(this::containsRole).collect(Collectors.joining(";"));
-            usr.setRoles(userRoles);
+            String[] rolesArr = roles.split(";");
+            if (rolesArr.length == 0) {
+                throw new DataCreationException(ErrorMessageUtil.USER_NO_ROLES);
+            }
+
+            var userRoles = new StringBuilder();
+            for (String role : rolesArr) {
+
+                if (containsRole(role)) {
+                    userRoles.append(role);
+                    userRoles.append(";");
+                }
+
+            }
+
+            if (userRoles.toString().isBlank()) {
+                throw new DataCreationException(ErrorMessageUtil.USER_NO_ROLES);
+            }
+
+            usr.setRoles(userRoles.toString());
         }
 
         if (avatar != null && avatar.length == 0) {
