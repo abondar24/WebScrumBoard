@@ -49,7 +49,7 @@ public class UserDao extends BaseDao {
      * @throws DataExistenceException          - user already exists
      */
     public User createUser(String login, String password, String email, String firstName,
-                           String lastName, List<String> roles)
+                           String lastName, String roles)
             throws CannotPerformOperationException, DataCreationException, DataExistenceException {
         var usr = mapper.getUserByLogin(login);
 
@@ -78,15 +78,32 @@ public class UserDao extends BaseDao {
             throw new DataCreationException(ErrorMessageUtil.BLANK_DATA);
         }
 
-        if (roles == null || roles.isEmpty()) {
+        if (roles == null || roles.isBlank()) {
             throw new DataCreationException(ErrorMessageUtil.BLANK_DATA);
         }
 
         var pwdHash = PasswordUtil.createHash(password);
 
-        var userRoles = roles.stream().filter(this::containsRole).collect(Collectors.joining(";"));
+        String[] rolesArr = roles.split(";");
+        if (rolesArr.length == 0) {
+            throw new DataCreationException(ErrorMessageUtil.USER_NO_ROLES);
+        }
 
-        usr = new User(login, email, firstName, lastName, pwdHash, userRoles);
+        var userRoles = new StringBuilder();
+        for (String role : rolesArr) {
+
+            if (containsRole(role)) {
+                userRoles.append(role);
+                userRoles.append(";");
+            }
+
+        }
+
+        if (userRoles.toString().isBlank()) {
+            throw new DataCreationException(ErrorMessageUtil.USER_NO_ROLES);
+        }
+
+        usr = new User(login, email, firstName, lastName, pwdHash, userRoles.toString());
         mapper.insertUser(usr);
 
         logger.info("User successfully created with id: " + usr.getId());

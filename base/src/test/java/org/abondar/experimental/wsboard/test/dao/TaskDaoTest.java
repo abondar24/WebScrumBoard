@@ -136,7 +136,7 @@ public class TaskDaoTest {
 
         var usr1 = userDao.createUser("login1", "pwd",
                 "email@email.com", "fname", "lname",
-                List.of(UserRole.Developer.name(), UserRole.DevOps.name()));
+                UserRole.Developer.name() + ";" + UserRole.DevOps.name());
 
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
         var contr1 = contributorDao.createContributor(usr1.getId(), prj.getId(), false);
@@ -525,7 +525,7 @@ public class TaskDaoTest {
         var password = "pwd";
         var firstName = "fname";
         var lastName = "lname";
-        var roles = List.of(UserRole.Developer.name(), UserRole.DevOps.name());
+        var roles = UserRole.Developer.name() + ";" + UserRole.DevOps.name();
 
         return userDao.createUser(login, password, email, firstName, lastName, roles);
     }

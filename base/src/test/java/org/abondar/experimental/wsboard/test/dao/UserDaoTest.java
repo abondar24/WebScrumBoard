@@ -84,7 +84,7 @@ public class UserDaoTest {
         var password = "pwd";
         var firstName = "fname";
         var lastName = "lname";
-        List<String> roles = List.of();
+        String roles = "";
 
 
         assertThrows(DataCreationException.class, () ->
@@ -225,7 +225,7 @@ public class UserDaoTest {
         contributorDao.createContributor(usr.getId(), project.getId(), true);
 
         var delUser = userDao.createUser("usr1", "pwd", "ss",
-                "fname", "lname", List.of(UserRole.Developer.name()));
+                "fname", "lname", UserRole.Developer.name() + ";");
         contributorDao.createContributor(delUser.getId(), project.getId(), false);
 
         delUser = userDao.deleteUser(delUser.getId());
@@ -263,7 +263,7 @@ public class UserDaoTest {
         contributorDao.createContributor(usr.getId(), project.getId(), true);
 
         var delUsr = userDao.createUser("testLogin", "psw", "aaa",
-                "aa", "aa", List.of(UserRole.Developer.name()));
+                "aa", "aa", UserRole.Developer.name() + ";");
         var ctr = contributorDao.createContributor(delUsr.getId(), project.getId(), false);
 
         userDao.deleteUser(delUsr.getId());
@@ -304,7 +304,7 @@ public class UserDaoTest {
         var password = "pwd";
         var firstName = "fname";
         var lastName = "lname";
-        var roles = List.of(UserRole.Developer.name(), UserRole.DevOps.name());
+        var roles = UserRole.Developer.name() + ";" + UserRole.DevOps.name();
 
         return userDao.createUser(login, password, email, firstName, lastName, roles);
     }
