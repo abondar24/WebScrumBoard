@@ -33,7 +33,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
 import java.util.Date;
-import java.util.List;
 
 /**
  * User crud and login webservice
@@ -67,7 +66,7 @@ public class UserServiceImpl implements UserService {
                             responseCode = "200",
                             description = "User created",
                             content = @Content(schema = @Schema(implementation = User.class))),
-                    @ApiResponse(responseCode = "404", description = "User with such login already exists"),
+                    @ApiResponse(responseCode = "302", description = "User with such login already exists"),
                     @ApiResponse(responseCode = "501", description = "Form data is not complete"),
                     @ApiResponse(responseCode = "503", description = "Password hash not created")
             }
@@ -78,7 +77,7 @@ public class UserServiceImpl implements UserService {
                                @FormParam("firstName") @Parameter(description = "First name of user", required = true) String firstName,
                                @FormParam("lastName") @Parameter(description = "Last name of user", required = true) String lastName,
                                @FormParam("password") @Parameter(description = "User password", required = true) String password,
-                               @FormParam("roles") @Parameter(description = "List of user roles", required = true) List<String> roles) {
+                               @FormParam("roles") @Parameter(description = "Comma separated list of user roles", required = true) String roles) {
 
         try {
             User user = dao.createUser(login, password, email, firstName, lastName, roles);
@@ -86,10 +85,10 @@ public class UserServiceImpl implements UserService {
             return Response.ok(user).cookie(createCookie(user.getLogin())).build();
         } catch (CannotPerformOperationException ex) {
             logger.error(ex.getMessage());
-            return Response.status(Response.Status.SERVICE_UNAVAILABLE).entity(ex.getLocalizedMessage()).build();
+            return Response.status(Response.Status.SERVICE_UNAVAILABLE).entity(ErrorMessageUtil.PWD_HASH_NOT_CREATED).build();
         } catch (DataExistenceException ex) {
             logger.error(ex.getMessage());
-            return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
+            return Response.status(Response.Status.FOUND).entity(ex.getLocalizedMessage()).build();
         } catch (DataCreationException ex) {
             logger.error(ex.getMessage());
             return Response.status(Response.Status.NOT_IMPLEMENTED).entity(ex.getLocalizedMessage()).build();
@@ -118,7 +117,7 @@ public class UserServiceImpl implements UserService {
                                @FormParam("firstName") @Parameter(description = "First name of user") String firstName,
                                @FormParam("lastName") @Parameter(description = "Last name of user") String lastName,
                                @FormParam("email") @Parameter(description = "User email") String email,
-                               @FormParam("roles") @Parameter(description = "List of user roles") List<String> roles) {
+                               @FormParam("roles") @Parameter(description = "List of user roles") String roles) {
         try {
             User user = dao.updateUser(id, firstName, lastName, email, roles, null);
 
@@ -231,7 +230,7 @@ public class UserServiceImpl implements UserService {
             return Response.status(Response.Status.UNAUTHORIZED).entity(ex.getLocalizedMessage()).build();
         } catch (CannotPerformOperationException ex) {
             logger.error(ex.getMessage());
-            return Response.status(Response.Status.SERVICE_UNAVAILABLE).entity(ex.getLocalizedMessage()).build();
+            return Response.status(Response.Status.SERVICE_UNAVAILABLE).entity(ErrorMessageUtil.PWD_HASH_NOT_CREATED).build();
         } catch (DataExistenceException ex) {
             logger.error(ex.getMessage());
             return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
@@ -296,7 +295,7 @@ public class UserServiceImpl implements UserService {
             return Response.status(Response.Status.UNAUTHORIZED).entity(ex.getLocalizedMessage()).build();
         } catch (CannotPerformOperationException ex) {
             logger.error(ex.getMessage());
-            return Response.status(Response.Status.SERVICE_UNAVAILABLE).entity(ex.getLocalizedMessage()).build();
+            return Response.status(Response.Status.SERVICE_UNAVAILABLE).entity(ErrorMessageUtil.PWD_HASH_NOT_CREATED).build();
         } catch (DataExistenceException ex) {
             logger.error(ex.getMessage());
             return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();

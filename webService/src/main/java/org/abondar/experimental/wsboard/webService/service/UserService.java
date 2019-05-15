@@ -1,15 +1,14 @@
 package org.abondar.experimental.wsboard.webService.service;
 
 import javax.ws.rs.core.Response;
-import java.util.List;
 
 public interface UserService extends RestService {
 
     Response createUser(String login, String email, String firstName, String lastName,
-                        String password, List<String> roles);
+                        String password, String roles);
 
     Response updateUser(long id, String firstName, String lastName, String email,
-                        List<String> roles);
+                        String roles);
 
     Response updateAvatar(long id, byte[] avatar);
 

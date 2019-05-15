@@ -82,7 +82,7 @@ public class UserDao extends BaseDao {
         var pwdHash = PasswordUtil.createHash(password);
 
         String[] rolesArr = roles.split(";");
-        if (rolesArr.length == 0) {
+        if (rolesArr.length == 0 || !roles.contains(";")) {
             throw new DataCreationException(ErrorMessageUtil.USER_NO_ROLES);
         }
 
@@ -213,7 +213,7 @@ public class UserDao extends BaseDao {
 
         if (roles != null && !roles.isEmpty()) {
             String[] rolesArr = roles.split(";");
-            if (rolesArr.length == 0) {
+            if (rolesArr.length == 0 || !roles.contains(";")) {
                 throw new DataCreationException(ErrorMessageUtil.USER_NO_ROLES);
             }
 
