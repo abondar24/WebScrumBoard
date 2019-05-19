@@ -7,7 +7,7 @@ import org.abondar.experimental.wsboard.dao.UserDao;
 import org.abondar.experimental.wsboard.dao.data.DataMapper;
 import org.abondar.experimental.wsboard.dao.exception.DataCreationException;
 import org.abondar.experimental.wsboard.dao.exception.DataExistenceException;
-import org.abondar.experimental.wsboard.dao.exception.InvalidPasswordException;
+import org.abondar.experimental.wsboard.dao.exception.InvalidHashException;
 import org.abondar.experimental.wsboard.datamodel.Project;
 import org.abondar.experimental.wsboard.datamodel.user.User;
 import org.abondar.experimental.wsboard.datamodel.user.UserRole;
@@ -154,7 +154,7 @@ public class UserDaoTest {
 
         var usr = createUser();
 
-        assertThrows(InvalidPasswordException.class, () ->
+        assertThrows(InvalidHashException.class, () ->
                 userDao.updatePassword("randomPwd", "newPed", usr.getId()));
         mapper.deleteUsers();
     }
@@ -286,15 +286,6 @@ public class UserDaoTest {
         mapper.deleteUsers();
     }
 
-    @Test
-    public void logoutUserTest() throws Exception {
-        logger.info("Update user password test");
-
-        var usr = createUser();
-        userDao.logoutUser(usr.getId());
-
-        mapper.deleteUsers();
-    }
 
 
     private User createUser() throws Exception {

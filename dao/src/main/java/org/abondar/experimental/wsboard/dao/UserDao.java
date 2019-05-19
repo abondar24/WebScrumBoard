@@ -81,26 +81,7 @@ public class UserDao extends BaseDao {
 
         var pwdHash = PasswordUtil.createHash(password);
 
-        String[] rolesArr = roles.split(";");
-        if (rolesArr.length == 0 || !roles.contains(";")) {
-            throw new DataCreationException(ErrorMessageUtil.USER_NO_ROLES);
-        }
-
-        var userRoles = new StringBuilder();
-        for (String role : rolesArr) {
-
-            if (containsRole(role)) {
-                userRoles.append(role);
-                userRoles.append(";");
-            }
-
-        }
-
-        if (userRoles.toString().isBlank()) {
-            throw new DataCreationException(ErrorMessageUtil.USER_NO_ROLES);
-        }
-
-        usr = new User(login, email, firstName, lastName, pwdHash, userRoles.toString());
+        usr = new User(login, email, firstName, lastName, pwdHash, checkRoles(roles));
         mapper.insertUser(usr);
 
         logger.info("User successfully created with id: " + usr.getId());
@@ -130,11 +111,7 @@ public class UserDao extends BaseDao {
 
         }
 
-        usr = mapper.getUserById(userId);
-        if (usr == null) {
-            logger.error(ErrorMessageUtil.USER_NOT_EXISTS + " with id: " + userId);
-            throw new DataExistenceException(ErrorMessageUtil.USER_NOT_EXISTS);
-        }
+        usr = findUserById(userId);
 
         usr.setLogin(login);
         mapper.updateUser(usr);
@@ -154,20 +131,15 @@ public class UserDao extends BaseDao {
      * @throws CannotPerformOperationException - password hash creation failed
      * @throws InvalidHashException            - old user password doesn't match the one in db
      * @throws DataExistenceException          - user not exists
-     * @throws InvalidPasswordException        - old password not correct
      */
     public User updatePassword(String oldPassword, String newPassword, long userId)
             throws CannotPerformOperationException, InvalidHashException, DataExistenceException {
 
-        var usr = mapper.getUserById(userId);
-        if (usr == null) {
-            logger.error(ErrorMessageUtil.USER_NOT_EXISTS + " with id: " + userId);
-            throw new DataExistenceException(ErrorMessageUtil.USER_NOT_EXISTS);
-        }
+        var usr = findUserById(userId);
 
         if (!PasswordUtil.verifyPassword(oldPassword, usr.getPassword())) {
             logger.error(ErrorMessageUtil.USER_UNAUTHORIZED);
-            throw new InvalidPasswordException(ErrorMessageUtil.USER_UNAUTHORIZED);
+            throw new InvalidHashException(ErrorMessageUtil.USER_UNAUTHORIZED);
         }
         usr.setPassword(PasswordUtil.createHash(newPassword));
         mapper.updateUser(usr);
@@ -193,11 +165,7 @@ public class UserDao extends BaseDao {
                            String roles, byte[] avatar)
             throws DataExistenceException, DataCreationException {
 
-        var usr = mapper.getUserById(id);
-        if (usr == null) {
-            logger.error(ErrorMessageUtil.USER_NOT_EXISTS + " with id: " + id);
-            throw new DataExistenceException(ErrorMessageUtil.USER_NOT_EXISTS);
-        }
+        var usr = findUserById(id);
 
         if (email != null && !email.isBlank()) {
             usr.setEmail(email);
@@ -212,26 +180,7 @@ public class UserDao extends BaseDao {
         }
 
         if (roles != null && !roles.isEmpty()) {
-            String[] rolesArr = roles.split(";");
-            if (rolesArr.length == 0 || !roles.contains(";")) {
-                throw new DataCreationException(ErrorMessageUtil.USER_NO_ROLES);
-            }
-
-            var userRoles = new StringBuilder();
-            for (String role : rolesArr) {
-
-                if (containsRole(role)) {
-                    userRoles.append(role);
-                    userRoles.append(";");
-                }
-
-            }
-
-            if (userRoles.toString().isBlank()) {
-                throw new DataCreationException(ErrorMessageUtil.USER_NO_ROLES);
-            }
-
-            usr.setRoles(userRoles.toString());
+            usr.setRoles(checkRoles(roles));
         }
 
         if (avatar != null && avatar.length == 0) {
@@ -251,25 +200,17 @@ public class UserDao extends BaseDao {
      * @return user POJO
      */
     public User deleteUser(long id) throws DataExistenceException, DataCreationException {
-        var usr = mapper.getUserById(id);
-        if (usr == null) {
-            logger.error(ErrorMessageUtil.USER_NOT_EXISTS + " with id: " + id);
-            throw new DataExistenceException(ErrorMessageUtil.USER_NOT_EXISTS);
-        }
+        var usr = findUserById(id);
 
         var contributor = mapper.getContributorByUserId(id);
-        if (contributor != null) {
-            if (contributor.isOwner()) {
+        if (contributor != null && contributor.isOwner()) {
                 logger.error(ErrorMessageUtil.USER_IS_PROJECT_OWNER);
                 throw new DataCreationException(ErrorMessageUtil.USER_IS_PROJECT_OWNER);
 
-            }
-
-            usr.setDeleted();
-
-            contributorDao.updateContributor(contributor.getId(), contributor.isOwner(), false);
-
         }
+        usr.setDeleted();
+
+        contributorDao.updateContributor(contributor.getId(), contributor.isOwner(), false);
 
 
         mapper.insertUser(usr);
@@ -303,11 +244,11 @@ public class UserDao extends BaseDao {
     }
 
     /**
-     * Perform user log out
+     * Find user By Id
      *
      * @param id - user login
      */
-    public void logoutUser(long id) throws DataExistenceException {
+    public User findUserById(long id) throws DataExistenceException {
 
         var usr = mapper.getUserById(id);
         if (usr == null) {
@@ -315,6 +256,39 @@ public class UserDao extends BaseDao {
 
             throw new DataExistenceException(ErrorMessageUtil.USER_NOT_EXISTS);
         }
+
+        return usr;
+    }
+
+    /**
+     * Checks if user roles are correct
+     *
+     * @param roles - ; separated list of roles
+     * @return list of roles with ;
+     * @throws DataCreationException - user roles empty or or don't have delimiter
+     */
+    private String checkRoles(String roles) throws DataCreationException {
+
+        String[] rolesArr = roles.split(";");
+        if (rolesArr.length == 0 || !roles.contains(";")) {
+            throw new DataCreationException(ErrorMessageUtil.USER_NO_ROLES);
+        }
+
+        var userRoles = new StringBuilder();
+        for (String role : rolesArr) {
+
+            if (containsRole(role)) {
+                userRoles.append(role);
+                userRoles.append(";");
+            }
+
+        }
+
+        if (userRoles.toString().isBlank()) {
+            throw new DataCreationException(ErrorMessageUtil.USER_NO_ROLES);
+        }
+
+        return userRoles.toString();
 
     }
 
