@@ -6,7 +6,6 @@ import org.abondar.experimental.wsboard.dao.exception.CannotPerformOperationExce
 import org.abondar.experimental.wsboard.dao.exception.DataCreationException;
 import org.abondar.experimental.wsboard.dao.exception.DataExistenceException;
 import org.abondar.experimental.wsboard.dao.exception.InvalidHashException;
-import org.abondar.experimental.wsboard.dao.exception.InvalidPasswordException;
 import org.abondar.experimental.wsboard.dao.password.PasswordUtil;
 import org.abondar.experimental.wsboard.datamodel.user.User;
 import org.abondar.experimental.wsboard.datamodel.user.UserRole;
@@ -137,10 +136,7 @@ public class UserDao extends BaseDao {
 
         var usr = findUserById(userId);
 
-        if (!PasswordUtil.verifyPassword(oldPassword, usr.getPassword())) {
-            logger.error(ErrorMessageUtil.USER_UNAUTHORIZED);
-            throw new InvalidHashException(ErrorMessageUtil.USER_UNAUTHORIZED);
-        }
+        verifyPassword(oldPassword, usr.getPassword());
         usr.setPassword(PasswordUtil.createHash(newPassword));
         mapper.updateUser(usr);
 
@@ -236,10 +232,7 @@ public class UserDao extends BaseDao {
             throw new DataExistenceException(ErrorMessageUtil.USER_NOT_EXISTS);
         }
 
-        if (!PasswordUtil.verifyPassword(password, usr.getPassword())) {
-            logger.error(ErrorMessageUtil.USER_UNAUTHORIZED);
-            throw new InvalidPasswordException(ErrorMessageUtil.USER_UNAUTHORIZED);
-        }
+        verifyPassword(password, usr.getPassword());
 
     }
 
@@ -306,6 +299,21 @@ public class UserDao extends BaseDao {
         }
 
         return false;
+    }
+
+    /**
+     * Verify user password
+     *
+     * @param password - password to verify
+     * @param hash     - existing password hash
+     * @throws InvalidHashException            - passwords don't match
+     * @throws CannotPerformOperationException - hash creation failed
+     */
+    private void verifyPassword(String password, String hash) throws InvalidHashException, CannotPerformOperationException {
+        if (!PasswordUtil.verifyPassword(password, hash)) {
+            logger.error(ErrorMessageUtil.USER_UNAUTHORIZED);
+            throw new InvalidHashException(ErrorMessageUtil.USER_UNAUTHORIZED);
+        }
     }
 
 

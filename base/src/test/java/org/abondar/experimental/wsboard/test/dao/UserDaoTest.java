@@ -277,11 +277,20 @@ public class UserDaoTest {
 
 
     @Test
-    public void loginUserTest() throws Exception {
-        logger.info("Login user test");
+    public void loginUserNotFoundTest() {
+        logger.info("Login user not found test");
 
-        var usr = createUser();
-        userDao.loginUser(usr.getLogin(), "pwd");
+        assertThrows(DataExistenceException.class, () -> userDao.loginUser("login", "pwd"));
+
+        mapper.deleteUsers();
+    }
+
+    @Test
+    public void loginUserUnauthorizedTest() throws Exception {
+        logger.info("Login user unauthorized test");
+
+        var user = createUser();
+        assertThrows(InvalidHashException.class, () -> userDao.loginUser(user.getLogin(), "pass"));
 
         mapper.deleteUsers();
     }
