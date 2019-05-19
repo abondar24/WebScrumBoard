@@ -23,6 +23,10 @@ import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
 import java.util.Date;
 
+/**
+ * Test implementation of user web service
+ */
+@Path("/user")
 public class UserServiceTestImpl implements UserService {
 
     private AuthService authService;

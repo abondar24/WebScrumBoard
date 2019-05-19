@@ -7,6 +7,7 @@ import org.abondar.experimental.wsboard.dao.exception.InvalidPasswordException;
 import org.abondar.experimental.wsboard.dao.password.PasswordUtil;
 import org.abondar.experimental.wsboard.datamodel.user.User;
 import org.abondar.experimental.wsboard.webService.service.AuthService;
+import org.apache.cxf.common.util.Base64Exception;
 import org.apache.cxf.common.util.Base64Utility;
 import org.apache.cxf.rs.security.jose.jwa.SignatureAlgorithm;
 import org.apache.cxf.rs.security.jose.jws.HmacJwsSignatureProvider;
@@ -32,7 +33,7 @@ public class AuthServiceImpl implements AuthService {
 
 
     @Override
-    public String renewToken(String tokenStr) throws Exception {
+    public String renewToken(String tokenStr) throws Base64Exception {
         JwsJwtCompactConsumer jwtConsumer = new JwsJwtCompactConsumer(tokenStr);
         JwtToken token = jwtConsumer.getJwtToken();
         long issuedAt = (new Date()).getTime() / 1000;

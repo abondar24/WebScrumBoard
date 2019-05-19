@@ -2,6 +2,9 @@ package org.abondar.experimental.wsboard.webService.service;
 
 import javax.ws.rs.core.Response;
 
+/**
+ * User web service interface
+ */
 public interface UserService extends RestService {
 
     Response createUser(String login, String email, String firstName, String lastName,

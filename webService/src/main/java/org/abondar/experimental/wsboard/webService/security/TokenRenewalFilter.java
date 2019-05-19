@@ -13,6 +13,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.container.ContainerRequestContext;
 import java.io.IOException;
 
+/**
+ * Filter for token renewal after expiration
+ */
 public class TokenRenewalFilter extends JwtAuthenticationFilter {
 
     private AuthService authService;

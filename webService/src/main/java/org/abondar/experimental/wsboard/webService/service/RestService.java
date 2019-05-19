@@ -8,6 +8,9 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.servers.Server;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
+/**
+ * Basic web service interface
+ */
 @OpenAPIDefinition(
         info = @Info(
                 title = "Web Scrum Board",

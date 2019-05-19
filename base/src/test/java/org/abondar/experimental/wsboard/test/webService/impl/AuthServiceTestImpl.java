@@ -3,13 +3,17 @@ package org.abondar.experimental.wsboard.test.webService.impl;
 import org.abondar.experimental.wsboard.dao.exception.InvalidPasswordException;
 import org.abondar.experimental.wsboard.datamodel.user.User;
 import org.abondar.experimental.wsboard.webService.service.AuthService;
+import org.apache.cxf.common.util.Base64Exception;
 
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Test implementation of authorization service
+ */
 public class AuthServiceTestImpl implements AuthService {
     @Override
-    public String renewToken(String tokenStr) throws Exception {
+    public String renewToken(String tokenStr) throws Base64Exception {
         return null;
     }
 

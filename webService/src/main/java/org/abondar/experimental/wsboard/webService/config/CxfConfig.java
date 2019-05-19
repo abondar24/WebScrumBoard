@@ -3,7 +3,10 @@ package org.abondar.experimental.wsboard.webService.config;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import org.abondar.experimental.wsboard.webService.impl.AuthServiceImpl;
+import org.abondar.experimental.wsboard.webService.impl.ContributorServiceImpl;
 import org.abondar.experimental.wsboard.webService.impl.ProjectServiceImpl;
+import org.abondar.experimental.wsboard.webService.impl.SprintServiceImpl;
+import org.abondar.experimental.wsboard.webService.impl.TaskServiceImpl;
 import org.abondar.experimental.wsboard.webService.impl.UserServiceImpl;
 import org.abondar.experimental.wsboard.webService.security.TokenExpiredMapper;
 import org.abondar.experimental.wsboard.webService.security.TokenRenewalFilter;
@@ -30,6 +33,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Cxf configuration class
+ */
 @Configuration
 @Component
 public class CxfConfig implements WebMvcConfigurer {
@@ -58,6 +64,21 @@ public class CxfConfig implements WebMvcConfigurer {
     }
 
     @Bean
+    RestService contributorService() {
+        return new ContributorServiceImpl();
+    }
+
+    @Bean
+    RestService taskService() {
+        return new TaskServiceImpl();
+    }
+
+    @Bean
+    RestService sprintService() {
+        return new SprintServiceImpl();
+    }
+
+    @Bean
     AuthService authService() {
         return new AuthServiceImpl();
     }
@@ -69,7 +90,8 @@ public class CxfConfig implements WebMvcConfigurer {
 
         JAXRSServerFactoryBean factory = new JAXRSServerFactoryBean();
         factory.setBus(springBus());
-        factory.setServiceBeanObjects(userService(authService), projectService());
+        factory.setServiceBeanObjects(userService(authService), projectService(),
+                contributorService(), taskService(), sprintService());
 
         factory.setProvider(jsonProvider);
         factory.setProvider(authenticationFilter(authService));
