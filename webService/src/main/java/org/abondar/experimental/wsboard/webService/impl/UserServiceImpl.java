@@ -66,8 +66,8 @@ public class UserServiceImpl implements UserService {
                             responseCode = "200",
                             description = "User created",
                             content = @Content(schema = @Schema(implementation = User.class))),
+                    @ApiResponse(responseCode = "204", description = "Form data is not complete"),
                     @ApiResponse(responseCode = "302", description = "User with such login already exists"),
-                    @ApiResponse(responseCode = "501", description = "Form data is not complete"),
                     @ApiResponse(responseCode = "503", description = "Password hash not created")
             }
     )
@@ -82,7 +82,7 @@ public class UserServiceImpl implements UserService {
         try {
             User user = dao.createUser(login, password, email, firstName, lastName, roles);
 
-            return Response.ok(user).cookie(createCookie(user.getLogin())).build();
+            return Response.ok(user).cookie(createLoginCookie(user.getLogin())).build();
         } catch (CannotPerformOperationException ex) {
             logger.error(ex.getMessage());
             return Response.status(Response.Status.SERVICE_UNAVAILABLE).entity(ErrorMessageUtil.PWD_HASH_NOT_CREATED).build();
@@ -91,7 +91,7 @@ public class UserServiceImpl implements UserService {
             return Response.status(Response.Status.FOUND).entity(ex.getLocalizedMessage()).build();
         } catch (DataCreationException ex) {
             logger.error(ex.getMessage());
-            return Response.status(Response.Status.NOT_IMPLEMENTED).entity(ex.getLocalizedMessage()).build();
+            return Response.status(Response.Status.NO_CONTENT).entity(ex.getLocalizedMessage()).build();
         }
 
     }
@@ -125,8 +125,9 @@ public class UserServiceImpl implements UserService {
         } catch (DataExistenceException ex) {
             logger.error(ex.getMessage());
             return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
-        } catch (DataCreationException ignored) {
-            return Response.status(Response.Status.NO_CONTENT).build();
+        } catch (DataCreationException ex) {
+            logger.error(ex.getMessage());
+            return Response.status(Response.Status.NO_CONTENT).entity(ex.getLocalizedMessage()).build();
         }
     }
 
@@ -289,7 +290,7 @@ public class UserServiceImpl implements UserService {
         try {
             dao.loginUser(login, password);
 
-            return Response.ok().cookie(createCookie(login)).build();
+            return Response.ok().cookie(createLoginCookie(login)).build();
         } catch (InvalidHashException ex) {
             logger.error(ex.getMessage());
             return Response.status(Response.Status.UNAUTHORIZED).entity(ex.getLocalizedMessage()).build();
@@ -318,9 +319,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public Response logoutUser(@QueryParam("id") @Parameter(description = "User ID", required = true) long id) {
         try {
-            dao.logoutUser(id);
+            dao.findUserById(id);
 
-            return Response.ok().build();
+            return Response.ok().cookie(new NewCookie(new Cookie("X-JWT-AUTH", "", "/", ""),
+                    "JWT token", 24000, false)).build();
         } catch (DataExistenceException ex) {
             logger.error(ex.getMessage());
             return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
@@ -328,7 +330,7 @@ public class UserServiceImpl implements UserService {
     }
 
 
-    private NewCookie createCookie(String login) {
+    private NewCookie createLoginCookie(String login) {
         return new NewCookie(new Cookie("X-JWT-AUTH",
                 authService.createToken(login, COOKIE_ISSUER, null), "/", null),
                 "JWT token", 6000, new Date((new Date()).getTime() + 60000), false, false);

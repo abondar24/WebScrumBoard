@@ -2,7 +2,9 @@ package org.abondar.experimental.wsboard.test.webService.impl;
 
 import org.abondar.experimental.wsboard.dao.data.ErrorMessageUtil;
 import org.abondar.experimental.wsboard.dao.exception.CannotPerformOperationException;
+import org.abondar.experimental.wsboard.dao.exception.InvalidHashException;
 import org.abondar.experimental.wsboard.dao.password.PasswordUtil;
+import org.abondar.experimental.wsboard.datamodel.Contributor;
 import org.abondar.experimental.wsboard.datamodel.user.User;
 import org.abondar.experimental.wsboard.webService.service.AuthService;
 import org.abondar.experimental.wsboard.webService.service.UserService;
@@ -10,9 +12,11 @@ import org.abondar.experimental.wsboard.webService.service.UserService;
 import javax.annotation.security.PermitAll;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.NewCookie;
@@ -23,10 +27,12 @@ public class UserServiceTestImpl implements UserService {
 
     private AuthService authService;
 
-    private User user;
+    private User testUser;
+    private Contributor testContributor;
 
     public UserServiceTestImpl(AuthService authService) {
         this.authService = authService;
+
     }
 
     @POST
@@ -42,23 +48,23 @@ public class UserServiceTestImpl implements UserService {
                                @FormParam("password") String password,
                                @FormParam("roles") String roles) {
 
-        var testUser = new User();
-        testUser.setLogin("testLogin");
+        var existingUser = new User();
+        existingUser.setLogin("testLogin");
 
-        if (testUser.getLogin().equals(login)) {
+        if (existingUser.getLogin().equals(login)) {
             return Response.status(Response.Status.FOUND).entity(ErrorMessageUtil.USER_EXISTS).build();
         }
 
         if ((login == null || login.isBlank()) || (password == null || password.isBlank())
                 || (email == null || email.isBlank()) || (firstName == null || firstName.isBlank())
                 || (lastName == null || lastName.isBlank()) || (roles == null || roles.isEmpty())) {
-            return Response.status(Response.Status.NOT_IMPLEMENTED).entity(ErrorMessageUtil.BLANK_DATA).build();
+            return Response.status(Response.Status.NO_CONTENT).entity(ErrorMessageUtil.BLANK_DATA).build();
         }
 
         String[] rolesArr = roles.split(";");
 
         if (rolesArr.length == 0 || !roles.contains(";")) {
-            return Response.status(Response.Status.NOT_IMPLEMENTED).entity(ErrorMessageUtil.USER_NO_ROLES).build();
+            return Response.status(Response.Status.NO_CONTENT).entity(ErrorMessageUtil.USER_NO_ROLES).build();
         }
 
         String pwdHash;
@@ -70,48 +76,160 @@ public class UserServiceTestImpl implements UserService {
         }
 
 
-        user = new User(login, email, firstName, lastName, pwdHash, roles);
-        user.setId(10);
+        this.testUser = new User(login, email, firstName, lastName, pwdHash, roles);
+        this.testUser.setId(10);
 
 
-        return Response.ok(user).cookie(createCookie(user.getLogin())).build();
+        return Response.ok(this.testUser).cookie(createCookie(this.testUser.getLogin())).build();
 
 
     }
 
+    @POST
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/update")
     @Override
     public Response updateUser(long id, String firstName, String lastName, String email, String roles) {
-        return null;
+        if (testUser.getId() != id) {
+            return Response.status(Response.Status.NOT_FOUND).entity(ErrorMessageUtil.USER_NOT_EXISTS).build();
+        }
+
+
+        String[] rolesArr = roles.split(";");
+
+        if (rolesArr.length == 0 || !roles.contains(";")) {
+            return Response.status(Response.Status.NO_CONTENT).entity(ErrorMessageUtil.USER_NO_ROLES).build();
+        }
+
+        testUser.setFirstName(firstName);
+        testUser.setLastName(lastName);
+        testUser.setEmail(email);
+        testUser.setRoles(roles);
+
+        return Response.ok(testUser).build();
     }
 
+    @POST
+    @Consumes(MediaType.APPLICATION_OCTET_STREAM)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/update_avatar")
     @Override
     public Response updateAvatar(long id, byte[] avatar) {
+        if (testUser.getId() != id) {
+            return Response.status(Response.Status.NOT_FOUND).entity(ErrorMessageUtil.USER_NOT_EXISTS).build();
+        }
+
+
+        if (avatar != null && avatar.length == 0) {
+            return Response.status(Response.Status.NO_CONTENT).entity(ErrorMessageUtil.USER_AVATAR_EMPTY).build();
+        }
+
+        testUser.setAvatar(avatar);
+
+        return Response.ok(testUser).build();
+    }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/update_login")
+    @Override
+    public Response updateLogin(@FormParam("login") String login, @FormParam("id") long id) {
+        if (testUser.getId() != id) {
+            return Response.status(Response.Status.NOT_FOUND).entity(ErrorMessageUtil.USER_NOT_EXISTS).build();
+        }
+
+        if (testUser.getLogin().equals(login)) {
+            return Response.status(Response.Status.FOUND).entity(ErrorMessageUtil.USER_EXISTS).build();
+        }
+
+        testUser.setLogin(login);
+        return Response.ok(testUser).build();
+    }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/update_password")
+    @Override
+    public Response updatePassword(@FormParam("oldPassword") String oldPassword,
+                                   @FormParam("newPassword") String newPassword,
+                                   @FormParam("id") long id) {
+
+        if (testUser.getId() != id) {
+            return Response.status(Response.Status.NOT_FOUND).entity(ErrorMessageUtil.USER_NOT_EXISTS).build();
+        }
+
+        try {
+            if (PasswordUtil.verifyPassword(oldPassword, testUser.getPassword())) {
+                testUser.setPassword(PasswordUtil.createHash(newPassword));
+            }
+            return Response.ok(testUser).build();
+        } catch (CannotPerformOperationException ex) {
+            return Response.status(Response.Status.SERVICE_UNAVAILABLE).entity(ex.getLocalizedMessage()).build();
+        } catch (InvalidHashException ex) {
+            return Response.status(Response.Status.UNAUTHORIZED).entity(ex.getLocalizedMessage()).build();
+        }
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/delete")
+    @Override
+    public Response deleteUser(@QueryParam("id") long id) {
+        if (testUser.getId() != id) {
+            return Response.status(Response.Status.NOT_FOUND).entity(ErrorMessageUtil.USER_NOT_EXISTS).build();
+        }
+
+        if (testContributor != null && testContributor.isOwner()) {
+            return Response.status(Response.Status.NOT_IMPLEMENTED).entity(ErrorMessageUtil.USER_IS_PROJECT_OWNER).build();
+        }
+
+        testUser.setDeleted();
+        return Response.ok(testUser).build();
+    }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/login")
+    @Override
+    public Response loginUser(@FormParam("login") String login,
+                              @FormParam("password") String password) {
+
+        if (!testUser.getLogin().equals(login)) {
+            return Response.status(Response.Status.NOT_FOUND).entity(ErrorMessageUtil.USER_NOT_EXISTS).build();
+        }
+
+        try {
+            if (PasswordUtil.verifyPassword(password, testUser.getPassword())) {
+                return Response.ok().cookie(createCookie(login)).build();
+            }
+        } catch (CannotPerformOperationException ex) {
+            return Response.status(Response.Status.SERVICE_UNAVAILABLE).entity(ex.getLocalizedMessage()).build();
+        } catch (InvalidHashException ex) {
+            return Response.status(Response.Status.UNAUTHORIZED).entity(ex.getLocalizedMessage()).build();
+        }
+
         return null;
     }
 
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/logout")
     @Override
-    public Response updateLogin(String login, long id) {
-        return null;
+    public Response logoutUser(@QueryParam("id") long id) {
+        if (testUser.getId() != id) {
+            return Response.status(Response.Status.NOT_FOUND).entity(ErrorMessageUtil.USER_NOT_EXISTS).build();
+        }
+
+        return Response.ok().cookie(new NewCookie(new Cookie("X-JWT-AUTH", "", "/", ""),
+                "JWT token", 24000, false)).build();
     }
 
-    @Override
-    public Response updatePassword(String oldPassword, String newPassword, long id) {
-        return null;
-    }
-
-    @Override
-    public Response deleteUser(long id) {
-        return null;
-    }
-
-    @Override
-    public Response loginUser(String login, String password) {
-        return null;
-    }
-
-    @Override
-    public Response logoutUser(long id) {
-        return null;
+    public void createTestContributor(long userId, long projectId, boolean isOwner) {
+        this.testContributor = new Contributor(userId, projectId, isOwner);
     }
 
     private NewCookie createCookie(String login) {
