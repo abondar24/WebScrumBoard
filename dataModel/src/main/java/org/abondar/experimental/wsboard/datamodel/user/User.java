@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(name = "User", description = "User model")
 public class User {
 
+    private static final String DELETED_DATA = "deleted";
     private long id;
     private String login;
     private String email;
@@ -103,12 +104,12 @@ public class User {
     }
 
     public void setDeleted(){
-        this.login = "deleted";
-        this.email = "deleted";
-        this.firstName = "deleted";
-        this.lastName = "deleted";
+        this.login = DELETED_DATA;
+        this.email = DELETED_DATA;
+        this.firstName = DELETED_DATA;
+        this.lastName = DELETED_DATA;
         this.password = "";
-        this.roles = "deleted";
+        this.roles = DELETED_DATA;
         this.avatar = new byte[]{};
     }
 

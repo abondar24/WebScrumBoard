@@ -34,6 +34,8 @@ public class ErrorMessageUtil {
     public static final String SPRINT_NOT_EXISTS = "Sprint not found";
     public static final String BLANK_DATA = "Data for creation or updating is empty";
     public static final String HASH_NOT_CREATED = "Password hash not created";
+    public static final String VERIFICATION_FAILED = "Password verification failed!";
+    public static final String NULL_PASS = "Supplied password is null!";
 
     private ErrorMessageUtil(){}
 

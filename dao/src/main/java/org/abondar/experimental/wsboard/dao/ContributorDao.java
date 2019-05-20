@@ -19,6 +19,7 @@ import java.util.List;
 public class ContributorDao extends BaseDao {
 
     private static Logger logger = LoggerFactory.getLogger(ContributorDao.class);
+    private static final String LOG_FORMAT = "%s with id: %d";
 
 
     public ContributorDao(DataMapper mapper) {
@@ -39,14 +40,14 @@ public class ContributorDao extends BaseDao {
             throws DataExistenceException, DataCreationException {
 
         if (mapper.getUserById(userId) == null) {
-            logger.error(ErrorMessageUtil.USER_NOT_EXISTS + "with id: " + userId);
+            logger.error(String.format(LOG_FORMAT, ErrorMessageUtil.USER_NOT_EXISTS, userId));
             throw new DataExistenceException(ErrorMessageUtil.USER_NOT_EXISTS);
         }
 
 
         var prj = mapper.getProjectById(projectId);
         if (prj == null) {
-            logger.error(ErrorMessageUtil.PROJECT_NOT_EXISTS + "with id: " + projectId);
+            logger.error(String.format(LOG_FORMAT, ErrorMessageUtil.PROJECT_NOT_EXISTS, projectId));
             throw new DataExistenceException(ErrorMessageUtil.PROJECT_NOT_EXISTS);
         }
 
@@ -88,7 +89,7 @@ public class ContributorDao extends BaseDao {
 
         var ctr = mapper.getContributorById(contributorId);
         if (ctr == null) {
-            logger.error(ErrorMessageUtil.CONTRIBUTOR_NOT_EXISTS + "with id: " + contributorId);
+            logger.error(String.format(LOG_FORMAT, ErrorMessageUtil.CONTRIBUTOR_NOT_EXISTS, contributorId));
             throw new DataExistenceException(ErrorMessageUtil.CONTRIBUTOR_NOT_EXISTS);
 
         }
@@ -135,7 +136,7 @@ public class ContributorDao extends BaseDao {
 
         var prj = mapper.getProjectById(projectId);
         if (prj == null) {
-            logger.error(ErrorMessageUtil.PROJECT_NOT_EXISTS + "with id: " + projectId);
+            logger.error(String.format(LOG_FORMAT, ErrorMessageUtil.PROJECT_NOT_EXISTS, projectId));
             throw new DataExistenceException(ErrorMessageUtil.PROJECT_NOT_EXISTS);
         }
 
@@ -162,7 +163,7 @@ public class ContributorDao extends BaseDao {
 
         var prj = mapper.getProjectById(projectId);
         if (prj == null) {
-            logger.error(ErrorMessageUtil.PROJECT_NOT_EXISTS + "with id: " + projectId);
+            logger.error(String.format(LOG_FORMAT, ErrorMessageUtil.PROJECT_NOT_EXISTS, projectId));
             throw new DataExistenceException(ErrorMessageUtil.PROJECT_NOT_EXISTS);
 
         }

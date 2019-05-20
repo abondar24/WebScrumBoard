@@ -23,6 +23,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import static org.abondar.experimental.wsboard.dao.data.ErrorMessageUtil.NULL_PASS;
+import static org.abondar.experimental.wsboard.dao.data.ErrorMessageUtil.VERIFICATION_FAILED;
+
 public class AuthServiceImpl implements AuthService {
     @Autowired
     private DataMapper dataMapper;
@@ -30,6 +33,7 @@ public class AuthServiceImpl implements AuthService {
     private String secret = "borscht";
 
     private static final Long EXPIRY_PERIOD = 3600l;
+
 
 
     @Override
@@ -74,18 +78,18 @@ public class AuthServiceImpl implements AuthService {
         User user = dataMapper.getUserById(userId);
 
         if (password == null) {
-            throw new InvalidPasswordException("Supplied password is null!");
+            throw new InvalidPasswordException(NULL_PASS);
         }
         if (user.getPassword().startsWith("sha1:64000")) {
             try {
                 if (!PasswordUtil.verifyPassword(password, user.getPassword())) {
-                    throw new InvalidPasswordException("Password verification failed!");
+                    throw new InvalidPasswordException(VERIFICATION_FAILED);
                 }
             } catch (CannotPerformOperationException | InvalidHashException ex) {
-                throw new InvalidPasswordException("Password verification failed!", ex);
+                throw new InvalidPasswordException(VERIFICATION_FAILED, ex);
             }
         } else if (!user.getPassword().equals(password)) {
-            throw new InvalidPasswordException("Password verification failed!");
+            throw new InvalidPasswordException(VERIFICATION_FAILED);
         }
 
         return true;
@@ -101,7 +105,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public void logRecord(Date logDate, String action, String subject, String record) {
-
+        throw new UnsupportedOperationException();
     }
 
     public void setSecret(String secret) {
