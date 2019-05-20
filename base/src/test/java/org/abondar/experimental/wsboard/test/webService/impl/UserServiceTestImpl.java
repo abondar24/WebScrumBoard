@@ -1,6 +1,6 @@
 package org.abondar.experimental.wsboard.test.webService.impl;
 
-import org.abondar.experimental.wsboard.dao.data.ErrorMessageUtil;
+import org.abondar.experimental.wsboard.dao.data.LogMessageUtil;
 import org.abondar.experimental.wsboard.dao.exception.CannotPerformOperationException;
 import org.abondar.experimental.wsboard.dao.exception.InvalidHashException;
 import org.abondar.experimental.wsboard.dao.password.PasswordUtil;
@@ -56,19 +56,19 @@ public class UserServiceTestImpl implements UserService {
         existingUser.setLogin("testLogin");
 
         if (existingUser.getLogin().equals(login)) {
-            return Response.status(Response.Status.FOUND).entity(ErrorMessageUtil.USER_EXISTS).build();
+            return Response.status(Response.Status.FOUND).entity(LogMessageUtil.USER_EXISTS).build();
         }
 
         if ((login == null || login.isBlank()) || (password == null || password.isBlank())
                 || (email == null || email.isBlank()) || (firstName == null || firstName.isBlank())
                 || (lastName == null || lastName.isBlank()) || (roles == null || roles.isEmpty())) {
-            return Response.status(Response.Status.NO_CONTENT).entity(ErrorMessageUtil.BLANK_DATA).build();
+            return Response.status(Response.Status.NO_CONTENT).entity(LogMessageUtil.BLANK_DATA).build();
         }
 
         String[] rolesArr = roles.split(";");
 
         if (rolesArr.length == 0 || !roles.contains(";")) {
-            return Response.status(Response.Status.NO_CONTENT).entity(ErrorMessageUtil.USER_NO_ROLES).build();
+            return Response.status(Response.Status.NO_CONTENT).entity(LogMessageUtil.USER_NO_ROLES).build();
         }
 
         String pwdHash;
@@ -96,14 +96,14 @@ public class UserServiceTestImpl implements UserService {
     @Override
     public Response updateUser(long id, String firstName, String lastName, String email, String roles) {
         if (testUser.getId() != id) {
-            return Response.status(Response.Status.NOT_FOUND).entity(ErrorMessageUtil.USER_NOT_EXISTS).build();
+            return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.USER_NOT_EXISTS).build();
         }
 
 
         String[] rolesArr = roles.split(";");
 
         if (rolesArr.length == 0 || !roles.contains(";")) {
-            return Response.status(Response.Status.NO_CONTENT).entity(ErrorMessageUtil.USER_NO_ROLES).build();
+            return Response.status(Response.Status.NO_CONTENT).entity(LogMessageUtil.USER_NO_ROLES).build();
         }
 
         testUser.setFirstName(firstName);
@@ -121,12 +121,12 @@ public class UserServiceTestImpl implements UserService {
     @Override
     public Response updateAvatar(long id, byte[] avatar) {
         if (testUser.getId() != id) {
-            return Response.status(Response.Status.NOT_FOUND).entity(ErrorMessageUtil.USER_NOT_EXISTS).build();
+            return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.USER_NOT_EXISTS).build();
         }
 
 
         if (avatar != null && avatar.length == 0) {
-            return Response.status(Response.Status.NO_CONTENT).entity(ErrorMessageUtil.USER_AVATAR_EMPTY).build();
+            return Response.status(Response.Status.NO_CONTENT).entity(LogMessageUtil.USER_AVATAR_EMPTY).build();
         }
 
         testUser.setAvatar(avatar);
@@ -141,11 +141,11 @@ public class UserServiceTestImpl implements UserService {
     @Override
     public Response updateLogin(@FormParam("login") String login, @FormParam("id") long id) {
         if (testUser.getId() != id) {
-            return Response.status(Response.Status.NOT_FOUND).entity(ErrorMessageUtil.USER_NOT_EXISTS).build();
+            return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.USER_NOT_EXISTS).build();
         }
 
         if (testUser.getLogin().equals(login)) {
-            return Response.status(Response.Status.FOUND).entity(ErrorMessageUtil.USER_EXISTS).build();
+            return Response.status(Response.Status.FOUND).entity(LogMessageUtil.USER_EXISTS).build();
         }
 
         testUser.setLogin(login);
@@ -162,7 +162,7 @@ public class UserServiceTestImpl implements UserService {
                                    @FormParam("id") long id) {
 
         if (testUser.getId() != id) {
-            return Response.status(Response.Status.NOT_FOUND).entity(ErrorMessageUtil.USER_NOT_EXISTS).build();
+            return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.USER_NOT_EXISTS).build();
         }
 
         try {
@@ -183,11 +183,11 @@ public class UserServiceTestImpl implements UserService {
     @Override
     public Response deleteUser(@QueryParam("id") long id) {
         if (testUser.getId() != id) {
-            return Response.status(Response.Status.NOT_FOUND).entity(ErrorMessageUtil.USER_NOT_EXISTS).build();
+            return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.USER_NOT_EXISTS).build();
         }
 
         if (testContributor != null && testContributor.isOwner()) {
-            return Response.status(Response.Status.NOT_IMPLEMENTED).entity(ErrorMessageUtil.USER_IS_PROJECT_OWNER).build();
+            return Response.status(Response.Status.NOT_IMPLEMENTED).entity(LogMessageUtil.USER_IS_PROJECT_OWNER).build();
         }
 
         testUser.setDeleted();
@@ -203,7 +203,7 @@ public class UserServiceTestImpl implements UserService {
                               @FormParam("password") String password) {
 
         if (!testUser.getLogin().equals(login)) {
-            return Response.status(Response.Status.NOT_FOUND).entity(ErrorMessageUtil.USER_NOT_EXISTS).build();
+            return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.USER_NOT_EXISTS).build();
         }
 
         try {
@@ -225,7 +225,7 @@ public class UserServiceTestImpl implements UserService {
     @Override
     public Response logoutUser(@QueryParam("id") long id) {
         if (testUser.getId() != id) {
-            return Response.status(Response.Status.NOT_FOUND).entity(ErrorMessageUtil.USER_NOT_EXISTS).build();
+            return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.USER_NOT_EXISTS).build();
         }
 
         return Response.ok().cookie(new NewCookie(new Cookie("X-JWT-AUTH", "", "/", ""),

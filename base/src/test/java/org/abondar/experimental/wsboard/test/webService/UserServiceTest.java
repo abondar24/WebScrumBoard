@@ -1,7 +1,7 @@
 package org.abondar.experimental.wsboard.test.webService;
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
-import org.abondar.experimental.wsboard.dao.data.ErrorMessageUtil;
+import org.abondar.experimental.wsboard.dao.data.LogMessageUtil;
 import org.abondar.experimental.wsboard.datamodel.user.User;
 import org.apache.cxf.jaxrs.client.WebClient;
 import org.junit.jupiter.api.Test;
@@ -67,7 +67,7 @@ public class UserServiceTest extends BaseServiceTest {
         assertEquals(302, resp.getStatus());
 
         var err = resp.readEntity(String.class);
-        assertEquals(ErrorMessageUtil.USER_EXISTS, err);
+        assertEquals(LogMessageUtil.USER_EXISTS, err);
 
 
     }
@@ -93,7 +93,7 @@ public class UserServiceTest extends BaseServiceTest {
         assertEquals(204, resp.getStatus());
 
         var err = resp.readEntity(String.class);
-        assertEquals(ErrorMessageUtil.BLANK_DATA, err);
+        assertEquals(LogMessageUtil.BLANK_DATA, err);
 
 
     }
@@ -119,7 +119,7 @@ public class UserServiceTest extends BaseServiceTest {
         assertEquals(204, resp.getStatus());
 
         var err = resp.readEntity(String.class);
-        assertEquals(ErrorMessageUtil.USER_NO_ROLES, err);
+        assertEquals(LogMessageUtil.USER_NO_ROLES, err);
 
 
     }

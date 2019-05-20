@@ -1,7 +1,7 @@
 package org.abondar.experimental.wsboard.dao;
 
 import org.abondar.experimental.wsboard.dao.data.DataMapper;
-import org.abondar.experimental.wsboard.dao.data.ErrorMessageUtil;
+import org.abondar.experimental.wsboard.dao.data.LogMessageUtil;
 import org.abondar.experimental.wsboard.dao.exception.DataCreationException;
 import org.abondar.experimental.wsboard.dao.exception.DataExistenceException;
 import org.abondar.experimental.wsboard.datamodel.Project;
@@ -9,6 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Date;
+
+import static org.abondar.experimental.wsboard.dao.data.LogMessageUtil.LOG_FORMAT;
 
 /**
  * Data access object for project
@@ -36,15 +38,16 @@ public class ProjectDao extends BaseDao {
         var prj = mapper.getProjectByName(name);
 
         if (prj != null) {
-            logger.error(ErrorMessageUtil.PROJECT_EXISTS);
-            throw new DataExistenceException(ErrorMessageUtil.PROJECT_EXISTS);
+            logger.error(LogMessageUtil.PROJECT_EXISTS);
+            throw new DataExistenceException(LogMessageUtil.PROJECT_EXISTS);
 
         }
 
         prj = new Project(name, startDate);
         mapper.insertProject(prj);
 
-        logger.info("Project successfully created with id: " + prj.getId());
+        var msg = String.format(LOG_FORMAT, "Project successfully created ", prj.getId());
+        logger.info(msg);
         return prj;
     }
 
@@ -64,8 +67,8 @@ public class ProjectDao extends BaseDao {
         var prj = mapper.getProjectById(id);
 
         if (prj == null) {
-            logger.error(ErrorMessageUtil.PROJECT_NOT_EXISTS);
-            throw new DataExistenceException(ErrorMessageUtil.PROJECT_NOT_EXISTS);
+            logger.error(LogMessageUtil.PROJECT_NOT_EXISTS);
+            throw new DataExistenceException(LogMessageUtil.PROJECT_NOT_EXISTS);
         }
 
         if (name != null && !name.isBlank()) {
@@ -82,7 +85,7 @@ public class ProjectDao extends BaseDao {
                 if (endDate != null && !prj.getStartDate().after(endDate)) {
                     prj.setEndDate(endDate);
                 } else {
-                    throw new DataCreationException(ErrorMessageUtil.PROJECT_WRONG_END_DATE);
+                    throw new DataCreationException(LogMessageUtil.PROJECT_WRONG_END_DATE);
                 }
             }
         }
@@ -103,12 +106,14 @@ public class ProjectDao extends BaseDao {
         var prj = mapper.getProjectById(id);
 
         if (prj == null) {
-            logger.error(ErrorMessageUtil.PROJECT_NOT_EXISTS);
-            throw new DataExistenceException(ErrorMessageUtil.PROJECT_NOT_EXISTS);
+            logger.error(LogMessageUtil.PROJECT_NOT_EXISTS);
+            throw new DataExistenceException(LogMessageUtil.PROJECT_NOT_EXISTS);
         }
 
         mapper.deleteProject(id);
-        logger.info("Project with id: " + id + " successfully updated");
+
+        var msg = String.format(LOG_FORMAT + " %s", "Project ", id, " successfully updated");
+        logger.info(msg);
 
         return id;
     }
@@ -123,12 +128,15 @@ public class ProjectDao extends BaseDao {
     public Project findProjectById(long id) throws DataExistenceException {
         var prj = mapper.getProjectById(id);
 
+        var msg = "";
         if (prj == null) {
-            logger.error(ErrorMessageUtil.PROJECT_NOT_EXISTS + "with id:" + id);
-            throw new DataExistenceException(ErrorMessageUtil.PROJECT_NOT_EXISTS);
+            msg = String.format(LOG_FORMAT, LogMessageUtil.PROJECT_NOT_EXISTS, id);
+            logger.error(msg);
+            throw new DataExistenceException(LogMessageUtil.PROJECT_NOT_EXISTS);
         }
 
-        logger.info("Project found with id: " + prj.getId());
+        msg = String.format(LOG_FORMAT, "Project found ", prj.getId());
+        logger.info(msg);
         return prj;
     }
 

@@ -23,8 +23,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import static org.abondar.experimental.wsboard.dao.data.ErrorMessageUtil.NULL_PASS;
-import static org.abondar.experimental.wsboard.dao.data.ErrorMessageUtil.VERIFICATION_FAILED;
+import static org.abondar.experimental.wsboard.dao.data.LogMessageUtil.NULL_PASS;
+import static org.abondar.experimental.wsboard.dao.data.LogMessageUtil.VERIFICATION_FAILED;
 
 public class AuthServiceImpl implements AuthService {
     @Autowired

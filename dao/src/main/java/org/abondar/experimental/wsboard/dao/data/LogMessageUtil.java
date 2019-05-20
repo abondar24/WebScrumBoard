@@ -5,7 +5,7 @@ package org.abondar.experimental.wsboard.dao.data;
  *
  * @author a.bondar
  */
-public class ErrorMessageUtil {
+public class LogMessageUtil {
 
     public static final String USER_EXISTS = "User with login already exists";
     public static final String USER_NO_ROLES = "No roles are set";
@@ -36,8 +36,10 @@ public class ErrorMessageUtil {
     public static final String HASH_NOT_CREATED = "Password hash not created";
     public static final String VERIFICATION_FAILED = "Password verification failed!";
     public static final String NULL_PASS = "Supplied password is null!";
+    public static final String LOG_FORMAT = "%s with id: %d";
 
-    private ErrorMessageUtil(){}
+    private LogMessageUtil() {
+    }
 
 
 }

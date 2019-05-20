@@ -1,7 +1,7 @@
 package org.abondar.experimental.wsboard.dao;
 
 import org.abondar.experimental.wsboard.dao.data.DataMapper;
-import org.abondar.experimental.wsboard.dao.data.ErrorMessageUtil;
+import org.abondar.experimental.wsboard.dao.data.LogMessageUtil;
 import org.abondar.experimental.wsboard.dao.exception.DataExistenceException;
 import org.abondar.experimental.wsboard.datamodel.Sprint;
 import org.slf4j.Logger;
@@ -9,6 +9,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Date;
 import java.util.List;
+
+import static org.abondar.experimental.wsboard.dao.data.LogMessageUtil.LOG_FORMAT;
 
 /**
  * Data access object for sprint
@@ -37,15 +39,17 @@ public class SprintDao extends BaseDao {
 
         var sprint = mapper.getSprintByName(name);
         if (sprint != null) {
-            logger.error(ErrorMessageUtil.SPRINT_EXISTS);
-            throw new DataExistenceException(ErrorMessageUtil.SPRINT_EXISTS);
+            logger.error(LogMessageUtil.SPRINT_EXISTS);
+            throw new DataExistenceException(LogMessageUtil.SPRINT_EXISTS);
 
         }
 
         sprint = new Sprint(name, startDate, endDate);
 
         mapper.insertSprint(sprint);
-        logger.info("CREATED sprint with id: " + sprint.getId());
+
+        var msg = String.format(LOG_FORMAT, "Created sprint ", sprint.getId());
+        logger.info(msg);
 
         return sprint;
     }
@@ -63,14 +67,14 @@ public class SprintDao extends BaseDao {
 
         var sprint = mapper.getSprintById(sprintId);
         if (sprint == null) {
-            logger.error(ErrorMessageUtil.SPRINT_NOT_EXISTS);
-            throw new DataExistenceException(ErrorMessageUtil.SPRINT_NOT_EXISTS);
+            logger.error(LogMessageUtil.SPRINT_NOT_EXISTS);
+            throw new DataExistenceException(LogMessageUtil.SPRINT_NOT_EXISTS);
         }
 
         if (name != null && !name.isBlank()) {
             if (mapper.getSprintByName(name) != null) {
-                logger.error(ErrorMessageUtil.SPRINT_EXISTS);
-                throw new DataExistenceException(ErrorMessageUtil.SPRINT_EXISTS);
+                logger.error(LogMessageUtil.SPRINT_EXISTS);
+                throw new DataExistenceException(LogMessageUtil.SPRINT_EXISTS);
 
             }
 
@@ -87,7 +91,9 @@ public class SprintDao extends BaseDao {
         }
 
         mapper.updateSprint(sprint);
-        logger.info("Updated sprint with id: " + sprint.getId());
+
+        var msg = String.format(LOG_FORMAT, "Updated sprint ", sprint.getId());
+        logger.info(msg);
 
         return sprint;
     }
@@ -102,12 +108,13 @@ public class SprintDao extends BaseDao {
 
         var sprint = mapper.getSprintById(sprintId);
         if (sprint == null) {
-            logger.error(ErrorMessageUtil.SPRINT_NOT_EXISTS);
-            throw new DataExistenceException(ErrorMessageUtil.SPRINT_NOT_EXISTS);
+            logger.error(LogMessageUtil.SPRINT_NOT_EXISTS);
+            throw new DataExistenceException(LogMessageUtil.SPRINT_NOT_EXISTS);
 
         }
 
-        logger.info("Found sprint with id: " + sprint.getId());
+        var msg = String.format(LOG_FORMAT, "Found sprint ", sprint.getId());
+        logger.info(msg);
 
         return sprint;
     }
@@ -122,7 +129,8 @@ public class SprintDao extends BaseDao {
     public List<Sprint> getSprints(int offset, int limit) {
         var sprints = mapper.getSprints(offset, limit);
 
-        logger.info("Found sprints: " + sprints.size());
+        var msg = String.format("%s %d", "Found sprints: ", sprints.size());
+        logger.info(msg);
 
         return sprints;
     }
@@ -137,12 +145,14 @@ public class SprintDao extends BaseDao {
 
         var sprint = mapper.getSprintById(sprintId);
         if (sprint == null) {
-            logger.error(ErrorMessageUtil.SPRINT_NOT_EXISTS);
+            logger.error(LogMessageUtil.SPRINT_NOT_EXISTS);
             return false;
         }
 
         mapper.deleteSprint(sprintId);
-        logger.info("Deleted sprint with id: " + sprint.getId());
+
+        var msg = String.format(LOG_FORMAT, "Deleted sprint ", sprint.getId());
+        logger.info(msg);
 
         return true;
     }

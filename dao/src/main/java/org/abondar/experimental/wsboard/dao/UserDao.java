@@ -1,7 +1,7 @@
 package org.abondar.experimental.wsboard.dao;
 
 import org.abondar.experimental.wsboard.dao.data.DataMapper;
-import org.abondar.experimental.wsboard.dao.data.ErrorMessageUtil;
+import org.abondar.experimental.wsboard.dao.data.LogMessageUtil;
 import org.abondar.experimental.wsboard.dao.exception.CannotPerformOperationException;
 import org.abondar.experimental.wsboard.dao.exception.DataCreationException;
 import org.abondar.experimental.wsboard.dao.exception.DataExistenceException;
@@ -11,6 +11,8 @@ import org.abondar.experimental.wsboard.datamodel.user.User;
 import org.abondar.experimental.wsboard.datamodel.user.UserRole;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.abondar.experimental.wsboard.dao.data.LogMessageUtil.LOG_FORMAT;
 
 /**
  * Data access object for user
@@ -50,32 +52,32 @@ public class UserDao extends BaseDao {
         var usr = mapper.getUserByLogin(login);
 
         if (usr != null) {
-            logger.error(ErrorMessageUtil.USER_EXISTS);
-            throw new DataExistenceException(ErrorMessageUtil.USER_EXISTS);
+            logger.error(LogMessageUtil.USER_EXISTS);
+            throw new DataExistenceException(LogMessageUtil.USER_EXISTS);
         }
 
         if (login == null || login.isBlank()) {
-            throw new DataCreationException(ErrorMessageUtil.BLANK_DATA);
+            throw new DataCreationException(LogMessageUtil.BLANK_DATA);
         }
 
         if (password == null || password.isBlank()) {
-            throw new DataCreationException(ErrorMessageUtil.BLANK_DATA);
+            throw new DataCreationException(LogMessageUtil.BLANK_DATA);
         }
 
         if (email == null || email.isBlank()) {
-            throw new DataCreationException(ErrorMessageUtil.BLANK_DATA);
+            throw new DataCreationException(LogMessageUtil.BLANK_DATA);
         }
 
         if (firstName == null || firstName.isBlank()) {
-            throw new DataCreationException(ErrorMessageUtil.BLANK_DATA);
+            throw new DataCreationException(LogMessageUtil.BLANK_DATA);
         }
 
         if (lastName == null || lastName.isBlank()) {
-            throw new DataCreationException(ErrorMessageUtil.BLANK_DATA);
+            throw new DataCreationException(LogMessageUtil.BLANK_DATA);
         }
 
         if (roles == null || roles.isBlank()) {
-            throw new DataCreationException(ErrorMessageUtil.BLANK_DATA);
+            throw new DataCreationException(LogMessageUtil.BLANK_DATA);
         }
 
         var pwdHash = PasswordUtil.createHash(password);
@@ -83,7 +85,8 @@ public class UserDao extends BaseDao {
         usr = new User(login, email, firstName, lastName, pwdHash, checkRoles(roles));
         mapper.insertUser(usr);
 
-        logger.info("User successfully created with id: " + usr.getId());
+        var msg = String.format(LOG_FORMAT, "User successfully created ", usr.getId());
+        logger.info(msg);
 
         return usr;
     }
@@ -99,14 +102,14 @@ public class UserDao extends BaseDao {
      */
     public User updateLogin(String login, long userId) throws DataCreationException, DataExistenceException {
         if (login.isBlank()) {
-            logger.error(ErrorMessageUtil.USER_EMTPY_LOGIN);
-            throw new DataCreationException(ErrorMessageUtil.USER_EMTPY_LOGIN);
+            logger.error(LogMessageUtil.USER_EMTPY_LOGIN);
+            throw new DataCreationException(LogMessageUtil.USER_EMTPY_LOGIN);
         }
 
         var usr = mapper.getUserByLogin(login);
         if (usr != null) {
-            logger.error(ErrorMessageUtil.USER_EXISTS);
-            throw new DataExistenceException(ErrorMessageUtil.USER_EXISTS);
+            logger.error(LogMessageUtil.USER_EXISTS);
+            throw new DataExistenceException(LogMessageUtil.USER_EXISTS);
 
         }
 
@@ -115,7 +118,8 @@ public class UserDao extends BaseDao {
         usr.setLogin(login);
         mapper.updateUser(usr);
 
-        logger.info("User login updated for user: " + usr.getId());
+        var msg = String.format("%s %d", "User login updated for user: ", usr.getId());
+        logger.info(msg);
 
         return usr;
     }
@@ -140,7 +144,8 @@ public class UserDao extends BaseDao {
         usr.setPassword(PasswordUtil.createHash(newPassword));
         mapper.updateUser(usr);
 
-        logger.info("Password updated for user: " + usr.getId());
+        var msg = String.format("%s %d", "Password updated for user: ", usr.getId());
+        logger.info(msg);
 
         return usr;
     }
@@ -180,8 +185,8 @@ public class UserDao extends BaseDao {
         }
 
         if (avatar != null && avatar.length == 0) {
-            logger.error(ErrorMessageUtil.USER_AVATAR_EMPTY);
-            throw new DataCreationException(ErrorMessageUtil.USER_AVATAR_EMPTY);
+            logger.error(LogMessageUtil.USER_AVATAR_EMPTY);
+            throw new DataCreationException(LogMessageUtil.USER_AVATAR_EMPTY);
         }
 
         mapper.updateUser(usr);
@@ -201,15 +206,17 @@ public class UserDao extends BaseDao {
         var contributor = mapper.getContributorByUserId(id);
         if (contributor != null) {
             if (contributor.isOwner()) {
-                logger.error(ErrorMessageUtil.USER_IS_PROJECT_OWNER);
-                throw new DataCreationException(ErrorMessageUtil.USER_IS_PROJECT_OWNER);
+                logger.error(LogMessageUtil.USER_IS_PROJECT_OWNER);
+                throw new DataCreationException(LogMessageUtil.USER_IS_PROJECT_OWNER);
             }
             contributorDao.updateContributor(contributor.getId(), contributor.isOwner(), false);
         }
         usr.setDeleted();
 
         mapper.insertUser(usr);
-        logger.info("User with id: " + usr.getId() + " marked as deleted");
+
+        var msg = String.format(LOG_FORMAT + "%s", "User ", usr.getId(), " marked as deleted");
+        logger.info(msg);
 
         return usr;
     }
@@ -227,8 +234,9 @@ public class UserDao extends BaseDao {
 
         var usr = mapper.getUserByLogin(login);
         if (usr == null) {
-            logger.error(ErrorMessageUtil.USER_NOT_EXISTS + "with login: " + login);
-            throw new DataExistenceException(ErrorMessageUtil.USER_NOT_EXISTS);
+            var msg = String.format("%s with login: %s", LogMessageUtil.USER_NOT_EXISTS, login);
+            logger.error(msg);
+            throw new DataExistenceException(LogMessageUtil.USER_NOT_EXISTS);
         }
 
         verifyPassword(password, usr.getPassword());
@@ -244,9 +252,10 @@ public class UserDao extends BaseDao {
 
         var usr = mapper.getUserById(id);
         if (usr == null) {
-            logger.error(ErrorMessageUtil.USER_NOT_EXISTS + " with id: " + id);
+            var msg = String.format(LOG_FORMAT, LogMessageUtil.USER_NOT_EXISTS, id);
+            logger.error(msg);
 
-            throw new DataExistenceException(ErrorMessageUtil.USER_NOT_EXISTS);
+            throw new DataExistenceException(LogMessageUtil.USER_NOT_EXISTS);
         }
 
         return usr;
@@ -263,7 +272,7 @@ public class UserDao extends BaseDao {
 
         String[] rolesArr = roles.split(";");
         if (rolesArr.length == 0 || !roles.contains(";")) {
-            throw new DataCreationException(ErrorMessageUtil.USER_NO_ROLES);
+            throw new DataCreationException(LogMessageUtil.USER_NO_ROLES);
         }
 
         var userRoles = new StringBuilder();
@@ -277,7 +286,7 @@ public class UserDao extends BaseDao {
         }
 
         if (userRoles.toString().isBlank()) {
-            throw new DataCreationException(ErrorMessageUtil.USER_NO_ROLES);
+            throw new DataCreationException(LogMessageUtil.USER_NO_ROLES);
         }
 
         return userRoles.toString();
@@ -310,8 +319,8 @@ public class UserDao extends BaseDao {
      */
     private void verifyPassword(String password, String hash) throws InvalidHashException, CannotPerformOperationException {
         if (!PasswordUtil.verifyPassword(password, hash)) {
-            logger.error(ErrorMessageUtil.USER_UNAUTHORIZED);
-            throw new InvalidHashException(ErrorMessageUtil.USER_UNAUTHORIZED);
+            logger.error(LogMessageUtil.USER_UNAUTHORIZED);
+            throw new InvalidHashException(LogMessageUtil.USER_UNAUTHORIZED);
         }
     }
 

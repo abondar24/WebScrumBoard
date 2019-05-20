@@ -2,11 +2,14 @@ package org.abondar.experimental.wsboard.ws.security;
 
 
 import org.abondar.experimental.wsboard.ws.service.AuthService;
+import org.apache.cxf.common.util.Base64Exception;
 import org.apache.cxf.jaxrs.utils.JAXRSUtils;
 import org.apache.cxf.rs.security.jose.common.JoseException;
 import org.apache.cxf.rs.security.jose.jaxrs.JwtAuthenticationFilter;
 import org.apache.cxf.rs.security.jose.jwt.JwtToken;
 import org.apache.cxf.security.SecurityContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
@@ -18,6 +21,8 @@ import java.io.IOException;
  */
 public class TokenRenewalFilter extends JwtAuthenticationFilter {
 
+    private static Logger logger = LoggerFactory.getLogger(TokenRenewalFilter.class);
+
     private AuthService authService;
 
 
@@ -27,6 +32,7 @@ public class TokenRenewalFilter extends JwtAuthenticationFilter {
         try {
             encodedJwtToken = getEncodedJwtToken(requestContext);
         } catch (JoseException ex) {
+            logger.error(ex.getMessage());
             return;
         }
 
@@ -37,7 +43,8 @@ public class TokenRenewalFilter extends JwtAuthenticationFilter {
             try {
                 ((HttpServletResponse) JAXRSUtils.getCurrentMessage().get("HTTP.RESPONSE"))
                         .addCookie(new Cookie("X-JWT-AUTH", authService.renewToken(encodedJwtToken)));
-            } catch (Exception e) {
+            } catch (Base64Exception ex) {
+                logger.error(ex.getMessage());
 
             }
         }
