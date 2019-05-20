@@ -166,7 +166,7 @@ public class UserDaoTest {
         var usr = createUser();
         var id = usr.getId();
         usr = userDao.updateUser(usr.getId(), "name1", "name2",
-                "email1@email.com", UserRole.Developer.name() + ";", new byte[1024]);
+                "email1@email.com", UserRole.DEVELOPER.name() + ";", new byte[1024]);
 
         assertEquals(id, usr.getId());
 
@@ -224,7 +224,7 @@ public class UserDaoTest {
         contributorDao.createContributor(usr.getId(), project.getId(), true);
 
         var delUser = userDao.createUser("usr1", "pwd", "ss",
-                "fname", "lname", UserRole.Developer.name() + ";");
+                "fname", "lname", UserRole.DEVELOPER.name() + ";");
         contributorDao.createContributor(delUser.getId(), project.getId(), false);
 
         delUser = userDao.deleteUser(delUser.getId());
@@ -262,7 +262,7 @@ public class UserDaoTest {
         contributorDao.createContributor(usr.getId(), project.getId(), true);
 
         var delUsr = userDao.createUser("testLogin", "psw", "aaa",
-                "aa", "aa", UserRole.Developer.name() + ";");
+                "aa", "aa", UserRole.DEVELOPER.name() + ";");
         var ctr = contributorDao.createContributor(delUsr.getId(), project.getId(), false);
 
         userDao.deleteUser(delUsr.getId());
@@ -303,7 +303,7 @@ public class UserDaoTest {
         var password = "pwd";
         var firstName = "fname";
         var lastName = "lname";
-        var roles = UserRole.Developer.name() + ";" + UserRole.DevOps.name();
+        var roles = UserRole.DEVELOPER.name() + ";" + UserRole.DEV_OPS.name();
 
         return userDao.createUser(login, password, email, firstName, lastName, roles);
     }

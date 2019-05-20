@@ -1,4 +1,4 @@
-package org.abondar.experimental.wsboard.webService.service;
+package org.abondar.experimental.wsboard.ws.service;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Contact;

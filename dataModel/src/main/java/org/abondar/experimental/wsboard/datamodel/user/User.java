@@ -75,7 +75,7 @@ public class User {
         this.password = password;
     }
 
-    @Schema(description = "comma-separated list of roles", allowableValues = {"Developer", "QA", "DevOps"})
+    @Schema(description = "comma-separated list of roles", allowableValues = {"DEVELOPER", "QA", "DEV_OPS"})
     public String getRoles() {
         return roles;
     }
@@ -107,7 +107,7 @@ public class User {
         this.email = "deleted";
         this.firstName = "deleted";
         this.lastName = "deleted";
-        this.password = "deleted";
+        this.password = "";
         this.roles = "deleted";
         this.avatar = new byte[]{};
     }

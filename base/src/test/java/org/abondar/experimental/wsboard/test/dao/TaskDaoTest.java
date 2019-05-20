@@ -135,7 +135,7 @@ public class TaskDaoTest {
 
         var usr1 = userDao.createUser("login1", "pwd",
                 "email@email.com", "fname", "lname",
-                UserRole.Developer.name() + ";" + UserRole.DevOps.name());
+                UserRole.DEVELOPER.name() + ";" + UserRole.DEV_OPS.name());
 
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
         var contr1 = contributorDao.createContributor(usr1.getId(), prj.getId(), false);
@@ -223,10 +223,10 @@ public class TaskDaoTest {
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
         var task = dao.createTask(contr.getId(), new Date(), false);
 
-        var res = dao.updateTaskState(task.getId(), TaskState.InDevelopment.name());
+        var res = dao.updateTaskState(task.getId(), TaskState.IN_DEVELOPMENT.name());
 
-        assertEquals(TaskState.InDevelopment, res.getTaskState());
-        assertEquals(TaskState.Created, res.getPrevState());
+        assertEquals(TaskState.IN_DEVELOPMENT, res.getTaskState());
+        assertEquals(TaskState.CREATED, res.getPrevState());
 
         cleanData();
     }
@@ -252,7 +252,7 @@ public class TaskDaoTest {
         logger.info("Update task state task not exists test");
 
         assertThrows(DataExistenceException.class, () ->
-                dao.updateTaskState(100, TaskState.InDeployment.name()));
+                dao.updateTaskState(100, TaskState.IN_DEPLOYMENT.name()));
 
     }
 
@@ -262,16 +262,16 @@ public class TaskDaoTest {
 
         var usr = createUser("");
         usr = userDao.updateUser(usr.getId(),null,null,null,
-                UserRole.Developer.name() + ";" + UserRole.DevOps.name() + ";" + UserRole.QA.name(), null);
+                UserRole.DEVELOPER.name() + ";" + UserRole.DEV_OPS.name() + ";" + UserRole.QA.name(), null);
 
         var prj = createProject(true);
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
         var task = dao.createTask(contr.getId(), new Date(), false);
-        dao.updateTaskState(task.getId(), TaskState.InTest.name());
-        dao.updateTaskState(task.getId(), TaskState.Completed.name());
+        dao.updateTaskState(task.getId(), TaskState.IN_TEST.name());
+        dao.updateTaskState(task.getId(), TaskState.COMPLETED.name());
 
         assertThrows(DataCreationException.class, () ->
-                dao.updateTaskState(task.getId(), TaskState.InDevelopment.name()));
+                dao.updateTaskState(task.getId(), TaskState.IN_DEVELOPMENT.name()));
 
         cleanData();
     }
@@ -286,7 +286,7 @@ public class TaskDaoTest {
         var task = dao.createTask(contr.getId(), new Date(), false);
 
         assertThrows(DataCreationException.class, () ->
-                dao.updateTaskState(task.getId(), TaskState.Created.name()));
+                dao.updateTaskState(task.getId(), TaskState.CREATED.name()));
 
 
         cleanData();
@@ -300,10 +300,10 @@ public class TaskDaoTest {
         var prj = createProject(true);
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
         var task = dao.createTask(contr.getId(), new Date(), false);
-        dao.updateTaskState(task.getId(), TaskState.Paused.name());
+        dao.updateTaskState(task.getId(), TaskState.PAUSED.name());
 
         assertThrows(DataCreationException.class, () ->
-                dao.updateTaskState(task.getId(), TaskState.InDevelopment.name()));
+                dao.updateTaskState(task.getId(), TaskState.IN_DEVELOPMENT.name()));
 
         cleanData();
     }
@@ -319,7 +319,7 @@ public class TaskDaoTest {
         var task = dao.createTask(contr.getId(), new Date(), false);
 
         assertThrows(DataCreationException.class, () ->
-                dao.updateTaskState(task.getId(), TaskState.InDeployment.name()));
+                dao.updateTaskState(task.getId(), TaskState.IN_DEPLOYMENT.name()));
 
         cleanData();
     }
@@ -334,7 +334,7 @@ public class TaskDaoTest {
         var task = dao.createTask(contr.getId(), new Date(), false);
 
         assertThrows(DataCreationException.class, () ->
-                dao.updateTaskState(task.getId(), TaskState.InCodeReview.name()));
+                dao.updateTaskState(task.getId(), TaskState.IN_CODE_REVIEW.name()));
 
         cleanData();
     }
@@ -347,11 +347,11 @@ public class TaskDaoTest {
         var prj = createProject(true);
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
         var task = dao.createTask(contr.getId(), new Date(), false);
-        dao.updateTaskState(task.getId(), TaskState.InDevelopment.name());
-        dao.updateTaskState(task.getId(), TaskState.InCodeReview.name());
+        dao.updateTaskState(task.getId(), TaskState.IN_DEVELOPMENT.name());
+        dao.updateTaskState(task.getId(), TaskState.IN_CODE_REVIEW.name());
 
         assertThrows(DataCreationException.class, () ->
-                 dao.updateTaskState(task.getId(), TaskState.InTest.name()));
+                dao.updateTaskState(task.getId(), TaskState.IN_TEST.name()));
 
         cleanData();
     }
@@ -362,19 +362,19 @@ public class TaskDaoTest {
 
         var usr = createUser("");
         usr = userDao.updateUser(usr.getId(),null,null,null,
-                UserRole.Developer.name() + ";" + UserRole.DevOps.name() + ";" + UserRole.QA.name(), null);
+                UserRole.DEVELOPER.name() + ";" + UserRole.DEV_OPS.name() + ";" + UserRole.QA.name(), null);
 
         var prj = createProject(true);
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
         var task = dao.createTask(contr.getId(), new Date(), false);
-        dao.updateTaskState(task.getId(), TaskState.InDevelopment.name());
-        dao.updateTaskState(task.getId(), TaskState.InCodeReview.name());
-        dao.updateTaskState(task.getId(), TaskState.InTest.name());
+        dao.updateTaskState(task.getId(), TaskState.IN_DEVELOPMENT.name());
+        dao.updateTaskState(task.getId(), TaskState.IN_CODE_REVIEW.name());
+        dao.updateTaskState(task.getId(), TaskState.IN_TEST.name());
 
-        var res = dao.updateTaskState(task.getId(), TaskState.Completed.name());
+        var res = dao.updateTaskState(task.getId(), TaskState.COMPLETED.name());
 
 
-        assertEquals(TaskState.Completed, res.getTaskState());
+        assertEquals(TaskState.COMPLETED, res.getTaskState());
         assertNotNull(res.getEndDate());
 
         cleanData();
@@ -524,7 +524,7 @@ public class TaskDaoTest {
         var password = "pwd";
         var firstName = "fname";
         var lastName = "lname";
-        var roles = UserRole.Developer.name() + ";" + UserRole.DevOps.name();
+        var roles = UserRole.DEVELOPER.name() + ";" + UserRole.DEV_OPS.name();
 
         return userDao.createUser(login, password, email, firstName, lastName, roles);
     }

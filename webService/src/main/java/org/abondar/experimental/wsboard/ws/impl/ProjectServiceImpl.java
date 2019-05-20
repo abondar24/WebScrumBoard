@@ -1,6 +1,6 @@
-package org.abondar.experimental.wsboard.webService.impl;
+package org.abondar.experimental.wsboard.ws.impl;
 
-import org.abondar.experimental.wsboard.webService.service.ProjectService;
+import org.abondar.experimental.wsboard.ws.service.ProjectService;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;

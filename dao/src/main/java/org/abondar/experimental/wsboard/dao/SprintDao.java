@@ -45,7 +45,7 @@ public class SprintDao extends BaseDao {
         sprint = new Sprint(name, startDate, endDate);
 
         mapper.insertSprint(sprint);
-        logger.info("Created sprint with id: " + sprint.getId());
+        logger.info("CREATED sprint with id: " + sprint.getId());
 
         return sprint;
     }

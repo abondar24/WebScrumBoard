@@ -1,4 +1,4 @@
-package org.abondar.experimental.wsboard.webService.impl;
+package org.abondar.experimental.wsboard.ws.impl;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -13,8 +13,8 @@ import org.abondar.experimental.wsboard.dao.exception.DataCreationException;
 import org.abondar.experimental.wsboard.dao.exception.DataExistenceException;
 import org.abondar.experimental.wsboard.dao.exception.InvalidHashException;
 import org.abondar.experimental.wsboard.datamodel.user.User;
-import org.abondar.experimental.wsboard.webService.service.AuthService;
-import org.abondar.experimental.wsboard.webService.service.UserService;
+import org.abondar.experimental.wsboard.ws.service.AuthService;
+import org.abondar.experimental.wsboard.ws.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,7 +85,7 @@ public class UserServiceImpl implements UserService {
             return Response.ok(user).cookie(createLoginCookie(user.getLogin())).build();
         } catch (CannotPerformOperationException ex) {
             logger.error(ex.getMessage());
-            return Response.status(Response.Status.SERVICE_UNAVAILABLE).entity(ErrorMessageUtil.PWD_HASH_NOT_CREATED).build();
+            return Response.status(Response.Status.SERVICE_UNAVAILABLE).entity(ErrorMessageUtil.HASH_NOT_CREATED).build();
         } catch (DataExistenceException ex) {
             logger.error(ex.getMessage());
             return Response.status(Response.Status.FOUND).entity(ex.getLocalizedMessage()).build();
@@ -231,7 +231,7 @@ public class UserServiceImpl implements UserService {
             return Response.status(Response.Status.UNAUTHORIZED).entity(ex.getLocalizedMessage()).build();
         } catch (CannotPerformOperationException ex) {
             logger.error(ex.getMessage());
-            return Response.status(Response.Status.SERVICE_UNAVAILABLE).entity(ErrorMessageUtil.PWD_HASH_NOT_CREATED).build();
+            return Response.status(Response.Status.SERVICE_UNAVAILABLE).entity(ErrorMessageUtil.HASH_NOT_CREATED).build();
         } catch (DataExistenceException ex) {
             logger.error(ex.getMessage());
             return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
@@ -296,7 +296,7 @@ public class UserServiceImpl implements UserService {
             return Response.status(Response.Status.UNAUTHORIZED).entity(ex.getLocalizedMessage()).build();
         } catch (CannotPerformOperationException ex) {
             logger.error(ex.getMessage());
-            return Response.status(Response.Status.SERVICE_UNAVAILABLE).entity(ErrorMessageUtil.PWD_HASH_NOT_CREATED).build();
+            return Response.status(Response.Status.SERVICE_UNAVAILABLE).entity(ErrorMessageUtil.HASH_NOT_CREATED).build();
         } catch (DataExistenceException ex) {
             logger.error(ex.getMessage());
             return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
@@ -333,7 +333,7 @@ public class UserServiceImpl implements UserService {
     private NewCookie createLoginCookie(String login) {
         return new NewCookie(new Cookie("X-JWT-AUTH",
                 authService.createToken(login, COOKIE_ISSUER, null), "/", null),
-                "JWT token", 6000, new Date((new Date()).getTime() + 60000), false, false);
+                "JWT token", 6000, new Date((new Date()).getTime() + 60000), false, true);
 
     }
 }

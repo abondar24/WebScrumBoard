@@ -1,4 +1,4 @@
-package org.abondar.experimental.wsboard.webService.security;
+package org.abondar.experimental.wsboard.ws.security;
 
 import org.apache.cxf.rs.security.jose.jwt.JwtException;
 

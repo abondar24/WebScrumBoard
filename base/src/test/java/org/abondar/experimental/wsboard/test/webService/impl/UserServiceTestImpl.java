@@ -6,8 +6,8 @@ import org.abondar.experimental.wsboard.dao.exception.InvalidHashException;
 import org.abondar.experimental.wsboard.dao.password.PasswordUtil;
 import org.abondar.experimental.wsboard.datamodel.Contributor;
 import org.abondar.experimental.wsboard.datamodel.user.User;
-import org.abondar.experimental.wsboard.webService.service.AuthService;
-import org.abondar.experimental.wsboard.webService.service.UserService;
+import org.abondar.experimental.wsboard.ws.service.AuthService;
+import org.abondar.experimental.wsboard.ws.service.UserService;
 
 import javax.annotation.security.PermitAll;
 import javax.ws.rs.Consumes;
@@ -239,7 +239,7 @@ public class UserServiceTestImpl implements UserService {
     private NewCookie createCookie(String login) {
         return new NewCookie(new Cookie("X-JWT-AUTH",
                 authService.createToken(login, "test", null), "/", null),
-                "JWT token", 6000, new Date((new Date()).getTime() + 60000), false, false);
+                "JWT token", 6000, new Date((new Date()).getTime() + 60000), false, true);
 
     }
 }

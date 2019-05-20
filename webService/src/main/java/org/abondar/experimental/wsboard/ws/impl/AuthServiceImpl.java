@@ -1,4 +1,4 @@
-package org.abondar.experimental.wsboard.webService.impl;
+package org.abondar.experimental.wsboard.ws.impl;
 
 import org.abondar.experimental.wsboard.dao.data.DataMapper;
 import org.abondar.experimental.wsboard.dao.exception.CannotPerformOperationException;
@@ -6,7 +6,7 @@ import org.abondar.experimental.wsboard.dao.exception.InvalidHashException;
 import org.abondar.experimental.wsboard.dao.exception.InvalidPasswordException;
 import org.abondar.experimental.wsboard.dao.password.PasswordUtil;
 import org.abondar.experimental.wsboard.datamodel.user.User;
-import org.abondar.experimental.wsboard.webService.service.AuthService;
+import org.abondar.experimental.wsboard.ws.service.AuthService;
 import org.apache.cxf.common.util.Base64Exception;
 import org.apache.cxf.common.util.Base64Utility;
 import org.apache.cxf.rs.security.jose.jwa.SignatureAlgorithm;
@@ -29,7 +29,7 @@ public class AuthServiceImpl implements AuthService {
 
     private String secret = "borscht";
 
-    private final Long EXPIRY_PERIOD = 3600l;
+    private static final Long EXPIRY_PERIOD = 3600l;
 
 
     @Override
@@ -70,7 +70,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public boolean validateUser(Long userId, String password) throws InvalidPasswordException {
+    public boolean validateUser(Long userId, String password) {
         User user = dataMapper.getUserById(userId);
 
         if (password == null) {
@@ -92,7 +92,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public String authorizeUser(User user, String pwd) throws InvalidPasswordException {
+    public String authorizeUser(User user, String pwd) {
         if (validateUser(user.getId(), pwd)) {
             return createToken(user.getLogin(), "borscht", null);
         }

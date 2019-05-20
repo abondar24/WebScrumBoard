@@ -221,8 +221,7 @@ public class PasswordUtil {
      * @return decoded number
      * @throws IllegalArgumentException - num is not hex
      */
-    private static byte[] fromBase64(String hex)
-            throws IllegalArgumentException {
+    private static byte[] fromBase64(String hex) {
         return DatatypeConverter.parseBase64Binary(hex);
     }
 

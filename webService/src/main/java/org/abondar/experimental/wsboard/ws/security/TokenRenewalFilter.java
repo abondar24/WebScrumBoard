@@ -1,7 +1,7 @@
-package org.abondar.experimental.wsboard.webService.security;
+package org.abondar.experimental.wsboard.ws.security;
 
 
-import org.abondar.experimental.wsboard.webService.service.AuthService;
+import org.abondar.experimental.wsboard.ws.service.AuthService;
 import org.apache.cxf.jaxrs.utils.JAXRSUtils;
 import org.apache.cxf.rs.security.jose.common.JoseException;
 import org.apache.cxf.rs.security.jose.jaxrs.JwtAuthenticationFilter;

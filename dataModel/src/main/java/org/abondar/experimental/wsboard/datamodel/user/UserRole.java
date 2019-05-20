@@ -7,7 +7,7 @@ package org.abondar.experimental.wsboard.datamodel.user;
  */
 public enum UserRole {
 
-    Developer,
+    DEVELOPER,
     QA,
-    DevOps
+    DEV_OPS
 }

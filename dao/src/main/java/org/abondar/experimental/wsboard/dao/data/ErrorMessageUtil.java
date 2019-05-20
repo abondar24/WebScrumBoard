@@ -33,7 +33,7 @@ public class ErrorMessageUtil {
     public static final String SPRINT_EXISTS = "Sprint with such name exists";
     public static final String SPRINT_NOT_EXISTS = "Sprint not found";
     public static final String BLANK_DATA = "Data for creation or updating is empty";
-    public static final String PWD_HASH_NOT_CREATED = "Password hash not created";
+    public static final String HASH_NOT_CREATED = "Password hash not created";
 
     private ErrorMessageUtil(){}
 

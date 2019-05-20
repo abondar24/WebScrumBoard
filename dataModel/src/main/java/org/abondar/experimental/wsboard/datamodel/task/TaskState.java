@@ -7,11 +7,11 @@ package org.abondar.experimental.wsboard.datamodel.task;
  */
 public enum TaskState {
 
-    Created,
-    InDevelopment,
-    Paused,
-    InCodeReview,
-    InTest,
-    InDeployment,
-    Completed
+    CREATED,
+    IN_DEVELOPMENT,
+    PAUSED,
+    IN_CODE_REVIEW,
+    IN_TEST,
+    IN_DEPLOYMENT,
+    COMPLETED
 }

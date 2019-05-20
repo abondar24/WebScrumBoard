@@ -15,8 +15,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.abondar.experimental.wsboard.datamodel.user.UserRole.DevOps;
-import static org.abondar.experimental.wsboard.datamodel.user.UserRole.Developer;
+import static org.abondar.experimental.wsboard.datamodel.user.UserRole.DEVELOPER;
+import static org.abondar.experimental.wsboard.datamodel.user.UserRole.DEV_OPS;
 import static org.abondar.experimental.wsboard.datamodel.user.UserRole.QA;
 
 /**
@@ -164,7 +164,7 @@ public class TaskDao extends BaseDao {
 
         TaskState taskState;
         try {
-            taskState = TaskState.valueOf(state);
+            taskState = TaskState.valueOf(state.toUpperCase());
         } catch (IllegalArgumentException ex) {
             logger.error(ex.getMessage());
             throw new DataExistenceException(ErrorMessageUtil.TASK_STATE_UNKNOWN);
@@ -176,23 +176,23 @@ public class TaskDao extends BaseDao {
             throw new DataExistenceException(ErrorMessageUtil.TASK_NOT_EXISTS);
         }
 
-        if (task.getTaskState() == TaskState.Completed) {
+        if (task.getTaskState() == TaskState.COMPLETED) {
             logger.info(ErrorMessageUtil.TASK_ALREADY_COMPLETED);
             throw new DataCreationException(ErrorMessageUtil.TASK_ALREADY_COMPLETED);
         }
 
-        if (taskState == TaskState.Created) {
+        if (taskState == TaskState.CREATED) {
             logger.info(ErrorMessageUtil.TASK_ALREADY_CREATED);
             throw new DataCreationException(ErrorMessageUtil.TASK_ALREADY_CREATED);
         }
 
 
-        if ((task.getTaskState() == TaskState.Paused) && (task.getPrevState() != taskState)) {
+        if ((task.getTaskState() == TaskState.PAUSED) && (task.getPrevState() != taskState)) {
             logger.info(ErrorMessageUtil.TASK_WRONG_STATE_AFTER_PAUSE);
             throw new DataCreationException(ErrorMessageUtil.TASK_WRONG_STATE_AFTER_PAUSE);
         }
 
-        if (taskState == TaskState.InDeployment && !task.isDevOpsEnabled()) {
+        if (taskState == TaskState.IN_DEPLOYMENT && !task.isDevOpsEnabled()) {
             logger.info(ErrorMessageUtil.TASK_DEV_OPS_NOT_ENABLED);
             throw new DataCreationException(ErrorMessageUtil.TASK_DEV_OPS_NOT_ENABLED);
         }
@@ -203,7 +203,7 @@ public class TaskDao extends BaseDao {
 
         if (!ctr.isOwner()) {
 
-            if (taskState != TaskState.Completed) {
+            if (taskState != TaskState.COMPLETED) {
                 var moves = stateMoves.get(task.getTaskState());
 
                 if (!moves.contains(taskState)) {
@@ -221,7 +221,7 @@ public class TaskDao extends BaseDao {
         task.setPrevState(task.getTaskState());
         task.setTaskState(taskState);
 
-        if (taskState == TaskState.Completed) {
+        if (taskState == TaskState.COMPLETED) {
             var endDate = new Date();
             task.setEndDate(endDate);
         }
@@ -378,20 +378,20 @@ public class TaskDao extends BaseDao {
 
         for (TaskState ts : EnumSet.allOf(TaskState.class)) {
             switch (ts) {
-                case Created:
-                    stateMoves.put(ts, List.of(TaskState.InTest, TaskState.InDeployment, TaskState.InDevelopment, TaskState.Paused));
+                case CREATED:
+                    stateMoves.put(ts, List.of(TaskState.IN_TEST, TaskState.IN_DEPLOYMENT, TaskState.IN_DEVELOPMENT, TaskState.PAUSED));
                     break;
-                case InDevelopment:
-                    stateMoves.put(ts, List.of(TaskState.InCodeReview, TaskState.Paused));
+                case IN_DEVELOPMENT:
+                    stateMoves.put(ts, List.of(TaskState.IN_CODE_REVIEW, TaskState.PAUSED));
                     break;
-                case InCodeReview:
-                    stateMoves.put(ts, List.of(TaskState.InDevelopment, TaskState.InTest, TaskState.Paused));
+                case IN_CODE_REVIEW:
+                    stateMoves.put(ts, List.of(TaskState.IN_DEVELOPMENT, TaskState.IN_TEST, TaskState.PAUSED));
                     break;
-                case InTest:
-                    stateMoves.put(ts, List.of(TaskState.InDevelopment, TaskState.InDeployment, TaskState.Paused, TaskState.Completed));
+                case IN_TEST:
+                    stateMoves.put(ts, List.of(TaskState.IN_DEVELOPMENT, TaskState.IN_DEPLOYMENT, TaskState.PAUSED, TaskState.COMPLETED));
                     break;
-                case InDeployment:
-                    stateMoves.put(ts, List.of(TaskState.InDevelopment, TaskState.InTest, TaskState.Completed, TaskState.Paused));
+                case IN_DEPLOYMENT:
+                    stateMoves.put(ts, List.of(TaskState.IN_DEVELOPMENT, TaskState.IN_TEST, TaskState.COMPLETED, TaskState.PAUSED));
                     break;
             }
         }
@@ -409,17 +409,17 @@ public class TaskDao extends BaseDao {
 
 
         switch (state) {
-            case Created:
-            case Paused:
-            case Completed:
+            case CREATED:
+            case PAUSED:
+            case COMPLETED:
                 return true;
-            case InDevelopment:
-            case InCodeReview:
-                return rolesList.contains(Developer.name());
-            case InTest:
+            case IN_DEVELOPMENT:
+            case IN_CODE_REVIEW:
+                return rolesList.contains(DEVELOPER.name());
+            case IN_TEST:
                 return rolesList.contains(QA.name());
-            case InDeployment:
-                return rolesList.contains(DevOps.name());
+            case IN_DEPLOYMENT:
+                return rolesList.contains(DEV_OPS.name());
             default:
                 return false;
         }

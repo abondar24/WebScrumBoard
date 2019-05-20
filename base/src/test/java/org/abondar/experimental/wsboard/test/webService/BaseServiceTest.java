@@ -27,7 +27,7 @@ public class BaseServiceTest {
     protected String password = "pwd";
     protected String firstName = "fname";
     protected String lastName = "lname";
-    protected String userRoles = UserRole.Developer.name() + ";" + UserRole.DevOps.name();
+    protected String userRoles = UserRole.DEVELOPER.name() + ";" + UserRole.DEV_OPS.name();
 
 
     @BeforeAll

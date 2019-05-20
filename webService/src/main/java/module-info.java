@@ -27,7 +27,7 @@ module org.abondar.experimental.wsboard.webService {
     requires io.swagger.v3.oas.annotations;
 
 
-    exports org.abondar.experimental.wsboard.webService.config;
-    exports org.abondar.experimental.wsboard.webService.service;
-    exports org.abondar.experimental.wsboard.webService.security;
+    exports org.abondar.experimental.wsboard.ws.config;
+    exports org.abondar.experimental.wsboard.ws.service;
+    exports org.abondar.experimental.wsboard.ws.security;
 }

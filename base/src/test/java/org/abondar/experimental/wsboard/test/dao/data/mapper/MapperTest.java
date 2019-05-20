@@ -411,7 +411,7 @@ public class MapperTest {
         var storyPoints = 1;
 
         task.setStoryPoints(storyPoints);
-        task.setTaskState(TaskState.Completed);
+        task.setTaskState(TaskState.COMPLETED);
         mapper.updateTask(task);
 
         var res = mapper.getTaskById(task.getId());
@@ -449,7 +449,7 @@ public class MapperTest {
         var project = createProject();
         var contributor = createContributor(user.getId(), project.getId(), false);
         var task = createTask(contributor.getId());
-        task.setTaskState(TaskState.Completed);
+        task.setTaskState(TaskState.COMPLETED);
         var sprint = createSprint();
 
         task.setSprintId(sprint.getId());
@@ -508,12 +508,12 @@ public class MapperTest {
 
 
     private User createUser() {
-        var roles = UserRole.Developer + ":" + UserRole.QA;
+        var roles = UserRole.DEVELOPER + ":" + UserRole.QA;
         var user = new User("testUser", "test@email.com",
                 "test", "test", "12345", roles);
 
         mapper.insertUser(user);
-        logger.info("Created user with id:" + user.getId());
+        logger.info("CREATED user with id:" + user.getId());
         return user;
     }
 
@@ -521,14 +521,14 @@ public class MapperTest {
         var project = new Project("test", new Date());
         mapper.insertProject(project);
 
-        logger.info("Created project with id:" + project.getId());
+        logger.info("CREATED project with id:" + project.getId());
         return project;
     }
 
     private Contributor createContributor(long userId, long projectId, boolean isOwner) {
         var contributor = new Contributor(userId, projectId, isOwner);
         mapper.insertContributor(contributor);
-        logger.info("Created contributor with id:" + contributor.getId());
+        logger.info("CREATED contributor with id:" + contributor.getId());
 
         return contributor;
     }
@@ -536,14 +536,14 @@ public class MapperTest {
     private Task createTask(long contributorId) {
         var task = new Task(contributorId, new Date(), true);
         mapper.insertTask(task);
-        logger.info("Created task with id:" + task.getId());
+        logger.info("CREATED task with id:" + task.getId());
         return task;
     }
 
     private Sprint createSprint() {
         var sprint = new Sprint("test", new Date(), new Date());
         mapper.insertSprint(sprint);
-        logger.info("Created sprint with id:" + sprint.getId());
+        logger.info("CREATED sprint with id:" + sprint.getId());
         return sprint;
     }
 

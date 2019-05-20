@@ -226,7 +226,7 @@ public class ContributorDaoTest {
         var password = "pwd";
         var firstName = "fname";
         var lastName = "lname";
-        var roles = UserRole.Developer.name() + ";" + UserRole.DevOps.name();
+        var roles = UserRole.DEVELOPER.name() + ";" + UserRole.DEV_OPS.name();
 
         return userDao.createUser(login, password, email, firstName, lastName, roles);
     }

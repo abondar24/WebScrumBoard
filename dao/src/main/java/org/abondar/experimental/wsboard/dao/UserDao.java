@@ -199,15 +199,14 @@ public class UserDao extends BaseDao {
         var usr = findUserById(id);
 
         var contributor = mapper.getContributorByUserId(id);
-        if (contributor != null && contributor.isOwner()) {
+        if (contributor != null) {
+            if (contributor.isOwner()) {
                 logger.error(ErrorMessageUtil.USER_IS_PROJECT_OWNER);
                 throw new DataCreationException(ErrorMessageUtil.USER_IS_PROJECT_OWNER);
-
+            }
+            contributorDao.updateContributor(contributor.getId(), contributor.isOwner(), false);
         }
         usr.setDeleted();
-
-        contributorDao.updateContributor(contributor.getId(), contributor.isOwner(), false);
-
 
         mapper.insertUser(usr);
         logger.info("User with id: " + usr.getId() + " marked as deleted");
@@ -270,7 +269,7 @@ public class UserDao extends BaseDao {
         var userRoles = new StringBuilder();
         for (String role : rolesArr) {
 
-            if (containsRole(role)) {
+            if (containsRole(role.toUpperCase())) {
                 userRoles.append(role);
                 userRoles.append(";");
             }
