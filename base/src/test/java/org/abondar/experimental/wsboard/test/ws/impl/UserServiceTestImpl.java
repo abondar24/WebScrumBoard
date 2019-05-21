@@ -44,7 +44,6 @@ public class UserServiceTestImpl implements UserService {
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/create")
-    @PermitAll
     @Override
     public Response createUser(@FormParam("login") String login,
                                @FormParam("email") String email,
@@ -125,15 +124,11 @@ public class UserServiceTestImpl implements UserService {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/update_avatar")
     @Override
-    public Response updateAvatar(long id, byte[] avatar) {
+    public Response updateAvatar(@QueryParam("id") long id, byte[] avatar) {
         if (testUser.getId() != id) {
             return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.USER_NOT_EXISTS).build();
         }
 
-
-        if (avatar != null && avatar.length == 0) {
-            return Response.status(Response.Status.NO_CONTENT).entity(LogMessageUtil.USER_AVATAR_EMPTY).build();
-        }
 
         testUser.setAvatar(avatar);
 

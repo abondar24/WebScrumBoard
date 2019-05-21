@@ -41,7 +41,7 @@ import java.util.Map;
 public class CxfConfig implements WebMvcConfigurer {
 
     @Value("${cxf.jwt.signature}")
-    private String sig = "Ym9yc2NodA";
+    private String sig;
 
     @Bean(name = Bus.DEFAULT_BUS_ID)
     public SpringBus springBus() {
@@ -88,7 +88,7 @@ public class CxfConfig implements WebMvcConfigurer {
     public Server jaxRsServer(JacksonJsonProvider jsonProvider, AuthService authService) {
 
 
-        JAXRSServerFactoryBean factory = new JAXRSServerFactoryBean();
+        var factory = new JAXRSServerFactoryBean();
         factory.setBus(springBus());
         factory.setServiceBeanObjects(userService(authService), projectService(),
                 contributorService(), taskService(), sprintService());
@@ -113,7 +113,7 @@ public class CxfConfig implements WebMvcConfigurer {
 
     @Bean
     public JacksonJsonProvider jsonProvider() {
-        JacksonJsonProvider provider = new JacksonJsonProvider();
+        var provider = new JacksonJsonProvider();
         provider.configure(DeserializationFeature.USE_JAVA_ARRAY_FOR_JSON_ARRAY, true);
         provider.configure(DeserializationFeature.UNWRAP_ROOT_VALUE, false);
         return provider;
@@ -122,7 +122,7 @@ public class CxfConfig implements WebMvcConfigurer {
 
     @Bean
     public Swagger2Feature createSwaggerFeature() {
-        Swagger2Feature swagger2Feature = new Swagger2Feature();
+        var swagger2Feature = new Swagger2Feature();
         swagger2Feature.setPrettyPrint(true);
         swagger2Feature.setHost("localhost:8024");
         swagger2Feature.setBasePath("/cxf/wsboard");
@@ -132,7 +132,7 @@ public class CxfConfig implements WebMvcConfigurer {
 
     @Bean
     public TokenRenewalFilter authenticationFilter(AuthService authService) {
-        TokenRenewalFilter filter = new TokenRenewalFilter();
+        var filter = new TokenRenewalFilter();
         filter.setAuthService(authService);
         filter.setJweRequired(true);
         filter.setJwsVerifier(signatureVerifier());

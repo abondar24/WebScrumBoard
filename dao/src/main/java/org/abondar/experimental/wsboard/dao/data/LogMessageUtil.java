@@ -12,7 +12,6 @@ public class LogMessageUtil {
     public static final String USER_EMTPY_LOGIN = "Got empty login";
     public static final String USER_NOT_EXISTS = "User not exists";
     public static final String USER_UNAUTHORIZED = "Unauthorized action";
-    public static final String USER_AVATAR_EMPTY = "Image data not set";
     public static final String PROJECT_EXISTS = "Project with name already exists";
     public static final String PROJECT_NOT_EXISTS = "Project doesn't exist";
     public static final String PROJECT_WRONG_END_DATE = "End date must be after a start date";

@@ -184,9 +184,8 @@ public class UserDao extends BaseDao {
             usr.setRoles(checkRoles(roles));
         }
 
-        if (avatar != null && avatar.length == 0) {
-            logger.error(LogMessageUtil.USER_AVATAR_EMPTY);
-            throw new DataCreationException(LogMessageUtil.USER_AVATAR_EMPTY);
+        if (avatar != null) {
+            usr.setAvatar(avatar);
         }
 
         mapper.updateUser(usr);

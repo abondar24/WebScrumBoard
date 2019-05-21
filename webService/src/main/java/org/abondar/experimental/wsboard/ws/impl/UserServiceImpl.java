@@ -143,7 +143,7 @@ public class UserServiceImpl implements UserService {
                             responseCode = "200",
                             description = "User avatar updated",
                             content = @Content(schema = @Schema(implementation = User.class))),
-                    @ApiResponse(responseCode = "204", description = "Avatar is empty"),
+                    @ApiResponse(responseCode = "500", description = "Avatar is empty"),
                     @ApiResponse(responseCode = "404", description = "User with id not exists")
             }
     )
@@ -157,9 +157,8 @@ public class UserServiceImpl implements UserService {
         } catch (DataExistenceException ex) {
             logger.error(ex.getMessage());
             return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
-        } catch (DataCreationException ex) {
-            logger.error(ex.getMessage());
-            return Response.status(Response.Status.NO_CONTENT).entity(ex.getLocalizedMessage()).build();
+        } catch (DataCreationException ignored) {
+            return Response.ok().build();
         }
     }
 

@@ -201,18 +201,6 @@ public class UserDaoTest {
     }
 
 
-    @Test
-    public void updateUserAvatarEmptyTest() throws Exception {
-        logger.info("Update user password test");
-
-        var usr = createUser();
-        var avatar = new byte[]{};
-
-        assertThrows(DataCreationException.class, () ->
-                userDao.updateUser(usr.getId(), null, "", null, null, avatar));
-
-        mapper.deleteUsers();
-    }
 
     @Test
     public void deleteUserTest() throws Exception {

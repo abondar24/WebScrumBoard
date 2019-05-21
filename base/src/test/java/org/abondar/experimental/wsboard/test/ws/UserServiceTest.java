@@ -25,17 +25,17 @@ import javax.ws.rs.core.MediaType;
 import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest(classes = Main.class)
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
 public class UserServiceTest {
 
-    private Logger logger = LoggerFactory.getLogger(UserServiceTest.class);
-
     private static Server server;
     private static String endpoint = "local://wsboard_test";
-
+    private Logger logger = LoggerFactory.getLogger(UserServiceTest.class);
     private String login = "login";
     private String email = "email@email.com";
     private String password = "pwd";
@@ -76,10 +76,12 @@ public class UserServiceTest {
         assertEquals(200, resp.getStatus());
 
         var user = resp.readEntity(User.class);
+        var token = resp.getCookies().get("X-JWT-AUTH").getValue();
+
 
         assertEquals(10, user.getId());
         assertEquals(login, user.getLogin());
-
+        assertFalse(token.isEmpty());
 
     }
 
@@ -168,16 +170,13 @@ public class UserServiceTest {
 
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
-        UserWrapper wrapper = createUser();
-        var usr = wrapper.getUsr();
-        var token = wrapper.getToken();
+        var usr = createUser();
 
         var form = new Form();
         form.param("id", String.valueOf(usr.getId()));
         form.param("email", "newEmail");
 
         client.path("/user/update")
-                .header("Authorization", "JWT " + token)
                 .accept(MediaType.APPLICATION_JSON);
 
         var resp = client.post(form);
@@ -193,15 +192,13 @@ public class UserServiceTest {
 
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
-        UserWrapper wrapper = createUser();
-        var token = wrapper.getToken();
+        createUser();
 
         var form = new Form();
         form.param("id", "1024");
         form.param("email", "newEmail");
 
         client.path("/user/update")
-                .header("Authorization", "JWT " + token)
                 .accept(MediaType.APPLICATION_JSON);
 
         var resp = client.post(form);
@@ -217,16 +214,13 @@ public class UserServiceTest {
 
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
-        UserWrapper wrapper = createUser();
-        var usr = wrapper.getUsr();
-        var token = wrapper.getToken();
+        var usr = createUser();
 
         var form = new Form();
         form.param("id", String.valueOf(usr.getId()));
         form.param("roles", "newEmail");
 
         client.path("/user/update")
-                .header("Authorization", "JWT " + token)
                 .accept(MediaType.APPLICATION_JSON);
 
         var resp = client.post(form);
@@ -237,7 +231,68 @@ public class UserServiceTest {
     }
 
 
-    private UserWrapper createUser() {
+    @Test
+    public void updateUserAvatarTest() {
+        logger.info("update user avatar test");
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+
+        var usr = createUser();
+
+        var avatar = "avatar".getBytes();
+
+        client.path("/user/update_avatar").query("id", usr.getId())
+                .type(MediaType.APPLICATION_OCTET_STREAM)
+                .accept(MediaType.APPLICATION_JSON);
+
+        var resp = client.post(avatar);
+        assertEquals(200, resp.getStatus());
+
+        usr = resp.readEntity(User.class);
+        assertNotNull(usr.getAvatar());
+    }
+
+    @Test
+    public void updateUserNotFoundAvatarTest() {
+        logger.info("update user not found avatar test");
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+
+        createUser();
+
+        var avatar = "avatar".getBytes();
+
+        client.path("/user/update_avatar").query("id", "1024")
+                .type(MediaType.APPLICATION_OCTET_STREAM)
+                .accept(MediaType.APPLICATION_JSON);
+
+        var resp = client.post(avatar);
+        assertEquals(404, resp.getStatus());
+
+        var msg = resp.readEntity(String.class);
+        assertEquals(LogMessageUtil.USER_NOT_EXISTS, msg);
+    }
+
+    @Test
+    public void updateUserAvatarEmptyTest() {
+        logger.info("update user avatar empty test");
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+
+        var usr = createUser();
+
+        var avatar = "".getBytes();
+
+        client.path("/user/update_avatar").query("id", usr.getId())
+                .type(MediaType.APPLICATION_OCTET_STREAM)
+                .accept(MediaType.APPLICATION_JSON);
+
+        var resp = client.post(avatar);
+        assertEquals(500, resp.getStatus());
+
+    }
+
+    private User createUser() {
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
         client.path("/user/create").accept(MediaType.APPLICATION_JSON);
@@ -252,9 +307,8 @@ public class UserServiceTest {
 
 
         var resp = client.post(form);
-        String token = resp.getCookies().get("X-JWT-AUTH").getValue();
 
-        return new UserWrapper(resp.readEntity(User.class), token);
+        return resp.readEntity(User.class);
     }
 
 }
