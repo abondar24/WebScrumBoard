@@ -1,4 +1,4 @@
-package org.abondar.experimental.wsboard.test.webService.impl;
+package org.abondar.experimental.wsboard.test.ws.impl;
 
 import org.abondar.experimental.wsboard.dao.data.LogMessageUtil;
 import org.abondar.experimental.wsboard.dao.exception.CannotPerformOperationException;
@@ -14,6 +14,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
@@ -94,16 +95,21 @@ public class UserServiceTestImpl implements UserService {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/update")
     @Override
-    public Response updateUser(long id, String firstName, String lastName, String email, String roles) {
+    public Response updateUser(@FormParam("id") long id,
+                               @FormParam("firstName") String firstName,
+                               @FormParam("lastName") String lastName,
+                               @FormParam("email") String email,
+                               @FormParam("roles") String roles) {
         if (testUser.getId() != id) {
             return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.USER_NOT_EXISTS).build();
         }
 
+        if (roles != null) {
+            String[] rolesArr = roles.split(";");
 
-        String[] rolesArr = roles.split(";");
-
-        if (rolesArr.length == 0 || !roles.contains(";")) {
-            return Response.status(Response.Status.NO_CONTENT).entity(LogMessageUtil.USER_NO_ROLES).build();
+            if (rolesArr.length == 0 || !roles.contains(";")) {
+                return Response.status(Response.Status.NO_CONTENT).entity(LogMessageUtil.USER_NO_ROLES).build();
+            }
         }
 
         testUser.setFirstName(firstName);
@@ -198,6 +204,7 @@ public class UserServiceTestImpl implements UserService {
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/login")
+    @PermitAll
     @Override
     public Response loginUser(@FormParam("login") String login,
                               @FormParam("password") String password) {
@@ -232,8 +239,15 @@ public class UserServiceTestImpl implements UserService {
                 "JWT token", 24000, false)).build();
     }
 
-    public void createTestContributor(long userId, long projectId, boolean isOwner) {
+    @PUT
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Path("createTestContributor")
+    public Response createTestContributor(@FormParam("userId") long userId,
+                                          @FormParam("projectId") long projectId,
+                                          @FormParam("isOwner") boolean isOwner) {
         this.testContributor = new Contributor(userId, projectId, isOwner);
+
+        return Response.ok().build();
     }
 
     private NewCookie createCookie(String login) {

@@ -1,4 +1,4 @@
-package org.abondar.experimental.wsboard.test.webService.impl;
+package org.abondar.experimental.wsboard.test.ws.impl;
 
 import org.abondar.experimental.wsboard.datamodel.user.User;
 import org.abondar.experimental.wsboard.ws.service.AuthService;
