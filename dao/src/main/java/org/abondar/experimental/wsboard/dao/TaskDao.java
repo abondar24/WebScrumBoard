@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.abondar.experimental.wsboard.dao.data.LogMessageUtil.LOG_FORMAT;
 import static org.abondar.experimental.wsboard.datamodel.user.UserRole.DEVELOPER;
 import static org.abondar.experimental.wsboard.datamodel.user.UserRole.DEV_OPS;
 import static org.abondar.experimental.wsboard.datamodel.user.UserRole.QA;
@@ -27,8 +28,6 @@ import static org.abondar.experimental.wsboard.datamodel.user.UserRole.QA;
 public class TaskDao extends BaseDao {
 
     private static Logger logger = LoggerFactory.getLogger(TaskDao.class);
-
-    private static final String LOG_FORMAT = "%s with id: %d";
 
 
     private Map<TaskState, List<TaskState>> stateMoves;
@@ -69,7 +68,8 @@ public class TaskDao extends BaseDao {
 
 
         mapper.insertTask(task);
-        logger.info("Created a task with id: " + task.getId());
+        var msg = String.format(LOG_FORMAT, "Created a task ", task.getId());
+        logger.info(msg);
 
         return task;
     }
@@ -90,7 +90,8 @@ public class TaskDao extends BaseDao {
 
         var task = mapper.getTaskById(taskId);
         if (task == null) {
-            logger.info(String.format(LOG_FORMAT, LogMessageUtil.TASK_NOT_EXISTS, taskId));
+            var msg = String.format(LOG_FORMAT, LogMessageUtil.TASK_NOT_EXISTS, taskId);
+            logger.info(msg);
             throw new DataExistenceException(LogMessageUtil.TASK_NOT_EXISTS);
 
         }
@@ -117,7 +118,9 @@ public class TaskDao extends BaseDao {
 
 
         mapper.updateTask(task);
-        logger.info("Updated a task with id: " + task.getId());
+
+        var msg = String.format(LOG_FORMAT, "Updated a task ", task.getId());
+        logger.info(msg);
 
         return task;
     }
@@ -133,18 +136,22 @@ public class TaskDao extends BaseDao {
     public Task updateTaskSprint(long taskId, long sprintId) throws DataExistenceException {
         var task = mapper.getTaskById(taskId);
         if (task == null) {
-            logger.info(String.format(LOG_FORMAT, LogMessageUtil.TASK_NOT_EXISTS, taskId));
+            var msg = String.format(LOG_FORMAT, LogMessageUtil.TASK_NOT_EXISTS, taskId);
+            logger.info(msg);
             throw new DataExistenceException(LogMessageUtil.TASK_NOT_EXISTS);
         }
 
         var sprint = mapper.getSprintById(sprintId);
         if (sprint == null) {
-            logger.info(String.format(LOG_FORMAT, LogMessageUtil.SPRINT_NOT_EXISTS, sprintId));
+            var msg = String.format(LOG_FORMAT, LogMessageUtil.SPRINT_NOT_EXISTS, sprintId);
+            logger.info(msg);
             throw new DataExistenceException(LogMessageUtil.SPRINT_NOT_EXISTS);
         }
 
         mapper.updateTaskSprint(taskId, sprintId);
-        logger.info("Updated task sprint for id: " + task.getId());
+
+        var msg = String.format(LOG_FORMAT, "Updated task sprint ", task.getId());
+        logger.info(msg);
         task.setSprintId(sprintId);
 
         return task;
@@ -164,17 +171,12 @@ public class TaskDao extends BaseDao {
     public Task updateTaskState(long taskId, String state)
             throws DataExistenceException, DataCreationException {
 
-        TaskState taskState;
-        try {
-            taskState = TaskState.valueOf(state.toUpperCase());
-        } catch (IllegalArgumentException ex) {
-            logger.error(ex.getMessage());
-            throw new DataExistenceException(LogMessageUtil.TASK_STATE_UNKNOWN);
-        }
+        var taskState = getTaskState(state);
 
         var task = mapper.getTaskById(taskId);
         if (task == null) {
-            logger.info(String.format(LOG_FORMAT, LogMessageUtil.TASK_NOT_EXISTS, taskId));
+            var msg = String.format(LOG_FORMAT, LogMessageUtil.TASK_NOT_EXISTS, taskId);
+            logger.info(msg);
             throw new DataExistenceException(LogMessageUtil.TASK_NOT_EXISTS);
         }
 
@@ -205,14 +207,13 @@ public class TaskDao extends BaseDao {
 
         if (!ctr.isOwner()) {
 
-            if (taskState != TaskState.COMPLETED) {
-                var moves = stateMoves.get(task.getTaskState());
 
-                if (!moves.contains(taskState)) {
-                    throw new DataCreationException(LogMessageUtil.TASK_MOVE_NOT_AVAILABLE);
-                }
+            var moves = stateMoves.get(task.getTaskState());
 
+            if (!moves.contains(taskState)) {
+                throw new DataCreationException(LogMessageUtil.TASK_MOVE_NOT_AVAILABLE);
             }
+
 
             if (!stateMatches(taskState, usr.getRoles())) {
                 throw new DataCreationException(LogMessageUtil.TASK_CONTRIBUTOR_UPDATE);
@@ -229,7 +230,9 @@ public class TaskDao extends BaseDao {
         }
 
         mapper.updateTask(task);
-        logger.info("Updated task state to " + taskState.name() + " for id: " + taskId);
+
+        var msg = String.format("Updated task state to %s for id:  %d", taskState.name(), taskId);
+        logger.info(msg);
 
         return task;
     }
@@ -244,12 +247,15 @@ public class TaskDao extends BaseDao {
     public boolean deleteTask(long id) {
 
         if (mapper.getTaskById(id) == null) {
-            logger.info(String.format(LOG_FORMAT, LogMessageUtil.TASK_NOT_EXISTS, id));
+            var msg = String.format(LOG_FORMAT, LogMessageUtil.TASK_NOT_EXISTS, id);
+            logger.info(msg);
             return false;
         }
 
         mapper.deleteTask(id);
-        logger.info("Deleted task with id: " + id);
+
+        var msg = String.format(LOG_FORMAT, "Deleted task ", id);
+        logger.info(msg);
         return true;
     }
 
@@ -257,19 +263,21 @@ public class TaskDao extends BaseDao {
      * Find task by id
      *
      * @param taskId - task id
-     * @throws DataExistenceException - task not exists
      * @return task POJO
+     * @throws DataExistenceException - task not exists
      */
     public Task getTaskById(long taskId) throws DataExistenceException {
 
 
         var task = mapper.getTaskById(taskId);
         if (task == null) {
-            logger.info(String.format(LOG_FORMAT, LogMessageUtil.TASK_NOT_EXISTS, taskId));
+            var msg = String.format(LOG_FORMAT, LogMessageUtil.TASK_NOT_EXISTS, taskId);
+            logger.info(msg);
             throw new DataExistenceException(LogMessageUtil.TASK_NOT_EXISTS);
         }
 
-        logger.info("Found task with id: " + taskId);
+        var msg = String.format(LOG_FORMAT, "Found task ", taskId);
+        logger.info(msg);
 
         return task;
     }
@@ -281,19 +289,22 @@ public class TaskDao extends BaseDao {
      * @param projectId - project id
      * @param offset    - start of list
      * @param limit     - list size
-     * @throws DataExistenceException - project not exists
      * @return task POJO list
+     * @throws DataExistenceException - project not exists
      */
     public List<Task> getTasksForProject(long projectId, int offset, int limit) throws DataExistenceException {
 
         var prj = mapper.getProjectById(projectId);
         if (prj == null) {
-            logger.info(String.format(LOG_FORMAT, LogMessageUtil.PROJECT_EXISTS, projectId));
+            var msg = String.format(LOG_FORMAT, LogMessageUtil.PROJECT_EXISTS, projectId);
+            logger.info(msg);
             throw new DataExistenceException(LogMessageUtil.PROJECT_NOT_EXISTS);
         }
 
         var tasks = mapper.getTasksForProject(projectId, offset, limit);
-        logger.info("Found tasks for project with id: " + projectId);
+
+        var msg = String.format(LOG_FORMAT, "Found tasks for project ", projectId);
+        logger.info(msg);
 
         return tasks;
     }
@@ -304,20 +315,23 @@ public class TaskDao extends BaseDao {
      * @param ctrId  - contributor id
      * @param offset - start of list
      * @param limit  - list size
-     * @throws DataExistenceException - contributor not exists
      * @return task POJO list
+     * @throws DataExistenceException - contributor not exists
      */
     public List<Task> getTasksForContributor(long ctrId, int offset, int limit)
             throws DataExistenceException {
 
         var ctr = mapper.getContributorById(ctrId);
         if (ctr == null) {
-            logger.info(String.format(LOG_FORMAT, LogMessageUtil.CONTRIBUTOR_NOT_EXISTS, ctrId));
+            var msg = String.format(LOG_FORMAT, LogMessageUtil.CONTRIBUTOR_NOT_EXISTS, ctrId);
+            logger.info(msg);
             throw new DataExistenceException(LogMessageUtil.CONTRIBUTOR_NOT_EXISTS);
         }
 
         var tasks = mapper.getTasksForContributor(ctrId, offset, limit);
-        logger.info("Found tasks for contributor with id: " + ctrId);
+
+        var msg = String.format(LOG_FORMAT, "Found tasks for contributor ", ctrId);
+        logger.info(msg);
 
         return tasks;
     }
@@ -328,20 +342,23 @@ public class TaskDao extends BaseDao {
      * @param usrId  - user id
      * @param offset - start of list
      * @param limit  - list size
-     * @throws DataExistenceException - user not exists
      * @return task POJO list
+     * @throws DataExistenceException - user not exists
      */
     public List<Task> getTasksForUser(long usrId, int offset, int limit)
             throws DataExistenceException {
 
         var usr = mapper.getUserById(usrId);
         if (usr == null) {
-            logger.info(String.format(LOG_FORMAT, LogMessageUtil.USER_NOT_EXISTS, usrId));
+            var msg = String.format(LOG_FORMAT, LogMessageUtil.USER_NOT_EXISTS, usrId);
+            logger.info(msg);
             throw new DataExistenceException(LogMessageUtil.USER_NOT_EXISTS);
         }
 
         var tasks = mapper.getTasksForUser(usrId, offset, limit);
-        logger.info("Found tasks for user with id: " + usrId);
+
+        var msg = String.format(LOG_FORMAT, "Found tasks for user ", usrId);
+        logger.info(msg);
 
         return tasks;
     }
@@ -352,19 +369,22 @@ public class TaskDao extends BaseDao {
      * @param sprintId - sprint id
      * @param offset   - start of list
      * @param limit    - list size
-     * @throws DataExistenceException - sprint not exists
      * @return Object wrapper with task POJO or with error message
+     * @throws DataExistenceException - sprint not exists
      */
     public List<Task> getTasksForSprint(long sprintId, int offset, int limit) throws DataExistenceException {
 
         var sprint = mapper.getSprintById(sprintId);
         if (sprint == null) {
-            logger.info(String.format(LOG_FORMAT, LogMessageUtil.SPRINT_NOT_EXISTS, sprintId));
+            var msg = String.format(LOG_FORMAT, LogMessageUtil.SPRINT_NOT_EXISTS, sprintId);
+            logger.info(msg);
             throw new DataExistenceException(LogMessageUtil.SPRINT_NOT_EXISTS);
         }
 
         var tasks = mapper.getTasksForSprint(sprintId, offset, limit);
-        logger.info("Found tasks for sprint with id: " + sprintId);
+
+        var msg = String.format(LOG_FORMAT, "Found tasks for sprint ", sprintId);
+        logger.info(msg);
 
         return tasks;
     }
@@ -376,31 +396,32 @@ public class TaskDao extends BaseDao {
      * @return Map of states and available moves
      */
     private Map<TaskState, List<TaskState>> initMoves() {
-        Map<TaskState, List<TaskState>> stateMoves = new HashMap<>();
+        Map<TaskState, List<TaskState>> moves = new HashMap<>();
 
         for (TaskState ts : EnumSet.allOf(TaskState.class)) {
             switch (ts) {
                 case CREATED:
-                    stateMoves.put(ts, List.of(TaskState.IN_TEST, TaskState.IN_DEPLOYMENT, TaskState.IN_DEVELOPMENT, TaskState.PAUSED));
+                    moves.put(ts, List.of(TaskState.IN_TEST, TaskState.IN_DEPLOYMENT, TaskState.IN_DEVELOPMENT, TaskState.PAUSED));
                     break;
                 case IN_DEVELOPMENT:
-                    stateMoves.put(ts, List.of(TaskState.IN_CODE_REVIEW, TaskState.PAUSED));
+                    moves.put(ts, List.of(TaskState.IN_CODE_REVIEW, TaskState.PAUSED));
                     break;
                 case IN_CODE_REVIEW:
-                    stateMoves.put(ts, List.of(TaskState.IN_DEVELOPMENT, TaskState.IN_TEST, TaskState.PAUSED));
+                    moves.put(ts, List.of(TaskState.IN_DEVELOPMENT, TaskState.IN_TEST, TaskState.PAUSED));
                     break;
                 case IN_TEST:
-                    stateMoves.put(ts, List.of(TaskState.IN_DEVELOPMENT, TaskState.IN_DEPLOYMENT, TaskState.PAUSED, TaskState.COMPLETED));
+                    moves.put(ts, List.of(TaskState.IN_DEVELOPMENT, TaskState.IN_DEPLOYMENT, TaskState.PAUSED, TaskState.COMPLETED));
                     break;
                 case IN_DEPLOYMENT:
-                    stateMoves.put(ts, List.of(TaskState.IN_DEVELOPMENT, TaskState.IN_TEST, TaskState.COMPLETED, TaskState.PAUSED));
+                    moves.put(ts, List.of(TaskState.IN_DEVELOPMENT, TaskState.IN_TEST, TaskState.COMPLETED, TaskState.PAUSED));
                     break;
+                case COMPLETED:
                 default:
                     break;
             }
         }
 
-        return stateMoves;
+        return moves;
     }
 
     /**
@@ -429,4 +450,12 @@ public class TaskDao extends BaseDao {
         }
     }
 
+    private TaskState getTaskState(String state) throws DataExistenceException {
+        try {
+            return TaskState.valueOf(state.toUpperCase());
+        } catch (IllegalArgumentException ex) {
+            logger.error(ex.getMessage());
+            throw new DataExistenceException(LogMessageUtil.TASK_STATE_UNKNOWN);
+        }
+    }
 }

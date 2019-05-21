@@ -32,6 +32,9 @@ public class PasswordUtil {
     private static final int SALT_INDEX = 3;
     private static final int PBKDF2_INDEX = 4;
 
+    private PasswordUtil() {
+    }
+
     /**
      * Create password hash
      *
