@@ -80,11 +80,11 @@ public class UserServiceTestImpl implements UserService {
         }
 
 
-        this.testUser = new User(login, email, firstName, lastName, pwdHash, roles);
-        this.testUser.setId(10);
+        testUser = new User(login, email, firstName, lastName, pwdHash, roles);
+        testUser.setId(10);
 
 
-        return Response.ok(this.testUser).cookie(createCookie(this.testUser.getLogin())).build();
+        return Response.ok(testUser).cookie(createCookie(testUser.getLogin())).build();
 
 
     }
@@ -169,13 +169,15 @@ public class UserServiceTestImpl implements UserService {
         try {
             if (PasswordUtil.verifyPassword(oldPassword, testUser.getPassword())) {
                 testUser.setPassword(PasswordUtil.createHash(newPassword));
+                return Response.ok(testUser).build();
             }
-            return Response.ok(testUser).build();
         } catch (CannotPerformOperationException ex) {
             return Response.status(Response.Status.SERVICE_UNAVAILABLE).entity(ex.getLocalizedMessage()).build();
         } catch (InvalidHashException ex) {
             return Response.status(Response.Status.UNAUTHORIZED).entity(ex.getLocalizedMessage()).build();
         }
+
+        return Response.status(Response.Status.UNAUTHORIZED).entity(LogMessageUtil.USER_UNAUTHORIZED).build();
     }
 
     @GET

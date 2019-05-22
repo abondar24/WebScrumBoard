@@ -109,7 +109,8 @@ public class UserServiceImpl implements UserService {
                             description = "User updated",
                             content = @Content(schema = @Schema(implementation = User.class))),
                     @ApiResponse(responseCode = "204"),
-                    @ApiResponse(responseCode = "404", description = "User with id not exists")
+                    @ApiResponse(responseCode = "404", description = "User with id not exists"),
+                    @ApiResponse(responseCode = "406", description = "JWT token is wrong")
             }
     )
     @Override
@@ -143,8 +144,9 @@ public class UserServiceImpl implements UserService {
                             responseCode = "200",
                             description = "User avatar updated",
                             content = @Content(schema = @Schema(implementation = User.class))),
-                    @ApiResponse(responseCode = "500", description = "Avatar is empty"),
-                    @ApiResponse(responseCode = "404", description = "User with id not exists")
+                    @ApiResponse(responseCode = "404", description = "User with id not exists"),
+                    @ApiResponse(responseCode = "406", description = "JWT token is wrong"),
+                    @ApiResponse(responseCode = "500", description = "Avatar is empty")
             }
     )
     @Override
@@ -176,6 +178,7 @@ public class UserServiceImpl implements UserService {
                             content = @Content(schema = @Schema(implementation = User.class))),
                     @ApiResponse(responseCode = "302", description = "User with login already exists"),
                     @ApiResponse(responseCode = "404", description = "User with id not exists"),
+                    @ApiResponse(responseCode = "406", description = "JWT token is wrong"),
                     @ApiResponse(responseCode = "501", description = "User login is empty")
             }
     )
@@ -214,6 +217,7 @@ public class UserServiceImpl implements UserService {
                             content = @Content(schema = @Schema(implementation = User.class))),
                     @ApiResponse(responseCode = "401", description = "User password is wrong"),
                     @ApiResponse(responseCode = "404", description = "User with id not exists"),
+                    @ApiResponse(responseCode = "406", description = "JWT token is wrong"),
                     @ApiResponse(responseCode = "503", description = "Password hash not created")
             }
     )
@@ -249,6 +253,7 @@ public class UserServiceImpl implements UserService {
                             description = "User marked as deleted",
                             content = @Content(schema = @Schema(implementation = User.class))),
                     @ApiResponse(responseCode = "404", description = "User with id not exists"),
+                    @ApiResponse(responseCode = "406", description = "JWT token is wrong"),
                     @ApiResponse(responseCode = "501", description = "User is project owner")
             }
     )
@@ -271,6 +276,7 @@ public class UserServiceImpl implements UserService {
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/login")
+    @PermitAll
     @Operation(
             summary = "Login",
             description = "Log in user",
@@ -312,7 +318,8 @@ public class UserServiceImpl implements UserService {
                     @ApiResponse(
                             responseCode = "200",
                             description = "User logged out"),
-                    @ApiResponse(responseCode = "404", description = "User with id not exists")
+                    @ApiResponse(responseCode = "404", description = "User with id not exists"),
+                    @ApiResponse(responseCode = "406", description = "JWT token is wrong")
             }
     )
     @Override

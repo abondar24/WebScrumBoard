@@ -26,6 +26,7 @@ import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest(classes = Main.class)
@@ -359,6 +360,73 @@ public class UserServiceTest {
         assertEquals(LogMessageUtil.USER_EXISTS, msg);
     }
 
+    @Test
+    public void updateUserPasswordTest() {
+        logger.info("update user password test");
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+
+        var usr = createUser();
+
+        var oldHash = usr.getPassword();
+        var form = new Form();
+        form.param("id", String.valueOf(usr.getId()));
+        form.param("oldPassword", password);
+        form.param("newPassword", "newPwd");
+
+
+        client.path("/user/update_password").accept(MediaType.APPLICATION_JSON);
+
+        var resp = client.post(form);
+        assertEquals(200, resp.getStatus());
+
+        usr = resp.readEntity(User.class);
+        assertNotEquals(oldHash, usr.getPassword());
+    }
+
+    @Test
+    public void updateUserNotFoundPasswordTest() {
+        logger.info("update user not found password test");
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+
+        createUser();
+
+        var form = new Form();
+        form.param("id", "1024");
+        form.param("oldPassword", password);
+        form.param("newPassword", "newPwd");
+
+
+        client.path("/user/update_password").accept(MediaType.APPLICATION_JSON);
+
+        var resp = client.post(form);
+        assertEquals(404, resp.getStatus());
+
+        var msg = resp.readEntity(String.class);
+        assertEquals(LogMessageUtil.USER_NOT_EXISTS, msg);
+    }
+
+
+    @Test
+    public void updateUserWrongPasswordTest() {
+        logger.info("update user wrong password test");
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+
+        var usr = createUser();
+
+        var form = new Form();
+        form.param("id", String.valueOf(usr.getId()));
+        form.param("oldPassword", "blabla");
+        form.param("newPassword", "newPwd");
+
+        client.path("/user/update_password").accept(MediaType.APPLICATION_JSON);
+
+        var resp = client.post(form);
+        assertEquals(401, resp.getStatus());
+
+    }
 
 
     private User createUser() {
