@@ -236,8 +236,8 @@ public class ContributorDaoTest {
         var startDate = new Date();
 
         var prj = projectDao.createProject(name, startDate);
-        if (isActive) {
-            prj = projectDao.updateProject(prj.getId(), null, null, true, null);
+        if (!isActive) {
+            prj = projectDao.updateProject(prj.getId(), null, null, false, new Date());
         }
 
         return prj;
