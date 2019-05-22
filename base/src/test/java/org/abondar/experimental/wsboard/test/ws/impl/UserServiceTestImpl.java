@@ -14,7 +14,6 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
@@ -190,6 +189,7 @@ public class UserServiceTestImpl implements UserService {
         }
 
         if (testContributor != null && testContributor.isOwner()) {
+            testContributor = null;
             return Response.status(Response.Status.NOT_IMPLEMENTED).entity(LogMessageUtil.USER_IS_PROJECT_OWNER).build();
         }
 
@@ -236,13 +236,10 @@ public class UserServiceTestImpl implements UserService {
                 "JWT token", 24000, false)).build();
     }
 
-    @PUT
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    @Path("createTestContributor")
-    public Response createTestContributor(@FormParam("userId") long userId,
-                                          @FormParam("projectId") long projectId,
-                                          @FormParam("isOwner") boolean isOwner) {
-        this.testContributor = new Contributor(userId, projectId, isOwner);
+    @GET
+    @Path("create_test_contributor")
+    public Response createTestContributor(@QueryParam("id") long userId) {
+        this.testContributor = new Contributor(userId, 7, true);
 
         return Response.ok().build();
     }

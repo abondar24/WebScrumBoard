@@ -429,6 +429,63 @@ public class UserServiceTest {
     }
 
 
+    @Test
+    public void deleteUserTest() {
+        logger.info("delete user test");
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+
+        var usr = createUser();
+
+        client.path("/user/delete").query("id", usr.getId()).accept(MediaType.APPLICATION_JSON);
+
+        var resp = client.get();
+        assertEquals(200, resp.getStatus());
+
+        usr = resp.readEntity(User.class);
+        assertEquals("deleted", usr.getLogin());
+
+    }
+
+
+    @Test
+    public void deleteUserNotFoundTest() {
+        logger.info("delete user not found test");
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+
+        createUser();
+
+        client.path("/user/delete").query("id", 1024).accept(MediaType.APPLICATION_JSON);
+
+        var resp = client.get();
+        assertEquals(404, resp.getStatus());
+
+        var msg = resp.readEntity(String.class);
+        assertEquals(LogMessageUtil.USER_NOT_EXISTS, msg);
+
+    }
+
+    @Test
+    public void deleteUseIsOwnerTest() {
+        logger.info("delete user is owner test");
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+
+        var usr = createUser();
+        createTestContributor(usr.getId());
+
+        client.path("/user/delete").query("id", usr.getId()).accept(MediaType.APPLICATION_JSON);
+
+        var resp = client.get();
+        assertEquals(501, resp.getStatus());
+
+        var msg = resp.readEntity(String.class);
+        assertEquals(LogMessageUtil.USER_IS_PROJECT_OWNER, msg);
+
+    }
+
+
     private User createUser() {
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
@@ -446,6 +503,14 @@ public class UserServiceTest {
         var resp = client.post(form);
 
         return resp.readEntity(User.class);
+    }
+
+    private void createTestContributor(long usrId) {
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+
+        client.path("/user/create_test_contributor").query("id", usrId);
+        client.get();
+        client.close();
     }
 
 }
