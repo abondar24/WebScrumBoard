@@ -220,7 +220,7 @@ public class UserServiceTestImpl implements UserService {
             return Response.status(Response.Status.UNAUTHORIZED).entity(ex.getLocalizedMessage()).build();
         }
 
-        return null;
+        return Response.status(Response.Status.UNAUTHORIZED).entity(LogMessageUtil.USER_UNAUTHORIZED).build();
     }
 
     @GET

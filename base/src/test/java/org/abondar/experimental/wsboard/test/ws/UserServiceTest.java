@@ -25,7 +25,6 @@ import javax.ws.rs.core.MediaType;
 import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -82,7 +81,7 @@ public class UserServiceTest {
 
         assertEquals(10, user.getId());
         assertEquals(login, user.getLogin());
-        assertFalse(token.isEmpty());
+        assertEquals("testToken", token);
 
     }
 
@@ -484,6 +483,79 @@ public class UserServiceTest {
         assertEquals(LogMessageUtil.USER_IS_PROJECT_OWNER, msg);
 
     }
+
+    @Test
+    public void loginUserTest() {
+        logger.info("login user test");
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+
+        var usr = createUser();
+
+        var form = new Form();
+        form.param("login", usr.getLogin());
+        form.param("password", password);
+
+
+        client.path("/user/login").accept(MediaType.APPLICATION_JSON);
+
+        var resp = client.post(form);
+        assertEquals(200, resp.getStatus());
+
+        var token = resp.getCookies().get("X-JWT-AUTH").getValue();
+        assertEquals("testToken", token);
+
+    }
+
+    @Test
+    public void loginUserNotExistsTest() {
+        logger.info("login user not exists test");
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+
+        createUser();
+
+        var form = new Form();
+        form.param("login", "blabla");
+        form.param("password", password);
+
+
+        client.path("/user/login").accept(MediaType.APPLICATION_JSON);
+
+        var resp = client.post(form);
+        assertEquals(404, resp.getStatus());
+
+        var msg = resp.readEntity(String.class);
+        assertEquals(LogMessageUtil.USER_NOT_EXISTS, msg);
+
+    }
+
+
+    @Test
+    public void loginUserUnauthorizedTest() {
+        logger.info("login user unauthorized test");
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+
+        var usr = createUser();
+
+        var form = new Form();
+        form.param("login", usr.getLogin());
+        form.param("password", "blabla");
+
+
+        client.path("/user/login").accept(MediaType.APPLICATION_JSON);
+
+        var resp = client.post(form);
+        assertEquals(401, resp.getStatus());
+
+        var msg = resp.readEntity(String.class);
+        assertEquals(LogMessageUtil.USER_UNAUTHORIZED, msg);
+
+    }
+
+
+
 
 
     private User createUser() {
