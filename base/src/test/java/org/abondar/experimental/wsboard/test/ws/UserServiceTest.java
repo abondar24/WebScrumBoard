@@ -292,6 +292,75 @@ public class UserServiceTest {
 
     }
 
+    @Test
+    public void updateUserLoginTest() {
+        logger.info("update user login test");
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+
+        var usr = createUser();
+
+        var form = new Form();
+        form.param("id", String.valueOf(usr.getId()));
+        form.param("login", "newLogin");
+
+
+        client.path("/user/update_login").accept(MediaType.APPLICATION_JSON);
+
+        var resp = client.post(form);
+        assertEquals(200, resp.getStatus());
+
+        usr = resp.readEntity(User.class);
+        assertEquals("newLogin", usr.getLogin());
+    }
+
+
+    @Test
+    public void updateUserNotFoundLoginTest() {
+        logger.info("update user not found login test");
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+
+        createUser();
+
+        var form = new Form();
+        form.param("id", "1024");
+        form.param("login", "newLogin");
+
+
+        client.path("/user/update_login").accept(MediaType.APPLICATION_JSON);
+
+        var resp = client.post(form);
+        assertEquals(404, resp.getStatus());
+
+        var msg = resp.readEntity(String.class);
+        assertEquals(LogMessageUtil.USER_NOT_EXISTS, msg);
+    }
+
+    @Test
+    public void updateUserLoginExistsTest() {
+        logger.info("update user login exists test");
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+
+        var usr = createUser();
+
+        var form = new Form();
+        form.param("id", String.valueOf(usr.getId()));
+        form.param("login", usr.getLogin());
+
+
+        client.path("/user/update_login").accept(MediaType.APPLICATION_JSON);
+
+        var resp = client.post(form);
+        assertEquals(302, resp.getStatus());
+
+        var msg = resp.readEntity(String.class);
+        assertEquals(LogMessageUtil.USER_EXISTS, msg);
+    }
+
+
+
     private User createUser() {
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
