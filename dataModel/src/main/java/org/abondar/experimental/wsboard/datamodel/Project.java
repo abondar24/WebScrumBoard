@@ -23,7 +23,7 @@ public class Project {
     public Project(String name, Date startDate) {
         this.name = name;
         this.startDate = startDate;
-        this.isActive = false;
+        this.isActive = true;
     }
 
     public long getId() {

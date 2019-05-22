@@ -53,7 +53,7 @@ public class ProjectDaoTest {
 
     @Test
     public void createProjectExistsTest() throws Exception {
-        logger.info("Create project test");
+        logger.info("Create project exists test");
 
         createProject();
 
@@ -61,6 +61,20 @@ public class ProjectDaoTest {
         assertThrows(DataExistenceException.class, this::createProject);
         mapper.deleteProjects();
     }
+
+    @Test
+    public void createProjectBlankDataTest() {
+        logger.info("Create project blank data test");
+
+
+        assertThrows(DataCreationException.class, () -> dao.createProject("", new Date()));
+        assertThrows(DataCreationException.class, () -> dao.createProject("test", null));
+
+        mapper.deleteProjects();
+    }
+
+
+
 
 
     @Test
@@ -78,7 +92,7 @@ public class ProjectDaoTest {
 
     @Test
     public void updateProjectInactiveTest() throws Exception {
-        logger.info("Update project test");
+        logger.info("Update project inactive test");
 
         var prj = createProject();
         var id = prj.getId();
@@ -99,6 +113,19 @@ public class ProjectDaoTest {
                 "github.com/aaaa/aaa.git", false, null));
 
         mapper.deleteProjects();
+    }
+
+    @Test
+    public void updateProjectReactivateTest() throws Exception {
+        logger.info("Update project reactivate test");
+
+        var prj = createProject();
+
+        prj = dao.updateProject(prj.getId(), "newTest", "github.com/aaaa/aaa.git", false, new Date());
+
+        final long id = prj.getId();
+        assertThrows(DataCreationException.class, () -> dao.updateProject(id, null,
+                null, true, null));
     }
 
     @Test
@@ -134,7 +161,7 @@ public class ProjectDaoTest {
         var prj = createProject();
         var res = dao.deleteProject(prj.getId());
 
-        assertEquals(prj.getId(), (long) res);
+        assertEquals(prj.getId(), res);
 
         mapper.deleteProjects();
     }

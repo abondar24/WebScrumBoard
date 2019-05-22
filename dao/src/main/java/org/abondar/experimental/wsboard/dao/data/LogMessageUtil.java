@@ -36,6 +36,7 @@ public class LogMessageUtil {
     public static final String VERIFICATION_FAILED = "Password verification failed!";
     public static final String NULL_PASS = "Supplied password is null!";
     public static final String LOG_FORMAT = "%s with id: %d";
+    public static final String PROJECT_CANNOT_BE_REACTIVATED = "Project can't be reactivated";
 
     private LogMessageUtil() {
     }

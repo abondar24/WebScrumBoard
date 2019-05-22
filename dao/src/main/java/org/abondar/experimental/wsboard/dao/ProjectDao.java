@@ -10,7 +10,9 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Date;
 
+import static org.abondar.experimental.wsboard.dao.data.LogMessageUtil.BLANK_DATA;
 import static org.abondar.experimental.wsboard.dao.data.LogMessageUtil.LOG_FORMAT;
+import static org.abondar.experimental.wsboard.dao.data.LogMessageUtil.PROJECT_EXISTS;
 
 /**
  * Data access object for project
@@ -32,15 +34,28 @@ public class ProjectDao extends BaseDao {
      *
      * @param name      - project name
      * @param startDate - project start date
+     * @throws DataExistenceException - project not found
+     * @throws DataCreationException - name or startDate are blank
      * @return project POJO
      */
-    public Project createProject(String name, Date startDate) throws DataExistenceException {
+    public Project createProject(String name, Date startDate) throws DataExistenceException,
+            DataCreationException {
         var prj = mapper.getProjectByName(name);
 
         if (prj != null) {
-            logger.error(LogMessageUtil.PROJECT_EXISTS);
-            throw new DataExistenceException(LogMessageUtil.PROJECT_EXISTS);
+            logger.error(PROJECT_EXISTS);
+            throw new DataExistenceException(PROJECT_EXISTS);
 
+        }
+
+        if (name == null || name.isBlank()) {
+            logger.error(BLANK_DATA);
+            throw new DataCreationException(BLANK_DATA);
+        }
+
+        if (startDate == null) {
+            logger.error(BLANK_DATA);
+            throw new DataCreationException(BLANK_DATA);
         }
 
         prj = new Project(name, startDate);
@@ -61,7 +76,7 @@ public class ProjectDao extends BaseDao {
      * @param endDate  - project end date
      * @return project POJO
      */
-    public Project updateProject(Long id, String name, String repo,
+    public Project updateProject(long id, String name, String repo,
                                  Boolean isActive, Date endDate)
             throws DataExistenceException, DataCreationException {
         var prj = mapper.getProjectById(id);
@@ -79,15 +94,21 @@ public class ProjectDao extends BaseDao {
             prj.setName(name);
         }
 
-        if (isActive != null) {
-            prj.setActive(isActive);
+        if (isActive != null && (isActive != prj.isActive())) {
+            if (isActive && !prj.isActive()) {
+                throw new DataCreationException(LogMessageUtil.PROJECT_CANNOT_BE_REACTIVATED);
+            }
+
             if (!isActive) {
                 if (endDate != null && !prj.getStartDate().after(endDate)) {
                     prj.setEndDate(endDate);
                 } else {
                     throw new DataCreationException(LogMessageUtil.PROJECT_WRONG_END_DATE);
                 }
-            }
+                }
+
+            prj.setActive(isActive);
+
         }
 
         mapper.updateProject(prj);
@@ -102,7 +123,7 @@ public class ProjectDao extends BaseDao {
      * @param id - project id
      * @return project id
      */
-    public Long deleteProject(Long id) throws DataExistenceException {
+    public long deleteProject(long id) throws DataExistenceException {
         var prj = mapper.getProjectById(id);
 
         if (prj == null) {
