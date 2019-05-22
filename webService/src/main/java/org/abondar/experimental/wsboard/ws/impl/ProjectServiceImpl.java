@@ -25,6 +25,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -33,6 +35,7 @@ import java.util.Date;
 @Path("/project")
 public class ProjectServiceImpl implements ProjectService {
 
+    private static final String DATE_FORMAT = "dd/MM/yyyy";
 
     private static Logger logger = LoggerFactory.getLogger(ProjectService.class);
     @Autowired
@@ -60,10 +63,10 @@ public class ProjectServiceImpl implements ProjectService {
     public Response createProject(@FormParam("name")
                                   @Parameter(description = "Project name", required = true) String name,
                                   @FormParam("startDate")
-                                  @Parameter(description = "Project start date", required = true) Date startDate) {
+                                  @Parameter(description = "Project start date", required = true) String startDate) {
 
         try {
-            var prj = projectDao.createProject(name, startDate);
+            var prj = projectDao.createProject(name, convertDate(startDate));
 
             return Response.ok(prj).build();
         } catch (DataExistenceException ex) {
@@ -88,6 +91,7 @@ public class ProjectServiceImpl implements ProjectService {
                             description = "Project updated",
                             content = @Content(schema = @Schema(implementation = Project.class))),
                     @ApiResponse(responseCode = "205", description = "Wrong end date for project"),
+                    @ApiResponse(responseCode = "206", description = "End date can't be parsed"),
                     @ApiResponse(responseCode = "301", description = "Project can't be reactivated"),
                     @ApiResponse(responseCode = "404", description = "Project not found"),
                     @ApiResponse(responseCode = "406", description = "JWT token is wrong")
@@ -105,10 +109,15 @@ public class ProjectServiceImpl implements ProjectService {
                                   @Parameter(description = "Project status") Boolean isActive,
                                   @FormParam("endDate")
                                   @Parameter(description = "Project end date(required if status is false)")
-                                          Date endDate) {
+                                          String endDate) {
 
         try {
-            var prj = projectDao.updateProject(id, name, repo, isActive, endDate);
+            Date endDt = null;
+            if (endDate != null) {
+                endDt = convertDate(endDate);
+            }
+
+            var prj = projectDao.updateProject(id, name, repo, isActive, endDt);
             return Response.ok(prj).build();
         } catch (DataExistenceException ex) {
             logger.error(ex.getMessage());
@@ -118,6 +127,8 @@ public class ProjectServiceImpl implements ProjectService {
 
             if (ex.getMessage().equals(LogMessageUtil.PROJECT_WRONG_END_DATE)) {
                 return Response.status(Response.Status.RESET_CONTENT).entity(ex.getLocalizedMessage()).build();
+            } else if (ex.getMessage().equals(LogMessageUtil.PROJECT_PARSE_DATE_FAILED)) {
+                return Response.status(Response.Status.PARTIAL_CONTENT).entity(ex.getLocalizedMessage()).build();
             } else {
                 return Response.status(Response.Status.MOVED_PERMANENTLY).entity(ex.getLocalizedMessage()).build();
             }
@@ -173,6 +184,18 @@ public class ProjectServiceImpl implements ProjectService {
         } catch (DataExistenceException ex) {
             logger.error(ex.getMessage());
             return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
+        }
+
+    }
+
+    private Date convertDate(String strDate) throws DataCreationException {
+        var format = new SimpleDateFormat(DATE_FORMAT);
+
+        try {
+            return format.parse(strDate);
+        } catch (ParseException ex) {
+            logger.error(ex.getMessage());
+            throw new DataCreationException(LogMessageUtil.PROJECT_WRONG_END_DATE);
         }
 
     }

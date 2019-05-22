@@ -1,16 +1,20 @@
 package org.abondar.experimental.wsboard.test.ws.impl;
 
 import org.abondar.experimental.wsboard.dao.data.LogMessageUtil;
+import org.abondar.experimental.wsboard.dao.exception.DataCreationException;
 import org.abondar.experimental.wsboard.datamodel.Project;
 import org.abondar.experimental.wsboard.ws.service.ProjectService;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 
@@ -20,6 +24,9 @@ import java.util.Date;
 @Path("/project")
 public class ProjectServiceTestImpl implements ProjectService {
 
+    private static final String DATE_FORMAT = "dd/MM/yyyy";
+
+
     private Project testProject;
 
     @POST
@@ -27,7 +34,8 @@ public class ProjectServiceTestImpl implements ProjectService {
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
     @Override
-    public Response createProject(String name, Date startDate) {
+    public Response createProject(@FormParam("name") String name,
+                                  @FormParam("startDate") String startDate) {
         var existingProject = new Project("exists", new Date());
 
         if (existingProject.getName().equals(name)) {
@@ -38,7 +46,15 @@ public class ProjectServiceTestImpl implements ProjectService {
             return Response.status(Response.Status.PARTIAL_CONTENT).entity(LogMessageUtil.BLANK_DATA).build();
         }
 
-        testProject = new Project(name, startDate);
+        Date stDate;
+        try {
+            stDate = convertDate(startDate);
+        } catch (DataCreationException ex) {
+            return Response.status(Response.Status.PARTIAL_CONTENT).entity(LogMessageUtil.PROJECT_PARSE_DATE_FAILED).build();
+        }
+
+        testProject = new Project(name, stDate);
+        testProject.setId(10);
 
         return Response.ok(testProject).build();
     }
@@ -48,12 +64,23 @@ public class ProjectServiceTestImpl implements ProjectService {
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
     @Override
-    public Response updateProject(Long id, String name, String repo, Boolean isActive, Date endDate) {
+    public Response updateProject(@FormParam("id") Long id,
+                                  @FormParam("name") String name,
+                                  @FormParam("repo") String repo,
+                                  @FormParam("isActive") Boolean isActive,
+                                  @FormParam("endDate") String endDate) {
         if (testProject.getId() != id) {
             return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.PROJECT_NOT_EXISTS).build();
         }
 
-        if (testProject.getStartDate().after(endDate) || (!isActive && endDate == null)) {
+        Date endDt;
+        try {
+            endDt = convertDate(endDate);
+        } catch (DataCreationException ex) {
+            return Response.status(Response.Status.PARTIAL_CONTENT).entity(LogMessageUtil.PROJECT_PARSE_DATE_FAILED).build();
+        }
+
+        if (testProject.getStartDate().after(endDt) || (endDt == null)) {
             return Response.status(Response.Status.RESET_CONTENT).entity(LogMessageUtil.PROJECT_WRONG_END_DATE).build();
         }
 
@@ -64,7 +91,7 @@ public class ProjectServiceTestImpl implements ProjectService {
         testProject.setName(name);
         testProject.setRepository(repo);
         testProject.setActive(isActive);
-        testProject.setEndDate(endDate);
+        testProject.setEndDate(endDt);
 
         return null;
     }
@@ -91,5 +118,16 @@ public class ProjectServiceTestImpl implements ProjectService {
         }
 
         return Response.ok(testProject).build();
+    }
+
+    private Date convertDate(String strDate) throws DataCreationException {
+        var format = new SimpleDateFormat(DATE_FORMAT);
+
+        try {
+            return format.parse(strDate);
+        } catch (ParseException ex) {
+            throw new DataCreationException(LogMessageUtil.PROJECT_WRONG_END_DATE);
+        }
+
     }
 }

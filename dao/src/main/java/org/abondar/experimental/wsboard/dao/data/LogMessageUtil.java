@@ -12,14 +12,16 @@ public class LogMessageUtil {
     public static final String USER_EMTPY_LOGIN = "Got empty login";
     public static final String USER_NOT_EXISTS = "User not exists";
     public static final String USER_UNAUTHORIZED = "Unauthorized action";
+    public static final String USER_IS_PROJECT_OWNER = "User is project owner and can't be deleted";
     public static final String PROJECT_EXISTS = "Project with name already exists";
     public static final String PROJECT_NOT_EXISTS = "Project doesn't exist";
     public static final String PROJECT_WRONG_END_DATE = "End date must be after a start date";
+    public static final String PROJECT_CANNOT_BE_REACTIVATED = "Project can't be reactivated";
+    public static final String PROJECT_HAS_NO_OWNER = "Project has no owner";
+    public static final String PROJECT_PARSE_DATE_FAILED = "Date string is incorrect";
     public static final String PROJECT_NOT_ACTIVE = "Current project is not active";
     public static final String PROJECT_HAS_OWNER = "Project already has an owner";
     public static final String CONTRIBUTOR_NOT_EXISTS = "Contributor not found";
-    public static final String PROJECT_HAS_NO_OWNER = "Project has no owner";
-    public static final String USER_IS_PROJECT_OWNER = "User is project owner and can't be deleted";
     public static final String TASK_START_DATE_NOT_SET = "Task start date is null";
     public static final String TASK_NOT_EXISTS = "Task doesn't exist";
     public static final String TASK_ALREADY_COMPLETED = "Cant't update already completed task.";
@@ -36,7 +38,6 @@ public class LogMessageUtil {
     public static final String VERIFICATION_FAILED = "Password verification failed!";
     public static final String NULL_PASS = "Supplied password is null!";
     public static final String LOG_FORMAT = "%s with id: %d";
-    public static final String PROJECT_CANNOT_BE_REACTIVATED = "Project can't be reactivated";
 
     private LogMessageUtil() {
     }
