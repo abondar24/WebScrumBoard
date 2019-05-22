@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-import static org.abondar.experimental.wsboard.dao.data.LogMessageUtil.LOG_FORMAT;
+
 
 /**
  * Data access object for contributor
@@ -42,7 +42,7 @@ public class ContributorDao extends BaseDao {
 
         var msg = "";
         if (mapper.getUserById(userId) == null) {
-            msg = String.format(LOG_FORMAT, LogMessageUtil.USER_NOT_EXISTS, userId);
+            msg = String.format(LogMessageUtil.LOG_FORMAT, LogMessageUtil.USER_NOT_EXISTS, userId);
             logger.error(msg);
             throw new DataExistenceException(LogMessageUtil.USER_NOT_EXISTS);
         }
@@ -50,7 +50,7 @@ public class ContributorDao extends BaseDao {
 
         var prj = mapper.getProjectById(projectId);
         if (prj == null) {
-            msg = String.format(LOG_FORMAT, LogMessageUtil.PROJECT_NOT_EXISTS, projectId);
+            msg = String.format(LogMessageUtil.LOG_FORMAT, LogMessageUtil.PROJECT_NOT_EXISTS, projectId);
             logger.error(msg);
             throw new DataExistenceException(LogMessageUtil.PROJECT_NOT_EXISTS);
         }
@@ -73,7 +73,7 @@ public class ContributorDao extends BaseDao {
 
         var ctr = new Contributor(userId, projectId, isOwner);
         mapper.insertContributor(ctr);
-        msg = String.format(LOG_FORMAT, "Contributor created ", ctr.getId());
+        msg = String.format(LogMessageUtil.LOG_FORMAT, "Contributor created ", ctr.getId());
         logger.info(msg);
 
         return ctr;
@@ -95,7 +95,7 @@ public class ContributorDao extends BaseDao {
         var msg = "";
         var ctr = mapper.getContributorById(contributorId);
         if (ctr == null) {
-            msg = String.format(LOG_FORMAT, LogMessageUtil.CONTRIBUTOR_NOT_EXISTS, contributorId);
+            msg = String.format(LogMessageUtil.LOG_FORMAT, LogMessageUtil.CONTRIBUTOR_NOT_EXISTS, contributorId);
             logger.error(msg);
             throw new DataExistenceException(LogMessageUtil.CONTRIBUTOR_NOT_EXISTS);
 
@@ -126,7 +126,7 @@ public class ContributorDao extends BaseDao {
 
         mapper.updateContributor(ctr);
 
-        msg = String.format(LOG_FORMAT, "Contributor updated ", ctr.getId());
+        msg = String.format(LogMessageUtil.LOG_FORMAT, "Contributor updated ", ctr.getId());
         logger.info(msg);
 
         return ctr;
@@ -144,7 +144,7 @@ public class ContributorDao extends BaseDao {
 
         var prj = mapper.getProjectById(projectId);
         if (prj == null) {
-            var msg = String.format(LOG_FORMAT, LogMessageUtil.PROJECT_NOT_EXISTS, projectId);
+            var msg = String.format(LogMessageUtil.LOG_FORMAT, LogMessageUtil.PROJECT_NOT_EXISTS, projectId);
             logger.error(msg);
             throw new DataExistenceException(LogMessageUtil.PROJECT_NOT_EXISTS);
         }
@@ -173,7 +173,7 @@ public class ContributorDao extends BaseDao {
         var msg = "";
         var prj = mapper.getProjectById(projectId);
         if (prj == null) {
-            msg = String.format(LOG_FORMAT, LogMessageUtil.PROJECT_NOT_EXISTS, projectId);
+            msg = String.format(LogMessageUtil.LOG_FORMAT, LogMessageUtil.PROJECT_NOT_EXISTS, projectId);
             logger.error(msg);
             throw new DataExistenceException(LogMessageUtil.PROJECT_NOT_EXISTS);
 
@@ -181,7 +181,7 @@ public class ContributorDao extends BaseDao {
 
         var contrs = mapper.getContributorsForProject(projectId, offset, limit);
 
-        msg = String.format(LOG_FORMAT, "Number contributors for project  ", contrs.size());
+        msg = String.format(LogMessageUtil.LOG_FORMAT, "Number contributors for project  ", contrs.size());
         logger.info(msg);
 
         return contrs;

@@ -10,9 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Date;
 
-import static org.abondar.experimental.wsboard.dao.data.LogMessageUtil.BLANK_DATA;
-import static org.abondar.experimental.wsboard.dao.data.LogMessageUtil.LOG_FORMAT;
-import static org.abondar.experimental.wsboard.dao.data.LogMessageUtil.PROJECT_EXISTS;
+
 
 /**
  * Data access object for project
@@ -43,25 +41,25 @@ public class ProjectDao extends BaseDao {
         var prj = mapper.getProjectByName(name);
 
         if (prj != null) {
-            logger.error(PROJECT_EXISTS);
-            throw new DataExistenceException(PROJECT_EXISTS);
+            logger.error(LogMessageUtil.PROJECT_EXISTS);
+            throw new DataExistenceException(LogMessageUtil.PROJECT_EXISTS);
 
         }
 
         if (name == null || name.isBlank()) {
-            logger.error(BLANK_DATA);
-            throw new DataCreationException(BLANK_DATA);
+            logger.error(LogMessageUtil.BLANK_DATA);
+            throw new DataCreationException(LogMessageUtil.BLANK_DATA);
         }
 
         if (startDate == null) {
-            logger.error(BLANK_DATA);
-            throw new DataCreationException(BLANK_DATA);
+            logger.error(LogMessageUtil.BLANK_DATA);
+            throw new DataCreationException(LogMessageUtil.BLANK_DATA);
         }
 
         prj = new Project(name, startDate);
         mapper.insertProject(prj);
 
-        var msg = String.format(LOG_FORMAT, "Project successfully created ", prj.getId());
+        var msg = String.format(LogMessageUtil.LOG_FORMAT, "Project successfully created ", prj.getId());
         logger.info(msg);
         return prj;
     }
@@ -133,7 +131,7 @@ public class ProjectDao extends BaseDao {
 
         mapper.deleteProject(id);
 
-        var msg = String.format(LOG_FORMAT + " %s", "Project ", id, " successfully updated");
+        var msg = String.format(LogMessageUtil.LOG_FORMAT + " %s", "Project ", id, " successfully updated");
         logger.info(msg);
 
         return id;
@@ -151,12 +149,12 @@ public class ProjectDao extends BaseDao {
 
         var msg = "";
         if (prj == null) {
-            msg = String.format(LOG_FORMAT, LogMessageUtil.PROJECT_NOT_EXISTS, id);
+            msg = String.format(LogMessageUtil.LOG_FORMAT, LogMessageUtil.PROJECT_NOT_EXISTS, id);
             logger.error(msg);
             throw new DataExistenceException(LogMessageUtil.PROJECT_NOT_EXISTS);
         }
 
-        msg = String.format(LOG_FORMAT, "Project found ", prj.getId());
+        msg = String.format(LogMessageUtil.LOG_FORMAT, "Project found ", prj.getId());
         logger.info(msg);
         return prj;
     }

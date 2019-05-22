@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import java.util.Date;
 import java.util.List;
 
-import static org.abondar.experimental.wsboard.dao.data.LogMessageUtil.LOG_FORMAT;
 
 /**
  * Data access object for sprint
@@ -48,7 +47,7 @@ public class SprintDao extends BaseDao {
 
         mapper.insertSprint(sprint);
 
-        var msg = String.format(LOG_FORMAT, "Created sprint ", sprint.getId());
+        var msg = String.format(LogMessageUtil.LOG_FORMAT, "Created sprint ", sprint.getId());
         logger.info(msg);
 
         return sprint;
@@ -92,7 +91,7 @@ public class SprintDao extends BaseDao {
 
         mapper.updateSprint(sprint);
 
-        var msg = String.format(LOG_FORMAT, "Updated sprint ", sprint.getId());
+        var msg = String.format(LogMessageUtil.LOG_FORMAT, "Updated sprint ", sprint.getId());
         logger.info(msg);
 
         return sprint;
@@ -113,7 +112,7 @@ public class SprintDao extends BaseDao {
 
         }
 
-        var msg = String.format(LOG_FORMAT, "Found sprint ", sprint.getId());
+        var msg = String.format(LogMessageUtil.LOG_FORMAT, "Found sprint ", sprint.getId());
         logger.info(msg);
 
         return sprint;
@@ -151,7 +150,7 @@ public class SprintDao extends BaseDao {
 
         mapper.deleteSprint(sprintId);
 
-        var msg = String.format(LOG_FORMAT, "Deleted sprint ", sprint.getId());
+        var msg = String.format(LogMessageUtil.LOG_FORMAT, "Deleted sprint ", sprint.getId());
         logger.info(msg);
 
         return true;

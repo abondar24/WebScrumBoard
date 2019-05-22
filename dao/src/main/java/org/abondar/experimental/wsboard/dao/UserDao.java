@@ -12,7 +12,7 @@ import org.abondar.experimental.wsboard.datamodel.user.UserRole;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.abondar.experimental.wsboard.dao.data.LogMessageUtil.LOG_FORMAT;
+
 
 /**
  * Data access object for user
@@ -85,7 +85,7 @@ public class UserDao extends BaseDao {
         usr = new User(login, email, firstName, lastName, pwdHash, checkRoles(roles));
         mapper.insertUser(usr);
 
-        var msg = String.format(LOG_FORMAT, "User successfully created ", usr.getId());
+        var msg = String.format(LogMessageUtil.LOG_FORMAT, "User successfully created ", usr.getId());
         logger.info(msg);
 
         return usr;
@@ -214,7 +214,7 @@ public class UserDao extends BaseDao {
 
         mapper.insertUser(usr);
 
-        var msg = String.format(LOG_FORMAT + "%s", "User ", usr.getId(), " marked as deleted");
+        var msg = String.format(LogMessageUtil.LOG_FORMAT + "%s", "User ", usr.getId(), " marked as deleted");
         logger.info(msg);
 
         return usr;
@@ -251,7 +251,7 @@ public class UserDao extends BaseDao {
 
         var usr = mapper.getUserById(id);
         if (usr == null) {
-            var msg = String.format(LOG_FORMAT, LogMessageUtil.USER_NOT_EXISTS, id);
+            var msg = String.format(LogMessageUtil.LOG_FORMAT, LogMessageUtil.USER_NOT_EXISTS, id);
             logger.error(msg);
 
             throw new DataExistenceException(LogMessageUtil.USER_NOT_EXISTS);
