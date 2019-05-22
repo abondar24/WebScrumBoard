@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import java.util.Date;
 
 
-
 /**
  * Data access object for project
  *
@@ -32,9 +31,9 @@ public class ProjectDao extends BaseDao {
      *
      * @param name      - project name
      * @param startDate - project start date
-     * @throws DataExistenceException - project not found
-     * @throws DataCreationException - name or startDate are blank
      * @return project POJO
+     * @throws DataExistenceException - project not found
+     * @throws DataCreationException  - name or startDate are blank
      */
     public Project createProject(String name, Date startDate) throws DataExistenceException,
             DataCreationException {
@@ -92,18 +91,16 @@ public class ProjectDao extends BaseDao {
             prj.setName(name);
         }
 
-        if (isActive != null && (isActive != prj.isActive())) {
+        if (isActive != null) {
             if (isActive && !prj.isActive()) {
                 throw new DataCreationException(LogMessageUtil.PROJECT_CANNOT_BE_REACTIVATED);
-            }
-
-            if (!isActive) {
+            } else if (!isActive) {
                 if (endDate != null && !prj.getStartDate().after(endDate)) {
                     prj.setEndDate(endDate);
                 } else {
                     throw new DataCreationException(LogMessageUtil.PROJECT_WRONG_END_DATE);
                 }
-                }
+            }
 
             prj.setActive(isActive);
 
