@@ -99,7 +99,7 @@ public class ProjectServiceImpl implements ProjectService {
     )
     @Override
     public Response updateProject(@FormParam("id")
-                                  @Parameter(description = "Project ID", required = true) Long id,
+                                  @Parameter(description = "Project ID", required = true) long id,
                                   @FormParam("name")
                                   @Parameter(description = "Project name") String name,
                                   @FormParam("repo")
@@ -151,7 +151,7 @@ public class ProjectServiceImpl implements ProjectService {
             }
     )
     @Override
-    public Response deleteProject(@QueryParam("id") @Parameter(description = "Project ID", required = true) Long id) {
+    public Response deleteProject(@QueryParam("id") @Parameter(description = "Project ID", required = true) long id) {
         try {
             projectDao.deleteProject(id);
             return Response.ok().build();

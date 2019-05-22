@@ -11,6 +11,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.text.ParseException;
@@ -64,7 +65,7 @@ public class ProjectServiceTestImpl implements ProjectService {
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
     @Override
-    public Response updateProject(@FormParam("id") Long id,
+    public Response updateProject(@FormParam("id") long id,
                                   @FormParam("name") String name,
                                   @FormParam("repo") String repo,
                                   @FormParam("isActive") Boolean isActive,
@@ -100,7 +101,7 @@ public class ProjectServiceTestImpl implements ProjectService {
     @Path("/delete")
     @Produces(MediaType.APPLICATION_JSON)
     @Override
-    public Response deleteProject(Long id) {
+    public Response deleteProject(@QueryParam("id") long id) {
         if (testProject.getId() != id) {
             return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.PROJECT_NOT_EXISTS).build();
         }
@@ -112,7 +113,7 @@ public class ProjectServiceTestImpl implements ProjectService {
     @Path("/find")
     @Produces(MediaType.APPLICATION_JSON)
     @Override
-    public Response findProjectById(long id) {
+    public Response findProjectById(@QueryParam("id") long id) {
         if (testProject.getId() != id) {
             return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.PROJECT_NOT_EXISTS).build();
         }
