@@ -66,7 +66,7 @@ public class UserServiceImpl implements UserService {
                             responseCode = "200",
                             description = "User created",
                             content = @Content(schema = @Schema(implementation = User.class))),
-                    @ApiResponse(responseCode = "204", description = "Form data is not complete"),
+                    @ApiResponse(responseCode = "206", description = "Form data is not complete"),
                     @ApiResponse(responseCode = "302", description = "User with such login already exists"),
                     @ApiResponse(responseCode = "503", description = "Password hash not created")
             }
@@ -91,7 +91,7 @@ public class UserServiceImpl implements UserService {
             return Response.status(Response.Status.FOUND).entity(ex.getLocalizedMessage()).build();
         } catch (DataCreationException ex) {
             logger.error(ex.getMessage());
-            return Response.status(Response.Status.NO_CONTENT).entity(ex.getLocalizedMessage()).build();
+            return Response.status(Response.Status.PARTIAL_CONTENT).entity(ex.getLocalizedMessage()).build();
         }
 
     }

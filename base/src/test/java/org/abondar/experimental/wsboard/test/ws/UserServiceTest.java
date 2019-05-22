@@ -129,7 +129,7 @@ public class UserServiceTest {
         form.param("roles", userRoles);
 
         var resp = client.post(form);
-        assertEquals(204, resp.getStatus());
+        assertEquals(206, resp.getStatus());
 
         var err = resp.readEntity(String.class);
         assertEquals(LogMessageUtil.BLANK_DATA, err);
@@ -155,7 +155,7 @@ public class UserServiceTest {
         form.param("roles", "salosalo");
 
         var resp = client.post(form);
-        assertEquals(204, resp.getStatus());
+        assertEquals(206, resp.getStatus());
 
         var err = resp.readEntity(String.class);
         assertEquals(LogMessageUtil.USER_NO_ROLES, err);

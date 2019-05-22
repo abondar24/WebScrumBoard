@@ -61,13 +61,13 @@ public class UserServiceTestImpl implements UserService {
         if ((login == null || login.isBlank()) || (password == null || password.isBlank())
                 || (email == null || email.isBlank()) || (firstName == null || firstName.isBlank())
                 || (lastName == null || lastName.isBlank()) || (roles == null || roles.isEmpty())) {
-            return Response.status(Response.Status.NO_CONTENT).entity(LogMessageUtil.BLANK_DATA).build();
+            return Response.status(Response.Status.PARTIAL_CONTENT).entity(LogMessageUtil.BLANK_DATA).build();
         }
 
         String[] rolesArr = roles.split(";");
 
         if (rolesArr.length == 0 || !roles.contains(";")) {
-            return Response.status(Response.Status.NO_CONTENT).entity(LogMessageUtil.USER_NO_ROLES).build();
+            return Response.status(Response.Status.PARTIAL_CONTENT).entity(LogMessageUtil.USER_NO_ROLES).build();
         }
 
         String pwdHash;
