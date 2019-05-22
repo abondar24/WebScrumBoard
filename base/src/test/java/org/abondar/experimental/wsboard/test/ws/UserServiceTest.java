@@ -555,6 +555,41 @@ public class UserServiceTest {
     }
 
 
+    @Test
+    public void logoutUserTest() {
+        logger.info("logout user test");
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+
+        var usr = createUser();
+
+        client.path("/user/logout").query("id", usr.getId()).accept(MediaType.APPLICATION_JSON);
+
+        var resp = client.get();
+        assertEquals(200, resp.getStatus());
+
+        var token = resp.getCookies().get("X-JWT-AUTH").getValue();
+        assertEquals("", token);
+
+    }
+
+    @Test
+    public void logoutUserNotFoundTest() {
+        logger.info("logout user not found test");
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+
+        createUser();
+
+        client.path("/user/logout").query("id", 1024).accept(MediaType.APPLICATION_JSON);
+
+        var resp = client.get();
+        assertEquals(404, resp.getStatus());
+
+        var msg = resp.readEntity(String.class);
+        assertEquals(LogMessageUtil.USER_NOT_EXISTS, msg);
+
+    }
 
 
 
