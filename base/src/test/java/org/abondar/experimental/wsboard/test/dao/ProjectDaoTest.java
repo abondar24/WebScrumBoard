@@ -73,10 +73,6 @@ public class ProjectDaoTest {
         mapper.deleteProjects();
     }
 
-
-
-
-
     @Test
     public void updateProjectTest() throws Exception {
         logger.info("Update project test");
@@ -86,6 +82,19 @@ public class ProjectDaoTest {
         prj = dao.updateProject(prj.getId(), "newTest", "github.com/aaaa/aaa.git", true, null);
 
         assertEquals(id, prj.getId());
+
+        mapper.deleteProjects();
+    }
+
+    @Test
+    public void updateProjectExistsTest() throws Exception {
+        logger.info("Update project test");
+
+        var prj = createProject();
+
+
+        assertThrows(DataExistenceException.class, () ->
+                dao.updateProject(prj.getId(), prj.getName(), null, true, null));
 
         mapper.deleteProjects();
     }
@@ -126,6 +135,8 @@ public class ProjectDaoTest {
         final long id = prj.getId();
         assertThrows(DataCreationException.class, () -> dao.updateProject(id, null,
                 null, true, null));
+
+        mapper.deleteProjects();
     }
 
     @Test

@@ -83,6 +83,11 @@ public class ProjectDao extends BaseDao {
             throw new DataExistenceException(LogMessageUtil.PROJECT_NOT_EXISTS);
         }
 
+        if (mapper.getProjectByName(name) != null) {
+            logger.error(LogMessageUtil.PROJECT_EXISTS);
+            throw new DataExistenceException(LogMessageUtil.PROJECT_EXISTS);
+        }
+
         if (name != null && !name.isBlank()) {
             prj.setName(name);
         }
