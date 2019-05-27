@@ -2,6 +2,7 @@ package org.abondar.experimental.wsboard.dao;
 
 import org.abondar.experimental.wsboard.dao.data.DataMapper;
 import org.abondar.experimental.wsboard.dao.data.LogMessageUtil;
+import org.abondar.experimental.wsboard.dao.exception.DataCreationException;
 import org.abondar.experimental.wsboard.dao.exception.DataExistenceException;
 import org.abondar.experimental.wsboard.datamodel.Sprint;
 import org.slf4j.Logger;
@@ -31,9 +32,11 @@ public class SprintDao extends BaseDao {
      * @param name      - sprint name
      * @param startDate - sprint start date
      * @param endDate   - sprint end date
+     * @throws DataExistenceException sprint with such name exists
+     * @throws DataCreationException sprint end date is before start date
      * @return sprint POJO
      */
-    public Sprint createSprint(String name, Date startDate, Date endDate) throws DataExistenceException {
+    public Sprint createSprint(String name, Date startDate, Date endDate) throws DataExistenceException, DataCreationException {
 
 
         var sprint = mapper.getSprintByName(name);
@@ -41,6 +44,11 @@ public class SprintDao extends BaseDao {
             logger.error(LogMessageUtil.SPRINT_EXISTS);
             throw new DataExistenceException(LogMessageUtil.SPRINT_EXISTS);
 
+        }
+
+        if (startDate.after(endDate)) {
+            logger.error(LogMessageUtil.WRONG_END_DATE);
+            throw new DataCreationException(LogMessageUtil.WRONG_END_DATE);
         }
 
         sprint = new Sprint(name, startDate, endDate);
@@ -60,9 +68,12 @@ public class SprintDao extends BaseDao {
      * @param name      - sprint name
      * @param startDate - sprint start date
      * @param endDate   - sprint end date
+     * @throws DataExistenceException - sprint not exists or sprint name already exists
+     * @throws DataCreationException - sprint end date is before start date
      * @return sprint POJO
      */
-    public Sprint updateSprint(long sprintId, String name, Date startDate, Date endDate) throws DataExistenceException {
+    public Sprint updateSprint(long sprintId, String name, Date startDate, Date endDate)
+            throws DataExistenceException, DataCreationException {
 
         var sprint = mapper.getSprintById(sprintId);
         if (sprint == null) {
@@ -86,8 +97,14 @@ public class SprintDao extends BaseDao {
 
 
         if (endDate != null) {
+            if (sprint.getStartDate().after(endDate)) {
+                logger.error(LogMessageUtil.WRONG_END_DATE);
+                throw new DataCreationException(LogMessageUtil.WRONG_END_DATE);
+            }
+
             sprint.setEndDate(startDate);
         }
+
 
         mapper.updateSprint(sprint);
 
@@ -101,6 +118,7 @@ public class SprintDao extends BaseDao {
      * Find a sprint by id
      *
      * @param sprintId - sprint id
+     * @throws DataExistenceException - sprint not exists
      * @return sprint POJO
      */
     public Sprint getSprintById(long sprintId) throws DataExistenceException {
@@ -140,12 +158,13 @@ public class SprintDao extends BaseDao {
      * @param sprintId - sprint id
      * @return true if sprint deleted, false if error
      */
-    public boolean deleteSprint(long sprintId) {
+    public void deleteSprint(long sprintId) throws DataExistenceException {
 
         var sprint = mapper.getSprintById(sprintId);
         if (sprint == null) {
-            logger.error(LogMessageUtil.SPRINT_NOT_EXISTS);
-            return false;
+            var msg = String.format(LogMessageUtil.LOG_FORMAT, LogMessageUtil.SPRINT_NOT_EXISTS, sprintId);
+            logger.error(msg);
+            throw new DataExistenceException(LogMessageUtil.SPRINT_NOT_EXISTS);
         }
 
         mapper.deleteSprint(sprintId);
@@ -153,7 +172,6 @@ public class SprintDao extends BaseDao {
         var msg = String.format(LogMessageUtil.LOG_FORMAT, "Deleted sprint ", sprint.getId());
         logger.info(msg);
 
-        return true;
     }
 
 }

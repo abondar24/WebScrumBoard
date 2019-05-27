@@ -4,6 +4,7 @@ package org.abondar.experimental.wsboard.test.dao;
 import org.abondar.experimental.wsboard.base.Main;
 import org.abondar.experimental.wsboard.dao.SprintDao;
 import org.abondar.experimental.wsboard.dao.data.DataMapper;
+import org.abondar.experimental.wsboard.dao.exception.DataCreationException;
 import org.abondar.experimental.wsboard.dao.exception.DataExistenceException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,12 +16,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 @SpringBootTest(classes = Main.class)
@@ -49,6 +50,16 @@ public class SprintDaoTest {
 
         mapper.deleteSprints();
     }
+
+    @Test
+    public void createSprintWrongEndDateTest() {
+        logger.info("Create sprint end date test");
+
+        assertThrows(DataCreationException.class, () -> sprintDao.createSprint("test", new Date(), yesterday()));
+
+        mapper.deleteSprints();
+    }
+
 
     @Test
     public void createSprintAlreadyExistsTest() throws Exception {
@@ -102,6 +113,19 @@ public class SprintDaoTest {
     }
 
     @Test
+    public void updateSprintWrongEndDateTest() throws Exception {
+        logger.info("Update sprint name exists test");
+        var sp = sprintDao.createSprint("test", new Date(), new Date());
+
+        assertThrows(DataCreationException.class, () ->
+                sprintDao.updateSprint(sp.getId(), null,
+                        new Date(), yesterday()));
+
+        mapper.deleteSprints();
+    }
+
+
+    @Test
     public void getSprintByIdTest() throws Exception {
         logger.info("Get sprint by id test");
         var sp = sprintDao.createSprint("test", new Date(), new Date());
@@ -133,8 +157,15 @@ public class SprintDaoTest {
         logger.info("Delete sprint test");
         var sp = sprintDao.createSprint("test", new Date(), new Date());
 
-        var res = sprintDao.deleteSprint(sp.getId());
+        sprintDao.deleteSprint(sp.getId());
 
-        assertTrue(res);
+        assertThrows(DataExistenceException.class, () -> sprintDao.getSprintById(sp.getId()));
+
+    }
+
+    private Date yesterday() {
+        final Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DATE, -1);
+        return cal.getTime();
     }
 }
