@@ -93,6 +93,7 @@ public class ProjectServiceImpl implements ProjectService {
                     @ApiResponse(responseCode = "205", description = "Wrong end date for project"),
                     @ApiResponse(responseCode = "206", description = "End date can't be parsed"),
                     @ApiResponse(responseCode = "301", description = "Project can't be reactivated"),
+                    @ApiResponse(responseCode = "302", description = "Project with name already exists"),
                     @ApiResponse(responseCode = "404", description = "Project not found"),
                     @ApiResponse(responseCode = "406", description = "JWT token is wrong")
             }
@@ -106,7 +107,7 @@ public class ProjectServiceImpl implements ProjectService {
                                   @Parameter(description = "Project repository")
                                           String repo,
                                   @FormParam("isActive")
-                                  @Parameter(description = "Project status") Boolean isActive,
+                                  @Parameter(description = "Project status") String isActive,
                                   @FormParam("endDate")
                                   @Parameter(description = "Project end date(required if status is false)")
                                           String endDate) {
@@ -117,11 +118,21 @@ public class ProjectServiceImpl implements ProjectService {
                 endDt = convertDate(endDate);
             }
 
-            var prj = projectDao.updateProject(id, name, repo, isActive, endDt);
+            Boolean isActiveVal = null;
+            if (isActive != null) {
+                isActiveVal = Boolean.valueOf(isActive);
+            }
+
+            var prj = projectDao.updateProject(id, name, repo, isActiveVal, endDt);
             return Response.ok(prj).build();
         } catch (DataExistenceException ex) {
             logger.error(ex.getMessage());
-            return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
+            if (ex.getMessage().equals(LogMessageUtil.PROJECT_NOT_EXISTS)) {
+                return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
+            } else {
+                return Response.status(Response.Status.FOUND).entity(ex.getLocalizedMessage()).build();
+            }
+
         } catch (DataCreationException ex) {
             logger.error(ex.getMessage());
 

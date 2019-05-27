@@ -34,7 +34,7 @@ public class ProjectServiceTest {
     private static String endpoint = "local://wsboard_test_1";
 
     private String projectName = "project";
-    private String startDate = "31/12/1122";
+    private String startDate = "31/12/2018";
 
     @BeforeAll
     public static void beforeMethod() {
@@ -124,6 +124,144 @@ public class ProjectServiceTest {
     }
 
     @Test
+    public void updateProjectTest() {
+        logger.info("update project test");
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+
+        var prj = createProject();
+
+        var form = new Form();
+        form.param("id", String.valueOf(prj.getId()));
+        form.param("repo", "test.repo.com");
+
+        client.path("/project/update").accept(MediaType.APPLICATION_JSON);
+
+        var res = client.post(form);
+        assertEquals(200, res.getStatus());
+
+        prj = res.readEntity(Project.class);
+        assertEquals("test.repo.com", prj.getRepository());
+
+    }
+
+    @Test
+    public void updateProjectNotFoundTest() {
+        logger.info("update project not found test");
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+
+        createProject();
+
+        var form = new Form();
+        form.param("id", "7");
+        form.param("repo", "test.repo.com");
+
+        client.path("/project/update").accept(MediaType.APPLICATION_JSON);
+
+        var res = client.post(form);
+        assertEquals(404, res.getStatus());
+
+        var msg = res.readEntity(String.class);
+        assertEquals(LogMessageUtil.PROJECT_NOT_EXISTS, msg);
+
+    }
+
+    @Test
+    public void updateProjectExistsFoundTest() {
+        logger.info("update project not found test");
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+
+        var prj = createProject();
+
+        var form = new Form();
+        form.param("id", String.valueOf(prj.getId()));
+        form.param("name", prj.getName());
+
+        client.path("/project/update").accept(MediaType.APPLICATION_JSON);
+
+        var res = client.post(form);
+        assertEquals(302, res.getStatus());
+
+        var msg = res.readEntity(String.class);
+        assertEquals(LogMessageUtil.PROJECT_EXISTS, msg);
+
+    }
+
+    @Test
+    public void updateProjectDateAfterTest() {
+        logger.info("update project date after test");
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+
+        var prj = createProject();
+
+        var form = new Form();
+        form.param("id", String.valueOf(prj.getId()));
+        form.param("isActive", "false");
+        form.param("endDate", "31/05/2017");
+
+        client.path("/project/update").accept(MediaType.APPLICATION_JSON);
+
+        var res = client.post(form);
+        assertEquals(205, res.getStatus());
+
+        var msg = res.readEntity(String.class);
+        assertEquals(LogMessageUtil.PROJECT_WRONG_END_DATE, msg);
+
+    }
+
+
+    @Test
+    public void updateProjectDateNullTest() {
+        logger.info("update project date after test");
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+
+        var prj = createProject();
+
+        var form = new Form();
+        form.param("id", String.valueOf(prj.getId()));
+        form.param("isActive", "false");
+        form.param("endDate", "");
+
+        client.path("/project/update").accept(MediaType.APPLICATION_JSON);
+
+        var res = client.post(form);
+        assertEquals(206, res.getStatus());
+
+        var msg = res.readEntity(String.class);
+        assertEquals(LogMessageUtil.PROJECT_PARSE_DATE_FAILED, msg);
+
+    }
+
+
+    @Test
+    public void updateProjectReactivateTest() {
+        logger.info("update project reactivate test");
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+
+        var prj = createProject();
+        prj = updateProject(prj.getId());
+
+        var form = new Form();
+        form.param("id", String.valueOf(prj.getId()));
+        form.param("isActive", "true");
+
+        client.path("/project/update").accept(MediaType.APPLICATION_JSON);
+
+        var res = client.post(form);
+        assertEquals(301, res.getStatus());
+
+        var msg = res.readEntity(String.class);
+        assertEquals(LogMessageUtil.PROJECT_CANNOT_BE_REACTIVATED, msg);
+
+    }
+
+
+    @Test
     public void deleteProjectTest() {
         logger.info("delete project test");
 
@@ -196,5 +334,21 @@ public class ProjectServiceTest {
 
         var res = client.post(form);
         return res.readEntity(Project.class);
+    }
+
+    private Project updateProject(long id) {
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+
+        var form = new Form();
+        form.param("id", String.valueOf(id));
+        form.param("isActive", "false");
+        form.param("endDate", "31/05/2119");
+
+        client.path("/project/update").accept(MediaType.APPLICATION_JSON);
+
+        var res = client.post(form);
+
+        return res.readEntity(Project.class);
+
     }
 }

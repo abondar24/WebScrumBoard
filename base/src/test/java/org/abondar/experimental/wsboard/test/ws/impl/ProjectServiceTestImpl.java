@@ -68,33 +68,52 @@ public class ProjectServiceTestImpl implements ProjectService {
     public Response updateProject(@FormParam("id") long id,
                                   @FormParam("name") String name,
                                   @FormParam("repo") String repo,
-                                  @FormParam("isActive") Boolean isActive,
+                                  @FormParam("isActive") String isActive,
                                   @FormParam("endDate") String endDate) {
         if (testProject.getId() != id) {
             return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.PROJECT_NOT_EXISTS).build();
         }
 
-        Date endDt;
-        try {
-            endDt = convertDate(endDate);
-        } catch (DataCreationException ex) {
-            return Response.status(Response.Status.PARTIAL_CONTENT).entity(LogMessageUtil.PROJECT_PARSE_DATE_FAILED).build();
+        if (testProject.getName().equals(name)) {
+            return Response.status(Response.Status.FOUND).entity(LogMessageUtil.PROJECT_EXISTS).build();
         }
 
-        if (testProject.getStartDate().after(endDt) || (endDt == null)) {
-            return Response.status(Response.Status.RESET_CONTENT).entity(LogMessageUtil.PROJECT_WRONG_END_DATE).build();
+
+        if (name != null && !name.isBlank()) {
+            testProject.setName(name);
         }
 
-        if (!testProject.isActive() && isActive) {
-            return Response.status(Response.Status.MOVED_PERMANENTLY).entity(LogMessageUtil.PROJECT_CANNOT_BE_REACTIVATED).build();
-        }
-
-        testProject.setName(name);
         testProject.setRepository(repo);
-        testProject.setActive(isActive);
-        testProject.setEndDate(endDt);
 
-        return null;
+        if (isActive != null) {
+            var isActiveVal = Boolean.parseBoolean(isActive);
+
+            if (!isActiveVal) {
+                Date endDt;
+                try {
+                    endDt = convertDate(endDate);
+                    System.out.println(endDt);
+                    if (testProject.getStartDate().after(endDt)) {
+                        return Response.status(Response.Status.RESET_CONTENT).entity(LogMessageUtil.PROJECT_WRONG_END_DATE).build();
+                    }
+                    testProject.setEndDate(endDt);
+
+                } catch (DataCreationException ex) {
+                    return Response.status(Response.Status.PARTIAL_CONTENT).entity(LogMessageUtil.PROJECT_PARSE_DATE_FAILED).build();
+                }
+
+            }
+
+            if (!testProject.isActive() && isActiveVal) {
+                return Response.status(Response.Status.MOVED_PERMANENTLY).entity(LogMessageUtil.PROJECT_CANNOT_BE_REACTIVATED).build();
+            }
+
+            testProject.setActive(isActiveVal);
+
+        }
+        System.out.println(testProject);
+
+        return Response.ok(testProject).build();
     }
 
     @GET
