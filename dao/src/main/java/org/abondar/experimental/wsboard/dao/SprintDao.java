@@ -33,7 +33,7 @@ public class SprintDao extends BaseDao {
      * @param startDate - sprint start date
      * @param endDate   - sprint end date
      * @throws DataExistenceException sprint with such name exists
-     * @throws DataCreationException sprint end date is before start date
+     * @throws DataCreationException sprint end date is before start date or blank data
      * @return sprint POJO
      */
     public Sprint createSprint(String name, Date startDate, Date endDate) throws DataExistenceException, DataCreationException {
@@ -45,6 +45,17 @@ public class SprintDao extends BaseDao {
             throw new DataExistenceException(LogMessageUtil.SPRINT_EXISTS);
 
         }
+
+        if (name == null || name.isBlank()) {
+            logger.error(LogMessageUtil.BLANK_DATA);
+            throw new DataCreationException(LogMessageUtil.BLANK_DATA);
+        }
+
+        if (startDate == null || endDate == null) {
+            logger.error(LogMessageUtil.BLANK_DATA);
+            throw new DataCreationException(LogMessageUtil.BLANK_DATA);
+        }
+
 
         if (startDate.after(endDate)) {
             logger.error(LogMessageUtil.WRONG_END_DATE);

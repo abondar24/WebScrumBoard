@@ -74,6 +74,18 @@ public class SprintDaoTest {
         mapper.deleteSprints();
     }
 
+    @Test
+    public void createSprintBlankDataTest() {
+        logger.info("Create sprint blank data test");
+
+        assertThrows(DataCreationException.class, () -> sprintDao.createSprint(null, new Date(), new Date()));
+        assertThrows(DataCreationException.class, () -> sprintDao.createSprint("test", null, null));
+
+
+        mapper.deleteSprints();
+    }
+
+
 
     @Test
     public void updateSprintTest() throws Exception {
