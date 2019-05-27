@@ -14,8 +14,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 
@@ -24,8 +22,6 @@ import java.util.Date;
  */
 @Path("/project")
 public class ProjectServiceTestImpl implements ProjectService {
-
-    private static final String DATE_FORMAT = "dd/MM/yyyy";
 
 
     private Project testProject;
@@ -94,7 +90,7 @@ public class ProjectServiceTestImpl implements ProjectService {
                     endDt = convertDate(endDate);
                     System.out.println(endDt);
                     if (testProject.getStartDate().after(endDt)) {
-                        return Response.status(Response.Status.RESET_CONTENT).entity(LogMessageUtil.PROJECT_WRONG_END_DATE).build();
+                        return Response.status(Response.Status.RESET_CONTENT).entity(LogMessageUtil.WRONG_END_DATE).build();
                     }
                     testProject.setEndDate(endDt);
 
@@ -140,14 +136,4 @@ public class ProjectServiceTestImpl implements ProjectService {
         return Response.ok(testProject).build();
     }
 
-    private Date convertDate(String strDate) throws DataCreationException {
-        var format = new SimpleDateFormat(DATE_FORMAT);
-
-        try {
-            return format.parse(strDate);
-        } catch (ParseException ex) {
-            throw new DataCreationException(LogMessageUtil.PROJECT_WRONG_END_DATE);
-        }
-
-    }
 }

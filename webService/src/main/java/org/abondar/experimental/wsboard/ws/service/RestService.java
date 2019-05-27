@@ -7,6 +7,12 @@ import io.swagger.v3.oas.annotations.info.License;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.servers.Server;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.abondar.experimental.wsboard.dao.data.LogMessageUtil;
+import org.abondar.experimental.wsboard.dao.exception.DataCreationException;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Basic web service interface
@@ -33,4 +39,15 @@ import io.swagger.v3.oas.annotations.tags.Tag;
         }
 )
 public interface RestService {
+    default Date convertDate(String strDate) throws DataCreationException {
+        var format = new SimpleDateFormat("dd/MM/yyyy");
+
+        try {
+            return format.parse(strDate);
+        } catch (ParseException ex) {
+            throw new DataCreationException(LogMessageUtil.PROJECT_PARSE_DATE_FAILED);
+        }
+
+    }
+
 }

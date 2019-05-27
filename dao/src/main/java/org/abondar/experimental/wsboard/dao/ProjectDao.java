@@ -103,7 +103,7 @@ public class ProjectDao extends BaseDao {
                 if (endDate != null && !prj.getStartDate().after(endDate)) {
                     prj.setEndDate(endDate);
                 } else {
-                    throw new DataCreationException(LogMessageUtil.PROJECT_WRONG_END_DATE);
+                    throw new DataCreationException(LogMessageUtil.WRONG_END_DATE);
                 }
             }
 

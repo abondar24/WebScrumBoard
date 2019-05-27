@@ -25,8 +25,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -35,7 +33,6 @@ import java.util.Date;
 @Path("/project")
 public class ProjectServiceImpl implements ProjectService {
 
-    private static final String DATE_FORMAT = "dd/MM/yyyy";
 
     private static Logger logger = LoggerFactory.getLogger(ProjectService.class);
     @Autowired
@@ -136,12 +133,15 @@ public class ProjectServiceImpl implements ProjectService {
         } catch (DataCreationException ex) {
             logger.error(ex.getMessage());
 
-            if (ex.getMessage().equals(LogMessageUtil.PROJECT_WRONG_END_DATE)) {
-                return Response.status(Response.Status.RESET_CONTENT).entity(ex.getLocalizedMessage()).build();
-            } else if (ex.getMessage().equals(LogMessageUtil.PROJECT_PARSE_DATE_FAILED)) {
-                return Response.status(Response.Status.PARTIAL_CONTENT).entity(ex.getLocalizedMessage()).build();
-            } else {
-                return Response.status(Response.Status.MOVED_PERMANENTLY).entity(ex.getLocalizedMessage()).build();
+
+            switch (ex.getMessage()) {
+                case LogMessageUtil.WRONG_END_DATE:
+                    return Response.status(Response.Status.RESET_CONTENT).entity(ex.getLocalizedMessage()).build();
+                case LogMessageUtil.PROJECT_PARSE_DATE_FAILED:
+                    return Response.status(Response.Status.PARTIAL_CONTENT).entity(ex.getLocalizedMessage()).build();
+                default:
+                    return Response.status(Response.Status.MOVED_PERMANENTLY).entity(ex.getLocalizedMessage()).build();
+
             }
 
         }
@@ -199,15 +199,5 @@ public class ProjectServiceImpl implements ProjectService {
 
     }
 
-    private Date convertDate(String strDate) throws DataCreationException {
-        var format = new SimpleDateFormat(DATE_FORMAT);
 
-        try {
-            return format.parse(strDate);
-        } catch (ParseException ex) {
-            logger.error(ex.getMessage());
-            throw new DataCreationException(LogMessageUtil.PROJECT_WRONG_END_DATE);
-        }
-
-    }
 }

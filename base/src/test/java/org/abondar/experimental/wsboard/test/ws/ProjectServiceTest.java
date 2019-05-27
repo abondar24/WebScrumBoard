@@ -208,7 +208,7 @@ public class ProjectServiceTest {
         assertEquals(205, res.getStatus());
 
         var msg = res.readEntity(String.class);
-        assertEquals(LogMessageUtil.PROJECT_WRONG_END_DATE, msg);
+        assertEquals(LogMessageUtil.WRONG_END_DATE, msg);
 
     }
 
