@@ -51,11 +51,6 @@ public class SprintDao extends BaseDao {
             throw new DataCreationException(LogMessageUtil.BLANK_DATA);
         }
 
-        if (startDate == null || endDate == null) {
-            logger.error(LogMessageUtil.BLANK_DATA);
-            throw new DataCreationException(LogMessageUtil.BLANK_DATA);
-        }
-
 
         if (startDate.after(endDate)) {
             logger.error(LogMessageUtil.WRONG_END_DATE);

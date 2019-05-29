@@ -26,6 +26,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.Date;
 
 /**
  * Sprint CRUD and find service
@@ -108,8 +109,16 @@ public class SprintServiceImpl implements SprintService {
                                  @FormParam("startDate") @Parameter(description = "New start date") String startDate,
                                  @FormParam("endDate") @Parameter(description = "New end date") String endDate) {
         try {
-            var startDt = convertDate(startDate);
-            var endDt = convertDate(endDate);
+            Date startDt = null;
+            if (!startDate.isBlank()) {
+                startDt = convertDate(startDate);
+
+            }
+
+            Date endDt = null;
+            if (!endDate.isBlank()) {
+                endDt = convertDate(endDate);
+            }
 
             var sprint = sprintDao.updateSprint(sprintId, name, startDt, endDt);
 

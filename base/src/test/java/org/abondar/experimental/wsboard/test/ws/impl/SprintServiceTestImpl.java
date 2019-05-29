@@ -1,5 +1,8 @@
 package org.abondar.experimental.wsboard.test.ws.impl;
 
+import org.abondar.experimental.wsboard.dao.data.LogMessageUtil;
+import org.abondar.experimental.wsboard.dao.exception.DataCreationException;
+import org.abondar.experimental.wsboard.datamodel.Sprint;
 import org.abondar.experimental.wsboard.ws.service.SprintService;
 
 import javax.ws.rs.Consumes;
@@ -11,6 +14,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Test implementation of sprint web service
@@ -18,6 +23,8 @@ import javax.ws.rs.core.Response;
 @Path("/sprint")
 public class SprintServiceTestImpl implements SprintService {
 
+
+    private Sprint testSprint;
 
     @POST
     @Path("/create")
@@ -28,7 +35,35 @@ public class SprintServiceTestImpl implements SprintService {
                                  @FormParam("startDate") String startDate,
                                  @FormParam("endDate") String endDate) {
 
-        return null;
+        var existingSprint = new Sprint("exist", new Date(), new Date());
+
+        if (existingSprint.getName().equals(name)) {
+            return Response.status(Response.Status.FOUND).entity(LogMessageUtil.SPRINT_EXISTS).build();
+        }
+
+
+        try {
+            var startDt = convertDate(startDate);
+            var endDt = convertDate(endDate);
+
+            if (name == null || name.isBlank()) {
+                return Response.status(Response.Status.RESET_CONTENT)
+                        .entity(LogMessageUtil.BLANK_DATA).build();
+            }
+
+
+            if (startDt.after(endDt)) {
+                return Response.status(Response.Status.RESET_CONTENT).entity(LogMessageUtil.WRONG_END_DATE).build();
+
+            }
+
+            testSprint = new Sprint(name, startDt, endDt);
+
+            return Response.ok(testSprint).build();
+        } catch (DataCreationException ex) {
+            return Response.status(Response.Status.PARTIAL_CONTENT).entity(ex.getLocalizedMessage()).build();
+        }
+
     }
 
     @POST
@@ -40,7 +75,44 @@ public class SprintServiceTestImpl implements SprintService {
                                  @FormParam("name") String name,
                                  @FormParam("startDate") String startDate,
                                  @FormParam("endDate") String endDate) {
-        return null;
+
+        if (testSprint.getId() != sprintId) {
+            return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.SPRINT_NOT_EXISTS).build();
+        }
+
+        if (!name.isBlank()) {
+            var existingSprint = new Sprint("exist", new Date(), new Date());
+            if (existingSprint.getName().equals(name)) {
+                return Response.status(Response.Status.FOUND).entity(LogMessageUtil.SPRINT_EXISTS).build();
+            } else {
+                testSprint.setName(name);
+            }
+        }
+
+        try {
+            Date startDt;
+            if (!startDate.isBlank()) {
+                startDt = convertDate(startDate);
+                testSprint.setStartDate(startDt);
+
+            }
+
+            Date endDt;
+            if (!endDate.isBlank()) {
+                endDt = convertDate(endDate);
+                testSprint.setEndDate(endDt);
+            }
+
+
+            return Response.ok(testSprint).build();
+        } catch (DataCreationException ex) {
+            if (ex.getMessage().equals(LogMessageUtil.WRONG_END_DATE)) {
+                return Response.status(Response.Status.RESET_CONTENT).entity(ex.getLocalizedMessage()).build();
+            } else {
+                return Response.status(Response.Status.NO_CONTENT).entity(ex.getLocalizedMessage()).build();
+            }
+        }
+
     }
 
     @GET
@@ -48,7 +120,11 @@ public class SprintServiceTestImpl implements SprintService {
     @Produces(MediaType.APPLICATION_JSON)
     @Override
     public Response getSprintById(@QueryParam("id") long sprintId) {
-        return null;
+        if (testSprint.getId() != sprintId) {
+            return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.SPRINT_NOT_EXISTS).build();
+        }
+
+        return Response.ok(testSprint).build();
     }
 
     @GET
@@ -56,13 +132,24 @@ public class SprintServiceTestImpl implements SprintService {
     @Produces(MediaType.APPLICATION_JSON)
     @Override
     public Response getSprints(@QueryParam("offset") int offset, @QueryParam("limit") int limit) {
-        return null;
+        var sprints = List.of(testSprint, new Sprint(), new Sprint(), new Sprint(), new Sprint())
+                .subList(offset, limit);
+
+        if (sprints.isEmpty()) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+
+        return Response.ok(sprints).build();
     }
 
     @GET
     @Path("/delete")
     @Override
     public Response deleteSprint(@QueryParam("id") long sprintId) {
-        return null;
+        if (testSprint.getId() != sprintId) {
+            return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.SPRINT_NOT_EXISTS).build();
+        }
+
+        return Response.ok().build();
     }
 }

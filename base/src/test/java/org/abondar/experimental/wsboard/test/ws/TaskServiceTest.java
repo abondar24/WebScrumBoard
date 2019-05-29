@@ -21,7 +21,7 @@ public class TaskServiceTest {
     private Logger logger = LoggerFactory.getLogger(TaskServiceTest.class);
 
     private static Server server;
-    private static String endpoint = "local://wsboard_test";
+    private static String endpoint = "local://wsboard_test_4";
 
     @BeforeAll
     public static void beforeMethod() {

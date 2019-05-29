@@ -21,7 +21,7 @@ public class SprintServiceTest {
     private Logger logger = LoggerFactory.getLogger(SprintServiceTest.class);
 
     private static Server server;
-    private static String endpoint = "local://wsboard_test";
+    private static String endpoint = "local://wsboard_test_2";
 
     @BeforeAll
     public static void beforeMethod() {

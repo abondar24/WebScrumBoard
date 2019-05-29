@@ -21,7 +21,7 @@ public class ContributorServiceTest {
     private Logger logger = LoggerFactory.getLogger(ContributorServiceTest.class);
 
     private static Server server;
-    private static String endpoint = "local://wsboard_test";
+    private static String endpoint = "local://wsboard_test_3";
 
     @BeforeAll
     public static void beforeMethod() {
