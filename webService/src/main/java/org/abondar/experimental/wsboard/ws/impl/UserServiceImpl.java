@@ -40,7 +40,7 @@ import java.util.Date;
 @Path("/user")
 public class UserServiceImpl implements UserService {
 
-    private static final String COOKIE_ISSUER = "borscht sysyems";
+    private static final String COOKIE_ISSUER = "borscht systems";
     private static Logger logger = LoggerFactory.getLogger(UserService.class);
     @Autowired
     @Qualifier("userDao")
