@@ -153,5 +153,85 @@ public class SprintServiceTest {
         assertEquals(LogMessageUtil.PARSE_DATE_FAILED, msg);
     }
 
+    @Test
+    public void findSprintTest() {
+        logger.info("find sprint test");
 
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+
+        var sp = createSprint();
+
+        client.path("/sprint/find").query("id", sp.getId());
+
+        var res = client.get();
+        assertEquals(200, res.getStatus());
+
+        var found = res.readEntity(Sprint.class);
+        assertEquals(sp.getId(), found.getId());
+    }
+
+    @Test
+    public void findSprintNotFoundTest() {
+        logger.info("find sprint not found test");
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+
+        createSprint();
+
+        client.path("/sprint/find").query("id", 7);
+
+        var res = client.get();
+        assertEquals(404, res.getStatus());
+
+        var found = res.readEntity(String.class);
+        assertEquals(LogMessageUtil.SPRINT_NOT_EXISTS, found);
+    }
+
+
+    @Test
+    public void deleteSprintTest() {
+        logger.info("delete sprint test");
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+
+        var sp = createSprint();
+
+        client.path("/sprint/delete").query("id", sp.getId());
+
+        var res = client.get();
+        assertEquals(200, res.getStatus());
+
+    }
+
+    @Test
+    public void deleteSprintNotFoundTest() {
+        logger.info("delete sprint not found test");
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+
+        createSprint();
+
+        client.path("/sprint/delete").query("id", 7);
+
+        var res = client.get();
+        assertEquals(404, res.getStatus());
+
+        var found = res.readEntity(String.class);
+        assertEquals(LogMessageUtil.SPRINT_NOT_EXISTS, found);
+    }
+
+    private Sprint createSprint() {
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+
+        var form = new Form();
+        form.param("name", sprintName);
+        form.param("startDate", startDate);
+        form.param("endDate", endDate);
+
+        client.path("/sprint/create").accept(MediaType.APPLICATION_JSON);
+
+        var res = client.post(form);
+        return res.readEntity(Sprint.class);
+
+    }
 }
