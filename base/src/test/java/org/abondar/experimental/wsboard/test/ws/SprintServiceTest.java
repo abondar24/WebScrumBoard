@@ -28,10 +28,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
 public class SprintServiceTest {
-    private Logger logger = LoggerFactory.getLogger(SprintServiceTest.class);
-
     private static Server server;
     private static String endpoint = "local://wsboard_test_2";
+    private Logger logger = LoggerFactory.getLogger(SprintServiceTest.class);
     private String sprintName = "test";
     private String startDate = "29/06/2019";
     private String endDate = "31/05/2119";
@@ -152,6 +151,111 @@ public class SprintServiceTest {
 
         assertEquals(LogMessageUtil.PARSE_DATE_FAILED, msg);
     }
+
+    @Test
+    public void updateSprintTest() {
+        logger.info("update sprint test");
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+
+        var sp = createSprint();
+
+        var form = new Form();
+        form.param("id", String.valueOf(sp.getId()));
+        form.param("name", "newName");
+
+        client.path("/sprint/update").accept(MediaType.APPLICATION_JSON);
+
+        var res = client.post(form);
+        assertEquals(200, res.getStatus());
+
+        sp = res.readEntity(Sprint.class);
+
+        assertEquals("newName", sp.getName());
+    }
+
+    @Test
+    public void updateSprintWrongStartDateTest() {
+        logger.info("update sprint wrong start date test");
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+
+        var sp = createSprint();
+
+        var form = new Form();
+        form.param("id", String.valueOf(sp.getId()));
+        form.param("name", "newName");
+        form.param("startDate", "blabla");
+
+        client.path("/sprint/update").accept(MediaType.APPLICATION_JSON);
+
+        var res = client.post(form);
+        assertEquals(204, res.getStatus());
+
+        var msg = res.readEntity(String.class);
+        assertEquals(LogMessageUtil.PARSE_DATE_FAILED, msg);
+    }
+
+    @Test
+    public void updateSprintWrongEndDateTest() {
+        logger.info("update sprint wrong end date test");
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+
+        var sp = createSprint();
+
+        var form = new Form();
+        form.param("id", String.valueOf(sp.getId()));
+        form.param("name", "newName");
+        form.param("endDate", "01/01/1997");
+
+        client.path("/sprint/update").accept(MediaType.APPLICATION_JSON);
+
+        var res = client.post(form);
+        assertEquals(205, res.getStatus());
+
+        var msg = res.readEntity(String.class);
+        assertEquals(LogMessageUtil.WRONG_END_DATE, msg);
+    }
+
+
+    @Test
+    public void updateSprintNotExistsTest() {
+        logger.info("update sprint not exists test");
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+
+        createSprint();
+
+        var form = new Form();
+        form.param("id", "7");
+
+        client.path("/sprint/update").accept(MediaType.APPLICATION_JSON);
+
+        var res = client.post(form);
+        assertEquals(404, res.getStatus());
+
+        var msg = res.readEntity(String.class);
+        assertEquals(LogMessageUtil.SPRINT_NOT_EXISTS, msg);
+    }
+
+    @Test
+    public void updateSprintExistsTest() {
+        logger.info("update sprint exists test");
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+
+        var sp = createSprint();
+
+        var form = new Form();
+        form.param("id", String.valueOf(sp.getId()));
+        form.param("name", sprintName);
+
+        client.path("/sprint/update").accept(MediaType.APPLICATION_JSON);
+
+        var res = client.post(form);
+        assertEquals(302, res.getStatus());
+
+        var msg = res.readEntity(String.class);
+        assertEquals(LogMessageUtil.SPRINT_EXISTS, msg);
+    }
+
 
     @Test
     public void findSprintTest() {

@@ -81,7 +81,7 @@ public class SprintServiceTestImpl implements SprintService {
             return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.SPRINT_NOT_EXISTS).build();
         }
 
-        if (!name.isBlank()) {
+        if (name != null && !name.isBlank()) {
             if (testSprint.getName().equals(name)) {
                 return Response.status(Response.Status.FOUND).entity(LogMessageUtil.SPRINT_EXISTS).build();
             } else {
@@ -91,26 +91,25 @@ public class SprintServiceTestImpl implements SprintService {
 
         try {
             Date startDt;
-            if (!startDate.isBlank()) {
+            if (startDate != null && !startDate.isBlank()) {
                 startDt = convertDate(startDate);
                 testSprint.setStartDate(startDt);
 
             }
 
             Date endDt;
-            if (!endDate.isBlank()) {
+            if (endDate != null && !endDate.isBlank()) {
                 endDt = convertDate(endDate);
+                if (testSprint.getStartDate().after(endDt)) {
+                    return Response.status(Response.Status.RESET_CONTENT).entity(LogMessageUtil.WRONG_END_DATE).build();
+                }
                 testSprint.setEndDate(endDt);
             }
 
 
             return Response.ok(testSprint).build();
         } catch (DataCreationException ex) {
-            if (ex.getMessage().equals(LogMessageUtil.WRONG_END_DATE)) {
-                return Response.status(Response.Status.RESET_CONTENT).entity(ex.getLocalizedMessage()).build();
-            } else {
                 return Response.status(Response.Status.NO_CONTENT).entity(ex.getLocalizedMessage()).build();
-            }
         }
 
     }
