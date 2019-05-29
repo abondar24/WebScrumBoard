@@ -18,7 +18,7 @@ public class LogMessageUtil {
     public static final String WRONG_END_DATE = "End date must be after a start date";
     public static final String PROJECT_CANNOT_BE_REACTIVATED = "Project can't be reactivated";
     public static final String PROJECT_HAS_NO_OWNER = "Project has no owner";
-    public static final String PROJECT_PARSE_DATE_FAILED = "Date string is incorrect";
+    public static final String PARSE_DATE_FAILED = "Date string is incorrect";
     public static final String PROJECT_NOT_ACTIVE = "Current project is not active";
     public static final String PROJECT_HAS_OWNER = "Project already has an owner";
     public static final String CONTRIBUTOR_NOT_EXISTS = "Contributor not found";

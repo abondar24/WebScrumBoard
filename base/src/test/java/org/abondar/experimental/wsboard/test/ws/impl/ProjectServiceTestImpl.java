@@ -47,7 +47,7 @@ public class ProjectServiceTestImpl implements ProjectService {
         try {
             stDate = convertDate(startDate);
         } catch (DataCreationException ex) {
-            return Response.status(Response.Status.PARTIAL_CONTENT).entity(LogMessageUtil.PROJECT_PARSE_DATE_FAILED).build();
+            return Response.status(Response.Status.PARTIAL_CONTENT).entity(LogMessageUtil.PARSE_DATE_FAILED).build();
         }
 
         testProject = new Project(name, stDate);
@@ -95,7 +95,7 @@ public class ProjectServiceTestImpl implements ProjectService {
                     testProject.setEndDate(endDt);
 
                 } catch (DataCreationException ex) {
-                    return Response.status(Response.Status.PARTIAL_CONTENT).entity(LogMessageUtil.PROJECT_PARSE_DATE_FAILED).build();
+                    return Response.status(Response.Status.PARTIAL_CONTENT).entity(LogMessageUtil.PARSE_DATE_FAILED).build();
                 }
 
             }

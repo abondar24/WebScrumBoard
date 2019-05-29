@@ -58,6 +58,7 @@ public class SprintServiceTestImpl implements SprintService {
             }
 
             testSprint = new Sprint(name, startDt, endDt);
+            testSprint.setId(10);
 
             return Response.ok(testSprint).build();
         } catch (DataCreationException ex) {
@@ -81,8 +82,7 @@ public class SprintServiceTestImpl implements SprintService {
         }
 
         if (!name.isBlank()) {
-            var existingSprint = new Sprint("exist", new Date(), new Date());
-            if (existingSprint.getName().equals(name)) {
+            if (testSprint.getName().equals(name)) {
                 return Response.status(Response.Status.FOUND).entity(LogMessageUtil.SPRINT_EXISTS).build();
             } else {
                 testSprint.setName(name);

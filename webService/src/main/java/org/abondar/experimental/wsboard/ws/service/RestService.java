@@ -39,13 +39,21 @@ import java.util.Date;
         }
 )
 public interface RestService {
+
+    /**
+     * Method for converting string to date
+     *
+     * @param strDate - date as string
+     * @return Date
+     * @throws DataCreationException - string parsing failed
+     */
     default Date convertDate(String strDate) throws DataCreationException {
         var format = new SimpleDateFormat("dd/MM/yyyy");
 
         try {
             return format.parse(strDate);
         } catch (ParseException ex) {
-            throw new DataCreationException(LogMessageUtil.PROJECT_PARSE_DATE_FAILED);
+            throw new DataCreationException(LogMessageUtil.PARSE_DATE_FAILED);
         }
 
     }

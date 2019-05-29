@@ -120,7 +120,7 @@ public class ProjectServiceTest {
         assertEquals(206, res.getStatus());
 
         var msg = res.readEntity(String.class);
-        assertEquals(LogMessageUtil.PROJECT_PARSE_DATE_FAILED, msg);
+        assertEquals(LogMessageUtil.PARSE_DATE_FAILED, msg);
     }
 
     @Test
@@ -232,7 +232,7 @@ public class ProjectServiceTest {
         assertEquals(206, res.getStatus());
 
         var msg = res.readEntity(String.class);
-        assertEquals(LogMessageUtil.PROJECT_PARSE_DATE_FAILED, msg);
+        assertEquals(LogMessageUtil.PARSE_DATE_FAILED, msg);
 
     }
 

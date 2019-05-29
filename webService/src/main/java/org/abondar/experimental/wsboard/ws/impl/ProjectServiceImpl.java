@@ -137,7 +137,7 @@ public class ProjectServiceImpl implements ProjectService {
             switch (ex.getMessage()) {
                 case LogMessageUtil.WRONG_END_DATE:
                     return Response.status(Response.Status.RESET_CONTENT).entity(ex.getLocalizedMessage()).build();
-                case LogMessageUtil.PROJECT_PARSE_DATE_FAILED:
+                case LogMessageUtil.PARSE_DATE_FAILED:
                     return Response.status(Response.Status.PARTIAL_CONTENT).entity(ex.getLocalizedMessage()).build();
                 default:
                     return Response.status(Response.Status.MOVED_PERMANENTLY).entity(ex.getLocalizedMessage()).build();
