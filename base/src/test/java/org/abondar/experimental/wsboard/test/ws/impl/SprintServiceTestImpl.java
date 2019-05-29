@@ -16,6 +16,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Test implementation of sprint web service
@@ -131,8 +132,17 @@ public class SprintServiceTestImpl implements SprintService {
     @Produces(MediaType.APPLICATION_JSON)
     @Override
     public Response getSprints(@QueryParam("offset") int offset, @QueryParam("limit") int limit) {
-        var sprints = List.of(testSprint, new Sprint(), new Sprint(), new Sprint(), new Sprint())
-                .subList(offset, limit);
+        var sprints = List.of(testSprint, new Sprint(), new Sprint(), new Sprint(), new Sprint());
+
+        if (offset == -1) {
+            return Response.ok(sprints).build();
+        }
+
+
+        sprints = sprints.stream()
+                .skip(offset)
+                .limit(limit)
+                .collect(Collectors.toList());
 
         if (sprints.isEmpty()) {
             return Response.status(Response.Status.NOT_FOUND).build();

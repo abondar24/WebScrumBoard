@@ -20,6 +20,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MediaType;
+import java.util.Collection;
 import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -291,6 +292,63 @@ public class SprintServiceTest {
         assertEquals(LogMessageUtil.SPRINT_NOT_EXISTS, found);
     }
 
+    @Test
+    public void findAllSprintsTest() {
+        logger.info("find all sprints test");
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+
+        var sp = createSprint();
+
+        client.path("/sprint/find_all")
+                .query("offset", 0)
+                .query("limit", 2);
+
+        var res = client.get();
+        assertEquals(200, res.getStatus());
+
+        Collection<? extends Sprint> sprints = client.getCollection(Sprint.class);
+
+        assertEquals(2, sprints.size());
+        assertEquals(sp.getId(), sprints.iterator().next().getId());
+    }
+
+    @Test
+    public void findAllSprintsMinusOffsetTest() {
+        logger.info("find all sprints minus offset test");
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+
+        var sp = createSprint();
+
+        client.path("/sprint/find_all").query("offset", -1);
+
+        var res = client.get();
+        assertEquals(200, res.getStatus());
+
+        Collection<? extends Sprint> sprints = client.getCollection(Sprint.class);
+
+        assertEquals(5, sprints.size());
+        assertEquals(sp.getId(), sprints.iterator().next().getId());
+    }
+
+    @Test
+    public void findAllSprintsNotFoundTest() {
+        logger.info("find all sprints minus offset test");
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+
+        var sp = createSprint();
+
+        client.path("/sprint/find_all")
+                .query("offset", 6)
+                .query("limit", 2);
+
+        var res = client.get();
+        assertEquals(404, res.getStatus());
+
+
+    }
 
     @Test
     public void deleteSprintTest() {
