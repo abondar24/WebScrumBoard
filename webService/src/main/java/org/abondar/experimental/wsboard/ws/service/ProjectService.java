@@ -3,7 +3,7 @@ package org.abondar.experimental.wsboard.ws.service;
 import javax.ws.rs.core.Response;
 
 /**
- * Project web service interface
+ * Project CRUD  web service
  */
 public interface ProjectService extends RestService {
 

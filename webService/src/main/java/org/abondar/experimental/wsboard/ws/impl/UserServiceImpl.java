@@ -35,7 +35,7 @@ import javax.ws.rs.core.Response;
 import java.util.Date;
 
 /**
- * User crud and login webservice
+ * User service implementation
  */
 @Path("/user")
 public class UserServiceImpl implements UserService {

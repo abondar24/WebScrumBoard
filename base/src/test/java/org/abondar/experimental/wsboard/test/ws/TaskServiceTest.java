@@ -2,7 +2,12 @@ package org.abondar.experimental.wsboard.test.ws;
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import org.abondar.experimental.wsboard.base.Main;
+import org.abondar.experimental.wsboard.test.ws.impl.AuthServiceTestImpl;
+import org.abondar.experimental.wsboard.test.ws.impl.ContributorServiceTestImpl;
+import org.abondar.experimental.wsboard.test.ws.impl.ProjectServiceTestImpl;
+import org.abondar.experimental.wsboard.test.ws.impl.SprintServiceTestImpl;
 import org.abondar.experimental.wsboard.test.ws.impl.TaskServiceTestImpl;
+import org.abondar.experimental.wsboard.test.ws.impl.UserServiceTestImpl;
 import org.apache.cxf.endpoint.Server;
 import org.apache.cxf.jaxrs.JAXRSBindingFactory;
 import org.apache.cxf.jaxrs.JAXRSServerFactoryBean;
@@ -29,7 +34,11 @@ public class TaskServiceTest {
         factory.setBindingId(JAXRSBindingFactory.JAXRS_BINDING_ID);
         factory.setProvider(new JacksonJsonProvider());
         factory.setAddress(endpoint);
-        factory.setServiceBean(new TaskServiceTestImpl());
+        factory.setServiceBeanObjects(new TaskServiceTestImpl(),
+                new ContributorServiceTestImpl(),
+                new UserServiceTestImpl(new AuthServiceTestImpl()),
+                new ProjectServiceTestImpl(),
+                new SprintServiceTestImpl());
         server = factory.create();
         server.start();
     }

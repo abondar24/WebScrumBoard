@@ -3,7 +3,7 @@ package org.abondar.experimental.wsboard.ws.service;
 import javax.ws.rs.core.Response;
 
 /**
- * User web service interface
+ * User CRUD and login web service
  */
 public interface UserService extends RestService {
 

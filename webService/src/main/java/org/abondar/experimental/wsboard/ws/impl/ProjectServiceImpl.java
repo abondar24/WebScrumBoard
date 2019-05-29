@@ -28,7 +28,7 @@ import javax.ws.rs.core.Response;
 import java.util.Date;
 
 /**
- * Project CRUD and find service
+ * Project web service implementation
  */
 @Path("/project")
 public class ProjectServiceImpl implements ProjectService {

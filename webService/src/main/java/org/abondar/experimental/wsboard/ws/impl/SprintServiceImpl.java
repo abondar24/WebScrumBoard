@@ -29,7 +29,7 @@ import javax.ws.rs.core.Response;
 import java.util.Date;
 
 /**
- * Sprint CRUD and find service
+ * Sprint service implementation
  */
 @Path("/sprint")
 public class SprintServiceImpl implements SprintService {

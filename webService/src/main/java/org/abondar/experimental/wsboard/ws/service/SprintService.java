@@ -3,7 +3,7 @@ package org.abondar.experimental.wsboard.ws.service;
 import javax.ws.rs.core.Response;
 
 /**
- * Sprint web service
+ * Sprint CRUD web service
  */
 public interface SprintService extends RestService {
 
