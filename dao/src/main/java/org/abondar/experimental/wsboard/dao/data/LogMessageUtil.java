@@ -22,6 +22,8 @@ public class LogMessageUtil {
     public static final String PROJECT_NOT_ACTIVE = "Current project is not active";
     public static final String PROJECT_HAS_OWNER = "Project already has an owner";
     public static final String CONTRIBUTOR_NOT_EXISTS = "Contributor not found";
+    public static final String CONTRIBUTOR_NOT_ACTIVE = "Contributor is not active";
+    public static final String CONTRIBUTOR_CANNOT_BE_DEACTIVATED = "Contributor can't be deactivated as is project owner ";
     public static final String TASK_START_DATE_NOT_SET = "Task start date is null";
     public static final String TASK_NOT_EXISTS = "Task doesn't exist";
     public static final String TASK_ALREADY_COMPLETED = "Cant't update already completed task.";

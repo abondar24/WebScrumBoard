@@ -102,11 +102,20 @@ public class ContributorDao extends BaseDao {
         }
 
         if (isOwner != null) {
-            if (ctr.isOwner()) {
-                logger.error(LogMessageUtil.PROJECT_HAS_OWNER);
-                throw new DataCreationException(LogMessageUtil.PROJECT_HAS_OWNER);
+            if (isOwner) {
+                if (ctr.isOwner()) {
+                    logger.error(LogMessageUtil.PROJECT_HAS_OWNER);
+                    throw new DataCreationException(LogMessageUtil.PROJECT_HAS_OWNER);
 
+                }
+
+                if (!ctr.isActive()) {
+                    msg = String.format(LogMessageUtil.LOG_FORMAT, LogMessageUtil.CONTRIBUTOR_NOT_ACTIVE, ctr.getId());
+                    logger.error(msg);
+                    throw new DataCreationException(LogMessageUtil.CONTRIBUTOR_NOT_ACTIVE);
+                }
             }
+
 
             if (!isOwner) {
                 var ownr = mapper.getProjectOwner(ctr.getProjectId());
@@ -121,6 +130,11 @@ public class ContributorDao extends BaseDao {
         }
 
         if (isActive != null) {
+            System.out.println(ctr.isOwner());
+            if (ctr.isOwner() && !isActive) {
+                logger.error(LogMessageUtil.CONTRIBUTOR_CANNOT_BE_DEACTIVATED);
+                throw new DataCreationException(LogMessageUtil.CONTRIBUTOR_CANNOT_BE_DEACTIVATED);
+            }
             ctr.setActive(isActive);
         }
 
@@ -131,6 +145,7 @@ public class ContributorDao extends BaseDao {
 
         return ctr;
     }
+
 
     /**
      * Find a contributor who is a project owner

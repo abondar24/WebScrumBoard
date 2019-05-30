@@ -127,6 +127,40 @@ public class ContributorDaoTest {
 
 
     @Test
+    public void updateInactiveContributorAsOwnerTest() throws Exception {
+        logger.info("Update inactive contributor as owner test");
+
+        var usr = createUser();
+        var prj = createProject(true);
+
+        var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
+        var id = contr.getId();
+        contributorDao.updateContributor(contr.getId(), null, false);
+
+        assertThrows(DataCreationException.class, () -> contributorDao.updateContributor(id, true, null));
+
+
+        cleanData();
+    }
+
+    @Test
+    public void updateContributorOwnerAsInactiveTest() throws Exception {
+        logger.info("Update contributor owner as inactive test");
+
+        var usr = createUser();
+        var prj = createProject(true);
+
+        var contr = contributorDao.createContributor(usr.getId(), prj.getId(), true);
+        var id = contr.getId();
+
+        assertThrows(DataCreationException.class, () -> contributorDao.updateContributor(id, null, false));
+
+
+        cleanData();
+    }
+
+
+    @Test
     public void updateContributorAsOwnerContributorNotExistsTest() {
         logger.info("Update contributor as owner contributor not exists");
 
@@ -138,7 +172,7 @@ public class ContributorDaoTest {
     }
 
     @Test
-    public void updateContributorPrtojectHasOwnerTest() throws Exception {
+    public void updateContributorProjectHasOwnerTest() throws Exception {
         logger.info("Update contributor project has owner test");
 
         var usr = createUser();
