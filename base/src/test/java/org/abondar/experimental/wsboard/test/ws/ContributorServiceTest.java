@@ -153,6 +153,7 @@ public class ContributorServiceTest {
 
         var userId = createUser();
         var projectId = createProject();
+        createContributor(userId, projectId, "true");
 
         var form = new Form();
 
@@ -166,9 +167,74 @@ public class ContributorServiceTest {
         var msg = resp.readEntity(String.class);
         assertEquals(LogMessageUtil.PROJECT_HAS_OWNER, msg);
 
+        deleteContributor();
+
     }
 
-    private Contributor createContributor(long userId, long projectId) {
+
+    @Test
+    public void findProjectOwnerTest() {
+        logger.info("find project owner test");
+
+        var userId = createUser();
+        var projectId = createProject();
+        createContributor(userId, projectId, "true");
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+        client.path("/contributor/find_project_owner").accept(MediaType.APPLICATION_JSON).query("projectId", projectId);
+
+        var resp = client.get();
+        assertEquals(200, resp.getStatus());
+
+        var ctr = resp.readEntity(Contributor.class);
+        assertEquals(10, ctr.getId());
+
+        deleteContributor();
+
+    }
+
+
+    @Test
+    public void findProjectOwnerProjectNotFoundTest() {
+        logger.info("find project owner project not test");
+
+        var userId = createUser();
+        var projectId = createProject();
+        createContributor(userId, projectId, "false");
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+        client.path("/contributor/find_project_owner").accept(MediaType.APPLICATION_JSON).query("projectId", 7);
+
+        var resp = client.get();
+        assertEquals(404, resp.getStatus());
+
+        var msg = resp.readEntity(String.class);
+        assertEquals(LogMessageUtil.PROJECT_NOT_EXISTS, msg);
+
+    }
+
+
+    @Test
+    public void findProjectOwnerProjectHasNoOwnerTest() {
+        logger.info("find project owner project has no owner test");
+
+        var userId = createUser();
+        var projectId = createProject();
+        createContributor(userId, projectId, "false");
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+        client.path("/contributor/find_project_owner").accept(MediaType.APPLICATION_JSON).query("projectId", projectId);
+
+        var resp = client.get();
+        assertEquals(204, resp.getStatus());
+
+        var msg = resp.readEntity(String.class);
+        assertEquals(LogMessageUtil.PROJECT_HAS_NO_OWNER, msg);
+
+    }
+
+
+    private Contributor createContributor(long userId, long projectId, String isOwner) {
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
         client.path("/contributor/create").accept(MediaType.APPLICATION_JSON);
 
@@ -176,7 +242,7 @@ public class ContributorServiceTest {
 
         form.param("userId", String.valueOf(userId));
         form.param("projectId", String.valueOf(projectId));
-        form.param("isOwner", "false");
+        form.param("isOwner", isOwner);
 
         var resp = client.post(form);
 
@@ -222,9 +288,14 @@ public class ContributorServiceTest {
         var form = new Form();
         form.param("isActive", "false");
 
-        client.path("/contributor/update_project").accept(MediaType.APPLICATION_JSON);
+        client.path("/contributor/update_project").accept(MediaType.APPLICATION_JSON).post(form);
+    }
 
-        client.post(form);
+    private void deleteContributor() {
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+
+
+        client.path("/contributor/delete_contributor").accept(MediaType.APPLICATION_JSON).get();
     }
 
 }

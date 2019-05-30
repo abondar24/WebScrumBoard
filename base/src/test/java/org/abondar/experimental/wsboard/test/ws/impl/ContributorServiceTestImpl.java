@@ -39,7 +39,6 @@ public class ContributorServiceTestImpl implements ContributorService {
                                       @FormParam("projectId") long projectId,
                                       @FormParam("isOwner") String isOwner) {
 
-        var owner = new Contributor(5, projectId, true);
         if (testUser.getId() != userId) {
             return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.USER_NOT_EXISTS).build();
         }
@@ -53,7 +52,8 @@ public class ContributorServiceTestImpl implements ContributorService {
         }
 
         var isOwnerVal = Boolean.parseBoolean(isOwner);
-        if (isOwnerVal && owner.isOwner()) {
+        if (isOwnerVal) {
+            if (testContributor != null && testContributor.isOwner())
             return Response.status(Response.Status.CONFLICT).entity(LogMessageUtil.PROJECT_HAS_OWNER).build();
 
         }
@@ -214,6 +214,15 @@ public class ContributorServiceTestImpl implements ContributorService {
 
         testProject.setActive(Boolean.valueOf(isActive));
 
+        return Response.ok().build();
+    }
+
+
+    @GET
+    @Path("/delete_contributor")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response delete() {
+        testContributor = null;
         return Response.ok().build();
     }
 }
