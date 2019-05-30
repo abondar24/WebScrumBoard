@@ -64,10 +64,10 @@ public class ContributorServiceImpl implements ContributorService {
                                       @FormParam("projectId")
                                       @Parameter(description = "Project ID", required = true) long projectId,
                                       @FormParam("isOwner")
-                                      @Parameter(description = "Is Owner", required = true) boolean isOwner) {
+                                      @Parameter(description = "Is Owner", required = true) String isOwner) {
 
         try {
-            var ctr = contributorDao.createContributor(userId, projectId, isOwner);
+            var ctr = contributorDao.createContributor(userId, projectId, Boolean.valueOf(isOwner));
             return Response.ok(ctr).build();
         } catch (DataExistenceException ex) {
             logger.error(ex.getMessage());
@@ -98,32 +98,51 @@ public class ContributorServiceImpl implements ContributorService {
                             content = @Content(schema = @Schema(implementation = Contributor.class))),
                     @ApiResponse(responseCode = "404", description = "Contributor not found"),
                     @ApiResponse(responseCode = "302", description = "Project has owner"),
+                    @ApiResponse(responseCode = "403", description = "Contributor can't be deactivated"),
                     @ApiResponse(responseCode = "406", description = "JWT token is wrong"),
                     @ApiResponse(responseCode = "409", description = "Project has no owner"),
+                    @ApiResponse(responseCode = "410", description = "Contributor not active and can't be an owner"),
+
 
             }
     )
     @Override
     public Response updateContributor(@FormParam("ctrId") long contributorId,
-                                      @FormParam("isOwner") Boolean isOwner,
-                                      @FormParam("isActive") Boolean isActive) {
+                                      @FormParam("isOwner") String isOwner,
+                                      @FormParam("isActive") String isActive) {
 
         try {
-            var ctr = contributorDao.updateContributor(contributorId, isOwner, isActive);
+            Boolean isOwnerVal = null;
+            if (isOwner != null && !isOwner.isBlank()) {
+                isOwnerVal = Boolean.valueOf(isOwner);
+            }
+
+            Boolean isActiveVal = null;
+            if (isActive != null && !isActive.isBlank()) {
+                isActiveVal = Boolean.valueOf(isActive);
+            }
+
+            var ctr = contributorDao.updateContributor(contributorId, isOwnerVal, isActiveVal);
             return Response.ok(ctr).build();
         } catch (DataExistenceException ex) {
             logger.error(ex.getMessage());
             return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
         } catch (DataCreationException ex) {
             logger.error(ex.getMessage());
-            if (ex.getMessage().equals(LogMessageUtil.PROJECT_HAS_OWNER)) {
-                return Response.status(Response.Status.FOUND).entity(ex.getLocalizedMessage()).build();
-            } else {
-                return Response.status(Response.Status.CONFLICT).entity(ex.getLocalizedMessage()).build();
+
+            switch (ex.getMessage()) {
+                case LogMessageUtil.PROJECT_HAS_OWNER:
+                    return Response.status(Response.Status.FOUND).entity(ex.getLocalizedMessage()).build();
+                case LogMessageUtil.PROJECT_HAS_NO_OWNER:
+                    return Response.status(Response.Status.CONFLICT).entity(ex.getLocalizedMessage()).build();
+                case LogMessageUtil.CONTRIBUTOR_NOT_ACTIVE:
+                    return Response.status(Response.Status.GONE).entity(ex.getLocalizedMessage()).build();
+                case LogMessageUtil.CONTRIBUTOR_CANNOT_BE_DEACTIVATED:
+                    return Response.status(Response.Status.FORBIDDEN).entity(ex.getLocalizedMessage()).build();
             }
 
         }
-
+        return null;
     }
 
     @GET

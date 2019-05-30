@@ -130,7 +130,6 @@ public class ContributorDao extends BaseDao {
         }
 
         if (isActive != null) {
-            System.out.println(ctr.isOwner());
             if (ctr.isOwner() && !isActive) {
                 logger.error(LogMessageUtil.CONTRIBUTOR_CANNOT_BE_DEACTIVATED);
                 throw new DataCreationException(LogMessageUtil.CONTRIBUTOR_CANNOT_BE_DEACTIVATED);

@@ -7,9 +7,9 @@ import javax.ws.rs.core.Response;
  */
 public interface ContributorService extends RestService {
 
-    Response createContributor(long userId, long projectId, boolean isOwner);
+    Response createContributor(long userId, long projectId, String isOwner);
 
-    Response updateContributor(long contributorId, Boolean isOwner, Boolean isActive);
+    Response updateContributor(long contributorId, String isOwner, String isActive);
 
     Response findProjectOwner(long projectId);
 

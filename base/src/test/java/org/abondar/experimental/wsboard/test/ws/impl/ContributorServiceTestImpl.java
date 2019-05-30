@@ -17,6 +17,8 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Test implementation of contributor web service
@@ -35,7 +37,7 @@ public class ContributorServiceTestImpl implements ContributorService {
     @Override
     public Response createContributor(@FormParam("userId") long userId,
                                       @FormParam("projectId") long projectId,
-                                      @FormParam("isOwner") boolean isOwner) {
+                                      @FormParam("isOwner") String isOwner) {
 
         if (testUser.getId() != userId) {
             return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.USER_NOT_EXISTS).build();
@@ -49,13 +51,14 @@ public class ContributorServiceTestImpl implements ContributorService {
             return Response.status(Response.Status.MOVED_PERMANENTLY).entity(LogMessageUtil.PROJECT_NOT_ACTIVE).build();
         }
 
-        if (isOwner) {
+        var isOwnerVal = Boolean.parseBoolean(isOwner);
+        if (isOwnerVal) {
             if (testContributor != null && testContributor.isOwner()) {
                 return Response.status(Response.Status.CONFLICT).entity(LogMessageUtil.PROJECT_HAS_OWNER).build();
             }
         }
 
-        testContributor = new Contributor(userId, projectId, isOwner);
+        testContributor = new Contributor(userId, projectId, isOwnerVal);
 
         return Response.ok(testContributor).build();
     }
@@ -66,16 +69,62 @@ public class ContributorServiceTestImpl implements ContributorService {
     @Produces(MediaType.APPLICATION_JSON)
     @Override
     public Response updateContributor(@FormParam("ctrId") long contributorId,
-                                      @FormParam("isOwner") Boolean isOwner,
-                                      @FormParam("isActive") Boolean isActive) {
-        return null;
+                                      @FormParam("isOwner") String isOwner,
+                                      @FormParam("isActive") String isActive) {
+
+        if (testContributor.getId() != contributorId) {
+            return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.CONTRIBUTOR_NOT_EXISTS).build();
+        }
+
+        boolean isOwnerVal;
+        if (isOwner != null && !isOwner.isBlank()) {
+            isOwnerVal = Boolean.parseBoolean(isOwner);
+
+            if (isOwnerVal) {
+                if (testContributor.isOwner()) {
+                    return Response.status(Response.Status.FOUND).entity(LogMessageUtil.PROJECT_HAS_OWNER).build();
+                }
+
+                if (!testContributor.isActive()) {
+                    return Response.status(Response.Status.GONE).entity(LogMessageUtil.CONTRIBUTOR_NOT_ACTIVE).build();
+                }
+
+            } else if (!testContributor.isOwner()) {
+                return Response.status(Response.Status.CONFLICT).entity(LogMessageUtil.PROJECT_HAS_NO_OWNER).build();
+            }
+            testContributor.setOwner(isOwnerVal);
+        }
+
+
+        boolean isActiveVal;
+        if (isActive != null && !isActive.isBlank()) {
+            isActiveVal = Boolean.parseBoolean(isActive);
+            if (testContributor.isOwner() && !isActiveVal) {
+                return Response.status(Response.Status.FORBIDDEN)
+                        .entity(LogMessageUtil.CONTRIBUTOR_CANNOT_BE_DEACTIVATED).build();
+            }
+            testContributor.setActive(isActiveVal);
+        }
+
+
+        return Response.ok(testContributor).build();
     }
 
     @GET
     @Path("/find_project_owner")
     @Override
     public Response findProjectOwner(@QueryParam("projectId") long projectId) {
-        return null;
+
+
+        if (testProject.getId() != projectId) {
+            return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.PROJECT_NOT_EXISTS).build();
+        }
+
+        if (!testContributor.isOwner()) {
+            return Response.status(Response.Status.NO_CONTENT).entity(LogMessageUtil.PROJECT_HAS_NO_OWNER).build();
+        }
+
+        return Response.ok(testContributor).build();
     }
 
     @GET
@@ -84,7 +133,34 @@ public class ContributorServiceTestImpl implements ContributorService {
     public Response findProjectContributors(@QueryParam("projectId") long projectId,
                                             @QueryParam("offset") int offset,
                                             @QueryParam("limit") int limit) {
-        return null;
+
+        if (testProject.getId() != projectId) {
+            return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.PROJECT_NOT_EXISTS).build();
+        }
+
+
+        var contributors = List.of(testContributor,
+                new Contributor(1, testProject.getId(), false),
+                new Contributor(2, testProject.getId(), false),
+                new Contributor(3, testProject.getId(), false),
+                new Contributor(4, testProject.getId(), false));
+
+        if (offset == -1) {
+            return Response.ok(contributors).build();
+        }
+
+        contributors = contributors.stream()
+                .skip(offset)
+                .limit(limit)
+                .collect(Collectors.toList());
+
+        if (contributors.isEmpty()) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+
+        return Response.ok(contributors).build();
+
+
     }
 
 
