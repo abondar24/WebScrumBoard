@@ -156,7 +156,7 @@ public class ContributorServiceTestImpl implements ContributorService {
                 .collect(Collectors.toList());
 
         if (contributors.isEmpty()) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(Response.Status.NO_CONTENT).build();
         }
 
         return Response.ok(contributors).build();

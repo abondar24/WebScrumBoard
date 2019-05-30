@@ -23,6 +23,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MediaType;
+import java.util.Collection;
 import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -31,10 +32,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
 public class ContributorServiceTest {
-    private Logger logger = LoggerFactory.getLogger(ContributorServiceTest.class);
-
     private static Server server;
     private static String endpoint = "local://wsboard_test_3";
+    private Logger logger = LoggerFactory.getLogger(ContributorServiceTest.class);
 
     @BeforeAll
     public static void beforeMethod() {
@@ -230,6 +230,97 @@ public class ContributorServiceTest {
 
         var msg = resp.readEntity(String.class);
         assertEquals(LogMessageUtil.PROJECT_HAS_NO_OWNER, msg);
+
+    }
+
+    @Test
+    public void findContributorsTest() {
+        logger.info("find contributors test");
+
+        var userId = createUser();
+        var projectId = createProject();
+        var ctr = createContributor(userId, projectId, "false");
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+        client.path("/contributor/find_project_contributors")
+                .accept(MediaType.APPLICATION_JSON)
+                .query("projectId", projectId)
+                .query("offset", 0)
+                .query("limit", 2);
+
+        var res = client.get();
+        assertEquals(200, res.getStatus());
+
+        Collection<? extends Contributor> ctrs = client.getCollection(Contributor.class);
+        assertEquals(2, ctrs.size());
+        assertEquals(ctr.getId(), ctrs.iterator().next().getId());
+
+
+    }
+
+    @Test
+    public void findContributorsProjectNotFoundTest() {
+        logger.info("find contributors test");
+
+        var userId = createUser();
+        var projectId = createProject();
+        createContributor(userId, projectId, "false");
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+        client.path("/contributor/find_project_contributors")
+                .accept(MediaType.APPLICATION_JSON)
+                .query("projectId", 7)
+                .query("offset", 0)
+                .query("limit", 2);
+
+        var res = client.get();
+        assertEquals(404, res.getStatus());
+
+        var msg = res.readEntity(String.class);
+        assertEquals(LogMessageUtil.PROJECT_NOT_EXISTS, msg);
+
+    }
+
+    @Test
+    public void findContributorsNegativeOffsetTest() {
+        logger.info("find contributors negative offset test");
+
+        var userId = createUser();
+        var projectId = createProject();
+        createContributor(userId, projectId, "false");
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+        client.path("/contributor/find_project_contributors")
+                .accept(MediaType.APPLICATION_JSON)
+                .query("projectId", projectId)
+                .query("offset", -1)
+                .query("limit", 2);
+
+        var res = client.get();
+        assertEquals(200, res.getStatus());
+
+        Collection<? extends Contributor> ctrs = client.getCollection(Contributor.class);
+        assertEquals(5, ctrs.size());
+
+    }
+
+    @Test
+    public void findContributorsEmptyResTest() {
+        logger.info("find contributors empty result test");
+
+        var userId = createUser();
+        var projectId = createProject();
+        createContributor(userId, projectId, "false");
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+        client.path("/contributor/find_project_contributors")
+                .accept(MediaType.APPLICATION_JSON)
+                .query("projectId", projectId)
+                .query("offset", 7)
+                .query("limit", 2);
+
+        var res = client.get();
+        assertEquals(204, res.getStatus());
 
     }
 

@@ -338,7 +338,7 @@ public class SprintServiceTest {
 
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
-        var sp = createSprint();
+        createSprint();
 
         client.path("/sprint/find_all")
                 .query("offset", 6)
