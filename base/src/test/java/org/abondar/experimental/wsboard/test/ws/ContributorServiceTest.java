@@ -27,6 +27,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest(classes = Main.class)
 @ExtendWith(SpringExtension.class)
@@ -171,6 +172,133 @@ public class ContributorServiceTest {
 
     }
 
+
+    @Test
+    public void updateContributorTest() {
+        logger.info("update contributor test");
+
+        var userId = createUser();
+        var projectId = createProject();
+        var ctr = createContributor(userId, projectId, "false");
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+        client.path("/contributor/update").accept(MediaType.APPLICATION_JSON);
+
+        var form = new Form();
+
+        form.param("ctrId", String.valueOf(ctr.getId()));
+        form.param("isActive", "true");
+        form.param("isOwner", "true");
+
+        var resp = client.post(form);
+        assertEquals(200, resp.getStatus());
+
+        ctr = resp.readEntity(Contributor.class);
+        assertTrue(ctr.isOwner());
+        assertTrue(ctr.isActive());
+
+    }
+
+
+    @Test
+    public void updateContributorOwnerFoundTest() {
+        logger.info("update contributor owner found test");
+
+        var userId = createUser();
+        var projectId = createProject();
+        var ctr = createContributor(userId, projectId, "true");
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+        client.path("/contributor/update").accept(MediaType.APPLICATION_JSON);
+
+        var form = new Form();
+
+        form.param("ctrId", String.valueOf(ctr.getId()));
+        form.param("isOwner", "true");
+
+        var resp = client.post(form);
+        assertEquals(302, resp.getStatus());
+
+        var msg = resp.readEntity(String.class);
+        assertEquals(LogMessageUtil.PROJECT_HAS_OWNER, msg);
+
+    }
+
+
+    @Test
+    public void updateContributorNoOwnerTest() {
+        logger.info("update contributor no owner test");
+
+        var userId = createUser();
+        var projectId = createProject();
+        var ctr = createContributor(userId, projectId, "false");
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+        client.path("/contributor/update").accept(MediaType.APPLICATION_JSON);
+
+        var form = new Form();
+
+        form.param("ctrId", String.valueOf(ctr.getId()));
+        form.param("isOwner", "false");
+
+        var resp = client.post(form);
+        assertEquals(409, resp.getStatus());
+
+        var msg = resp.readEntity(String.class);
+        assertEquals(LogMessageUtil.PROJECT_HAS_NO_OWNER, msg);
+
+    }
+
+
+    @Test
+    public void updateNotActiveContributorAsOwnerTest() {
+        logger.info("update not active contributor as owner test");
+
+        var userId = createUser();
+        var projectId = createProject();
+        var ctr = createContributor(userId, projectId, "false");
+        deactivateContributor(ctr.getId());
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+        client.path("/contributor/update").accept(MediaType.APPLICATION_JSON);
+
+        var form = new Form();
+
+        form.param("ctrId", String.valueOf(ctr.getId()));
+        form.param("isOwner", "true");
+
+        var resp = client.post(form);
+        assertEquals(410, resp.getStatus());
+
+        var msg = resp.readEntity(String.class);
+        assertEquals(LogMessageUtil.CONTRIBUTOR_NOT_ACTIVE, msg);
+
+    }
+
+
+    @Test
+    public void updateContributorDeactivateOwnerTest() {
+        logger.info("update contributor deactivate owner test");
+
+        var userId = createUser();
+        var projectId = createProject();
+        var ctr = createContributor(userId, projectId, "true");
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+        client.path("/contributor/update").accept(MediaType.APPLICATION_JSON);
+
+        var form = new Form();
+
+        form.param("ctrId", String.valueOf(ctr.getId()));
+        form.param("isActive", "false");
+
+        var resp = client.post(form);
+        assertEquals(403, resp.getStatus());
+
+        var msg = resp.readEntity(String.class);
+        assertEquals(LogMessageUtil.CONTRIBUTOR_CANNOT_BE_DEACTIVATED, msg);
+
+    }
 
     @Test
     public void findProjectOwnerTest() {
@@ -387,6 +515,19 @@ public class ContributorServiceTest {
 
 
         client.path("/contributor/delete_contributor").accept(MediaType.APPLICATION_JSON).get();
+    }
+
+
+    private void deactivateContributor(long ctrId) {
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+        client.path("/contributor/update").accept(MediaType.APPLICATION_JSON);
+
+        var form = new Form();
+
+        form.param("ctrId", String.valueOf(ctrId));
+        form.param("isActive", "false");
+
+        client.post(form);
     }
 
 }
