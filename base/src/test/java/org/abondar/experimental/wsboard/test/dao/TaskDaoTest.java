@@ -109,21 +109,6 @@ public class TaskDaoTest {
         cleanData();
     }
 
-    @Test
-    public void createTaskNullDateTest() throws Exception {
-        logger.info("Create task null date test");
-
-
-        var usr = createUser("");
-        var prj = createProject(true);
-        var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
-
-        assertThrows(DataCreationException.class, () ->
-                dao.createTask(contr.getId(), null, false));
-
-
-        cleanData();
-    }
 
 
     @Test

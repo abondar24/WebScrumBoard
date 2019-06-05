@@ -43,10 +43,9 @@ public class TaskDao extends BaseDao {
      * @param devOpsEnabled - dev ops state to be ignored or not
      * @return task POJO
      * @throws DataExistenceException - contributor not exists or is not active
-     * @throws DataCreationException  - task start date not set
      */
     public Task createTask(long contributorId, Date startDate, boolean devOpsEnabled)
-            throws DataExistenceException, DataCreationException {
+            throws DataExistenceException {
 
         var ctr = mapper.getContributorById(contributorId);
         if (ctr == null || !ctr.isActive()) {
@@ -54,12 +53,6 @@ public class TaskDao extends BaseDao {
             throw new DataExistenceException(LogMessageUtil.CONTRIBUTOR_NOT_EXISTS);
 
         }
-
-        if (startDate == null) {
-            logger.error(LogMessageUtil.TASK_START_DATE_NOT_SET);
-            throw new DataCreationException(LogMessageUtil.TASK_START_DATE_NOT_SET);
-        }
-
 
         var task = new Task(contributorId, startDate, devOpsEnabled);
 
@@ -293,7 +286,7 @@ public class TaskDao extends BaseDao {
 
         var prj = mapper.getProjectById(projectId);
         if (prj == null) {
-            var msg = String.format(LogMessageUtil.LOG_FORMAT, LogMessageUtil.PROJECT_EXISTS, projectId);
+            var msg = String.format(LogMessageUtil.LOG_FORMAT, LogMessageUtil.PROJECT_NOT_EXISTS, projectId);
             logger.info(msg);
             throw new DataExistenceException(LogMessageUtil.PROJECT_NOT_EXISTS);
         }

@@ -3,7 +3,7 @@ package org.abondar.experimental.wsboard.ws.service;
 import javax.ws.rs.core.Response;
 
 /**
- * Contributor web service
+ * Contributor CRUD web service
  */
 public interface ContributorService extends RestService {
 
