@@ -64,7 +64,7 @@ public class ProjectServiceTestImpl implements ProjectService {
     public Response updateProject(@FormParam("id") long id,
                                   @FormParam("name") String name,
                                   @FormParam("repo") String repo,
-                                  @FormParam("isActive") String isActive,
+                                  @FormParam("isActive") Boolean isActive,
                                   @FormParam("endDate") String endDate) {
         if (testProject.getId() != id) {
             return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.PROJECT_NOT_EXISTS).build();
@@ -82,9 +82,8 @@ public class ProjectServiceTestImpl implements ProjectService {
         testProject.setRepository(repo);
 
         if (isActive != null) {
-            var isActiveVal = Boolean.parseBoolean(isActive);
 
-            if (!isActiveVal) {
+            if (!isActive) {
                 Date endDt;
                 try {
                     endDt = convertDate(endDate);
@@ -100,11 +99,11 @@ public class ProjectServiceTestImpl implements ProjectService {
 
             }
 
-            if (!testProject.isActive() && isActiveVal) {
+            if (!testProject.isActive() && isActive) {
                 return Response.status(Response.Status.MOVED_PERMANENTLY).entity(LogMessageUtil.PROJECT_CANNOT_BE_REACTIVATED).build();
             }
 
-            testProject.setActive(isActiveVal);
+            testProject.setActive(isActive);
 
         }
         System.out.println(testProject);

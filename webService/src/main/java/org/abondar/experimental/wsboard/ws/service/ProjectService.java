@@ -9,7 +9,7 @@ public interface ProjectService extends RestService {
 
     Response createProject(String name, String startDate);
 
-    Response updateProject(long id, String name, String repo, String isActive, String endDate);
+    Response updateProject(long id, String name, String repo, Boolean isActive, String endDate);
 
     Response deleteProject(long id);
 

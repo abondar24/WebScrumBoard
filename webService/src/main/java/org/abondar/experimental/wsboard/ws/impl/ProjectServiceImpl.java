@@ -104,7 +104,7 @@ public class ProjectServiceImpl implements ProjectService {
                                   @Parameter(description = "Project repository")
                                           String repo,
                                   @FormParam("isActive")
-                                  @Parameter(description = "Project status") String isActive,
+                                      @Parameter(description = "Project status") Boolean isActive,
                                   @FormParam("endDate")
                                   @Parameter(description = "Project end date(required if status is false)")
                                           String endDate) {
@@ -115,12 +115,8 @@ public class ProjectServiceImpl implements ProjectService {
                 endDt = convertDate(endDate);
             }
 
-            Boolean isActiveVal = null;
-            if (isActive != null) {
-                isActiveVal = Boolean.valueOf(isActive);
-            }
 
-            var prj = projectDao.updateProject(id, name, repo, isActiveVal, endDt);
+            var prj = projectDao.updateProject(id, name, repo, isActive, endDt);
             return Response.ok(prj).build();
         } catch (DataExistenceException ex) {
             logger.error(ex.getMessage());

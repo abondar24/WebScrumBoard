@@ -37,7 +37,7 @@ public class ContributorServiceTestImpl implements ContributorService {
     @Override
     public Response createContributor(@FormParam("userId") long userId,
                                       @FormParam("projectId") long projectId,
-                                      @FormParam("isOwner") String isOwner) {
+                                      @FormParam("isOwner") boolean isOwner) {
 
         if (testUser.getId() != userId) {
             return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.USER_NOT_EXISTS).build();
@@ -51,14 +51,13 @@ public class ContributorServiceTestImpl implements ContributorService {
             return Response.status(Response.Status.MOVED_PERMANENTLY).entity(LogMessageUtil.PROJECT_NOT_ACTIVE).build();
         }
 
-        var isOwnerVal = Boolean.parseBoolean(isOwner);
-        if (isOwnerVal) {
+        if (isOwner) {
             if (testContributor != null && testContributor.isOwner())
             return Response.status(Response.Status.CONFLICT).entity(LogMessageUtil.PROJECT_HAS_OWNER).build();
 
         }
 
-        testContributor = new Contributor(userId, projectId, isOwnerVal);
+        testContributor = new Contributor(userId, projectId, isOwner);
         testContributor.setId(10);
 
         return Response.ok(testContributor).build();
@@ -70,18 +69,16 @@ public class ContributorServiceTestImpl implements ContributorService {
     @Produces(MediaType.APPLICATION_JSON)
     @Override
     public Response updateContributor(@FormParam("ctrId") long contributorId,
-                                      @FormParam("isOwner") String isOwner,
-                                      @FormParam("isActive") String isActive) {
+                                      @FormParam("isOwner") Boolean isOwner,
+                                      @FormParam("isActive") Boolean isActive) {
 
         if (testContributor.getId() != contributorId) {
             return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.CONTRIBUTOR_NOT_EXISTS).build();
         }
 
-        boolean isOwnerVal;
-        if (isOwner != null && !isOwner.isBlank()) {
-            isOwnerVal = Boolean.parseBoolean(isOwner);
+        if (isOwner != null) {
 
-            if (isOwnerVal) {
+            if (isOwner) {
                 if (testContributor.isOwner()) {
                     return Response.status(Response.Status.FOUND).entity(LogMessageUtil.PROJECT_HAS_OWNER).build();
                 }
@@ -93,18 +90,16 @@ public class ContributorServiceTestImpl implements ContributorService {
             } else if (!testContributor.isOwner()) {
                 return Response.status(Response.Status.CONFLICT).entity(LogMessageUtil.PROJECT_HAS_NO_OWNER).build();
             }
-            testContributor.setOwner(isOwnerVal);
+            testContributor.setOwner(isOwner);
         }
 
 
-        boolean isActiveVal;
-        if (isActive != null && !isActive.isBlank()) {
-            isActiveVal = Boolean.parseBoolean(isActive);
-            if (testContributor.isOwner() && !isActiveVal) {
+        if (isActive != null) {
+            if (testContributor.isOwner() && !isActive) {
                 return Response.status(Response.Status.FORBIDDEN)
                         .entity(LogMessageUtil.CONTRIBUTOR_CANNOT_BE_DEACTIVATED).build();
             }
-            testContributor.setActive(isActiveVal);
+            testContributor.setActive(isActive);
         }
 
 
@@ -210,9 +205,9 @@ public class ContributorServiceTestImpl implements ContributorService {
     @Path("/update_project")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response createProject(@FormParam("isActive") String isActive) {
+    public Response createProject(@FormParam("isActive") boolean isActive) {
 
-        testProject.setActive(Boolean.valueOf(isActive));
+        testProject.setActive(isActive);
 
         return Response.ok().build();
     }

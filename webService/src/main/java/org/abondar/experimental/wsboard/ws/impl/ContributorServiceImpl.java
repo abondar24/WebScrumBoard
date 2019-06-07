@@ -64,7 +64,7 @@ public class ContributorServiceImpl implements ContributorService {
                                       @FormParam("projectId")
                                       @Parameter(description = "Project ID", required = true) long projectId,
                                       @FormParam("isOwner")
-                                      @Parameter(description = "Is Owner", required = true) String isOwner) {
+                                      @Parameter(description = "Is Owner", required = true) boolean isOwner) {
 
         try {
             var ctr = contributorDao.createContributor(userId, projectId, Boolean.valueOf(isOwner));
@@ -108,21 +108,12 @@ public class ContributorServiceImpl implements ContributorService {
     )
     @Override
     public Response updateContributor(@FormParam("ctrId") long contributorId,
-                                      @FormParam("isOwner") String isOwner,
-                                      @FormParam("isActive") String isActive) {
+                                      @FormParam("isOwner") Boolean isOwner,
+                                      @FormParam("isActive") Boolean isActive) {
 
         try {
-            Boolean isOwnerVal = null;
-            if (isOwner != null && !isOwner.isBlank()) {
-                isOwnerVal = Boolean.valueOf(isOwner);
-            }
 
-            Boolean isActiveVal = null;
-            if (isActive != null && !isActive.isBlank()) {
-                isActiveVal = Boolean.valueOf(isActive);
-            }
-
-            var ctr = contributorDao.updateContributor(contributorId, isOwnerVal, isActiveVal);
+            var ctr = contributorDao.updateContributor(contributorId, isOwner, isActive);
             return Response.ok(ctr).build();
         } catch (DataExistenceException ex) {
             logger.error(ex.getMessage());
