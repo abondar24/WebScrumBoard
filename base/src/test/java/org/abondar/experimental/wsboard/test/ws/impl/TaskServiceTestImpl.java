@@ -21,6 +21,8 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Test implementation of task web service
@@ -194,7 +196,28 @@ public class TaskServiceTestImpl implements TaskService {
     public Response getTasksForProject(@QueryParam("prId") long projectId,
                                        @QueryParam("offset") int offset,
                                        @QueryParam("limit") int limit) {
-        return null;
+        if (testProject.getId() != projectId) {
+            return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.PROJECT_NOT_EXISTS).build();
+        }
+
+        var tasks = List.of(testTask, new Task(), new Task());
+
+
+        if (offset == -1) {
+            return Response.ok(tasks).build();
+        }
+
+        tasks = tasks.stream()
+                .skip(offset)
+                .limit(limit)
+                .filter(t -> t.getContributorId() == testContributor.getId())
+                .collect(Collectors.toList());
+
+        if (tasks.isEmpty()) {
+            return Response.status(Response.Status.NO_CONTENT).build();
+        }
+
+        return Response.ok(tasks).build();
     }
 
     @GET
@@ -204,7 +227,28 @@ public class TaskServiceTestImpl implements TaskService {
     public Response getTasksForContributor(@QueryParam("ctrId") long ctrId,
                                            @QueryParam("offset") int offset,
                                            @QueryParam("limit") int limit) {
-        return null;
+        if (testContributor.getId() != ctrId) {
+            return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.PROJECT_NOT_EXISTS).build();
+        }
+
+        var tasks = List.of(testTask, new Task(), new Task());
+
+        if (offset == -1) {
+            return Response.ok(tasks).build();
+        }
+
+
+        tasks = tasks.stream()
+                .skip(offset)
+                .limit(limit)
+                .filter(t -> t.getContributorId() == testContributor.getId())
+                .collect(Collectors.toList());
+
+        if (tasks.isEmpty()) {
+            return Response.status(Response.Status.NO_CONTENT).build();
+        }
+
+        return Response.ok(tasks).build();
     }
 
     @GET
@@ -214,7 +258,29 @@ public class TaskServiceTestImpl implements TaskService {
     public Response getTasksForUser(@QueryParam("usrId") long usrId,
                                     @QueryParam("offset") int offset,
                                     @QueryParam("limit") int limit) {
-        return null;
+
+        if (testUser.getId() != usrId) {
+            return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.PROJECT_NOT_EXISTS).build();
+        }
+
+        var tasks = List.of(testTask, new Task(), new Task());
+
+        if (offset == -1) {
+            return Response.ok(tasks).build();
+        }
+
+
+        tasks = tasks.stream()
+                .skip(offset)
+                .limit(limit)
+                .filter(t -> t.getContributorId() == testContributor.getId() && testContributor.getUserId() == usrId)
+                .collect(Collectors.toList());
+
+        if (tasks.isEmpty()) {
+            return Response.status(Response.Status.NO_CONTENT).build();
+        }
+
+        return Response.ok(tasks).build();
     }
 
     @GET
@@ -224,7 +290,27 @@ public class TaskServiceTestImpl implements TaskService {
     public Response getTasksForSprint(@QueryParam("spId") long sprintId,
                                       @QueryParam("offset") int offset,
                                       @QueryParam("limit") int limit) {
-        return null;
+        if (testUser.getId() != sprintId) {
+            return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.PROJECT_NOT_EXISTS).build();
+        }
+
+        var tasks = List.of(testTask, new Task(), new Task());
+
+        if (offset == -1) {
+            return Response.ok(tasks).build();
+        }
+
+        tasks = tasks.stream()
+                .skip(offset)
+                .limit(limit)
+                .filter(t -> t.getSprintId() == sprintId)
+                .collect(Collectors.toList());
+
+        if (tasks.isEmpty()) {
+            return Response.status(Response.Status.NO_CONTENT).build();
+        }
+
+        return Response.ok(tasks).build();
     }
 
 
@@ -261,6 +347,7 @@ public class TaskServiceTestImpl implements TaskService {
     public Response createContributor() {
 
         testContributor = new Contributor(testUser.getId(), testProject.getId(), false);
+        testContributor.setId(10);
 
         return Response.ok(testContributor).build();
     }

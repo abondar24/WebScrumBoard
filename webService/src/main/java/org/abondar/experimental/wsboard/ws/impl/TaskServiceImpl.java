@@ -285,6 +285,7 @@ public class TaskServiceImpl implements TaskService {
                             responseCode = "200",
                             description = "Tasks found",
                             content = @Content(schema = @Schema(implementation = Task.class))),
+                    @ApiResponse(responseCode = "204", description = "No tasks not found"),
                     @ApiResponse(responseCode = "404", description = "Project not found"),
                     @ApiResponse(responseCode = "406", description = "JWT token is wrong")
             }
@@ -299,6 +300,10 @@ public class TaskServiceImpl implements TaskService {
                                                int limit) {
         try {
             var tasks = taskDao.getTasksForProject(projectId, offset, limit);
+            if (tasks.isEmpty()) {
+                return Response.status(Response.Status.NO_CONTENT).build();
+            }
+
             return Response.ok(tasks).build();
         } catch (DataExistenceException ex) {
             logger.error(ex.getMessage());
@@ -319,6 +324,7 @@ public class TaskServiceImpl implements TaskService {
                             responseCode = "200",
                             description = "Tasks found",
                             content = @Content(schema = @Schema(implementation = Task.class))),
+                    @ApiResponse(responseCode = "204", description = "No tasks not found"),
                     @ApiResponse(responseCode = "404", description = "Contributor not found"),
                     @ApiResponse(responseCode = "406", description = "JWT token is wrong")
             }
@@ -335,6 +341,10 @@ public class TaskServiceImpl implements TaskService {
                                                    int limit) {
         try {
             var tasks = taskDao.getTasksForContributor(ctrId, offset, limit);
+            if (tasks.isEmpty()) {
+                return Response.status(Response.Status.NO_CONTENT).build();
+            }
+
             return Response.ok(tasks).build();
         } catch (DataExistenceException ex) {
             logger.error(ex.getMessage());
@@ -355,6 +365,7 @@ public class TaskServiceImpl implements TaskService {
                             responseCode = "200",
                             description = "Tasks found",
                             content = @Content(schema = @Schema(implementation = Task.class))),
+                    @ApiResponse(responseCode = "204", description = "No tasks not found"),
                     @ApiResponse(responseCode = "404", description = "Contributor not found"),
                     @ApiResponse(responseCode = "406", description = "JWT token is wrong")
             }
@@ -372,6 +383,10 @@ public class TaskServiceImpl implements TaskService {
 
         try {
             var tasks = taskDao.getTasksForUser(usrId, offset, limit);
+            if (tasks.isEmpty()) {
+                return Response.status(Response.Status.NO_CONTENT).build();
+            }
+
             return Response.ok(tasks).build();
         } catch (DataExistenceException ex) {
             logger.error(ex.getMessage());
@@ -391,6 +406,7 @@ public class TaskServiceImpl implements TaskService {
                             responseCode = "200",
                             description = "Tasks found",
                             content = @Content(schema = @Schema(implementation = Task.class))),
+                    @ApiResponse(responseCode = "204", description = "No tasks not found"),
                     @ApiResponse(responseCode = "404", description = "Contributor not found"),
                     @ApiResponse(responseCode = "406", description = "JWT token is wrong")
             }
@@ -407,6 +423,10 @@ public class TaskServiceImpl implements TaskService {
                                               int limit) {
         try {
             var tasks = taskDao.getTasksForSprint(sprintId, offset, limit);
+            if (tasks.isEmpty()) {
+                return Response.status(Response.Status.NO_CONTENT).build();
+            }
+
             return Response.ok(tasks).build();
         } catch (DataExistenceException ex) {
             logger.error(ex.getMessage());

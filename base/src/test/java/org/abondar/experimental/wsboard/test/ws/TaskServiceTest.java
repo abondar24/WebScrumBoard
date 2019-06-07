@@ -31,6 +31,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MediaType;
+import java.util.Collection;
 import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -40,10 +41,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
 public class TaskServiceTest {
-    private Logger logger = LoggerFactory.getLogger(TaskServiceTest.class);
-
     private static Server server;
     private static String endpoint = "local://wsboard_test_4";
+    private Logger logger = LoggerFactory.getLogger(TaskServiceTest.class);
 
     @BeforeAll
     public static void beforeMethod() {
@@ -604,6 +604,96 @@ public class TaskServiceTest {
         assertEquals(LogMessageUtil.TASK_NOT_EXISTS, msg);
 
     }
+
+    @Test
+    public void findTaskForProjectTest() {
+        logger.info("find tasks for project test");
+
+        var prId = createProject();
+        createUser();
+        var ctrId = createContributor();
+        var taskId = createTask(ctrId);
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+        client.path("/task/find_project_tasks").accept(MediaType.APPLICATION_JSON)
+                .query("prId", prId)
+                .query("offset", 0)
+                .query("limit", 2);
+
+        var resp = client.get();
+        assertEquals(200, resp.getStatus());
+
+        Collection<? extends Task> tasks = client.getCollection(Task.class);
+        assertEquals(1, tasks.size());
+        assertEquals(taskId, tasks.iterator().next().getId());
+    }
+
+    @Test
+    public void findTaskForProjectMinusOffsetTest() {
+        logger.info("find tasks for project minus offset test");
+
+        var prId = createProject();
+        createUser();
+        var ctrId = createContributor();
+        createTask(ctrId);
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+        client.path("/task/find_project_tasks").accept(MediaType.APPLICATION_JSON)
+                .query("prId", prId)
+                .query("offset", -1)
+                .query("limit", 2);
+
+        var resp = client.get();
+        assertEquals(200, resp.getStatus());
+
+        Collection<? extends Task> tasks = client.getCollection(Task.class);
+        assertEquals(3, tasks.size());
+
+    }
+
+    @Test
+    public void findTaskForProjectEmptyResultTest() {
+        logger.info("find tasks for project empty test");
+
+        var prId = createProject();
+        createUser();
+        var ctrId = createContributor();
+        createTask(ctrId);
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+        client.path("/task/find_project_tasks").accept(MediaType.APPLICATION_JSON)
+                .query("prId", prId)
+                .query("offset", 1)
+                .query("limit", 1);
+
+        var resp = client.get();
+        assertEquals(204, resp.getStatus());
+    }
+
+    @Test
+    public void findTaskForProjectNotFoundTest() {
+        logger.info("find tasks for project not found test");
+
+        createProject();
+        createUser();
+        var ctrId = createContributor();
+        createTask(ctrId);
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+        client.path("/task/find_project_tasks").accept(MediaType.APPLICATION_JSON)
+                .query("id", 8)
+                .query("offset", 0)
+                .query("limit", 2);
+
+        var resp = client.get();
+        assertEquals(404, resp.getStatus());
+
+        var msg = resp.readEntity(String.class);
+        assertEquals(LogMessageUtil.PROJECT_NOT_EXISTS, msg);
+    }
+
+
+
 
 
     private long createUser() {
