@@ -737,7 +737,7 @@ public class TaskServiceTest {
 
     @Test
     public void findTaskForContributorNotFoundTest() {
-        logger.info("find tasks for contrbitor not found test");
+        logger.info("find tasks for contributor not found test");
 
         createProject();
         createUser();
@@ -757,6 +757,70 @@ public class TaskServiceTest {
         assertEquals(LogMessageUtil.CONTRIBUTOR_NOT_EXISTS, msg);
     }
 
+
+    @Test
+    public void findTaskForUserTest() {
+        logger.info("find tasks for user test");
+
+        createProject();
+        var usrId = createUser();
+        var ctrId = createContributor();
+        var taskId = createTask(ctrId);
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+        client.path("/task/find_user_tasks").accept(MediaType.APPLICATION_JSON)
+                .query("usrId", usrId)
+                .query("offset", 0)
+                .query("limit", 2);
+
+        var resp = client.get();
+        assertEquals(200, resp.getStatus());
+
+        Collection<? extends Task> tasks = client.getCollection(Task.class);
+        assertEquals(1, tasks.size());
+        assertEquals(taskId, tasks.iterator().next().getId());
+    }
+
+    @Test
+    public void findTaskForUserEmptyResultTest() {
+        logger.info("find tasks for user empty test");
+
+        createProject();
+        var usrId = createUser();
+        var ctrId = createContributor();
+        createTask(ctrId);
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+        client.path("/task/find_user_tasks").accept(MediaType.APPLICATION_JSON)
+                .query("usrId", usrId)
+                .query("offset", 1)
+                .query("limit", 1);
+
+        var resp = client.get();
+        assertEquals(204, resp.getStatus());
+    }
+
+    @Test
+    public void findTaskForUserNotFoundTest() {
+        logger.info("find tasks for user not found test");
+
+        createProject();
+        createUser();
+        var ctrId = createContributor();
+        createTask(ctrId);
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+        client.path("/task/find_user_tasks").accept(MediaType.APPLICATION_JSON)
+                .query("usrId", 8)
+                .query("offset", 0)
+                .query("limit", 2);
+
+        var resp = client.get();
+        assertEquals(404, resp.getStatus());
+
+        var msg = resp.readEntity(String.class);
+        assertEquals(LogMessageUtil.USER_NOT_EXISTS, msg);
+    }
 
 
 
