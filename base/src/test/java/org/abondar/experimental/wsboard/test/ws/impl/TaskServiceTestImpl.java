@@ -1,5 +1,13 @@
 package org.abondar.experimental.wsboard.test.ws.impl;
 
+import org.abondar.experimental.wsboard.dao.data.LogMessageUtil;
+import org.abondar.experimental.wsboard.dao.exception.DataCreationException;
+import org.abondar.experimental.wsboard.datamodel.Contributor;
+import org.abondar.experimental.wsboard.datamodel.Project;
+import org.abondar.experimental.wsboard.datamodel.Sprint;
+import org.abondar.experimental.wsboard.datamodel.task.Task;
+import org.abondar.experimental.wsboard.datamodel.task.TaskState;
+import org.abondar.experimental.wsboard.datamodel.user.User;
 import org.abondar.experimental.wsboard.ws.service.TaskService;
 
 import javax.ws.rs.Consumes;
@@ -11,12 +19,20 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.Date;
 
 /**
  * Test implementation of task web service
  */
 @Path("/task")
 public class TaskServiceTestImpl implements TaskService {
+
+
+    private Task testTask;
+    private User testUser;
+    private Project testProject;
+    private Sprint testSprint;
+    private Contributor testContributor;
 
     @POST
     @Path("/create")
@@ -26,7 +42,21 @@ public class TaskServiceTestImpl implements TaskService {
     public Response createTask(@FormParam("ctrId") long contributorId,
                                @FormParam("startDate") String startDate,
                                @FormParam("devOps") String devOpsEnabled) {
-        return null;
+        try {
+            Date stDate = convertDate(startDate);
+
+            if (testContributor == null) {
+                return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.CONTRIBUTOR_NOT_EXISTS).build();
+            }
+
+            testTask = new Task(contributorId, stDate, Boolean.valueOf(devOpsEnabled));
+            testTask.setTaskState(TaskState.CREATED);
+
+            return Response.ok(testTask).build();
+
+        } catch (DataCreationException ex) {
+            return Response.status(Response.Status.PARTIAL_CONTENT).entity(ex.getLocalizedMessage()).build();
+        }
     }
 
     @POST
@@ -116,4 +146,45 @@ public class TaskServiceTestImpl implements TaskService {
                                       @QueryParam("limit") int limit) {
         return null;
     }
+
+
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/create_user")
+    public Response createUser() {
+
+
+        testUser = new User("test", "test", "test", "testy", "test", "test");
+        testUser.setId(10);
+
+
+        return Response.ok(testUser).build();
+    }
+
+
+    @POST
+    @Path("/create_project")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response createProject() {
+
+
+        testProject = new Project("test", new Date());
+        testProject.setId(10);
+
+        return Response.ok(testProject).build();
+    }
+
+
+    @GET
+    @Path("/create_contributor")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response createContributor() {
+
+        testContributor = new Contributor(testUser.getId(), testProject.getId(), false);
+
+        return Response.ok(testContributor).build();
+    }
+
+
+
 }
