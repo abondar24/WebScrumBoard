@@ -5,6 +5,7 @@ import org.abondar.experimental.wsboard.base.Main;
 import org.abondar.experimental.wsboard.dao.data.LogMessageUtil;
 import org.abondar.experimental.wsboard.datamodel.Contributor;
 import org.abondar.experimental.wsboard.datamodel.Project;
+import org.abondar.experimental.wsboard.datamodel.Sprint;
 import org.abondar.experimental.wsboard.datamodel.task.Task;
 import org.abondar.experimental.wsboard.datamodel.task.TaskState;
 import org.abondar.experimental.wsboard.datamodel.user.User;
@@ -173,9 +174,6 @@ public class TaskServiceTest {
         var resp = client.post(form);
         assertEquals(404, resp.getStatus());
 
-        var res = resp.readEntity(Task.class);
-        assertEquals(taskId, res.getId());
-
         var msg = resp.readEntity(String.class);
         assertEquals(LogMessageUtil.TASK_NOT_EXISTS, msg);
     }
@@ -193,8 +191,8 @@ public class TaskServiceTest {
         client.path("/task/update").accept(MediaType.APPLICATION_JSON);
 
         var form = new Form();
-        form.param("id", "7");
-        form.param("ctrId", String.valueOf(ctrId));
+        form.param("id", String.valueOf(taskId));
+        form.param("ctrId", "7");
         form.param("startDate", "31/12/2119");
         form.param("devOps", "false");
         form.param("storyPoints", "8");
@@ -202,15 +200,83 @@ public class TaskServiceTest {
         var resp = client.post(form);
         assertEquals(404, resp.getStatus());
 
-        var res = resp.readEntity(Task.class);
-        assertEquals(taskId, res.getId());
-
         var msg = resp.readEntity(String.class);
         assertEquals(LogMessageUtil.CONTRIBUTOR_NOT_EXISTS, msg);
     }
 
 
+    @Test
+    public void updateTaskSprintTest() {
+        logger.info("update task sprint test");
 
+        createProject();
+        createUser();
+        var ctrId = createContributor();
+        var taskId = createTask(ctrId);
+        var sprintId = createSprint();
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+        client.path("/task/update_sprint").accept(MediaType.APPLICATION_JSON);
+
+        var form = new Form();
+        form.param("id", String.valueOf(taskId));
+        form.param("sprintId", String.valueOf(sprintId));
+
+        var resp = client.post(form);
+        assertEquals(200, resp.getStatus());
+
+        var res = resp.readEntity(Task.class);
+        assertEquals(sprintId, res.getSprintId());
+    }
+
+    @Test
+    public void updateTaskSprintTaskNotFoundTest() {
+        logger.info("update task sprint task not found test");
+
+        createProject();
+        createUser();
+        var ctrId = createContributor();
+        createTask(ctrId);
+        var sprintId = createSprint();
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+        client.path("/task/update_sprint").accept(MediaType.APPLICATION_JSON);
+
+        var form = new Form();
+        form.param("id", "7");
+        form.param("sprintId", String.valueOf(sprintId));
+
+        var resp = client.post(form);
+        assertEquals(404, resp.getStatus());
+
+        var msg = resp.readEntity(String.class);
+        assertEquals(LogMessageUtil.TASK_NOT_EXISTS, msg);
+    }
+
+
+    @Test
+    public void updateTaskSprintNotFoundTest() {
+        logger.info("update task sprint not found test");
+
+        createProject();
+        createUser();
+        var ctrId = createContributor();
+        var taskId = createTask(ctrId);
+        createSprint();
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+        client.path("/task/update_sprint").accept(MediaType.APPLICATION_JSON);
+
+        var form = new Form();
+        form.param("id", String.valueOf(taskId));
+        form.param("sprintId", "8");
+
+        var resp = client.post(form);
+        assertEquals(404, resp.getStatus());
+
+        var msg = resp.readEntity(String.class);
+        assertEquals(LogMessageUtil.SPRINT_NOT_EXISTS, msg);
+    }
 
 
     private long createUser() {
@@ -250,7 +316,6 @@ public class TaskServiceTest {
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
         client.path("/task/create_contributor").accept(MediaType.APPLICATION_JSON);
 
-
         var resp = client.get();
 
         return resp.readEntity(Contributor.class).getId();
@@ -270,4 +335,14 @@ public class TaskServiceTest {
 
         return resp.readEntity(Task.class).getId();
     }
+
+    private long createSprint() {
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+        client.path("/task/create_sprint").accept(MediaType.APPLICATION_JSON);
+
+        var resp = client.get();
+
+        return resp.readEntity(Sprint.class).getId();
+    }
+
 }

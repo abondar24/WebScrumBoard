@@ -45,7 +45,7 @@ public class TaskServiceTestImpl implements TaskService {
         try {
             Date stDate = convertDate(startDate);
 
-            if (testContributor == null) {
+            if (testContributor.getId() != contributorId) {
                 return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.CONTRIBUTOR_NOT_EXISTS).build();
             }
 
@@ -91,7 +91,18 @@ public class TaskServiceTestImpl implements TaskService {
     @Override
     public Response updateTaskSprint(@FormParam("id") long taskId,
                                      @FormParam("sprintId") long sprintId) {
-        return null;
+
+        if (testTask.getId() != taskId) {
+            return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.TASK_NOT_EXISTS).build();
+        }
+
+        if (testSprint.getId() != sprintId) {
+            return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.SPRINT_NOT_EXISTS).build();
+        }
+
+        testTask.setSprintId(sprintId);
+
+        return Response.ok(testTask).build();
     }
 
     @POST
@@ -199,5 +210,14 @@ public class TaskServiceTestImpl implements TaskService {
     }
 
 
+    @GET
+    @Path("/create_sprint")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response createSprint() {
+
+        testSprint = new Sprint();
+
+        return Response.ok(testSprint).build();
+    }
 
 }
