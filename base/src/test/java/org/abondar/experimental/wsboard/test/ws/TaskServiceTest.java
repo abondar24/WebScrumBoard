@@ -529,6 +529,42 @@ public class TaskServiceTest {
 
     }
 
+    @Test
+    public void deleteTaskTest() {
+        logger.info("delete task test");
+
+        createProject();
+        createUser();
+        var ctrId = createContributor();
+        var taskId = createTask(ctrId);
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+        client.path("/task/delete").accept(MediaType.APPLICATION_JSON).query("id", taskId);
+
+        var resp = client.get();
+        assertEquals(200, resp.getStatus());
+
+    }
+
+    @Test
+    public void deleteTaskNotFoundTest() {
+        logger.info("delete task not found test");
+
+        createProject();
+        createUser();
+        var ctrId = createContributor();
+        createTask(ctrId);
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+        client.path("/task/delete").accept(MediaType.APPLICATION_JSON).query("id", 8);
+
+        var resp = client.get();
+        assertEquals(404, resp.getStatus());
+
+        var msg = resp.readEntity(String.class);
+        assertEquals(LogMessageUtil.TASK_NOT_EXISTS, msg);
+    }
+
 
     private long createUser() {
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));

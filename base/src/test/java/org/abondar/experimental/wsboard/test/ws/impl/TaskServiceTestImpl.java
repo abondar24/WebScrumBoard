@@ -168,7 +168,11 @@ public class TaskServiceTestImpl implements TaskService {
     @Produces(MediaType.APPLICATION_JSON)
     @Override
     public Response deleteTask(@QueryParam("id") long id) {
-        return null;
+        if (testTask.getId() != id) {
+            return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.TASK_NOT_EXISTS).build();
+        }
+
+        return Response.ok().build();
     }
 
     @GET
