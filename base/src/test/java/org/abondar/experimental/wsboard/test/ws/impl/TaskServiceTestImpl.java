@@ -180,7 +180,11 @@ public class TaskServiceTestImpl implements TaskService {
     @Produces(MediaType.APPLICATION_JSON)
     @Override
     public Response getTaskById(@QueryParam("id") long taskId) {
-        return null;
+        if (testTask.getId() != taskId) {
+            return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.TASK_NOT_EXISTS).build();
+        }
+
+        return Response.ok(testTask).build();
     }
 
     @GET

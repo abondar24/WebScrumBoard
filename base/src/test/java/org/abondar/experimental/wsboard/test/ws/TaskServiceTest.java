@@ -565,6 +565,46 @@ public class TaskServiceTest {
         assertEquals(LogMessageUtil.TASK_NOT_EXISTS, msg);
     }
 
+    @Test
+    public void findTaskTest() {
+        logger.info("find task test");
+
+        createProject();
+        createUser();
+        var ctrId = createContributor();
+        var taskId = createTask(ctrId);
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+        client.path("/task/find").accept(MediaType.APPLICATION_JSON).query("id", taskId);
+
+        var resp = client.get();
+        assertEquals(200, resp.getStatus());
+
+        var res = resp.readEntity(Task.class);
+        assertEquals(taskId, res.getId());
+
+    }
+
+    @Test
+    public void findTaskNotFoundTest() {
+        logger.info("find task not found test");
+
+        createProject();
+        createUser();
+        var ctrId = createContributor();
+        createTask(ctrId);
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+        client.path("/task/find").accept(MediaType.APPLICATION_JSON).query("id", 8);
+
+        var resp = client.get();
+        assertEquals(404, resp.getStatus());
+
+        var msg = resp.readEntity(String.class);
+        assertEquals(LogMessageUtil.TASK_NOT_EXISTS, msg);
+
+    }
+
 
     private long createUser() {
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
