@@ -34,6 +34,7 @@ import javax.ws.rs.core.MediaType;
 import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest(classes = Main.class)
 @ExtendWith(SpringExtension.class)
@@ -159,7 +160,7 @@ public class TaskServiceTest {
         createProject();
         createUser();
         var ctrId = createContributor();
-        var taskId = createTask(ctrId);
+        createTask(ctrId);
 
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
         client.path("/task/update").accept(MediaType.APPLICATION_JSON);
@@ -278,6 +279,256 @@ public class TaskServiceTest {
         assertEquals(LogMessageUtil.SPRINT_NOT_EXISTS, msg);
     }
 
+    @Test
+    public void updateTaskStateTest() {
+        logger.info("update task state test");
+
+        createProject();
+        createUser();
+        var ctrId = createContributor();
+        var taskId = createTask(ctrId);
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+        client.path("/task/update_state").accept(MediaType.APPLICATION_JSON);
+
+        var form = new Form();
+        form.param("id", String.valueOf(taskId));
+        form.param("state", TaskState.IN_DEVELOPMENT.name());
+
+        var resp = client.post(form);
+        assertEquals(200, resp.getStatus());
+
+        var res = resp.readEntity(Task.class);
+        assertEquals(TaskState.CREATED, res.getPrevState());
+        assertEquals(TaskState.IN_DEVELOPMENT, res.getTaskState());
+
+    }
+
+    @Test
+    public void updateTaskStateTaskNotFoundTest() {
+        logger.info("update task state task not found test");
+
+        createProject();
+        createUser();
+        var ctrId = createContributor();
+        createTask(ctrId);
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+        client.path("/task/update_state").accept(MediaType.APPLICATION_JSON);
+
+        var form = new Form();
+        form.param("id", "7");
+        form.param("state", TaskState.IN_DEVELOPMENT.name());
+
+        var resp = client.post(form);
+        assertEquals(404, resp.getStatus());
+
+        var msg = resp.readEntity(String.class);
+        assertEquals(LogMessageUtil.TASK_NOT_EXISTS, msg);
+
+    }
+
+    @Test
+    public void updateTaskStateUnknownTest() {
+        logger.info("update task state unknown test");
+
+        createProject();
+        createUser();
+        var ctrId = createContributor();
+        var taskId = createTask(ctrId);
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+        client.path("/task/update_state").accept(MediaType.APPLICATION_JSON);
+
+        var form = new Form();
+        form.param("id", String.valueOf(taskId));
+        form.param("state", "test");
+
+        var resp = client.post(form);
+        assertEquals(400, resp.getStatus());
+
+        var msg = resp.readEntity(String.class);
+        assertEquals(LogMessageUtil.TASK_STATE_UNKNOWN, msg);
+
+    }
+
+    @Test
+    public void updateTaskStateCreatedTest() {
+        logger.info("update task state created test");
+
+        createProject();
+        createUser();
+        var ctrId = createContributor();
+        var taskId = createTask(ctrId);
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+        client.path("/task/update_state").accept(MediaType.APPLICATION_JSON);
+
+        var form = new Form();
+        form.param("id", String.valueOf(taskId));
+        form.param("state", TaskState.CREATED.name());
+
+        var resp = client.post(form);
+        assertEquals(201, resp.getStatus());
+
+        var msg = resp.readEntity(String.class);
+        assertEquals(LogMessageUtil.TASK_ALREADY_CREATED, msg);
+
+    }
+
+    @Test
+    public void updateTaskStateCompletedTest() {
+        logger.info("update task state completed test");
+
+        createProject();
+        createUser();
+        var ctrId = createContributor();
+        var taskId = createTask(ctrId);
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+        client.path("/task/update_state").accept(MediaType.APPLICATION_JSON);
+
+        var form = new Form();
+        form.param("id", String.valueOf(taskId));
+        form.param("state", TaskState.COMPLETED.name());
+
+
+        var resp = client.post(form);
+        assertEquals(200, resp.getStatus());
+
+        var res = resp.readEntity(Task.class);
+        assertNotNull(res.getEndDate());
+
+    }
+
+    @Test
+    public void updateTaskStateAlreadyCompletedTest() {
+        logger.info("update task state already completed test");
+
+        createProject();
+        createUser();
+        var ctrId = createContributor();
+        var taskId = createTask(ctrId);
+        updateTaskState(taskId, TaskState.COMPLETED);
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+        client.path("/task/update_state").accept(MediaType.APPLICATION_JSON);
+
+        var form = new Form();
+        form.param("id", String.valueOf(taskId));
+        form.param("state", TaskState.IN_DEVELOPMENT.name());
+
+
+        var resp = client.post(form);
+        assertEquals(302, resp.getStatus());
+
+        var msg = resp.readEntity(String.class);
+        assertEquals(LogMessageUtil.TASK_ALREADY_COMPLETED, msg);
+
+    }
+
+    @Test
+    public void updateTaskStateInDeploymentTest() {
+        logger.info("update task state in deployment test");
+
+        createProject();
+        createUser();
+        var ctrId = createContributor();
+        var taskId = createTask(ctrId);
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+        client.path("/task/update_state").accept(MediaType.APPLICATION_JSON);
+
+        var form = new Form();
+        form.param("id", String.valueOf(taskId));
+        form.param("state", TaskState.IN_DEPLOYMENT.name());
+
+
+        var resp = client.post(form);
+        assertEquals(204, resp.getStatus());
+
+        var msg = resp.readEntity(String.class);
+        assertEquals(LogMessageUtil.TASK_DEV_OPS_NOT_ENABLED, msg);
+
+    }
+
+    @Test
+    public void updateTaskStatePausedTest() {
+        logger.info("update task state paused test");
+
+        createProject();
+        createUser();
+        var ctrId = createContributor();
+        var taskId = createTask(ctrId);
+        updateTaskState(taskId, TaskState.PAUSED);
+
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+        client.path("/task/update_state").accept(MediaType.APPLICATION_JSON);
+
+        var form = new Form();
+        form.param("id", String.valueOf(taskId));
+        form.param("state", TaskState.IN_TEST.name());
+
+
+        var resp = client.post(form);
+        assertEquals(409, resp.getStatus());
+
+        var msg = resp.readEntity(String.class);
+        assertEquals(LogMessageUtil.TASK_WRONG_STATE_AFTER_PAUSE, msg);
+
+    }
+
+    @Test
+    public void updateTaskStateMoveNotAvailableTest() {
+        logger.info("update task state move not available test");
+
+        createProject();
+        createUser();
+        var ctrId = createContributor();
+        var taskId = createTask(ctrId);
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+        client.path("/task/update_state").accept(MediaType.APPLICATION_JSON);
+
+        var form = new Form();
+        form.param("id", String.valueOf(taskId));
+        form.param("state", TaskState.IN_CODE_REVIEW.name());
+
+
+        var resp = client.post(form);
+        assertEquals(501, resp.getStatus());
+
+        var msg = resp.readEntity(String.class);
+        assertEquals(LogMessageUtil.TASK_MOVE_NOT_AVAILABLE, msg);
+
+    }
+
+    @Test
+    public void updateTaskStateRedirectTest() {
+        logger.info("update task state redirect test");
+
+        createProject();
+        createUser();
+        var ctrId = createContributor();
+        var taskId = createTask(ctrId);
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+        client.path("/task/update_state").accept(MediaType.APPLICATION_JSON);
+
+        var form = new Form();
+        form.param("id", String.valueOf(taskId));
+        form.param("state", TaskState.IN_TEST.name());
+
+
+        var resp = client.post(form);
+        assertEquals(202, resp.getStatus());
+
+        var msg = resp.readEntity(String.class);
+        assertEquals(LogMessageUtil.TASK_CONTRIBUTOR_UPDATE, msg);
+
+    }
+
 
     private long createUser() {
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
@@ -345,4 +596,16 @@ public class TaskServiceTest {
         return resp.readEntity(Sprint.class).getId();
     }
 
+    public void updateTaskState(long taskId, TaskState state) {
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+        client.path("/task/update_state").accept(MediaType.APPLICATION_JSON);
+
+        var form = new Form();
+        form.param("id", String.valueOf(taskId));
+        form.param("state", state.name());
+
+        client.post(form);
+
+        client.close();
+    }
 }

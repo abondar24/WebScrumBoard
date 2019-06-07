@@ -2,6 +2,7 @@ package org.abondar.experimental.wsboard.test.ws.impl;
 
 import org.abondar.experimental.wsboard.dao.data.LogMessageUtil;
 import org.abondar.experimental.wsboard.dao.exception.DataCreationException;
+import org.abondar.experimental.wsboard.dao.exception.DataExistenceException;
 import org.abondar.experimental.wsboard.datamodel.Contributor;
 import org.abondar.experimental.wsboard.datamodel.Project;
 import org.abondar.experimental.wsboard.datamodel.Sprint;
@@ -112,7 +113,54 @@ public class TaskServiceTestImpl implements TaskService {
     @Override
     public Response updateTaskState(@FormParam("id") long taskId,
                                     @FormParam("state") String state) {
-        return null;
+
+        if (testTask.getId() != taskId) {
+            return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.TASK_NOT_EXISTS).build();
+        }
+
+        try {
+            var taskState = getTaskState(state);
+
+            if (taskState == TaskState.CREATED) {
+                return Response.status(Response.Status.CREATED).entity(LogMessageUtil.TASK_ALREADY_CREATED).build();
+            }
+
+            if (testTask.getTaskState() == TaskState.COMPLETED) {
+                return Response.status(Response.Status.FOUND).entity(LogMessageUtil.TASK_ALREADY_COMPLETED).build();
+            }
+
+            if (taskState == TaskState.COMPLETED) {
+                testTask.setEndDate(new Date());
+            }
+
+            if (!testTask.isDevOpsEnabled() && taskState == TaskState.IN_DEPLOYMENT) {
+                return Response.status(Response.Status.NO_CONTENT)
+                        .entity(LogMessageUtil.TASK_DEV_OPS_NOT_ENABLED).build();
+            }
+
+            if ((testTask.getTaskState() == TaskState.PAUSED) && (testTask.getPrevState() != taskState)) {
+                return Response.status(Response.Status.CONFLICT)
+                        .entity(LogMessageUtil.TASK_WRONG_STATE_AFTER_PAUSE).build();
+            }
+
+            if (taskState == TaskState.IN_CODE_REVIEW && testTask.getPrevState() == null) {
+                return Response.status(Response.Status.NOT_IMPLEMENTED)
+                        .entity(LogMessageUtil.TASK_MOVE_NOT_AVAILABLE).build();
+            }
+
+            if (taskState == TaskState.IN_TEST) {
+                return Response.status(Response.Status.ACCEPTED).entity(LogMessageUtil.TASK_CONTRIBUTOR_UPDATE).build();
+            }
+
+            testTask.setPrevState(testTask.getTaskState());
+            testTask.setTaskState(taskState);
+
+
+            return Response.ok(testTask).build();
+        } catch (DataExistenceException ex) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(ex.getLocalizedMessage()).build();
+        }
+
     }
 
     @GET
@@ -218,6 +266,14 @@ public class TaskServiceTestImpl implements TaskService {
         testSprint = new Sprint();
 
         return Response.ok(testSprint).build();
+    }
+
+    private TaskState getTaskState(String state) throws DataExistenceException {
+        try {
+            return TaskState.valueOf(state.toUpperCase());
+        } catch (IllegalArgumentException ex) {
+            throw new DataExistenceException(LogMessageUtil.TASK_STATE_UNKNOWN);
+        }
     }
 
 }
