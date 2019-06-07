@@ -66,11 +66,11 @@ public class TaskServiceImpl implements TaskService {
                                        String startDate,
                                @FormParam("devOps")
                                @Parameter(description = "dev ops status", required = true)
-                                       String devOpsEnabled) {
+                                           boolean devOpsEnabled) {
 
         try {
             Date stDate = convertDate(startDate);
-            var task = taskDao.createTask(contributorId, stDate, Boolean.valueOf(devOpsEnabled));
+            var task = taskDao.createTask(contributorId, stDate, devOpsEnabled);
             return Response.ok(task).build();
 
         } catch (DataCreationException ex) {
@@ -109,12 +109,12 @@ public class TaskServiceImpl implements TaskService {
                                        Long contributorId,
                                @FormParam("devOps")
                                @Parameter(description = "dev ops status")
-                                       String devOpsEnabled,
+                                       boolean devOpsEnabled,
                                @FormParam("storyPoints")
                                @Parameter(description = "story points")
                                        Integer storyPoints) {
         try {
-            var task = taskDao.updateTask(taskId, contributorId, Boolean.valueOf(devOpsEnabled), storyPoints);
+            var task = taskDao.updateTask(taskId, contributorId, devOpsEnabled, storyPoints);
             return Response.ok(task).build();
         } catch (DataExistenceException ex) {
             logger.error(ex.getMessage());

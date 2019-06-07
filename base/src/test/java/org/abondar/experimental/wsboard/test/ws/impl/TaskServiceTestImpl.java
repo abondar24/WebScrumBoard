@@ -41,7 +41,7 @@ public class TaskServiceTestImpl implements TaskService {
     @Override
     public Response createTask(@FormParam("ctrId") long contributorId,
                                @FormParam("startDate") String startDate,
-                               @FormParam("devOps") String devOpsEnabled) {
+                               @FormParam("devOps") boolean devOpsEnabled) {
         try {
             Date stDate = convertDate(startDate);
 
@@ -49,7 +49,7 @@ public class TaskServiceTestImpl implements TaskService {
                 return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.CONTRIBUTOR_NOT_EXISTS).build();
             }
 
-            testTask = new Task(contributorId, stDate, Boolean.valueOf(devOpsEnabled));
+            testTask = new Task(contributorId, stDate, devOpsEnabled);
             testTask.setTaskState(TaskState.CREATED);
 
             return Response.ok(testTask).build();
@@ -66,9 +66,22 @@ public class TaskServiceTestImpl implements TaskService {
     @Override
     public Response updateTask(@FormParam("id") long taskId,
                                @FormParam("ctrId") Long contributorId,
-                               @FormParam("devOps") String devOpsEnabled,
+                               @FormParam("devOps") boolean devOpsEnabled,
                                @FormParam("storyPoints") Integer storyPoints) {
-        return null;
+
+        if (testTask.getId() != taskId) {
+            return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.TASK_NOT_EXISTS).build();
+        }
+
+        if (testContributor.getId() != contributorId) {
+            return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.CONTRIBUTOR_NOT_EXISTS).build();
+        }
+
+        testTask.setContributorId(contributorId);
+        testTask.setDevOpsEnabled(devOpsEnabled);
+        testTask.setStoryPoints(storyPoints);
+
+        return Response.ok(testTask).build();
     }
 
     @POST

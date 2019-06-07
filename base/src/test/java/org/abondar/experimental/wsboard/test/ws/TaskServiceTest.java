@@ -84,7 +84,7 @@ public class TaskServiceTest {
 
     @Test
     public void createTaskWrongDateTest() {
-        logger.info("create task contributor not exists test");
+        logger.info("create task contributor wrong date test");
 
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
         client.path("/task/create").accept(MediaType.APPLICATION_JSON);
@@ -124,6 +124,93 @@ public class TaskServiceTest {
         var msg = resp.readEntity(String.class);
         assertEquals(LogMessageUtil.CONTRIBUTOR_NOT_EXISTS, msg);
     }
+
+    @Test
+    public void updateTaskTest() {
+        logger.info("update task test");
+
+        createProject();
+        createUser();
+        var ctrId = createContributor();
+        var taskId = createTask(ctrId);
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+        client.path("/task/update").accept(MediaType.APPLICATION_JSON);
+
+        var form = new Form();
+        form.param("id", String.valueOf(taskId));
+        form.param("ctrId", String.valueOf(ctrId));
+        form.param("startDate", "31/12/2119");
+        form.param("devOps", "false");
+        form.param("storyPoints", "8");
+
+        var resp = client.post(form);
+        assertEquals(200, resp.getStatus());
+
+        var res = resp.readEntity(Task.class);
+        assertEquals(taskId, res.getId());
+    }
+
+    @Test
+    public void updateTaskNotFoundTest() {
+        logger.info("update task  not found test");
+
+        createProject();
+        createUser();
+        var ctrId = createContributor();
+        var taskId = createTask(ctrId);
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+        client.path("/task/update").accept(MediaType.APPLICATION_JSON);
+
+        var form = new Form();
+        form.param("id", "7");
+        form.param("ctrId", String.valueOf(ctrId));
+        form.param("startDate", "31/12/2119");
+        form.param("devOps", "false");
+        form.param("storyPoints", "8");
+
+        var resp = client.post(form);
+        assertEquals(404, resp.getStatus());
+
+        var res = resp.readEntity(Task.class);
+        assertEquals(taskId, res.getId());
+
+        var msg = resp.readEntity(String.class);
+        assertEquals(LogMessageUtil.TASK_NOT_EXISTS, msg);
+    }
+
+    @Test
+    public void updateTaskContributorNotExistsTest() {
+        logger.info("update task contributor not found test");
+
+        createProject();
+        createUser();
+        var ctrId = createContributor();
+        var taskId = createTask(ctrId);
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+        client.path("/task/update").accept(MediaType.APPLICATION_JSON);
+
+        var form = new Form();
+        form.param("id", "7");
+        form.param("ctrId", String.valueOf(ctrId));
+        form.param("startDate", "31/12/2119");
+        form.param("devOps", "false");
+        form.param("storyPoints", "8");
+
+        var resp = client.post(form);
+        assertEquals(404, resp.getStatus());
+
+        var res = resp.readEntity(Task.class);
+        assertEquals(taskId, res.getId());
+
+        var msg = resp.readEntity(String.class);
+        assertEquals(LogMessageUtil.CONTRIBUTOR_NOT_EXISTS, msg);
+    }
+
+
+
 
 
     private long createUser() {
@@ -167,5 +254,20 @@ public class TaskServiceTest {
         var resp = client.get();
 
         return resp.readEntity(Contributor.class).getId();
+    }
+
+    private long createTask(long ctrId) {
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+        client.path("/task/create").accept(MediaType.APPLICATION_JSON);
+
+        var form = new Form();
+        form.param("ctrId", String.valueOf(ctrId));
+        form.param("startDate", "31/12/2119");
+        form.param("devOps", "false");
+
+        var resp = client.post(form);
+
+        return resp.readEntity(Task.class).getId();
     }
 }

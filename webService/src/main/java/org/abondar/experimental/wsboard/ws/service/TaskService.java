@@ -7,9 +7,9 @@ import javax.ws.rs.core.Response;
  */
 public interface TaskService extends RestService {
 
-    Response createTask(long contributorId, String startDate, String devOpsEnabled);
+    Response createTask(long contributorId, String startDate, boolean devOpsEnabled);
 
-    Response updateTask(long taskId, Long contributorId, String devOpsEnabled, Integer storyPoints);
+    Response updateTask(long taskId, Long contributorId, boolean devOpsEnabled, Integer storyPoints);
 
     Response updateTaskSprint(long taskId, long sprintId);
 
