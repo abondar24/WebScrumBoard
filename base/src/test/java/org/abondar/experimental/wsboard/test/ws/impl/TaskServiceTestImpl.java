@@ -210,7 +210,8 @@ public class TaskServiceTestImpl implements TaskService {
         tasks = tasks.stream()
                 .skip(offset)
                 .limit(limit)
-                .filter(t -> t.getContributorId() == testContributor.getId())
+                .filter(t -> t.getContributorId() == testContributor.getId()
+                        && testContributor.getProjectId() == projectId)
                 .collect(Collectors.toList());
 
         if (tasks.isEmpty()) {
@@ -228,7 +229,7 @@ public class TaskServiceTestImpl implements TaskService {
                                            @QueryParam("offset") int offset,
                                            @QueryParam("limit") int limit) {
         if (testContributor.getId() != ctrId) {
-            return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.PROJECT_NOT_EXISTS).build();
+            return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.CONTRIBUTOR_NOT_EXISTS).build();
         }
 
         var tasks = List.of(testTask, new Task(), new Task());
@@ -260,7 +261,7 @@ public class TaskServiceTestImpl implements TaskService {
                                     @QueryParam("limit") int limit) {
 
         if (testUser.getId() != usrId) {
-            return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.PROJECT_NOT_EXISTS).build();
+            return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.USER_NOT_EXISTS).build();
         }
 
         var tasks = List.of(testTask, new Task(), new Task());
@@ -291,7 +292,7 @@ public class TaskServiceTestImpl implements TaskService {
                                       @QueryParam("offset") int offset,
                                       @QueryParam("limit") int limit) {
         if (testUser.getId() != sprintId) {
-            return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.PROJECT_NOT_EXISTS).build();
+            return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.SPRINT_NOT_EXISTS).build();
         }
 
         var tasks = List.of(testTask, new Task(), new Task());

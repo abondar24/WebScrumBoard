@@ -681,7 +681,7 @@ public class TaskServiceTest {
 
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
         client.path("/task/find_project_tasks").accept(MediaType.APPLICATION_JSON)
-                .query("id", 8)
+                .query("prId", 8)
                 .query("offset", 0)
                 .query("limit", 2);
 
@@ -692,6 +692,70 @@ public class TaskServiceTest {
         assertEquals(LogMessageUtil.PROJECT_NOT_EXISTS, msg);
     }
 
+
+    @Test
+    public void findTaskForContributorTest() {
+        logger.info("find tasks for contributor test");
+
+        createProject();
+        createUser();
+        var ctrId = createContributor();
+        var taskId = createTask(ctrId);
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+        client.path("/task/find_contributor_tasks").accept(MediaType.APPLICATION_JSON)
+                .query("ctrId", ctrId)
+                .query("offset", 0)
+                .query("limit", 2);
+
+        var resp = client.get();
+        assertEquals(200, resp.getStatus());
+
+        Collection<? extends Task> tasks = client.getCollection(Task.class);
+        assertEquals(1, tasks.size());
+        assertEquals(taskId, tasks.iterator().next().getId());
+    }
+
+    @Test
+    public void findTaskForContributorEmptyResultTest() {
+        logger.info("find tasks for contributor empty test");
+
+        createProject();
+        createUser();
+        var ctrId = createContributor();
+        createTask(ctrId);
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+        client.path("/task/find_contributor_tasks").accept(MediaType.APPLICATION_JSON)
+                .query("ctrId", ctrId)
+                .query("offset", 1)
+                .query("limit", 1);
+
+        var resp = client.get();
+        assertEquals(204, resp.getStatus());
+    }
+
+    @Test
+    public void findTaskForContributorNotFoundTest() {
+        logger.info("find tasks for contrbitor not found test");
+
+        createProject();
+        createUser();
+        var ctrId = createContributor();
+        createTask(ctrId);
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+        client.path("/task/find_contributor_tasks").accept(MediaType.APPLICATION_JSON)
+                .query("ctrId", 8)
+                .query("offset", 0)
+                .query("limit", 2);
+
+        var resp = client.get();
+        assertEquals(404, resp.getStatus());
+
+        var msg = resp.readEntity(String.class);
+        assertEquals(LogMessageUtil.CONTRIBUTOR_NOT_EXISTS, msg);
+    }
 
 
 
