@@ -203,9 +203,6 @@ public class TaskServiceTestImpl implements TaskService {
         var tasks = List.of(testTask, new Task(), new Task());
 
 
-        if (offset == -1) {
-            return Response.ok(tasks).build();
-        }
 
         tasks = tasks.stream()
                 .skip(offset)
@@ -234,11 +231,6 @@ public class TaskServiceTestImpl implements TaskService {
 
         var tasks = List.of(testTask, new Task(), new Task());
 
-        if (offset == -1) {
-            return Response.ok(tasks).build();
-        }
-
-
         tasks = tasks.stream()
                 .skip(offset)
                 .limit(limit)
@@ -266,10 +258,6 @@ public class TaskServiceTestImpl implements TaskService {
 
         var tasks = List.of(testTask, new Task(), new Task());
 
-        if (offset == -1) {
-            return Response.ok(tasks).build();
-        }
-
 
         tasks = tasks.stream()
                 .skip(offset)
@@ -291,15 +279,12 @@ public class TaskServiceTestImpl implements TaskService {
     public Response getTasksForSprint(@QueryParam("spId") long sprintId,
                                       @QueryParam("offset") int offset,
                                       @QueryParam("limit") int limit) {
-        if (testUser.getId() != sprintId) {
+        if (testSprint.getId() != sprintId) {
             return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.SPRINT_NOT_EXISTS).build();
         }
 
+        testTask.setSprintId(testSprint.getId());
         var tasks = List.of(testTask, new Task(), new Task());
-
-        if (offset == -1) {
-            return Response.ok(tasks).build();
-        }
 
         tasks = tasks.stream()
                 .skip(offset)
@@ -360,6 +345,7 @@ public class TaskServiceTestImpl implements TaskService {
     public Response createSprint() {
 
         testSprint = new Sprint();
+        testSprint.setId(8);
 
         return Response.ok(testSprint).build();
     }

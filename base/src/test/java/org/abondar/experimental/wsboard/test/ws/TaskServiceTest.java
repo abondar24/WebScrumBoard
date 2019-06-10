@@ -270,7 +270,7 @@ public class TaskServiceTest {
 
         var form = new Form();
         form.param("id", String.valueOf(taskId));
-        form.param("sprintId", "8");
+        form.param("sprintId", "19");
 
         var resp = client.post(form);
         assertEquals(404, resp.getStatus());
@@ -629,29 +629,6 @@ public class TaskServiceTest {
     }
 
     @Test
-    public void findTaskForProjectMinusOffsetTest() {
-        logger.info("find tasks for project minus offset test");
-
-        var prId = createProject();
-        createUser();
-        var ctrId = createContributor();
-        createTask(ctrId);
-
-        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/task/find_project_tasks").accept(MediaType.APPLICATION_JSON)
-                .query("prId", prId)
-                .query("offset", -1)
-                .query("limit", 2);
-
-        var resp = client.get();
-        assertEquals(200, resp.getStatus());
-
-        Collection<? extends Task> tasks = client.getCollection(Task.class);
-        assertEquals(3, tasks.size());
-
-    }
-
-    @Test
     public void findTaskForProjectEmptyResultTest() {
         logger.info("find tasks for project empty test");
 
@@ -822,6 +799,72 @@ public class TaskServiceTest {
         assertEquals(LogMessageUtil.USER_NOT_EXISTS, msg);
     }
 
+    @Test
+    public void findTaskForSprintTest() {
+        logger.info("find tasks for sprint test");
+
+        createProject();
+        createUser();
+        var ctrId = createContributor();
+        var taskId = createTask(ctrId);
+        var spId = createSprint();
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+        client.path("/task/find_sprint_tasks").accept(MediaType.APPLICATION_JSON)
+                .query("spId", spId)
+                .query("offset", 0)
+                .query("limit", 2);
+
+        var resp = client.get();
+        assertEquals(200, resp.getStatus());
+
+        Collection<? extends Task> tasks = client.getCollection(Task.class);
+        assertEquals(1, tasks.size());
+        assertEquals(taskId, tasks.iterator().next().getId());
+    }
+
+
+    @Test
+    public void findTaskForSprintEmptyResultTest() {
+        logger.info("find tasks for sprint empty test");
+
+        createProject();
+        createUser();
+        var ctrId = createContributor();
+        createTask(ctrId);
+        var spId = createSprint();
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+        client.path("/task/find_sprint_tasks").accept(MediaType.APPLICATION_JSON)
+                .query("spId", spId)
+                .query("offset", 1)
+                .query("limit", 1);
+
+        var resp = client.get();
+        assertEquals(204, resp.getStatus());
+    }
+
+    @Test
+    public void findTaskForSprintNotFoundTest() {
+        logger.info("find tasks for sprint not found test");
+
+        createProject();
+        createUser();
+        var ctrId = createContributor();
+        createTask(ctrId);
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+        client.path("/task/find_sprint_tasks").accept(MediaType.APPLICATION_JSON)
+                .query("spId", 10)
+                .query("offset", 0)
+                .query("limit", 2);
+
+        var resp = client.get();
+        assertEquals(404, resp.getStatus());
+
+        var msg = resp.readEntity(String.class);
+        assertEquals(LogMessageUtil.SPRINT_NOT_EXISTS, msg);
+    }
 
 
     private long createUser() {
