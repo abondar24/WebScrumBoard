@@ -2,6 +2,7 @@ module org.abondar.experimental.wsboard.webService {
 
     requires transitive org.abondar.experimental.wsboard.dataModel;
     requires org.abondar.experimental.wsboard.dao;
+    requires org.abondar.experimental.wsboard.email;
     requires spring.boot;
     requires spring.boot.autoconfigure;
     requires spring.context;

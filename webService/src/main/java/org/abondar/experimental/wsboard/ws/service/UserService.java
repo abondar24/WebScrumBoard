@@ -25,4 +25,7 @@ public interface UserService extends RestService {
     Response loginUser(String login, String password);
 
     Response logoutUser(long id);
+
+    //TODO:
+    //Response sendEmail(long id)
 }
