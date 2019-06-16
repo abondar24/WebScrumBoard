@@ -281,33 +281,35 @@
         </dependency>
         <dependency>
             <groupId>org.apache.camel</groupId>
-            <artifactId>camel-cxf</artifactId>
-            <version>${camel.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-cxf-transport</artifactId>
-            <version>${camel.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.camel</groupId>
             <artifactId>camel-cxf-starter</artifactId>
             <version>${camel.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-core</artifactId>
+            <version>${camel.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-mail</artifactId>
+            <version>${camel.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-velocity</artifactId>
+            <version>${camel.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-velocity-starter</artifactId>
+            <version>${camel.version}</version>
+        </dependency>
+
 
         <dependency>
             <groupId>org.apache.camel</groupId>
             <artifactId>camel-cxf-transport-starter</artifactId>
             <version>${camel.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.abondar.experimental.wsboard</groupId>
-            <artifactId>email</artifactId>
-            <version>1.0</version>
-            <scope>compile</scope>
         </dependency>
 
     </dependencies>

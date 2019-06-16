@@ -29,12 +29,6 @@
         </dependency>
         <dependency>
             <groupId>org.abondar.experimental.wsboard</groupId>
-            <artifactId>email</artifactId>
-            <version>1.0</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.abondar.experimental.wsboard</groupId>
             <artifactId>dao</artifactId>
             <version>1.0</version>
             <scope>compile</scope>

@@ -2,7 +2,6 @@ module org.abondar.experimental.wsboard.webService {
 
     requires transitive org.abondar.experimental.wsboard.dataModel;
     requires org.abondar.experimental.wsboard.dao;
-    requires org.abondar.experimental.wsboard.email;
     requires spring.boot;
     requires spring.boot.autoconfigure;
     requires spring.context;
@@ -28,9 +27,14 @@ module org.abondar.experimental.wsboard.webService {
     requires io.swagger.v3.oas.annotations;
     requires camel.core;
     requires camel.cxf;
+    requires camel.mail;
+    requires camel.velocity;
+    requires camel.velocity.starter;
 
 
     exports org.abondar.experimental.wsboard.ws.config;
     exports org.abondar.experimental.wsboard.ws.service;
     exports org.abondar.experimental.wsboard.ws.security;
+    exports org.abondar.experimental.wsboard.ws.route;
+
 }

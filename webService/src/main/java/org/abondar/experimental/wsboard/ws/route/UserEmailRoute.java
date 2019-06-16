@@ -3,6 +3,9 @@ package org.abondar.experimental.wsboard.ws.route;
 import org.apache.camel.builder.RouteBuilder;
 import org.springframework.stereotype.Component;
 
+/**
+ * Route for invoking sending emails by user service events
+ */
 @Component
 public class UserEmailRoute extends RouteBuilder {
 

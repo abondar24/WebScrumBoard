@@ -22,7 +22,6 @@
         <module>base</module>
         <module>dataModel</module>
         <module>webService</module>
-        <module>email</module>
         <module>ui</module>
         <module>dao</module>
     </modules>
@@ -87,52 +86,8 @@
 
             </exclusions>
         </dependency>
-        <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-spring-boot-starter</artifactId>
-            <version>${camel.version}</version>
-            <exclusions>
-                <exclusion>
-                    <!-- served by tomcat-annotations-api instead -->
-                    <groupId>javax.xml.bind</groupId>
-                    <artifactId>jaxb-api</artifactId>
-                </exclusion>
-                <exclusion>
-                    <!-- served by tomcat-annotations-api instead -->
-                    <groupId>org.glassfish.jaxb</groupId>
-                    <artifactId>jaxb-runtime</artifactId>
-                </exclusion>
-                <exclusion>
-                    <!-- served by tomcat-annotations-api instead -->
-                    <groupId>javax.activation</groupId>
-                    <artifactId>javax.activation-api</artifactId>
-                </exclusion>
 
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-core</artifactId>
-            <version>${camel.version}</version>
-            <exclusions>
-                <exclusion>
-                    <!-- served by tomcat-annotations-api instead -->
-                    <groupId>javax.xml.bind</groupId>
-                    <artifactId>jaxb-api</artifactId>
-                </exclusion>
-                <exclusion>
-                    <!-- served by tomcat-annotations-api instead -->
-                    <groupId>org.glassfish.jaxb</groupId>
-                    <artifactId>jaxb-runtime</artifactId>
-                </exclusion>
-                <exclusion>
-                    <!-- served by tomcat-annotations-api instead -->
-                    <groupId>javax.activation</groupId>
-                    <artifactId>javax.activation-api</artifactId>
-                </exclusion>
 
-            </exclusions>
-        </dependency>
     </dependencies>
 
     <build>

@@ -26,6 +26,9 @@ import java.util.List;
 import static org.abondar.experimental.wsboard.dao.data.LogMessageUtil.NULL_PASS;
 import static org.abondar.experimental.wsboard.dao.data.LogMessageUtil.VERIFICATION_FAILED;
 
+/**
+ * Authorization service implementation
+ */
 public class AuthServiceImpl implements AuthService {
     @Autowired
     private DataMapper dataMapper;
@@ -33,7 +36,6 @@ public class AuthServiceImpl implements AuthService {
     private String secret = "borscht";
 
     private static final Long EXPIRY_PERIOD = 3600l;
-
 
 
     @Override
