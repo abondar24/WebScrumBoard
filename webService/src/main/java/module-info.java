@@ -29,7 +29,6 @@ module org.abondar.experimental.wsboard.webService {
     requires camel.cxf;
     requires camel.mail;
     requires camel.velocity;
-    requires camel.velocity.starter;
 
 
     exports org.abondar.experimental.wsboard.ws.config;

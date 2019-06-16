@@ -18,70 +18,16 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
             <version>${springboot.version}</version>
-            <exclusions>
-                <exclusion>
-                    <!-- served by tomcat-annotations-api instead -->
-                    <groupId>javax.xml.bind</groupId>
-                    <artifactId>jaxb-api</artifactId>
-                </exclusion>
-                <exclusion>
-                    <!-- served by tomcat-annotations-api instead -->
-                    <groupId>org.glassfish.jaxb</groupId>
-                    <artifactId>jaxb-runtime</artifactId>
-                </exclusion>
-                <exclusion>
-                    <!-- served by tomcat-annotations-api instead -->
-                    <groupId>javax.activation</groupId>
-                    <artifactId>javax.activation-api</artifactId>
-                </exclusion>
-
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-spring-boot-starter-jaxrs</artifactId>
             <version>${cxf.version}</version>
-            <exclusions>
-                <exclusion>
-                    <!-- served by tomcat-annotations-api instead -->
-                    <groupId>javax.xml.bind</groupId>
-                    <artifactId>jaxb-api</artifactId>
-                </exclusion>
-                <exclusion>
-                    <!-- served by tomcat-annotations-api instead -->
-                    <groupId>org.glassfish.jaxb</groupId>
-                    <artifactId>jaxb-runtime</artifactId>
-                </exclusion>
-                <exclusion>
-                    <!-- served by tomcat-annotations-api instead -->
-                    <groupId>javax.activation</groupId>
-                    <artifactId>javax.activation-api</artifactId>
-                </exclusion>
-
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-rt-rs-service-description</artifactId>
             <version>${cxf.version}</version>
-            <exclusions>
-                <exclusion>
-                    <!-- served by tomcat-annotations-api instead -->
-                    <groupId>javax.xml.bind</groupId>
-                    <artifactId>jaxb-api</artifactId>
-                </exclusion>
-                <exclusion>
-                    <!-- served by tomcat-annotations-api instead -->
-                    <groupId>org.glassfish.jaxb</groupId>
-                    <artifactId>jaxb-runtime</artifactId>
-                </exclusion>
-                <exclusion>
-                    <!-- served by tomcat-annotations-api instead -->
-                    <groupId>javax.activation</groupId>
-                    <artifactId>javax.activation-api</artifactId>
-                </exclusion>
-
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.cxf</groupId>
@@ -110,145 +56,60 @@
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-rt-transports-local</artifactId>
             <version>${cxf.version}</version>
-            <exclusions>
-                <exclusion>
-                    <!-- served by tomcat-annotations-api instead -->
-                    <groupId>javax.xml.bind</groupId>
-                    <artifactId>jaxb-api</artifactId>
-                </exclusion>
-                <exclusion>
-                    <!-- served by tomcat-annotations-api instead -->
-                    <groupId>org.glassfish.jaxb</groupId>
-                    <artifactId>jaxb-runtime</artifactId>
-                </exclusion>
-                <exclusion>
-                    <!-- served by tomcat-annotations-api instead -->
-                    <groupId>javax.activation</groupId>
-                    <artifactId>javax.activation-api</artifactId>
-                </exclusion>
-
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-rt-features-logging</artifactId>
             <version>${cxf.version}</version>
-            <exclusions>
-                <exclusion>
-                    <!-- served by tomcat-annotations-api instead -->
-                    <groupId>javax.xml.bind</groupId>
-                    <artifactId>jaxb-api</artifactId>
-                </exclusion>
-                <exclusion>
-                    <!-- served by tomcat-annotations-api instead -->
-                    <groupId>org.glassfish.jaxb</groupId>
-                    <artifactId>jaxb-runtime</artifactId>
-                </exclusion>
-                <exclusion>
-                    <!-- served by tomcat-annotations-api instead -->
-                    <groupId>javax.activation</groupId>
-                    <artifactId>javax.activation-api</artifactId>
-                </exclusion>
-
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.jaxrs</groupId>
             <artifactId>jackson-jaxrs-json-provider</artifactId>
             <version>2.9.8</version>
-            <exclusions>
-                <exclusion>
-                    <!-- served by tomcat-annotations-api instead -->
-                    <groupId>javax.xml.bind</groupId>
-                    <artifactId>jaxb-api</artifactId>
-                </exclusion>
-                <exclusion>
-                    <!-- served by tomcat-annotations-api instead -->
-                    <groupId>org.glassfish.jaxb</groupId>
-                    <artifactId>jaxb-runtime</artifactId>
-                </exclusion>
-                <exclusion>
-                    <!-- served by tomcat-annotations-api instead -->
-                    <groupId>javax.activation</groupId>
-                    <artifactId>javax.activation-api</artifactId>
-                </exclusion>
-
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-rt-rs-security-jose-jaxrs</artifactId>
             <version>${cxf.version}</version>
-            <exclusions>
-                <exclusion>
-                    <!-- served by tomcat-annotations-api instead -->
-                    <groupId>javax.xml.bind</groupId>
-                    <artifactId>jaxb-api</artifactId>
-                </exclusion>
-                <exclusion>
-                    <!-- served by tomcat-annotations-api instead -->
-                    <groupId>org.glassfish.jaxb</groupId>
-                    <artifactId>jaxb-runtime</artifactId>
-                </exclusion>
-                <exclusion>
-                    <!-- served by tomcat-annotations-api instead -->
-                    <groupId>javax.activation</groupId>
-                    <artifactId>javax.activation-api</artifactId>
-                </exclusion>
-
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-rt-rs-service-description-swagger</artifactId>
             <version>${cxf.version}</version>
-            <exclusions>
-                <exclusion>
-                    <!-- served by tomcat-annotations-api instead -->
-                    <groupId>javax.xml.bind</groupId>
-                    <artifactId>jaxb-api</artifactId>
-                </exclusion>
-                <exclusion>
-                    <!-- served by tomcat-annotations-api instead -->
-                    <groupId>org.glassfish.jaxb</groupId>
-                    <artifactId>jaxb-runtime</artifactId>
-                </exclusion>
-                <exclusion>
-                    <!-- served by tomcat-annotations-api instead -->
-                    <groupId>javax.activation</groupId>
-                    <artifactId>javax.activation-api</artifactId>
-                </exclusion>
-
-            </exclusions>
         </dependency>
-
         <dependency>
             <groupId>io.swagger.core.v3</groupId>
             <artifactId>swagger-jaxrs2-servlet-initializer</artifactId>
             <version>2.0.8</version>
-            <exclusions>
-                <exclusion>
-                    <!-- served by tomcat-annotations-api instead -->
-                    <groupId>javax.xml.bind</groupId>
-                    <artifactId>jaxb-api</artifactId>
-                </exclusion>
-                <exclusion>
-                    <!-- served by tomcat-annotations-api instead -->
-                    <groupId>org.glassfish.jaxb</groupId>
-                    <artifactId>jaxb-runtime</artifactId>
-                </exclusion>
-                <exclusion>
-                    <!-- served by tomcat-annotations-api instead -->
-                    <groupId>javax.activation</groupId>
-                    <artifactId>javax.activation-api</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.abondar.experimental.wsboard</groupId>
             <artifactId>dao</artifactId>
             <version>1.0</version>
             <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <!-- served by tomcat-annotations-api instead -->
+                    <groupId>javax.xml.bind</groupId>
+                    <artifactId>jaxb-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <!-- served by tomcat-annotations-api instead -->
+                    <groupId>org.glassfish.jaxb</groupId>
+                    <artifactId>jaxb-runtime</artifactId>
+                </exclusion>
+                <exclusion>
+                    <!-- served by tomcat-annotations-api instead -->
+                    <groupId>javax.activation</groupId>
+                    <artifactId>javax.activation-api</artifactId>
+                </exclusion>
+
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-jaxrs2</artifactId>
+            <version>2.0.8</version>
             <exclusions>
                 <exclusion>
                     <!-- served by tomcat-annotations-api instead -->
@@ -292,11 +153,6 @@
         <dependency>
             <groupId>org.apache.camel</groupId>
             <artifactId>camel-mail</artifactId>
-            <version>${camel.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-velocity</artifactId>
             <version>${camel.version}</version>
         </dependency>
         <dependency>
