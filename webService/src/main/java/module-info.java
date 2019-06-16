@@ -26,6 +26,8 @@ module org.abondar.experimental.wsboard.webService {
     requires io.swagger.v3.core;
     requires io.swagger.v3.jaxrs2;
     requires io.swagger.v3.oas.annotations;
+    requires camel.core;
+    requires camel.cxf;
 
 
     exports org.abondar.experimental.wsboard.ws.config;

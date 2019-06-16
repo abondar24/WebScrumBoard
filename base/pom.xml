@@ -27,6 +27,43 @@
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.abondar.experimental.wsboard</groupId>
+            <artifactId>email</artifactId>
+            <version>1.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.abondar.experimental.wsboard</groupId>
+            <artifactId>dao</artifactId>
+            <version>1.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-test-spring</artifactId>
+            <version>${camel.version}</version>
+            <exclusions>
+                <exclusion>
+                    <!-- served by tomcat-annotations-api instead -->
+                    <groupId>javax.xml.bind</groupId>
+                    <artifactId>jaxb-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <!-- served by tomcat-annotations-api instead -->
+                    <groupId>org.glassfish.jaxb</groupId>
+                    <artifactId>jaxb-runtime</artifactId>
+                </exclusion>
+                <exclusion>
+                    <!-- served by tomcat-annotations-api instead -->
+                    <groupId>javax.activation</groupId>
+                    <artifactId>javax.activation-api</artifactId>
+                </exclusion>
+
+            </exclusions>
+            <scope>test</scope>
+        </dependency>
+
 
     </dependencies>
 

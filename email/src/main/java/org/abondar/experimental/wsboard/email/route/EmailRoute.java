@@ -7,18 +7,27 @@ import org.springframework.stereotype.Component;
 @Component
 public class EmailRoute extends RouteBuilder {
 
-    private String emailRecipient;
 
     @Override
     public void configure() throws Exception {
 
-        from("wsb:email").routeId("sendEmail")
+        from("direct:sendEmail").routeId("sendEmail")
+                .log(simple("${header.operationName}").toString())
                 .transform().body((bdy, hdrs) -> {
-            hdrs.put("To", emailRecipient);
-            hdrs.put("From", "Scrum Admin<" + "{{email.admin}}@{{email.server}}");
+            hdrs.put("To", hdrs.get("email"));
+            hdrs.put("From", "Scrum Admin<" + "{{email.admin}}@{{email.server}}>");
             hdrs.put("contentType", "text/html");
             return bdy;
         })
+                .choice()
+                .when(header("emailType").isEqualTo("createUser"))
+                .to("velocity:/velocity/createUser.html")
+                .when(header("emailType").isEqualTo("updateLogin"))
+                .to("velocity:/velocity/updateLogin.html")
+                .when(header("emailType").isEqualTo("updatePassword"))
+                .to("velocity:/velocity/updatePassword.html")
+                .when(header("emailType").isEqualTo("deleteUser"))
+                .to("velocity:/velocity/deleteUser.html")
                 .doTry()
                 .to("{{email.server}}")
                 .doCatch(Exception.class)
