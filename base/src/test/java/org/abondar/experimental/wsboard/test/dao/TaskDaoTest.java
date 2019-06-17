@@ -1,6 +1,6 @@
 package org.abondar.experimental.wsboard.test.dao;
 
-import org.abondar.experimental.wsboard.base.Main;
+import org.abondar.experimental.wsboard.base.WebScrumBoardApplication;
 import org.abondar.experimental.wsboard.dao.ContributorDao;
 import org.abondar.experimental.wsboard.dao.ProjectDao;
 import org.abondar.experimental.wsboard.dao.SprintDao;
@@ -31,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SpringBootTest(classes = Main.class)
+@SpringBootTest(classes = WebScrumBoardApplication.class)
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
 public class TaskDaoTest {

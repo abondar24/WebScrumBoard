@@ -1,7 +1,7 @@
 package org.abondar.experimental.wsboard.test.dao;
 
 
-import org.abondar.experimental.wsboard.base.Main;
+import org.abondar.experimental.wsboard.base.WebScrumBoardApplication;
 import org.abondar.experimental.wsboard.dao.SprintDao;
 import org.abondar.experimental.wsboard.dao.data.DataMapper;
 import org.abondar.experimental.wsboard.dao.exception.DataCreationException;
@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
-@SpringBootTest(classes = Main.class)
+@SpringBootTest(classes = WebScrumBoardApplication.class)
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
 public class SprintDaoTest {

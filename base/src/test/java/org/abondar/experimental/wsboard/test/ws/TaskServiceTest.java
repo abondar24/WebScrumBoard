@@ -1,7 +1,7 @@
 package org.abondar.experimental.wsboard.test.ws;
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
-import org.abondar.experimental.wsboard.base.Main;
+import org.abondar.experimental.wsboard.base.WebScrumBoardApplication;
 import org.abondar.experimental.wsboard.dao.data.LogMessageUtil;
 import org.abondar.experimental.wsboard.datamodel.Contributor;
 import org.abondar.experimental.wsboard.datamodel.Project;
@@ -37,7 +37,7 @@ import java.util.Collections;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@SpringBootTest(classes = Main.class)
+@SpringBootTest(classes = WebScrumBoardApplication.class)
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
 public class TaskServiceTest {

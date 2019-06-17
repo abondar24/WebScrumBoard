@@ -11,10 +11,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 @MapperScan({"org.abondar.experimental.wsboard.dao.data"})
 @ImportAutoConfiguration({DaoConfig.class})
-public class Main {
+public class WebScrumBoardApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(Main.class);
+        SpringApplication.run(WebScrumBoardApplication.class);
     }
 
 

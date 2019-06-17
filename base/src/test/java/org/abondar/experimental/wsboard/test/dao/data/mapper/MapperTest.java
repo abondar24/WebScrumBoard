@@ -1,6 +1,6 @@
 package org.abondar.experimental.wsboard.test.dao.data.mapper;
 
-import org.abondar.experimental.wsboard.base.Main;
+import org.abondar.experimental.wsboard.base.WebScrumBoardApplication;
 import org.abondar.experimental.wsboard.dao.data.DataMapper;
 import org.abondar.experimental.wsboard.datamodel.Contributor;
 import org.abondar.experimental.wsboard.datamodel.Project;
@@ -26,7 +26,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 
-@SpringBootTest(classes = Main.class)
+@SpringBootTest(classes = WebScrumBoardApplication.class)
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
 public class MapperTest {
