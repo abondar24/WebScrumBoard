@@ -45,59 +45,12 @@
             <artifactId>spring-boot-autoconfigure</artifactId>
             <version>${springboot.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <version>${springboot.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-params</artifactId>
-            <version>${junit.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-engine</artifactId>
-            <version>${junit.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.vintage</groupId>
-            <artifactId>junit-vintage-engine</artifactId>
-            <version>${junit.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-test-spring</artifactId>
-            <version>${camel.version}</version>
-            <scope>test</scope>
-        </dependency>
+
 
         <dependency>
             <groupId>io.swagger.core.v3</groupId>
             <artifactId>swagger-jaxrs2</artifactId>
             <version>2.0.8</version>
-            <exclusions>
-                <exclusion>
-                    <!-- served by tomcat-annotations-api instead -->
-                    <groupId>javax.xml.bind</groupId>
-                    <artifactId>jaxb-api</artifactId>
-                </exclusion>
-                <exclusion>
-                    <!-- served by tomcat-annotations-api instead -->
-                    <groupId>org.glassfish.jaxb</groupId>
-                    <artifactId>jaxb-runtime</artifactId>
-                </exclusion>
-                <exclusion>
-                    <!-- served by tomcat-annotations-api instead -->
-                    <groupId>javax.activation</groupId>
-                    <artifactId>javax.activation-api</artifactId>
-                </exclusion>
-
-            </exclusions>
         </dependency>
 
 
@@ -176,6 +129,11 @@
                 <version>${springboot.version}</version>
                 <executions>
                     <execution>
+                        <goals>
+                            <goal>
+                                repackage
+                            </goal>
+                        </goals>
                         <configuration>
                             <classifier>exec</classifier>
                             <mainClass>org.abondar.experimental.wsboard.base.WebScrumBoardApplication</mainClass>
