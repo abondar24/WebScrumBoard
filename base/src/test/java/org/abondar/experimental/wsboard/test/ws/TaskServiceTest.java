@@ -23,8 +23,6 @@ import org.apache.cxf.jaxrs.client.WebClient;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -43,7 +41,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class TaskServiceTest {
     private static Server server;
     private static String endpoint = "local://wsboard_test_4";
-    private Logger logger = LoggerFactory.getLogger(TaskServiceTest.class);
 
     @BeforeAll
     public static void beforeMethod() {
@@ -63,8 +60,6 @@ public class TaskServiceTest {
 
     @Test
     public void createTaskTest() {
-        logger.info("create task test");
-
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
         client.path("/task/create").accept(MediaType.APPLICATION_JSON);
 
@@ -86,8 +81,6 @@ public class TaskServiceTest {
 
     @Test
     public void createTaskWrongDateTest() {
-        logger.info("create task contributor wrong date test");
-
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
         client.path("/task/create").accept(MediaType.APPLICATION_JSON);
 
@@ -109,8 +102,6 @@ public class TaskServiceTest {
 
     @Test
     public void createTaskContributorNotExistsTest() {
-        logger.info("create task contributor not exists test");
-
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
         client.path("/task/create").accept(MediaType.APPLICATION_JSON);
 
@@ -129,8 +120,6 @@ public class TaskServiceTest {
 
     @Test
     public void updateTaskTest() {
-        logger.info("update task test");
-
         createProject();
         createUser();
         var ctrId = createContributor();
@@ -155,8 +144,6 @@ public class TaskServiceTest {
 
     @Test
     public void updateTaskNotFoundTest() {
-        logger.info("update task  not found test");
-
         createProject();
         createUser();
         var ctrId = createContributor();
@@ -181,8 +168,6 @@ public class TaskServiceTest {
 
     @Test
     public void updateTaskContributorNotExistsTest() {
-        logger.info("update task contributor not found test");
-
         createProject();
         createUser();
         var ctrId = createContributor();
@@ -208,8 +193,6 @@ public class TaskServiceTest {
 
     @Test
     public void updateTaskSprintTest() {
-        logger.info("update task sprint test");
-
         createProject();
         createUser();
         var ctrId = createContributor();
@@ -232,8 +215,6 @@ public class TaskServiceTest {
 
     @Test
     public void updateTaskSprintTaskNotFoundTest() {
-        logger.info("update task sprint task not found test");
-
         createProject();
         createUser();
         var ctrId = createContributor();
@@ -257,8 +238,6 @@ public class TaskServiceTest {
 
     @Test
     public void updateTaskSprintNotFoundTest() {
-        logger.info("update task sprint not found test");
-
         createProject();
         createUser();
         var ctrId = createContributor();
@@ -281,8 +260,6 @@ public class TaskServiceTest {
 
     @Test
     public void updateTaskStateTest() {
-        logger.info("update task state test");
-
         createProject();
         createUser();
         var ctrId = createContributor();
@@ -306,8 +283,6 @@ public class TaskServiceTest {
 
     @Test
     public void updateTaskStateTaskNotFoundTest() {
-        logger.info("update task state task not found test");
-
         createProject();
         createUser();
         var ctrId = createContributor();
@@ -330,8 +305,6 @@ public class TaskServiceTest {
 
     @Test
     public void updateTaskStateUnknownTest() {
-        logger.info("update task state unknown test");
-
         createProject();
         createUser();
         var ctrId = createContributor();
@@ -354,8 +327,6 @@ public class TaskServiceTest {
 
     @Test
     public void updateTaskStateCreatedTest() {
-        logger.info("update task state created test");
-
         createProject();
         createUser();
         var ctrId = createContributor();
@@ -378,8 +349,6 @@ public class TaskServiceTest {
 
     @Test
     public void updateTaskStateCompletedTest() {
-        logger.info("update task state completed test");
-
         createProject();
         createUser();
         var ctrId = createContributor();
@@ -403,8 +372,6 @@ public class TaskServiceTest {
 
     @Test
     public void updateTaskStateAlreadyCompletedTest() {
-        logger.info("update task state already completed test");
-
         createProject();
         createUser();
         var ctrId = createContributor();
@@ -429,8 +396,6 @@ public class TaskServiceTest {
 
     @Test
     public void updateTaskStateInDeploymentTest() {
-        logger.info("update task state in deployment test");
-
         createProject();
         createUser();
         var ctrId = createContributor();
@@ -454,8 +419,6 @@ public class TaskServiceTest {
 
     @Test
     public void updateTaskStatePausedTest() {
-        logger.info("update task state paused test");
-
         createProject();
         createUser();
         var ctrId = createContributor();
@@ -481,8 +444,6 @@ public class TaskServiceTest {
 
     @Test
     public void updateTaskStateMoveNotAvailableTest() {
-        logger.info("update task state move not available test");
-
         createProject();
         createUser();
         var ctrId = createContributor();
@@ -506,8 +467,6 @@ public class TaskServiceTest {
 
     @Test
     public void updateTaskStateRedirectTest() {
-        logger.info("update task state redirect test");
-
         createProject();
         createUser();
         var ctrId = createContributor();
@@ -531,8 +490,6 @@ public class TaskServiceTest {
 
     @Test
     public void deleteTaskTest() {
-        logger.info("delete task test");
-
         createProject();
         createUser();
         var ctrId = createContributor();
@@ -548,8 +505,6 @@ public class TaskServiceTest {
 
     @Test
     public void deleteTaskNotFoundTest() {
-        logger.info("delete task not found test");
-
         createProject();
         createUser();
         var ctrId = createContributor();
@@ -567,8 +522,6 @@ public class TaskServiceTest {
 
     @Test
     public void findTaskTest() {
-        logger.info("find task test");
-
         createProject();
         createUser();
         var ctrId = createContributor();
@@ -587,8 +540,6 @@ public class TaskServiceTest {
 
     @Test
     public void findTaskNotFoundTest() {
-        logger.info("find task not found test");
-
         createProject();
         createUser();
         var ctrId = createContributor();
@@ -607,8 +558,6 @@ public class TaskServiceTest {
 
     @Test
     public void findTaskForProjectTest() {
-        logger.info("find tasks for project test");
-
         var prId = createProject();
         createUser();
         var ctrId = createContributor();
@@ -630,8 +579,6 @@ public class TaskServiceTest {
 
     @Test
     public void findTaskForProjectEmptyResultTest() {
-        logger.info("find tasks for project empty test");
-
         var prId = createProject();
         createUser();
         var ctrId = createContributor();
@@ -649,8 +596,6 @@ public class TaskServiceTest {
 
     @Test
     public void findTaskForProjectNotFoundTest() {
-        logger.info("find tasks for project not found test");
-
         createProject();
         createUser();
         var ctrId = createContributor();
@@ -672,8 +617,6 @@ public class TaskServiceTest {
 
     @Test
     public void findTaskForContributorTest() {
-        logger.info("find tasks for contributor test");
-
         createProject();
         createUser();
         var ctrId = createContributor();
@@ -695,8 +638,6 @@ public class TaskServiceTest {
 
     @Test
     public void findTaskForContributorEmptyResultTest() {
-        logger.info("find tasks for contributor empty test");
-
         createProject();
         createUser();
         var ctrId = createContributor();
@@ -714,8 +655,6 @@ public class TaskServiceTest {
 
     @Test
     public void findTaskForContributorNotFoundTest() {
-        logger.info("find tasks for contributor not found test");
-
         createProject();
         createUser();
         var ctrId = createContributor();
@@ -737,8 +676,6 @@ public class TaskServiceTest {
 
     @Test
     public void findTaskForUserTest() {
-        logger.info("find tasks for user test");
-
         createProject();
         var usrId = createUser();
         var ctrId = createContributor();
@@ -760,8 +697,6 @@ public class TaskServiceTest {
 
     @Test
     public void findTaskForUserEmptyResultTest() {
-        logger.info("find tasks for user empty test");
-
         createProject();
         var usrId = createUser();
         var ctrId = createContributor();
@@ -779,8 +714,6 @@ public class TaskServiceTest {
 
     @Test
     public void findTaskForUserNotFoundTest() {
-        logger.info("find tasks for user not found test");
-
         createProject();
         createUser();
         var ctrId = createContributor();
@@ -801,8 +734,6 @@ public class TaskServiceTest {
 
     @Test
     public void findTaskForSprintTest() {
-        logger.info("find tasks for sprint test");
-
         createProject();
         createUser();
         var ctrId = createContributor();
@@ -826,8 +757,6 @@ public class TaskServiceTest {
 
     @Test
     public void findTaskForSprintEmptyResultTest() {
-        logger.info("find tasks for sprint empty test");
-
         createProject();
         createUser();
         var ctrId = createContributor();
@@ -846,8 +775,6 @@ public class TaskServiceTest {
 
     @Test
     public void findTaskForSprintNotFoundTest() {
-        logger.info("find tasks for sprint not found test");
-
         createProject();
         createUser();
         var ctrId = createContributor();

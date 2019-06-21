@@ -12,8 +12,6 @@ import org.apache.cxf.jaxrs.client.WebClient;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -28,8 +26,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
 public class ProjectServiceTest {
-    private Logger logger = LoggerFactory.getLogger(ProjectServiceTest.class);
-
     private static Server server;
     private static String endpoint = "local://wsboard_test_1";
 
@@ -49,8 +45,6 @@ public class ProjectServiceTest {
 
     @Test
     public void createProjectTest() {
-        logger.info("create project test");
-
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
         var form = new Form();
@@ -68,8 +62,6 @@ public class ProjectServiceTest {
 
     @Test
     public void createProjectExistsTest() {
-        logger.info("create project exists test");
-
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
         var form = new Form();
@@ -87,8 +79,6 @@ public class ProjectServiceTest {
 
     @Test
     public void createProjectBlankNameTest() {
-        logger.info("create project blank name test");
-
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
         var form = new Form();
@@ -106,8 +96,6 @@ public class ProjectServiceTest {
 
     @Test
     public void createProjectIncorrectDateTest() {
-        logger.info("create project incorrect date test");
-
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
         var form = new Form();
@@ -125,8 +113,6 @@ public class ProjectServiceTest {
 
     @Test
     public void updateProjectTest() {
-        logger.info("update project test");
-
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
         var prj = createProject();
@@ -147,8 +133,6 @@ public class ProjectServiceTest {
 
     @Test
     public void updateProjectNotFoundTest() {
-        logger.info("update project not found test");
-
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
         createProject();
@@ -169,8 +153,6 @@ public class ProjectServiceTest {
 
     @Test
     public void updateProjectExistsFoundTest() {
-        logger.info("update project not found test");
-
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
         var prj = createProject();
@@ -191,8 +173,6 @@ public class ProjectServiceTest {
 
     @Test
     public void updateProjectDateAfterTest() {
-        logger.info("update project date after test");
-
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
         var prj = createProject();
@@ -215,8 +195,6 @@ public class ProjectServiceTest {
 
     @Test
     public void updateProjectDateNullTest() {
-        logger.info("update project date after test");
-
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
         var prj = createProject();
@@ -239,8 +217,6 @@ public class ProjectServiceTest {
 
     @Test
     public void updateProjectReactivateTest() {
-        logger.info("update project reactivate test");
-
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
         var prj = createProject();
@@ -263,8 +239,6 @@ public class ProjectServiceTest {
 
     @Test
     public void deleteProjectTest() {
-        logger.info("delete project test");
-
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
         var prj = createProject();
 
@@ -276,8 +250,6 @@ public class ProjectServiceTest {
 
     @Test
     public void deleteProjectNotExistsTest() {
-        logger.info("delete project not exists test");
-
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
         createProject();
 
@@ -292,8 +264,6 @@ public class ProjectServiceTest {
 
     @Test
     public void findProjectTest() {
-        logger.info("find project test");
-
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
         var prj = createProject();
 
@@ -309,8 +279,6 @@ public class ProjectServiceTest {
 
     @Test
     public void findProjectNotExistsTest() {
-        logger.info("find project not exists test");
-
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
         createProject();
 

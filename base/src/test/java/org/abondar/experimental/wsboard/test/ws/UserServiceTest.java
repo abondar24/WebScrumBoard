@@ -14,8 +14,6 @@ import org.apache.cxf.jaxrs.client.WebClient;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -33,9 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @ActiveProfiles("test")
 public class UserServiceTest {
 
-    private static Server server;
     private static String endpoint = "local://wsboard_test";
-    private Logger logger = LoggerFactory.getLogger(UserServiceTest.class);
     private String login = "login";
     private String email = "email@email.com";
     private String password = "pwd";
@@ -51,14 +47,12 @@ public class UserServiceTest {
         factory.setProvider(new JacksonJsonProvider());
         factory.setAddress(endpoint);
         factory.setServiceBean(new UserServiceTestImpl(new AuthServiceTestImpl()));
-        server = factory.create();
+        Server server = factory.create();
         server.start();
     }
 
     @Test
     public void createUserTest() {
-        logger.info("create user test");
-
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
 
@@ -87,10 +81,7 @@ public class UserServiceTest {
 
     @Test
     public void createUserLoginExistsTest() {
-        logger.info("create user login exists test");
-
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-
 
         client.path("/user/create").accept(MediaType.APPLICATION_JSON);
 
@@ -113,8 +104,6 @@ public class UserServiceTest {
 
     @Test
     public void createUserBlankDataTest() {
-        logger.info("create user blank data test");
-
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
 
@@ -133,16 +122,11 @@ public class UserServiceTest {
 
         var err = resp.readEntity(String.class);
         assertEquals(LogMessageUtil.BLANK_DATA, err);
-
-
     }
 
     @Test
     public void createUserNoRolesTest() {
-        logger.info("create user no roles test");
-
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-
 
         client.path("/user/create").accept(MediaType.APPLICATION_JSON);
 
@@ -160,14 +144,11 @@ public class UserServiceTest {
         var err = resp.readEntity(String.class);
         assertEquals(LogMessageUtil.USER_NO_ROLES, err);
 
-
     }
 
 
     @Test
     public void updateUserTest() {
-        logger.info("update user test");
-
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
         var usr = createUser();
@@ -188,8 +169,6 @@ public class UserServiceTest {
 
     @Test
     public void updateUserNotFoundTest() {
-        logger.info("update user not found test");
-
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
         createUser();
@@ -210,8 +189,6 @@ public class UserServiceTest {
 
     @Test
     public void updateUserNoRolesTest() {
-        logger.info("update user no roles found test");
-
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
         var usr = createUser();
@@ -233,8 +210,6 @@ public class UserServiceTest {
 
     @Test
     public void updateUserAvatarTest() {
-        logger.info("update user avatar test");
-
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
         var usr = createUser();
@@ -254,8 +229,6 @@ public class UserServiceTest {
 
     @Test
     public void updateUserNotFoundAvatarTest() {
-        logger.info("update user not found avatar test");
-
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
         createUser();
@@ -275,8 +248,6 @@ public class UserServiceTest {
 
     @Test
     public void updateUserAvatarEmptyTest() {
-        logger.info("update user avatar empty test");
-
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
         var usr = createUser();
@@ -294,8 +265,6 @@ public class UserServiceTest {
 
     @Test
     public void updateUserLoginTest() {
-        logger.info("update user login test");
-
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
         var usr = createUser();
@@ -317,8 +286,6 @@ public class UserServiceTest {
 
     @Test
     public void updateUserNotFoundLoginTest() {
-        logger.info("update user not found login test");
-
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
         createUser();
@@ -339,8 +306,6 @@ public class UserServiceTest {
 
     @Test
     public void updateUserLoginExistsTest() {
-        logger.info("update user login exists test");
-
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
         var usr = createUser();
@@ -361,8 +326,6 @@ public class UserServiceTest {
 
     @Test
     public void updateUserPasswordTest() {
-        logger.info("update user password test");
-
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
         var usr = createUser();
@@ -385,8 +348,6 @@ public class UserServiceTest {
 
     @Test
     public void updateUserNotFoundPasswordTest() {
-        logger.info("update user not found password test");
-
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
         createUser();
@@ -409,8 +370,6 @@ public class UserServiceTest {
 
     @Test
     public void updateUserWrongPasswordTest() {
-        logger.info("update user wrong password test");
-
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
         var usr = createUser();
@@ -430,8 +389,6 @@ public class UserServiceTest {
 
     @Test
     public void deleteUserTest() {
-        logger.info("delete user test");
-
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
         var usr = createUser();
@@ -449,8 +406,6 @@ public class UserServiceTest {
 
     @Test
     public void deleteUserNotFoundTest() {
-        logger.info("delete user not found test");
-
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
         createUser();
@@ -467,8 +422,6 @@ public class UserServiceTest {
 
     @Test
     public void deleteUseIsOwnerTest() {
-        logger.info("delete user is owner test");
-
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
         var usr = createUser();
@@ -486,8 +439,6 @@ public class UserServiceTest {
 
     @Test
     public void loginUserTest() {
-        logger.info("login user test");
-
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
         var usr = createUser();
@@ -509,8 +460,6 @@ public class UserServiceTest {
 
     @Test
     public void loginUserNotExistsTest() {
-        logger.info("login user not exists test");
-
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
         createUser();
@@ -533,8 +482,6 @@ public class UserServiceTest {
 
     @Test
     public void loginUserUnauthorizedTest() {
-        logger.info("login user unauthorized test");
-
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
         var usr = createUser();
@@ -557,8 +504,6 @@ public class UserServiceTest {
 
     @Test
     public void logoutUserTest() {
-        logger.info("logout user test");
-
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
         var usr = createUser();
@@ -575,8 +520,6 @@ public class UserServiceTest {
 
     @Test
     public void logoutUserNotFoundTest() {
-        logger.info("logout user not found test");
-
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
         createUser();

@@ -12,8 +12,6 @@ import org.apache.cxf.jaxrs.client.WebClient;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -31,7 +29,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class SprintServiceTest {
     private static Server server;
     private static String endpoint = "local://wsboard_test_2";
-    private Logger logger = LoggerFactory.getLogger(SprintServiceTest.class);
     private String sprintName = "test";
     private String startDate = "29/06/2019";
     private String endDate = "31/05/2119";
@@ -49,8 +46,6 @@ public class SprintServiceTest {
 
     @Test
     public void createSprintTest() {
-        logger.info("create sprint test");
-
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
         var form = new Form();
@@ -71,8 +66,6 @@ public class SprintServiceTest {
 
     @Test
     public void createSprintNameExistsTest() {
-        logger.info("create sprint name exists test");
-
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
         var form = new Form();
@@ -92,8 +85,6 @@ public class SprintServiceTest {
 
     @Test
     public void createSprintEmptyNameTest() {
-        logger.info("create sprint empty name test");
-
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
         var form = new Form();
@@ -113,8 +104,6 @@ public class SprintServiceTest {
 
     @Test
     public void createSprintWrongEndDateTest() {
-        logger.info("create sprint wrong end date test");
-
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
         var form = new Form();
@@ -134,8 +123,6 @@ public class SprintServiceTest {
 
     @Test
     public void createSprintEmptyDateTest() {
-        logger.info("create sprint wrong empty date test");
-
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
         var form = new Form();
@@ -155,8 +142,6 @@ public class SprintServiceTest {
 
     @Test
     public void updateSprintTest() {
-        logger.info("update sprint test");
-
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
         var sp = createSprint();
@@ -177,7 +162,6 @@ public class SprintServiceTest {
 
     @Test
     public void updateSprintWrongStartDateTest() {
-        logger.info("update sprint wrong start date test");
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
         var sp = createSprint();
@@ -198,7 +182,6 @@ public class SprintServiceTest {
 
     @Test
     public void updateSprintWrongEndDateTest() {
-        logger.info("update sprint wrong end date test");
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
         var sp = createSprint();
@@ -220,7 +203,6 @@ public class SprintServiceTest {
 
     @Test
     public void updateSprintNotExistsTest() {
-        logger.info("update sprint not exists test");
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
         createSprint();
@@ -239,7 +221,6 @@ public class SprintServiceTest {
 
     @Test
     public void updateSprintExistsTest() {
-        logger.info("update sprint exists test");
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
         var sp = createSprint();
@@ -260,8 +241,6 @@ public class SprintServiceTest {
 
     @Test
     public void findSprintTest() {
-        logger.info("find sprint test");
-
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
         var sp = createSprint();
@@ -277,8 +256,6 @@ public class SprintServiceTest {
 
     @Test
     public void findSprintNotFoundTest() {
-        logger.info("find sprint not found test");
-
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
         createSprint();
@@ -294,8 +271,6 @@ public class SprintServiceTest {
 
     @Test
     public void findAllSprintsTest() {
-        logger.info("find all sprints test");
-
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
         var sp = createSprint();
@@ -315,8 +290,6 @@ public class SprintServiceTest {
 
     @Test
     public void findAllSprintsMinusOffsetTest() {
-        logger.info("find all sprints minus offset test");
-
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
         var sp = createSprint();
@@ -334,8 +307,6 @@ public class SprintServiceTest {
 
     @Test
     public void findAllSprintsNotFoundTest() {
-        logger.info("find all sprints minus offset test");
-
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
         createSprint();
@@ -352,8 +323,6 @@ public class SprintServiceTest {
 
     @Test
     public void deleteSprintTest() {
-        logger.info("delete sprint test");
-
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
         var sp = createSprint();
@@ -367,8 +336,6 @@ public class SprintServiceTest {
 
     @Test
     public void deleteSprintNotFoundTest() {
-        logger.info("delete sprint not found test");
-
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
         createSprint();

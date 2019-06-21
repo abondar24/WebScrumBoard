@@ -13,8 +13,6 @@ import org.abondar.experimental.wsboard.datamodel.user.User;
 import org.abondar.experimental.wsboard.datamodel.user.UserRole;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -34,8 +32,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @ActiveProfiles("test")
 public class UserDaoTest {
 
-    private static Logger logger = LoggerFactory.getLogger(UserDaoTest.class);
-
     @Autowired
     private DataMapper mapper;
 
@@ -53,8 +49,6 @@ public class UserDaoTest {
 
     @Test
     public void createUserTest() throws Exception {
-        logger.info("Create user test");
-
         var usr = createUser();
 
         assertTrue(usr.getId() > 0);
@@ -65,8 +59,6 @@ public class UserDaoTest {
 
     @Test
     public void createUserLoginExistsTest() throws Exception {
-        logger.info("Create user test");
-
         createUser();
 
         assertThrows(DataExistenceException.class, this::createUser);
@@ -76,8 +68,6 @@ public class UserDaoTest {
 
     @Test
     public void createUserBlankDataTest() {
-        logger.info("Create user test");
-
         var login = "login";
         var email = "email@email.com";
         var password = "pwd";
@@ -94,8 +84,6 @@ public class UserDaoTest {
 
     @Test
     public void updateUserLoginTest() throws Exception {
-        logger.info("Update user login test");
-
         var usr = createUser();
         var id = usr.getId();
         usr = userDao.updateLogin("login1", usr.getId());
@@ -107,8 +95,6 @@ public class UserDaoTest {
 
     @Test
     public void updateUserLoginExistsTest() throws Exception {
-        logger.info("Update user login exists test");
-
         var usr = createUser();
 
         assertThrows(DataExistenceException.class, () -> userDao.updateLogin(usr.getLogin(), usr.getId()));
@@ -119,17 +105,11 @@ public class UserDaoTest {
 
     @Test
     public void updateUserLoginNotExistsTest() {
-        logger.info("Update user login not exists test");
-
-
         assertThrows(DataExistenceException.class, () -> userDao.updateLogin("login", 1));
-
     }
 
     @Test
     public void updatePasswordTest() throws Exception {
-        logger.info("Update user password test");
-
         var usr = createUser();
         var id = usr.getId();
         usr = userDao.updatePassword("pwd", "newPwd", usr.getId());
@@ -140,18 +120,12 @@ public class UserDaoTest {
 
     @Test
     public void updatePasswordUserNotFoundTest() {
-        logger.info("Update user password user not found test");
-
-
         assertThrows(DataExistenceException.class, () ->
                 userDao.updatePassword("pwd", "newPwd", 100));
-
     }
 
     @Test
     public void updatePasswordUnathorizedTest() throws Exception {
-        logger.info("Update user password unauthorized test");
-
         var usr = createUser();
 
         assertThrows(InvalidHashException.class, () ->
@@ -161,8 +135,6 @@ public class UserDaoTest {
 
     @Test
     public void updateUserTest() throws Exception {
-        logger.info("Update user test");
-
         var usr = createUser();
         var id = usr.getId();
         usr = userDao.updateUser(usr.getId(), "name1", "name2",
@@ -176,8 +148,6 @@ public class UserDaoTest {
 
     @Test
     public void updateUserNullFieldTest() throws Exception {
-        logger.info("Update user password test");
-
         var usr = createUser();
         var id = usr.getId();
         usr = userDao.updateUser(usr.getId(), null, null, null, null, null);
@@ -189,8 +159,6 @@ public class UserDaoTest {
 
     @Test
     public void updateUserEmptyFieldTest() throws Exception {
-        logger.info("Update user password test");
-
         var usr = createUser();
         var id = usr.getId();
 
@@ -204,8 +172,6 @@ public class UserDaoTest {
 
     @Test
     public void deleteUserTest() throws Exception {
-        logger.info("Delete user test");
-
         var usr = createUser();
 
         var project = createProject();
@@ -226,8 +192,6 @@ public class UserDaoTest {
 
     @Test
     public void deleteUserIsOwnerTest() throws Exception {
-        logger.info("Delete user is owner test");
-
         var usr = createUser();
 
         var project = createProject();
@@ -242,8 +206,6 @@ public class UserDaoTest {
 
     @Test
     public void deleteUserContributorTest() throws Exception {
-        logger.info("Delete user contributor test");
-
         var usr = createUser();
 
         var project = createProject();
@@ -266,8 +228,6 @@ public class UserDaoTest {
 
     @Test
     public void loginUserNotFoundTest() {
-        logger.info("Login user not found test");
-
         assertThrows(DataExistenceException.class, () -> userDao.loginUser("login", "pwd"));
 
         mapper.deleteUsers();
@@ -275,8 +235,6 @@ public class UserDaoTest {
 
     @Test
     public void loginUserUnauthorizedTest() throws Exception {
-        logger.info("Login user unauthorized test");
-
         var user = createUser();
         assertThrows(InvalidHashException.class, () -> userDao.loginUser(user.getLogin(), "pass"));
 

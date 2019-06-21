@@ -15,8 +15,6 @@ import org.apache.cxf.jaxrs.client.WebClient;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -33,9 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
 public class ContributorServiceTest {
-    private static Server server;
     private static String endpoint = "local://wsboard_test_3";
-    private Logger logger = LoggerFactory.getLogger(ContributorServiceTest.class);
 
     @BeforeAll
     public static void beforeMethod() {
@@ -44,14 +40,12 @@ public class ContributorServiceTest {
         factory.setProvider(new JacksonJsonProvider());
         factory.setAddress(endpoint);
         factory.setServiceBean(new ContributorServiceTestImpl());
-        server = factory.create();
+        Server server = factory.create();
         server.start();
     }
 
     @Test
     public void createContributorTest() {
-        logger.info("create contributor test");
-
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
         client.path("/contributor/create").accept(MediaType.APPLICATION_JSON);
 
@@ -74,8 +68,6 @@ public class ContributorServiceTest {
 
     @Test
     public void createContributorUserNotFoundTest() {
-        logger.info("create contributor user not found test");
-
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
         client.path("/contributor/create").accept(MediaType.APPLICATION_JSON);
 
@@ -98,8 +90,6 @@ public class ContributorServiceTest {
 
     @Test
     public void createContributorProjectNotFoundTest() {
-        logger.info("create contributor project not found test");
-
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
         client.path("/contributor/create").accept(MediaType.APPLICATION_JSON);
 
@@ -122,8 +112,6 @@ public class ContributorServiceTest {
 
     @Test
     public void createContributorProjectNotActiveTest() {
-        logger.info("create contributor project not active test");
-
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
         client.path("/contributor/create").accept(MediaType.APPLICATION_JSON);
 
@@ -147,8 +135,6 @@ public class ContributorServiceTest {
 
     @Test
     public void createContributorProjectHasOwnerTest() {
-        logger.info("create contributor project has owner test");
-
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
         client.path("/contributor/create").accept(MediaType.APPLICATION_JSON);
 
@@ -175,8 +161,6 @@ public class ContributorServiceTest {
 
     @Test
     public void updateContributorTest() {
-        logger.info("update contributor test");
-
         var userId = createUser();
         var projectId = createProject();
         var ctr = createContributor(userId, projectId, "false");
@@ -202,8 +186,6 @@ public class ContributorServiceTest {
 
     @Test
     public void updateContributorOwnerFoundTest() {
-        logger.info("update contributor owner found test");
-
         var userId = createUser();
         var projectId = createProject();
         var ctr = createContributor(userId, projectId, "true");
@@ -227,8 +209,6 @@ public class ContributorServiceTest {
 
     @Test
     public void updateContributorNoOwnerTest() {
-        logger.info("update contributor no owner test");
-
         var userId = createUser();
         var projectId = createProject();
         var ctr = createContributor(userId, projectId, "false");
@@ -252,8 +232,6 @@ public class ContributorServiceTest {
 
     @Test
     public void updateNotActiveContributorAsOwnerTest() {
-        logger.info("update not active contributor as owner test");
-
         var userId = createUser();
         var projectId = createProject();
         var ctr = createContributor(userId, projectId, "false");
@@ -278,8 +256,6 @@ public class ContributorServiceTest {
 
     @Test
     public void updateContributorDeactivateOwnerTest() {
-        logger.info("update contributor deactivate owner test");
-
         var userId = createUser();
         var projectId = createProject();
         var ctr = createContributor(userId, projectId, "true");
@@ -302,8 +278,6 @@ public class ContributorServiceTest {
 
     @Test
     public void findProjectOwnerTest() {
-        logger.info("find project owner test");
-
         var userId = createUser();
         var projectId = createProject();
         createContributor(userId, projectId, "true");
@@ -324,8 +298,6 @@ public class ContributorServiceTest {
 
     @Test
     public void findProjectOwnerProjectNotFoundTest() {
-        logger.info("find project owner project not test");
-
         var userId = createUser();
         var projectId = createProject();
         createContributor(userId, projectId, "false");
@@ -344,8 +316,6 @@ public class ContributorServiceTest {
 
     @Test
     public void findProjectOwnerProjectHasNoOwnerTest() {
-        logger.info("find project owner project has no owner test");
-
         var userId = createUser();
         var projectId = createProject();
         createContributor(userId, projectId, "false");
@@ -363,8 +333,6 @@ public class ContributorServiceTest {
 
     @Test
     public void findContributorsTest() {
-        logger.info("find contributors test");
-
         var userId = createUser();
         var projectId = createProject();
         var ctr = createContributor(userId, projectId, "false");
@@ -388,8 +356,6 @@ public class ContributorServiceTest {
 
     @Test
     public void findContributorsProjectNotFoundTest() {
-        logger.info("find contributors test");
-
         var userId = createUser();
         var projectId = createProject();
         createContributor(userId, projectId, "false");
@@ -411,8 +377,6 @@ public class ContributorServiceTest {
 
     @Test
     public void findContributorsNegativeOffsetTest() {
-        logger.info("find contributors negative offset test");
-
         var userId = createUser();
         var projectId = createProject();
         createContributor(userId, projectId, "false");
@@ -434,8 +398,6 @@ public class ContributorServiceTest {
 
     @Test
     public void findContributorsEmptyResTest() {
-        logger.info("find contributors empty result test");
-
         var userId = createUser();
         var projectId = createProject();
         createContributor(userId, projectId, "false");

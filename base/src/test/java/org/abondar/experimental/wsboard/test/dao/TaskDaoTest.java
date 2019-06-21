@@ -16,8 +16,6 @@ import org.abondar.experimental.wsboard.datamodel.user.UserRole;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -36,7 +34,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @ActiveProfiles("test")
 public class TaskDaoTest {
 
-    private static Logger logger = LoggerFactory.getLogger(TaskDaoTest.class);
 
     @Autowired
     private DataMapper mapper;
@@ -64,8 +61,6 @@ public class TaskDaoTest {
 
     @Test
     public void createTaskTest() throws Exception {
-        logger.info("Create task test");
-
         var usr = createUser("");
         var prj = createProject(true);
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
@@ -80,8 +75,6 @@ public class TaskDaoTest {
 
     @Test
     public void createTaskNoContributorTest() {
-        logger.info("Create task no contributor test");
-
         assertThrows(DataExistenceException.class, () ->
                 dao.createTask(100, new Date(), false));
 
@@ -90,9 +83,6 @@ public class TaskDaoTest {
 
     @Test
     public void createTaskInactiveContributorTest() throws Exception {
-        logger.info("Create task test");
-
-
         var usr = createUser("");
         var prj = createProject(true);
 
@@ -113,8 +103,6 @@ public class TaskDaoTest {
 
     @Test
     public void updateTaskContributorTest() throws Exception {
-        logger.info("Update task contributor test");
-
         var usr = createUser("");
         var prj = createProject(true);
 
@@ -139,16 +127,12 @@ public class TaskDaoTest {
 
     @Test
     public void updateTaskNotExistsTest() {
-        logger.info("Update task not exists test");
-
         assertThrows(DataExistenceException.class, () ->
                 dao.updateTask(100, 100L, null, null));
     }
 
     @Test
     public void updateTaskContributorNotExistsTest() throws Exception {
-        logger.info("Update task contributor not exists test");
-
         var usr = createUser("");
         var prj = createProject(true);
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
@@ -164,8 +148,6 @@ public class TaskDaoTest {
 
     @Test
     public void updateTaskStoryPointsTest() throws Exception {
-        logger.info("Update task story points test");
-
         var usr = createUser("");
         var prj = createProject(true);
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
@@ -183,8 +165,6 @@ public class TaskDaoTest {
 
     @Test
     public void updateTaskSprintTest() throws Exception {
-        logger.info("Update task sprint test");
-
         var usr = createUser("");
         var prj = createProject(true);
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
@@ -201,8 +181,6 @@ public class TaskDaoTest {
 
     @Test
     public void updateTaskStateTest() throws Exception {
-        logger.info("Update task state test");
-
         var usr = createUser("");
         var prj = createProject(true);
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
@@ -219,8 +197,6 @@ public class TaskDaoTest {
 
     @Test
     public void updateTaskStateUnknownTest() throws Exception {
-        logger.info("Update task state unknown test");
-
         var usr = createUser("");
         var prj = createProject(true);
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
@@ -234,8 +210,6 @@ public class TaskDaoTest {
 
     @Test
     public void updateTaskStateNotExistsTest() {
-        logger.info("Update task state task not exists test");
-
         assertThrows(DataExistenceException.class, () ->
                 dao.updateTaskState(100, TaskState.IN_DEPLOYMENT.name()));
 
@@ -243,8 +217,6 @@ public class TaskDaoTest {
 
     @Test
     public void updateTaskStateAlreadyCompletedTest() throws Exception {
-        logger.info("Update task state already completed test");
-
         var usr = createUser("");
         usr = userDao.updateUser(usr.getId(),null,null,null,
                 UserRole.DEVELOPER.name() + ";" + UserRole.DEV_OPS.name() + ";" + UserRole.QA.name(), null);
@@ -263,8 +235,6 @@ public class TaskDaoTest {
 
     @Test
     public void updateTaskStateAlreadyCreatedTest() throws Exception {
-        logger.info("Update task state already created test");
-
         var usr = createUser("");
         var prj = createProject(true);
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
@@ -279,8 +249,6 @@ public class TaskDaoTest {
 
     @Test
     public void updateTaskStatePausedTest() throws Exception {
-        logger.info("Update task state paused test");
-
         var usr = createUser("");
         var prj = createProject(true);
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
@@ -296,8 +264,6 @@ public class TaskDaoTest {
 
     @Test
     public void updateTaskStateNoDevOpsTest() throws Exception {
-        logger.info("Update task state no dev ops test");
-
         var usr = createUser("");
         var prj = createProject(true);
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
@@ -311,8 +277,6 @@ public class TaskDaoTest {
 
     @Test
     public void updateTaskStateNoMovesTest() throws Exception {
-        logger.info("Update task state no moves test");
-
         var usr = createUser("");
         var prj = createProject(true);
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
@@ -326,8 +290,6 @@ public class TaskDaoTest {
 
     @Test
     public void updateTaskStateRoleUpdateNeededTest() throws Exception {
-        logger.info("Update task state role update needed test");
-
         var usr = createUser("");
         var prj = createProject(true);
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
@@ -343,8 +305,6 @@ public class TaskDaoTest {
 
     @Test
     public void updateTaskStateCompletedEndDateTest() throws Exception {
-        logger.info("Update task state completed end date test");
-
         var usr = createUser("");
         usr = userDao.updateUser(usr.getId(),null,null,null,
                 UserRole.DEVELOPER.name() + ";" + UserRole.DEV_OPS.name() + ";" + UserRole.QA.name(), null);
@@ -367,8 +327,6 @@ public class TaskDaoTest {
 
     @Test
     public void deleteTaskTest() throws Exception {
-        logger.info("Delete task test");
-
         var usr = createUser("");
         var prj = createProject(true);
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
@@ -384,8 +342,6 @@ public class TaskDaoTest {
 
     @Test
     public void deleteTaskNoExistsTest() {
-        logger.info("Delete task not exists test");
-
         var res = dao.deleteTask(100);
 
         Assertions.assertFalse(res);
@@ -393,8 +349,6 @@ public class TaskDaoTest {
 
     @Test
     public void deleteTaskSprintTest() throws Exception {
-        logger.info("Delete task sprint test");
-
         var usr = createUser("");
         var prj = createProject(true);
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
@@ -414,8 +368,6 @@ public class TaskDaoTest {
 
     @Test
     public void getTaskByIdTest() throws Exception {
-        logger.info("Delete task test");
-
         var usr = createUser("");
         var prj = createProject(true);
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
@@ -430,8 +382,6 @@ public class TaskDaoTest {
 
     @Test
     public void getTasksForProjectTest() throws Exception {
-        logger.info("Get tasks for project test");
-
         var usr = createUser("");
         var prj = createProject(true);
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
@@ -447,8 +397,6 @@ public class TaskDaoTest {
 
     @Test
     public void getTasksForContributorTest() throws Exception {
-        logger.info("Get tasks for contributor test");
-
         var usr = createUser("");
         var prj = createProject(true);
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
@@ -464,8 +412,6 @@ public class TaskDaoTest {
 
     @Test
     public void getTasksForUserTest() throws Exception {
-        logger.info("Get tasks for user test");
-
         var usr = createUser("");
         var prj = createProject(true);
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
@@ -481,8 +427,6 @@ public class TaskDaoTest {
 
     @Test
     public void getTasksForSprintTest() throws Exception {
-        logger.info("Get tasks for sprint test");
-
         var usr = createUser("");
         var prj = createProject(true);
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);

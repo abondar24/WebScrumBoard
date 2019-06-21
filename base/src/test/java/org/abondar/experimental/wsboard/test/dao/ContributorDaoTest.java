@@ -12,8 +12,6 @@ import org.abondar.experimental.wsboard.datamodel.user.User;
 import org.abondar.experimental.wsboard.datamodel.user.UserRole;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -32,7 +30,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @ActiveProfiles("test")
 public class ContributorDaoTest {
 
-    private static Logger logger = LoggerFactory.getLogger(ContributorDao.class);
 
     @Autowired
     private DataMapper mapper;
@@ -52,8 +49,6 @@ public class ContributorDaoTest {
 
     @Test
     public void createContributorTest() throws Exception {
-        logger.info("Create contributor test");
-
         var usr = createUser();
         var prj = createProject(true);
 
@@ -67,8 +62,6 @@ public class ContributorDaoTest {
 
     @Test
     public void createContributorNotOwnerTest() throws Exception {
-        logger.info("Create contributor not owner test");
-
         var usr = createUser();
         var prj = createProject(true);
 
@@ -82,8 +75,6 @@ public class ContributorDaoTest {
 
     @Test
     public void createContributorActiveFalseTest() throws Exception {
-        logger.info("Create contributor active false test");
-
         var usr = createUser();
         var prj = createProject(false);
 
@@ -95,8 +86,6 @@ public class ContributorDaoTest {
 
     @Test
     public void createContributorProjectHasOwnerTest() throws Exception {
-        logger.info("Create contributor project has owner test");
-
         var usr = createUser();
         var prj = createProject(true);
 
@@ -111,8 +100,6 @@ public class ContributorDaoTest {
 
     @Test
     public void updateContributorAsOwnerTest() throws Exception {
-        logger.info("Update contributor as owner test");
-
         var usr = createUser();
         var prj = createProject(true);
 
@@ -128,8 +115,6 @@ public class ContributorDaoTest {
 
     @Test
     public void updateInactiveContributorAsOwnerTest() throws Exception {
-        logger.info("Update inactive contributor as owner test");
-
         var usr = createUser();
         var prj = createProject(true);
 
@@ -145,8 +130,6 @@ public class ContributorDaoTest {
 
     @Test
     public void updateContributorOwnerAsInactiveTest() throws Exception {
-        logger.info("Update contributor owner as inactive test");
-
         var usr = createUser();
         var prj = createProject(true);
 
@@ -162,9 +145,6 @@ public class ContributorDaoTest {
 
     @Test
     public void updateContributorAsOwnerContributorNotExistsTest() {
-        logger.info("Update contributor as owner contributor not exists");
-
-
         assertThrows(DataExistenceException.class, () ->
                 contributorDao.updateContributor(100, false, true));
 
@@ -173,8 +153,6 @@ public class ContributorDaoTest {
 
     @Test
     public void updateContributorProjectHasOwnerTest() throws Exception {
-        logger.info("Update contributor project has owner test");
-
         var usr = createUser();
         var prj = createProject(true);
 
@@ -189,8 +167,6 @@ public class ContributorDaoTest {
 
     @Test
     public void updateContributorProjectHasNoOwnerTest() throws Exception {
-        logger.info("Update contributor project has no owner test");
-
         var usr = createUser();
         var prj = createProject(true);
 
@@ -205,8 +181,6 @@ public class ContributorDaoTest {
 
     @Test
     public void updateContributorNullTest() throws Exception {
-        logger.info("update contributor null test");
-
         var usr = createUser();
         var prj = createProject(true);
 
@@ -223,8 +197,6 @@ public class ContributorDaoTest {
 
     @Test
     public void findProjectOwnerTest() throws Exception {
-        logger.info("Find project owner test");
-
         var usr = createUser();
         var prj = createProject(true);
 
@@ -239,8 +211,6 @@ public class ContributorDaoTest {
 
     @Test
     public void findContributorsForProjectTest() throws Exception {
-        logger.info("Find contributors for project test");
-
         var usr = createUser();
         var prj = createProject(true);
 

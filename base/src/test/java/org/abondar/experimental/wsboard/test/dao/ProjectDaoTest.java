@@ -8,8 +8,6 @@ import org.abondar.experimental.wsboard.dao.exception.DataExistenceException;
 import org.abondar.experimental.wsboard.datamodel.Project;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -29,7 +27,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @ActiveProfiles("test")
 public class ProjectDaoTest {
 
-    private static Logger logger = LoggerFactory.getLogger(ProjectDaoTest.class);
 
     @Autowired
     private DataMapper mapper;
@@ -41,8 +38,6 @@ public class ProjectDaoTest {
 
     @Test
     public void createProjectTest() throws Exception {
-        logger.info("Create project test");
-
         var prj = createProject();
 
         assertTrue(prj.getId() > 0);
@@ -53,10 +48,7 @@ public class ProjectDaoTest {
 
     @Test
     public void createProjectExistsTest() throws Exception {
-        logger.info("Create project exists test");
-
         createProject();
-
 
         assertThrows(DataExistenceException.class, this::createProject);
         mapper.deleteProjects();
@@ -64,9 +56,6 @@ public class ProjectDaoTest {
 
     @Test
     public void createProjectBlankDataTest() {
-        logger.info("Create project blank data test");
-
-
         assertThrows(DataCreationException.class, () -> dao.createProject("", new Date()));
         assertThrows(DataCreationException.class, () -> dao.createProject("test", null));
 
@@ -75,8 +64,6 @@ public class ProjectDaoTest {
 
     @Test
     public void updateProjectTest() throws Exception {
-        logger.info("Update project test");
-
         var prj = createProject();
         var id = prj.getId();
         prj = dao.updateProject(prj.getId(), "newTest", "github.com/aaaa/aaa.git", true, null);
@@ -88,8 +75,6 @@ public class ProjectDaoTest {
 
     @Test
     public void updateProjectExistsTest() throws Exception {
-        logger.info("Update project test");
-
         var prj = createProject();
 
 
@@ -101,8 +86,6 @@ public class ProjectDaoTest {
 
     @Test
     public void updateProjectInactiveTest() throws Exception {
-        logger.info("Update project inactive test");
-
         var prj = createProject();
         var id = prj.getId();
 
@@ -115,8 +98,6 @@ public class ProjectDaoTest {
 
     @Test
     public void updateProjectInactiveNullEndDateTest() throws Exception {
-        logger.info("Update project inactive null end date test");
-
         var prj = createProject();
         assertThrows(DataCreationException.class, () -> dao.updateProject(prj.getId(), "newTest",
                 "github.com/aaaa/aaa.git", false, null));
@@ -126,8 +107,6 @@ public class ProjectDaoTest {
 
     @Test
     public void updateProjectReactivateTest() throws Exception {
-        logger.info("Update project reactivate test");
-
         var prj = createProject();
 
         prj = dao.updateProject(prj.getId(), "newTest", "github.com/aaaa/aaa.git", false, new Date());
@@ -141,8 +120,6 @@ public class ProjectDaoTest {
 
     @Test
     public void updateProjectInactiveWrongDateTest() throws Exception {
-        logger.info("Update project inactive wrong end date test");
-
         var prj = createProject();
 
         assertThrows(DataCreationException.class, () -> dao.updateProject(prj.getId(), "newTest",
@@ -153,8 +130,6 @@ public class ProjectDaoTest {
 
     @Test
     public void updateProjectNullTest() throws Exception {
-        logger.info("Update project null test");
-
         var prj = createProject();
         var id = prj.getId();
 
@@ -167,8 +142,6 @@ public class ProjectDaoTest {
 
     @Test
     public void deleteProjectTest() throws Exception {
-        logger.info("Delete project test");
-
         var prj = createProject();
         var res = dao.deleteProject(prj.getId());
 
@@ -179,8 +152,6 @@ public class ProjectDaoTest {
 
     @Test
     public void findProjectByIdTest() throws Exception {
-        logger.info("Find project by id test");
-
         var prj = createProject();
         var res = dao.findProjectById(prj.getId());
         assertEquals(prj.getName(), res.getName());
@@ -193,8 +164,6 @@ public class ProjectDaoTest {
 
     @Test
     public void findProjectNotFoundByIdTest() {
-        logger.info("Find project not found by id test");
-
         assertThrows(DataExistenceException.class, () -> dao.findProjectById(100));
 
     }

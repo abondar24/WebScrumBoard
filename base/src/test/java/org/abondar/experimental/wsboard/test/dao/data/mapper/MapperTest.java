@@ -11,8 +11,6 @@ import org.abondar.experimental.wsboard.datamodel.user.User;
 import org.abondar.experimental.wsboard.datamodel.user.UserRole;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -21,6 +19,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.util.Date;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -30,15 +29,12 @@ import static org.junit.Assert.assertTrue;
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
 public class MapperTest {
-    private static Logger logger = LoggerFactory.getLogger(MapperTest.class);
 
     @Autowired
     private DataMapper mapper;
 
     @Test
     public void insertUserTest() {
-        logger.info("User insert test");
-
         var user = createUser();
         assertTrue(user.getId() > 0);
 
@@ -47,8 +43,6 @@ public class MapperTest {
 
     @Test
     public void insertProjectTest() {
-        logger.info("Insert project test");
-
         var project = createProject();
         assertTrue(project.getId() > 0);
 
@@ -58,8 +52,6 @@ public class MapperTest {
 
     @Test
     public void insertUpdateContributorTest() {
-        logger.info("Insert contributor test");
-
         var user = createUser();
         var project = createProject();
 
@@ -71,8 +63,6 @@ public class MapperTest {
 
     @Test
     public void insertUpdateTaskTest() {
-        logger.info("Insert task test");
-
         var user = createUser();
         var project = createProject();
         var contributor = createContributor(user.getId(), project.getId(), false);
@@ -85,8 +75,6 @@ public class MapperTest {
 
     @Test
     public void updateUserTest() {
-        logger.info("Update user test");
-
         var user = createUser();
 
         var newLogin = "login1";
@@ -102,8 +90,6 @@ public class MapperTest {
 
     @Test
     public void updateProjectTest() {
-        logger.info("Update project test");
-
         var project = createProject();
         var newName = "name1";
         project.setName(newName);
@@ -119,8 +105,6 @@ public class MapperTest {
 
     @Test
     public void updateAvatarTest() {
-        logger.info("Update user avatar test");
-
         var user = createUser();
         var img = new byte[1024];
 
@@ -136,8 +120,6 @@ public class MapperTest {
 
     @Test
     public void getUserByLoginTest() {
-        logger.info("Get user by login test");
-
         var user = createUser();
         var res = mapper.getUserByLogin(user.getLogin());
 
@@ -148,8 +130,6 @@ public class MapperTest {
 
     @Test
     public void getUserByIdTest() {
-        logger.info("Get user by login test");
-
         var user = createUser();
         var res = mapper.getUserById(user.getId());
 
@@ -160,8 +140,6 @@ public class MapperTest {
 
     @Test
     public void getProjectByIdTest() {
-        logger.info("Get project by id test");
-
         var project = createProject();
 
         var res = mapper.getProjectById(project.getId());
@@ -172,8 +150,6 @@ public class MapperTest {
 
     @Test
     public void getProjectByNameTest() {
-        logger.info("Get project by name test");
-
         var project = createProject();
 
         var res = mapper.getProjectByName(project.getName());
@@ -184,8 +160,6 @@ public class MapperTest {
 
     @Test
     public void getProjectOwnerTest() {
-        logger.info("Get project owner test");
-
         var user = createUser();
         var project = createProject();
         createContributor(user.getId(), project.getId(), true);
@@ -198,8 +172,6 @@ public class MapperTest {
 
     @Test
     public void getContributorByIdTest() {
-        logger.info("Get contributor by id test");
-
         var user = createUser();
         var project = createProject();
         var ctr = createContributor(user.getId(), project.getId(), true);
@@ -213,8 +185,6 @@ public class MapperTest {
 
     @Test
     public void insertContributorTest() {
-        logger.info("insert contributor test");
-
         var user = createUser();
         var project = createProject();
         var ctr = createContributor(user.getId(), project.getId(), true);
@@ -226,8 +196,6 @@ public class MapperTest {
 
     @Test
     public void getUserByContributorIdTest() {
-        logger.info("Get user by contributor id test");
-
         var user = createUser();
         var project = createProject();
         var ctr = createContributor(user.getId(), project.getId(), true);
@@ -240,8 +208,6 @@ public class MapperTest {
 
     @Test
     public void updateContributorTest() {
-        logger.info("Update contributor test");
-
         var user = createUser();
         var project = createProject();
         var ctr = createContributor(user.getId(), project.getId(), true);
@@ -251,15 +217,13 @@ public class MapperTest {
 
         var res = mapper.getContributorById(ctr.getId());
 
-        assertEquals(false, res.isActive());
+        assertFalse(res.isActive());
 
         cleanData();
     }
 
     @Test
     public void getContributorsForProjectTest() {
-        logger.info("Get contributors for project test");
-
         var user = createUser();
         var project = createProject();
         createContributor(user.getId(), project.getId(), true);
@@ -278,8 +242,6 @@ public class MapperTest {
 
     @Test
     public void getContributorByUserId() {
-        logger.info("Get contributor by user id");
-
         var user = createUser();
         var project = createProject();
         createContributor(user.getId(), project.getId(), true);
@@ -292,8 +254,6 @@ public class MapperTest {
 
     @Test
     public void getTaskByIdTest() {
-        logger.info("Get task  by id test");
-
         var user = createUser();
         var project = createProject();
         var contributor = createContributor(user.getId(), project.getId(), false);
@@ -307,8 +267,6 @@ public class MapperTest {
 
     @Test
     public void getTasksForProjectTest() {
-        logger.info("Get tasks for project test");
-
         var user = createUser();
         var project = createProject();
         var contributor = createContributor(user.getId(), project.getId(), false);
@@ -324,8 +282,6 @@ public class MapperTest {
 
     @Test
     public void getTasksForContributorTest() {
-        logger.info("Get tasks for contributor test");
-
         var user = createUser();
         var project = createProject();
         var contributor = createContributor(user.getId(), project.getId(), false);
@@ -340,8 +296,6 @@ public class MapperTest {
 
     @Test
     public void getTasksForUserTest() {
-        logger.info("Get tasks for user test");
-
         var user = createUser();
         var project = createProject();
         var contributor = createContributor(user.getId(), project.getId(), false);
@@ -356,8 +310,6 @@ public class MapperTest {
 
     @Test
     public void insertSprintTest() {
-        logger.info("Insert sprint test");
-
         var sprint = createSprint();
         assertTrue(sprint.getId() > 0);
 
@@ -366,8 +318,6 @@ public class MapperTest {
 
     @Test
     public void getSprintByIdTest() {
-        logger.info("Get sprint by id test");
-
         var sprint = createSprint();
         var res = mapper.getSprintById(sprint.getId());
         assertEquals(sprint.getName(), res.getName());
@@ -377,8 +327,6 @@ public class MapperTest {
 
     @Test
     public void getSprintByNameTest() {
-        logger.info("Get sprint by name test");
-
         var sprint = createSprint();
         var res = mapper.getSprintByName(sprint.getName());
         assertEquals(sprint.getName(), res.getName());
@@ -388,8 +336,6 @@ public class MapperTest {
 
     @Test
     public void getAllSprintsTest() {
-        logger.info("Get all sprints test");
-
         createSprint();
         createSprint();
         createSprint();
@@ -402,8 +348,6 @@ public class MapperTest {
 
     @Test
     public void updateTaskTest() {
-        logger.info("Update task  test");
-
         var user = createUser();
         var project = createProject();
         var contributor = createContributor(user.getId(), project.getId(), false);
@@ -424,8 +368,6 @@ public class MapperTest {
 
     @Test
     public void updateTaskSprintTest() {
-        logger.info("Update task sprint test");
-
         var user = createUser();
         var project = createProject();
         var contributor = createContributor(user.getId(), project.getId(), false);
@@ -443,8 +385,6 @@ public class MapperTest {
 
     @Test
     public void getTasksForSprintTest() {
-        logger.info("Get tasks for sprint test");
-
         var user = createUser();
         var project = createProject();
         var contributor = createContributor(user.getId(), project.getId(), false);
@@ -464,11 +404,9 @@ public class MapperTest {
 
     @Test
     public void deleteProjectTest() {
-        logger.info("Delete project test");
         var project = createProject();
 
         mapper.deleteProject(project.getId());
-        logger.info("Deleted project with id:" + project.getId());
 
         var res = mapper.getProjectById(project.getId());
         assertNull(res);
@@ -476,15 +414,12 @@ public class MapperTest {
 
     @Test
     public void deleteTaskTest() {
-        logger.info("Delete task test");
-
         var user = createUser();
         var project = createProject();
         var contributor = createContributor(user.getId(), project.getId(), false);
         var task = createTask(contributor.getId());
 
         mapper.deleteTask(task.getId());
-        logger.info("Deleted task with id:" + task.getId());
 
         var res = mapper.getTaskById(task.getId());
         assertNull(res);
@@ -494,11 +429,9 @@ public class MapperTest {
 
     @Test
     public void deleteSprintTest() {
-        logger.info("Delete sprint test");
         var sprint = createSprint();
 
         mapper.deleteSprint(sprint.getId());
-        logger.info("Deleted sprint with id:" + sprint.getId());
 
         var res = mapper.getSprintById(sprint.getId());
         assertNull(res);
@@ -513,37 +446,30 @@ public class MapperTest {
                 "test", "test", "12345", roles);
 
         mapper.insertUser(user);
-        logger.info("CREATED user with id:" + user.getId());
         return user;
     }
 
     private Project createProject() {
         var project = new Project("test", new Date());
         mapper.insertProject(project);
-
-        logger.info("CREATED project with id:" + project.getId());
         return project;
     }
 
     private Contributor createContributor(long userId, long projectId, boolean isOwner) {
         var contributor = new Contributor(userId, projectId, isOwner);
         mapper.insertContributor(contributor);
-        logger.info("CREATED contributor with id:" + contributor.getId());
-
         return contributor;
     }
 
     private Task createTask(long contributorId) {
         var task = new Task(contributorId, new Date(), true);
         mapper.insertTask(task);
-        logger.info("CREATED task with id:" + task.getId());
         return task;
     }
 
     private Sprint createSprint() {
         var sprint = new Sprint("test", new Date(), new Date());
         mapper.insertSprint(sprint);
-        logger.info("CREATED sprint with id:" + sprint.getId());
         return sprint;
     }
 
