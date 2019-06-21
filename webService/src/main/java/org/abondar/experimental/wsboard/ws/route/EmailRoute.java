@@ -2,12 +2,10 @@ package org.abondar.experimental.wsboard.ws.route;
 
 import org.apache.camel.LoggingLevel;
 import org.apache.camel.builder.RouteBuilder;
-import org.springframework.stereotype.Component;
 
 /**
  * Route sending email based on header
  */
-@Component
 public class EmailRoute extends RouteBuilder {
 
 
