@@ -1,16 +1,14 @@
 package org.abondar.experimental.wsboard.ws.impl;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.abondar.experimental.wsboard.dao.ContributorDao;
 import org.abondar.experimental.wsboard.dao.data.LogMessageUtil;
 import org.abondar.experimental.wsboard.dao.exception.DataCreationException;
 import org.abondar.experimental.wsboard.dao.exception.DataExistenceException;
 import org.abondar.experimental.wsboard.datamodel.Contributor;
-import org.abondar.experimental.wsboard.datamodel.user.User;
 import org.abondar.experimental.wsboard.ws.service.ContributorService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,28 +41,24 @@ public class ContributorServiceImpl implements ContributorService {
     @Path("/create")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(
-            summary = "Create contributor",
-            description = "Create a new contributor by user id ,project id with owner or non-owner status",
-            responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "Contributor created",
-                            content = @Content(schema = @Schema(implementation = Contributor.class))),
-                    @ApiResponse(responseCode = "404", description = "User or project not found"),
-                    @ApiResponse(responseCode = "301", description = "Project is not active"),
-                    @ApiResponse(responseCode = "406", description = "JWT token is wrong"),
-                    @ApiResponse(responseCode = "409", description = "Project has owner(if isOwner param is set to true)"),
+    @ApiOperation(
+            value = "Create contributor",
+            notes = "Create a new contributor by user id ,project id with owner or non-owner status",
+            consumes = "application/x-www-urlformencoded",
+            produces = "application/json")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Contributor created", response = Contributor.class),
+            @ApiResponse(code = 404, message = "User or project not found"),
+            @ApiResponse(code = 301, message = "Project is not active"),
+            @ApiResponse(code = 406, message = "JWT token is wrong"),
+            @ApiResponse(code = 409, message = "Project has owner(if isOwner param is set to true)"),
 
-            }
+    }
     )
     @Override
-    public Response createContributor(@FormParam("userId")
-                                      @Parameter(description = "User ID", required = true) long userId,
-                                      @FormParam("projectId")
-                                      @Parameter(description = "Project ID", required = true) long projectId,
-                                      @FormParam("isOwner")
-                                      @Parameter(description = "Is Owner", required = true) boolean isOwner) {
+    public Response createContributor(@FormParam("userId") @ApiParam(required = true) long userId,
+                                      @FormParam("projectId") @ApiParam(required = true) long projectId,
+                                      @FormParam("isOwner") @ApiParam(required = true) boolean isOwner) {
 
         try {
             var ctr = contributorDao.createContributor(userId, projectId, Boolean.valueOf(isOwner));
@@ -88,28 +82,24 @@ public class ContributorServiceImpl implements ContributorService {
     @Path("/update")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(
-            summary = "Update contributor",
-            description = "Update contributor owner and active status",
-            responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "Contributor created",
-                            content = @Content(schema = @Schema(implementation = Contributor.class))),
-                    @ApiResponse(responseCode = "404", description = "Contributor not found"),
-                    @ApiResponse(responseCode = "302", description = "Project has owner"),
-                    @ApiResponse(responseCode = "403", description = "Contributor can't be deactivated"),
-                    @ApiResponse(responseCode = "406", description = "JWT token is wrong"),
-                    @ApiResponse(responseCode = "409", description = "Project has no owner"),
-                    @ApiResponse(responseCode = "410", description = "Contributor not active and can't be an owner"),
-
-
-            }
-    )
+    @ApiOperation(
+            value = "Update contributor",
+            notes = "Update contributor owner and active status",
+            consumes = "application/x-www-urlformencoded",
+            produces = "application/json")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Contributor created", response = Contributor.class),
+            @ApiResponse(code = 404, message = "Contributor not found"),
+            @ApiResponse(code = 302, message = "Project has owner"),
+            @ApiResponse(code = 403, message = "Contributor can't be deactivated"),
+            @ApiResponse(code = 406, message = "JWT token is wrong"),
+            @ApiResponse(code = 409, message = "Project has no owner"),
+            @ApiResponse(code = 410, message = "Contributor not active and can't be an owner"),
+    })
     @Override
-    public Response updateContributor(@FormParam("ctrId") long contributorId,
-                                      @FormParam("isOwner") Boolean isOwner,
-                                      @FormParam("isActive") Boolean isActive) {
+    public Response updateContributor(@FormParam("ctrId") @ApiParam(required = true) long contributorId,
+                                      @FormParam("isOwner") @ApiParam Boolean isOwner,
+                                      @FormParam("isActive") @ApiParam Boolean isActive) {
 
         try {
 
@@ -138,23 +128,17 @@ public class ContributorServiceImpl implements ContributorService {
 
     @GET
     @Path("/find_project_owner")
-    @Operation(
-            summary = "Find Project Owner",
-            description = "Find a user who is a project owner",
-            responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "Project owner",
-                            content = @Content(schema = @Schema(implementation = User.class))),
-                    @ApiResponse(responseCode = "204", description = "Project has no owner"),
-                    @ApiResponse(responseCode = "404", description = "Project not found"),
-                    @ApiResponse(responseCode = "406", description = "JWT token is wrong"),
-
-            }
-    )
+    @ApiOperation(
+            value = "Find Project Owner",
+            notes = "Find a user who is a project owner",
+            produces = "application/json")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Project owner", response = Contributor.class),
+            @ApiResponse(code = 204, message = "Project has no owner"),
+            @ApiResponse(code = 404, message = "Project not found"),
+            @ApiResponse(code = 406, message = "JWT token is wrong")})
     @Override
-    public Response findProjectOwner(@QueryParam("projectId")
-                                     @Parameter(description = "Project Id", required = true) long projectId) {
+    public Response findProjectOwner(@QueryParam("projectId") @ApiParam(required = true) long projectId) {
 
         try {
             var owner = contributorDao.findProjectOwner(projectId);
@@ -171,24 +155,20 @@ public class ContributorServiceImpl implements ContributorService {
 
     @GET
     @Path("/find_project_contributors")
-    @Operation(
-            summary = "Find Project Contributors",
-            description = "Find a list of project contributors",
-            responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "Project contributors",
-                            content = @Content(schema = @Schema(implementation = Contributor.class))),
-                    @ApiResponse(responseCode = "204", description = "No contributors found"),
-                    @ApiResponse(responseCode = "404", description = "Project not found"),
-                    @ApiResponse(responseCode = "406", description = "JWT token is wrong"),
-
-            }
-    )
+    @ApiOperation(
+            value = "Find Project Contributors",
+            notes = "Find a list of project contributors",
+            produces = "application/json")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Project contributors", response = Contributor.class),
+            @ApiResponse(code = 204, message = "No contributors found"),
+            @ApiResponse(code = 404, message = "Project not found"),
+            @ApiResponse(code = 406, message = "JWT token is wrong"),
+    })
     @Override
-    public Response findProjectContributors(@QueryParam("projectId") long projectId,
-                                            @QueryParam("offset") int offset,
-                                            @QueryParam("limit") int limit) {
+    public Response findProjectContributors(@QueryParam("projectId") @ApiParam(required = true) long projectId,
+                                            @QueryParam("offset") @ApiParam(required = true) int offset,
+                                            @QueryParam("limit") @ApiParam(required = true) int limit) {
 
         try {
             var contributors = contributorDao.findProjectContributors(projectId, offset, limit);

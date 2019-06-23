@@ -1,15 +1,28 @@
 package org.abondar.experimental.wsboard.datamodel;
 
-/*
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
+/**
  * POJO for Contributor data model
  * @author a.bondar
  */
+@ApiModel(value = "Contributor", description = "Project contributor")
 public class Contributor {
 
+    @ApiModelProperty(value = "Contributor id")
     private long id;
+
+    @ApiModelProperty(value = "Contributor user id")
     private long userId;
+
+    @ApiModelProperty(value = "Contributor project id")
     private long projectId;
+
+    @ApiModelProperty(value = "Is contributor owner or not")
     private boolean isOwner;
+
+    @ApiModelProperty(value = "Is contributor active or not")
     private boolean isActive;
 
     public Contributor(){}

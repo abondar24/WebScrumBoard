@@ -26,6 +26,5 @@ public interface UserService extends RestService {
 
     Response logoutUser(long id);
 
-    //TODO:
-    //Response sendEmail(long id)
+
 }

@@ -1,23 +1,40 @@
 package org.abondar.experimental.wsboard.datamodel.user;
 
-import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * POJO for User data model
  *
  * @author a.bondar
  */
-@Schema(name = "User", description = "User model")
+@ApiModel(value = "User", description = "Application user")
 public class User {
 
     private static final String DELETED_DATA = "deleted";
+
+    @ApiModelProperty(value = "User id")
     private long id;
+
+    @ApiModelProperty(value = "User login")
     private String login;
+
+    @ApiModelProperty(value = "User email")
     private String email;
+
+    @ApiModelProperty(value = "User first name")
     private String firstName;
+
+    @ApiModelProperty(value = "User last name")
     private String lastName;
+
+    @ApiModelProperty(value = "User password hash")
     private String password;
+
+    @ApiModelProperty(value = "User roles as comma-separated list")
     private String roles;
+
+    @ApiModelProperty(value = "User avatar")
     private byte[] avatar;
 
     public User(){}
@@ -31,7 +48,6 @@ public class User {
         this.roles = roles;
     }
 
-    @Schema(description = "user login")
     public String getLogin() {
         return login;
     }
@@ -40,7 +56,6 @@ public class User {
         this.login = login;
     }
 
-    @Schema(description = "user email")
     public String getEmail() {
         return email;
     }
@@ -49,7 +64,6 @@ public class User {
         this.email = email;
     }
 
-    @Schema(description = "user first name")
     public String getFirstName() {
         return firstName;
     }
@@ -58,7 +72,6 @@ public class User {
         this.firstName = firstName;
     }
 
-    @Schema(description = "user last name")
     public String getLastName() {
         return lastName;
     }
@@ -67,7 +80,6 @@ public class User {
         this.lastName = lastName;
     }
 
-    @Schema(description = "user password")
     public String getPassword() {
         return password;
     }
@@ -76,7 +88,6 @@ public class User {
         this.password = password;
     }
 
-    @Schema(description = "comma-separated list of roles", allowableValues = {"DEVELOPER", "QA", "DEV_OPS"})
     public String getRoles() {
         return roles;
     }
@@ -85,7 +96,6 @@ public class User {
         this.roles = roles;
     }
 
-    @Schema(description = "user id generated after creation")
     public long getId() {
         return id;
     }
@@ -94,7 +104,6 @@ public class User {
         this.id = id;
     }
 
-    @Schema(description = "user avatar in byte array")
     public byte[] getAvatar() {
         return avatar;
     }

@@ -1,10 +1,10 @@
 package org.abondar.experimental.wsboard.ws.impl;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
+
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.abondar.experimental.wsboard.dao.SprintDao;
 import org.abondar.experimental.wsboard.dao.data.LogMessageUtil;
 import org.abondar.experimental.wsboard.dao.exception.DataCreationException;
@@ -43,24 +43,22 @@ public class SprintServiceImpl implements SprintService {
     @Path("/create")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(
-            summary = "Create sprint",
-            description = "Creates a new sprint by name start and end date",
-            responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "Sprint created",
-                            content = @Content(schema = @Schema(implementation = Sprint.class))),
-                    @ApiResponse(responseCode = "205", description = "Sprint end date is wrong"),
-                    @ApiResponse(responseCode = "206", description = "Form data is not complete or wrong"),
-                    @ApiResponse(responseCode = "302", description = "Sprint with name already exists"),
-                    @ApiResponse(responseCode = "406", description = "JWT token is wrong")
-            }
-    )
+    @ApiOperation(
+            value = "Create sprint",
+            notes = "Creates a new sprint by name start and end date",
+            consumes = "application/x-www-urlformencoded",
+            produces = "application/json")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Sprint created", response = Sprint.class),
+            @ApiResponse(code = 205, message = "Sprint end date is wrong"),
+            @ApiResponse(code = 206, message = "Form data is not complete or wrong"),
+            @ApiResponse(code = 302, message = "Sprint with name already exists"),
+            @ApiResponse(code = 406, message = "JWT token is wrong")
+    })
     @Override
-    public Response createSprint(@FormParam("name") @Parameter(description = "Sprint name", required = true) String name,
-                                 @FormParam("startDate") @Parameter(description = "Start date", required = true) String startDate,
-                                 @FormParam("endDate") @Parameter(description = "End date", required = true) String endDate) {
+    public Response createSprint(@FormParam("name") @ApiParam(required = true) String name,
+                                 @FormParam("startDate") @ApiParam(required = true) String startDate,
+                                 @FormParam("endDate") @ApiParam(required = true) String endDate) {
 
         try {
             var startDt = convertDate(startDate);
@@ -87,26 +85,24 @@ public class SprintServiceImpl implements SprintService {
     @Path("/update")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(
-            summary = "Update sprint",
-            description = "Update existing sprint",
-            responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "Sprint updated",
-                            content = @Content(schema = @Schema(implementation = Sprint.class))),
-                    @ApiResponse(responseCode = "204", description = "Form data is not complete or wrong"),
-                    @ApiResponse(responseCode = "205", description = "Sprint end date is wrong"),
-                    @ApiResponse(responseCode = "302", description = "Sprint with name already exists"),
-                    @ApiResponse(responseCode = "404", description = "Sprint with id not exists"),
-                    @ApiResponse(responseCode = "406", description = "JWT token is wrong")
-            }
-    )
+    @ApiOperation(
+            value = "Update sprint",
+            notes = "Update sprint name,start and end date",
+            consumes = "application/x-www-urlformencoded",
+            produces = "application/json")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Sprint updated", response = Sprint.class),
+            @ApiResponse(code = 204, message = "Form data is not complete or wrong"),
+            @ApiResponse(code = 205, message = "Sprint end date is wrong"),
+            @ApiResponse(code = 302, message = "Sprint with name already exists"),
+            @ApiResponse(code = 404, message = "Sprint with id not exists"),
+            @ApiResponse(code = 406, message = "JWT token is wrong")
+    })
     @Override
-    public Response updateSprint(@FormParam("id") @Parameter(description = "Sprint id", required = true) long sprintId,
-                                 @FormParam("name") @Parameter(description = "New sprint name") String name,
-                                 @FormParam("startDate") @Parameter(description = "New start date") String startDate,
-                                 @FormParam("endDate") @Parameter(description = "New end date") String endDate) {
+    public Response updateSprint(@FormParam("id") @ApiParam(required = true) long sprintId,
+                                 @FormParam("name") @ApiParam String name,
+                                 @FormParam("startDate") @ApiParam String startDate,
+                                 @FormParam("endDate") @ApiParam String endDate) {
         try {
             Date startDt = null;
             if (!startDate.isBlank()) {
@@ -143,20 +139,17 @@ public class SprintServiceImpl implements SprintService {
     @GET
     @Path("/find")
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(
-            summary = "Find",
-            description = "Find sprint by id",
-            responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "Sprint with selected id",
-                            content = @Content(schema = @Schema(implementation = Sprint.class))),
-                    @ApiResponse(responseCode = "404", description = "Sprint with id not exists"),
-                    @ApiResponse(responseCode = "406", description = "JWT token is wrong")
-            }
-    )
+    @ApiOperation(
+            value = "Find",
+            notes = "Find sprint by id",
+            produces = "application/json")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Sprint with selected id", response = Sprint.class),
+            @ApiResponse(code = 404, message = "Sprint with id not exists"),
+            @ApiResponse(code = 406, message = "JWT token is wrong")
+    })
     @Override
-    public Response getSprintById(@QueryParam("id") @Parameter(description = "Sprint id", required = true) long sprintId) {
+    public Response getSprintById(@QueryParam("id") @ApiParam(required = true) long sprintId) {
         try {
             var sprint = sprintDao.getSprintById(sprintId);
             return Response.ok(sprint).build();
@@ -169,23 +162,19 @@ public class SprintServiceImpl implements SprintService {
     @GET
     @Path("/find_all")
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(
-            summary = "Find All",
-            description = "Find all existing sprints",
-            responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "List of existing sprints",
-                            content = @Content(schema = @Schema(implementation = Sprint.class))),
-                    @ApiResponse(responseCode = "404", description = "No sprints are found"),
-                    @ApiResponse(responseCode = "406", description = "JWT token is wrong")
-            }
+    @ApiOperation(
+            value = "Find All",
+            notes = "Find all existing sprints",
+            produces = "application/json")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "List of existing sprints", response = Sprint.class),
+            @ApiResponse(code = 404, message = "No sprints are found"),
+            @ApiResponse(code = 406, message = "JWT token is wrong")
+    }
     )
     @Override
-    public Response getSprints(@QueryParam("offset")
-                               @Parameter(description = "Start of the range", required = true) int offset,
-                               @QueryParam("limit")
-                               @Parameter(description = "Number of sprints", required = true) int limit) {
+    public Response getSprints(@QueryParam("offset") @ApiParam(required = true) int offset,
+                               @QueryParam("limit") @ApiParam(required = true) int limit) {
 
         var sprints = sprintDao.getSprints(offset, limit);
         if (sprints.isEmpty()) {
@@ -197,19 +186,18 @@ public class SprintServiceImpl implements SprintService {
 
     @GET
     @Path("/delete")
-    @Operation(
-            summary = "Delete",
-            description = "Delete Sprint by id",
-            responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "Sprint is deleted"),
-                    @ApiResponse(responseCode = "404", description = "Sprint with id not exists"),
-                    @ApiResponse(responseCode = "406", description = "JWT token is wrong")
-            }
+    @ApiOperation(
+            value = "Delete",
+            notes = "Delete Sprint by id",
+            produces = "application/json")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Sprint is deleted"),
+            @ApiResponse(code = 404, message = "Sprint with id not exists"),
+            @ApiResponse(code = 406, message = "JWT token is wrong")
+    }
     )
     @Override
-    public Response deleteSprint(@QueryParam("id") @Parameter(description = "Sprint id", required = true) long sprintId) {
+    public Response deleteSprint(@QueryParam("id") @ApiParam(required = true) long sprintId) {
         try {
             sprintDao.deleteSprint(sprintId);
             return Response.ok().build();
