@@ -5,10 +5,9 @@ import org.abondar.experimental.wsboard.datamodel.user.User;
 import org.apache.camel.CamelContext;
 import org.apache.camel.EndpointInject;
 import org.apache.camel.ProducerTemplate;
-import org.apache.camel.builder.AdviceWithRouteBuilder;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.test.spring.CamelSpringBootRunner;
-import org.junit.Before;
+import org.apache.camel.test.spring.MockEndpointsAndSkip;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,9 +19,10 @@ import java.util.Map;
 @SpringBootTest(classes = WebScrumBoardApplication.class)
 @RunWith(CamelSpringBootRunner.class)
 @ActiveProfiles("test")
+@MockEndpointsAndSkip
 public class UserEmailRouteTest {
 
-    @EndpointInject(uri = "direct:createUser")
+    @Autowired
     private ProducerTemplate producerTemplate;
 
     @Autowired
@@ -31,32 +31,47 @@ public class UserEmailRouteTest {
     @EndpointInject(uri = "mock:sendEmail")
     private MockEndpoint mockEndpoint;
 
-    @Before
-    public void setup() throws Exception {
-
-        camelContext.getRouteDefinition("userEmailRoute")
-                .autoStartup(true)
-                .adviceWith(camelContext, new AdviceWithRouteBuilder() {
-                    @Override
-                    public void configure() throws Exception {
-                        interceptSendToEndpoint("log*")
-                                .skipSendToOriginalEndpoint()
-                                .to("mock:sendEmail");
-                    }
-                });
-    }
-
-
     @Test
     public void createUserRouteTest() throws Exception {
-        mockEndpoint.expectedMessageCount(1);
         producerTemplate.sendBodyAndHeaders("direct:createUser", new User(),
                 Map.of("emailType", "createUser"));
         mockEndpoint.assertIsSatisfied();
         mockEndpoint.expectedBodiesReceived();
         mockEndpoint.expectedHeaderValuesReceivedInAnyOrder("emailType", "createUser");
+        mockEndpoint.expectedMessageCount(1);
         mockEndpoint.reset();
     }
 
+    @Test
+    public void updateLoginRouteTest() throws Exception {
+        producerTemplate.sendBodyAndHeaders("direct:updateLogin", new User(),
+                Map.of("emailType", "updateLogin"));
+        mockEndpoint.assertIsSatisfied();
+        mockEndpoint.expectedBodiesReceived();
+        mockEndpoint.expectedHeaderValuesReceivedInAnyOrder("emailType", "updateLogin");
+        mockEndpoint.expectedMessageCount(1);
+        mockEndpoint.reset();
+    }
 
+    @Test
+    public void updatePasswordRouteTest() throws Exception {
+        producerTemplate.sendBodyAndHeaders("direct:updatePassword", new User(),
+                Map.of("emailType", "updatePassword"));
+        mockEndpoint.assertIsSatisfied();
+        mockEndpoint.expectedBodiesReceived();
+        mockEndpoint.expectedHeaderValuesReceivedInAnyOrder("emailType", "updatePassword");
+        mockEndpoint.expectedMessageCount(1);
+        mockEndpoint.reset();
+    }
+
+    @Test
+    public void deleteUserRouteTest() throws Exception {
+        producerTemplate.sendBodyAndHeaders("direct:deleteUser", 7,
+                Map.of("emailType", "deleteUser"));
+        mockEndpoint.assertIsSatisfied();
+        mockEndpoint.expectedBodiesReceived();
+        mockEndpoint.expectedHeaderValuesReceivedInAnyOrder("emailType", "deleteUser");
+        mockEndpoint.expectedMessageCount(1);
+        mockEndpoint.reset();
+    }
 }

@@ -14,13 +14,13 @@ import org.abondar.experimental.wsboard.ws.service.AuthService;
 import org.abondar.experimental.wsboard.ws.service.RestService;
 import org.apache.cxf.Bus;
 import org.apache.cxf.bus.spring.SpringBus;
-import org.apache.cxf.endpoint.Server;
+import org.apache.cxf.ext.logging.LoggingInInterceptor;
+import org.apache.cxf.ext.logging.LoggingOutInterceptor;
 import org.apache.cxf.interceptor.security.SecureAnnotationsInterceptor;
 import org.apache.cxf.jaxrs.JAXRSServerFactoryBean;
 import org.apache.cxf.jaxrs.swagger.Swagger2Feature;
 import org.apache.cxf.rs.security.jose.jwa.SignatureAlgorithm;
 import org.apache.cxf.rs.security.jose.jws.HmacJwsSignatureVerifier;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.PreferencesPlaceholderConfigurer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -80,15 +80,17 @@ public class CxfConfig implements WebMvcConfigurer {
     }
 
 
-    @Autowired
     @Bean
-    public Server jaxRsServer(JacksonJsonProvider jsonProvider, AuthService authService) {
-
+    public JAXRSServerFactoryBean jaxRsServer(JacksonJsonProvider jsonProvider, AuthService authService) {
 
         var factory = new JAXRSServerFactoryBean();
         factory.setBus(springBus());
         factory.setServiceBeanObjects(userService(authService), projectService(),
                 contributorService(), taskService(), sprintService());
+
+        factory.setProviders(List.of(jsonProvider, authenticationFilter(authService)));
+        factory.setInInterceptors(List.of(new LoggingInInterceptor(), secureAnnotationsInterceptor()));
+        factory.setOutInterceptors(List.of(new LoggingOutInterceptor()));
 
         factory.setFeatures(List.of(createSwaggerFeature()));
         Map<Object, Object> extMappings = new HashMap<>();
@@ -99,7 +101,7 @@ public class CxfConfig implements WebMvcConfigurer {
         factory.setLanguageMappings(langMappings);
         factory.setAddress("/wsboard");
 
-        return factory.create();
+        return factory;
     }
 
 

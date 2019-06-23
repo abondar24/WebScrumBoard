@@ -25,5 +25,7 @@ before_script:
   - psql -c 'create database wsboard_test;' -U postgres
   - psql -c "CREATE USER admin WITH PASSWORD 'admin217';" -U postgres
 
+#before_install:
+#  - sudo python3 -m smtpd -n -c DebuggingServer localhost:25
 
 script: mvn clean install -DskipTests=false
