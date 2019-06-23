@@ -18,6 +18,8 @@ import java.io.IOException;
 
 /**
  * Filter for token renewal after expiration
+ *
+ * @author a.bondar
  */
 public class TokenRenewalFilter extends JwtAuthenticationFilter {
 

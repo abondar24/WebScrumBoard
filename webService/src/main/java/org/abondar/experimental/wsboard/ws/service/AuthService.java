@@ -8,6 +8,8 @@ import java.util.List;
 
 /**
  * Authorization service
+ *
+ * @author a.bondar
  */
 public interface AuthService {
     String renewToken(String tokenStr) throws Base64Exception;

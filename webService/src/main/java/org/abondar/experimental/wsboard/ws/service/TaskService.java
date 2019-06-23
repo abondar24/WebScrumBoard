@@ -4,6 +4,8 @@ import javax.ws.rs.core.Response;
 
 /**
  * Task CRUD web service
+ *
+ * @author a.bondar
  */
 public interface TaskService extends RestService {
 

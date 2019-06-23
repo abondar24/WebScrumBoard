@@ -7,6 +7,8 @@ import javax.ws.rs.ext.ExceptionMapper;
 
 /**
  * Class for checking if token is expired
+ *
+ * @author a.bondar
  */
 public class TokenExpiredMapper implements ExceptionMapper<JwtException> {
 

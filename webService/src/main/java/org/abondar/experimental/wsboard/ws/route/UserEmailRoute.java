@@ -4,6 +4,8 @@ import org.apache.camel.builder.RouteBuilder;
 
 /**
  * Route for invoking sending emails by user service events
+ *
+ * @author a.bondar
  */
 public class UserEmailRoute extends RouteBuilder {
 

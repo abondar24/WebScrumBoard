@@ -5,6 +5,8 @@ import org.apache.camel.builder.RouteBuilder;
 
 /**
  * Route sending email based on header
+ *
+ * @author a.bondar
  */
 public class EmailRoute extends RouteBuilder {
 

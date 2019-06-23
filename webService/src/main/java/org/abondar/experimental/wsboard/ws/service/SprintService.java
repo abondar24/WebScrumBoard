@@ -4,6 +4,8 @@ import javax.ws.rs.core.Response;
 
 /**
  * Sprint CRUD web service
+ *
+ * @author a.bondar
  */
 public interface SprintService extends RestService {
 

@@ -15,6 +15,8 @@ import java.util.Date;
 
 /**
  * Basic web service interface
+ *
+ * @author a.bondar
  */
 @SwaggerDefinition(
         info = @Info(

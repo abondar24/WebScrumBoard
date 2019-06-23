@@ -29,6 +29,8 @@ import java.util.Date;
 
 /**
  * Task web service implementation
+ *
+ * @author a.bondar
  */
 @Path("/task")
 public class TaskServiceImpl implements TaskService {

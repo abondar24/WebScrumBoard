@@ -4,6 +4,8 @@ import javax.ws.rs.core.Response;
 
 /**
  * Contributor CRUD web service
+ *
+ * @author a.bondar
  */
 public interface ContributorService extends RestService {
 

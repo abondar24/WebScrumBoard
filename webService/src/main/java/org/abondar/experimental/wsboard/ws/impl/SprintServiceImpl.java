@@ -29,6 +29,8 @@ import java.util.Date;
 
 /**
  * Sprint service implementation
+ *
+ * @author a.bondar
  */
 @Path("/sprint")
 public class SprintServiceImpl implements SprintService {

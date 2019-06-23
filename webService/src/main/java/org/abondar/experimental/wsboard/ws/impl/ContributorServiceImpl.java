@@ -27,6 +27,8 @@ import javax.ws.rs.core.Response;
 
 /**
  * Contributor service implementation
+ *
+ * @author a.bondar
  */
 @Path("/contributor")
 public class ContributorServiceImpl implements ContributorService {

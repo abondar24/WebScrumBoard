@@ -4,6 +4,8 @@ import javax.ws.rs.core.Response;
 
 /**
  * Project CRUD  web service
+ *
+ * @author a.bondar
  */
 public interface ProjectService extends RestService {
 

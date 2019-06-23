@@ -29,6 +29,8 @@ import java.util.Date;
 
 /**
  * Project web service implementation
+ *
+ * @author a.bondar
  */
 @Path("/project")
 public class ProjectServiceImpl implements ProjectService {

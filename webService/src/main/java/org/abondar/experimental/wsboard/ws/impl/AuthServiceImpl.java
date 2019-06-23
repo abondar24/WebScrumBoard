@@ -28,6 +28,8 @@ import static org.abondar.experimental.wsboard.dao.data.LogMessageUtil.VERIFICAT
 
 /**
  * Authorization service implementation
+ *
+ * @author a.bondar
  */
 public class AuthServiceImpl implements AuthService {
     @Autowired

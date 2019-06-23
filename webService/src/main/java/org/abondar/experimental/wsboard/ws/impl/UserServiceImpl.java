@@ -34,6 +34,8 @@ import java.util.Date;
 
 /**
  * User service implementation
+ *
+ * @author a.bondar
  */
 @Path("/user")
 public class UserServiceImpl implements UserService {

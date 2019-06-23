@@ -4,6 +4,8 @@ import javax.ws.rs.core.Response;
 
 /**
  * User CRUD and login web service
+ *
+ * @author a.bondar
  */
 public interface UserService extends RestService {
 

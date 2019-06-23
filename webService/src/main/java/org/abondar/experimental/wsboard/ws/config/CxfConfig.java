@@ -32,7 +32,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Cxf configuration class
+ * Rest server configuration class
+ *
+ * @author a.bondar
  */
 @Configuration
 @Component

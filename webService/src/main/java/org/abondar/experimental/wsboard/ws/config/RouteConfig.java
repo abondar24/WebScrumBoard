@@ -6,6 +6,11 @@ import org.apache.camel.builder.RouteBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * Camel routes configuration class
+ *
+ * @author a.bondar
+ */
 @Configuration
 public class RouteConfig {
 
