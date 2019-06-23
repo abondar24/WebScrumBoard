@@ -1,40 +1,39 @@
 package org.abondar.experimental.wsboard.datamodel.user;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * POJO for User data model
  *
  * @author a.bondar
  */
-@ApiModel(value = "User", description = "Application user")
+@Schema(name = "User", description = "User model")
 public class User {
 
     private static final String DELETED_DATA = "deleted";
 
-    @ApiModelProperty(value = "User id")
+    @Schema(description = "user id")
     private long id;
 
-    @ApiModelProperty(value = "User login")
+    @Schema(description = "user login")
     private String login;
 
-    @ApiModelProperty(value = "User email")
+    @Schema(description = "user email")
     private String email;
 
-    @ApiModelProperty(value = "User first name")
+    @Schema(description = "user first name")
     private String firstName;
 
-    @ApiModelProperty(value = "User last name")
+    @Schema(description = "user last name")
     private String lastName;
 
-    @ApiModelProperty(value = "User password hash")
+    @Schema(description = "user password")
     private String password;
 
-    @ApiModelProperty(value = "User roles as comma-separated list")
+    @Schema(description = "comma-separated list of roles", allowableValues = {"DEVELOPER", "QA", "DEV_OPS"})
     private String roles;
 
-    @ApiModelProperty(value = "User avatar")
+    @Schema(description = "user avatar in byte array")
     private byte[] avatar;
 
     public User(){}

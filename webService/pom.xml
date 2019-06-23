@@ -69,7 +69,6 @@
             <artifactId>cxf-rt-rs-service-description-swagger</artifactId>
             <version>${cxf.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.abondar.experimental.wsboard</groupId>
             <artifactId>dao</artifactId>

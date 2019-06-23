@@ -1,10 +1,10 @@
 package org.abondar.experimental.wsboard.ws.impl;
 
-
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.abondar.experimental.wsboard.dao.ProjectDao;
 import org.abondar.experimental.wsboard.dao.data.LogMessageUtil;
 import org.abondar.experimental.wsboard.dao.exception.DataCreationException;
@@ -45,20 +45,24 @@ public class ProjectServiceImpl implements ProjectService {
     @Path("/create")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(
-            value = "Create project",
-            notes = "Creates a new project by name and start date",
-            consumes = "application/x-www-urlformencoded",
-            produces = "application/json")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Project created", response = Project.class),
-            @ApiResponse(code = 206, message = "Form data is not complete"),
-            @ApiResponse(code = 302, message = "Project with name already exists"),
-            @ApiResponse(code = 406, message = "JWT token is wrong")
-    })
+    @Operation(
+            summary = "Create project",
+            description = "Creates a new project by name and start date",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Project created",
+                            content = @Content(schema = @Schema(implementation = Project.class))),
+                    @ApiResponse(responseCode = "206", description = "Form data is not complete"),
+                    @ApiResponse(responseCode = "302", description = "Project with name already exists"),
+                    @ApiResponse(responseCode = "406", description = "JWT token is wrong")
+            }
+    )
     @Override
-    public Response createProject(@FormParam("name") @ApiParam(required = true) String name,
-                                  @FormParam("startDate") @ApiParam(required = true) String startDate) {
+    public Response createProject(@FormParam("name")
+                                  @Parameter(description = "Project name", required = true) String name,
+                                  @FormParam("startDate")
+                                  @Parameter(description = "Project start date", required = true) String startDate) {
 
         try {
             var prj = projectDao.createProject(name, convertDate(startDate));
@@ -77,26 +81,35 @@ public class ProjectServiceImpl implements ProjectService {
     @Path("/update")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(
-            value = "Update project",
-            notes = "Update project name,repository,activity,end date",
-            consumes = "application/x-www-urlformencoded",
-            produces = "application/json")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Project updated", response = Project.class),
-            @ApiResponse(code = 205, message = "Wrong end date for project"),
-            @ApiResponse(code = 206, message = "End date can't be parsed"),
-            @ApiResponse(code = 301, message = "Project can't be reactivated"),
-            @ApiResponse(code = 302, message = "Project with name already exists"),
-            @ApiResponse(code = 404, message = "Project not found"),
-            @ApiResponse(code = 406, message = "JWT token is wrong")
-    })
+    @Operation(
+            summary = "Update project",
+            description = "Update project name,repository,activity,end date",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Project updated",
+                            content = @Content(schema = @Schema(implementation = Project.class))),
+                    @ApiResponse(responseCode = "205", description = "Wrong end date for project"),
+                    @ApiResponse(responseCode = "206", description = "End date can't be parsed"),
+                    @ApiResponse(responseCode = "301", description = "Project can't be reactivated"),
+                    @ApiResponse(responseCode = "302", description = "Project with name already exists"),
+                    @ApiResponse(responseCode = "404", description = "Project not found"),
+                    @ApiResponse(responseCode = "406", description = "JWT token is wrong")
+            }
+    )
     @Override
-    public Response updateProject(@FormParam("id") @ApiParam(required = true) long id,
-                                  @FormParam("name") @ApiParam String name,
-                                  @FormParam("repo") @ApiParam String repo,
-                                  @FormParam("isActive") @ApiParam Boolean isActive,
-                                  @FormParam("endDate") @ApiParam String endDate) {
+    public Response updateProject(@FormParam("id")
+                                  @Parameter(description = "Project ID", required = true) long id,
+                                  @FormParam("name")
+                                  @Parameter(description = "Project name") String name,
+                                  @FormParam("repo")
+                                  @Parameter(description = "Project repository")
+                                          String repo,
+                                  @FormParam("isActive")
+                                  @Parameter(description = "Project status") Boolean isActive,
+                                  @FormParam("endDate")
+                                  @Parameter(description = "Project end date(required if status is false)")
+                                          String endDate) {
 
         try {
             Date endDt = null;
@@ -135,17 +148,19 @@ public class ProjectServiceImpl implements ProjectService {
     @GET
     @Path("/delete")
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(
-            value = "Delete",
-            notes = "Delete project",
-            produces = "application/json")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Project deleted"),
-            @ApiResponse(code = 404, message = "Project with id not exists"),
-            @ApiResponse(code = 406, message = "JWT token is wrong")
-    })
+    @Operation(
+            summary = "Delete",
+            description = "Delete project",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Delete project"),
+                    @ApiResponse(responseCode = "404", description = "Project with id not exists"),
+                    @ApiResponse(responseCode = "406", description = "JWT token is wrong")
+            }
+    )
     @Override
-    public Response deleteProject(@QueryParam("id") @ApiParam(required = true) long id) {
+    public Response deleteProject(@QueryParam("id") @Parameter(description = "Project ID", required = true) long id) {
         try {
             projectDao.deleteProject(id);
             return Response.ok().build();
@@ -158,17 +173,20 @@ public class ProjectServiceImpl implements ProjectService {
     @GET
     @Path("/find")
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(
-            value = "Find",
-            notes = "Find project by id",
-            produces = "application/json")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Project found", response = Project.class),
-            @ApiResponse(code = 404, message = "Project with id not exists"),
-            @ApiResponse(code = 406, message = "JWT token is wrong")
-    })
+    @Operation(
+            summary = "Find",
+            description = "Find project by id",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Project found",
+                            content = @Content(schema = @Schema(implementation = Project.class))),
+                    @ApiResponse(responseCode = "404", description = "Project with id not exists"),
+                    @ApiResponse(responseCode = "406", description = "JWT token is wrong")
+            }
+    )
     @Override
-    public Response findProjectById(@QueryParam("id") @ApiParam(required = true) long id) {
+    public Response findProjectById(@QueryParam("id") @Parameter(description = "Project ID", required = true) long id) {
         try {
             var prj = projectDao.findProjectById(id);
             return Response.ok(prj).build();

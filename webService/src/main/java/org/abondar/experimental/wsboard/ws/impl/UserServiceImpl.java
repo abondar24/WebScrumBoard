@@ -1,9 +1,11 @@
 package org.abondar.experimental.wsboard.ws.impl;
 
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.abondar.experimental.wsboard.dao.UserDao;
 import org.abondar.experimental.wsboard.dao.data.LogMessageUtil;
 import org.abondar.experimental.wsboard.dao.exception.CannotPerformOperationException;
@@ -40,9 +42,8 @@ import java.util.Date;
 @Path("/user")
 public class UserServiceImpl implements UserService {
 
-    private static final String COOKIE_ISSUER = "borscht systems";
+    private static final String COOKIE_ISSUER = "borscht sysyems";
     private static Logger logger = LoggerFactory.getLogger(UserService.class);
-
     @Autowired
     @Qualifier("userDao")
     private UserDao dao;
@@ -59,24 +60,26 @@ public class UserServiceImpl implements UserService {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/create")
     @PermitAll
-    @ApiOperation(
-            value = "Create user",
-            notes = "Creates a new user based on form data",
-            consumes = "application/x-www-urlformencoded",
-            produces = "application/json")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "User created", response = User.class),
-            @ApiResponse(code = 206, message = "Form data is not complete"),
-            @ApiResponse(code = 302, message = "User with such login already exists"),
-            @ApiResponse(code = 503, message = "Password hash not created")
-    })
+    @Operation(
+            summary = "Create user",
+            description = "Creates a new user based on form data",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "User created",
+                            content = @Content(schema = @Schema(implementation = User.class))),
+                    @ApiResponse(responseCode = "206", description = "Form data is not complete"),
+                    @ApiResponse(responseCode = "302", description = "User with such login already exists"),
+                    @ApiResponse(responseCode = "503", description = "Password hash not created")
+            }
+    )
     @Override
-    public Response createUser(@FormParam("login") @ApiParam(required = true) String login,
-                               @FormParam("email") @ApiParam(required = true) String email,
-                               @FormParam("firstName") @ApiParam(required = true) String firstName,
-                               @FormParam("lastName") @ApiParam(required = true) String lastName,
-                               @FormParam("password") @ApiParam(required = true) String password,
-                               @FormParam("roles") @ApiParam(required = true) String roles) {
+    public Response createUser(@FormParam("login") @Parameter(description = "User login", required = true) String login,
+                               @FormParam("email") @Parameter(description = "User email", required = true) String email,
+                               @FormParam("firstName") @Parameter(description = "First name of user", required = true) String firstName,
+                               @FormParam("lastName") @Parameter(description = "Last name of user", required = true) String lastName,
+                               @FormParam("password") @Parameter(description = "User password", required = true) String password,
+                               @FormParam("roles") @Parameter(description = "Comma separated list of user roles", required = true) String roles) {
 
         try {
             User user = dao.createUser(login, password, email, firstName, lastName, roles);
@@ -99,23 +102,25 @@ public class UserServiceImpl implements UserService {
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/update")
-    @ApiOperation(
-            value = "Update user",
-            notes = "Update user first,last name,email and roles",
-            consumes = "application/x-www-urlformencoded",
-            produces = "application/json")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "User updated", response = User.class),
-            @ApiResponse(code = 204, message = ""),
-            @ApiResponse(code = 404, message = "User with id not exists"),
-            @ApiResponse(code = 406, message = "JWT token is wrong")
-    })
+    @Operation(
+            summary = "Update user",
+            description = "Update user first,last name,email and roles",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "User updated",
+                            content = @Content(schema = @Schema(implementation = User.class))),
+                    @ApiResponse(responseCode = "204"),
+                    @ApiResponse(responseCode = "404", description = "User with id not exists"),
+                    @ApiResponse(responseCode = "406", description = "JWT token is wrong")
+            }
+    )
     @Override
-    public Response updateUser(@FormParam("id") @ApiParam(required = true) long id,
-                               @FormParam("firstName") @ApiParam(required = true) String firstName,
-                               @FormParam("lastName") @ApiParam(required = true) String lastName,
-                               @FormParam("email") @ApiParam(required = true) String email,
-                               @FormParam("roles") @ApiParam(required = true) String roles) {
+    public Response updateUser(@FormParam("id") @Parameter(description = "User ID", required = true) long id,
+                               @FormParam("firstName") @Parameter(description = "First name of user") String firstName,
+                               @FormParam("lastName") @Parameter(description = "Last name of user") String lastName,
+                               @FormParam("email") @Parameter(description = "User email") String email,
+                               @FormParam("roles") @Parameter(description = "List of user roles") String roles) {
         try {
             User user = dao.updateUser(id, firstName, lastName, email, roles, null);
 
@@ -133,19 +138,22 @@ public class UserServiceImpl implements UserService {
     @Consumes(MediaType.APPLICATION_OCTET_STREAM)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/update_avatar")
-    @ApiOperation(
-            value = "Update avatar",
-            notes = "Update user avatar",
-            consumes = "application/octet-stream",
-            produces = "application/json")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "User avatar updated", response = User.class),
-            @ApiResponse(code = 404, message = "User with id not exists"),
-            @ApiResponse(code = 406, message = "JWT token is wrong"),
-            @ApiResponse(code = 500, message = "Avatar is empty")
-    })
+    @Operation(
+            summary = "Update avatar",
+            description = "Update user avatar",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "User avatar updated",
+                            content = @Content(schema = @Schema(implementation = User.class))),
+                    @ApiResponse(responseCode = "404", description = "User with id not exists"),
+                    @ApiResponse(responseCode = "406", description = "JWT token is wrong"),
+                    @ApiResponse(responseCode = "500", description = "Avatar is empty")
+            }
+    )
     @Override
-    public Response updateAvatar(@QueryParam("id") @ApiParam(required = true) long id, byte[] avatar) {
+    public Response updateAvatar(@QueryParam("id") @Parameter(description = "User ID", required = true) long id,
+                                 @RequestBody(description = "User avatar as byte array") byte[] avatar) {
         try {
             User user = dao.updateUser(id, null, null, null, null, avatar);
 
@@ -162,21 +170,23 @@ public class UserServiceImpl implements UserService {
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/update_login")
-    @ApiOperation(
-            value = "Update login",
-            notes = "Update user login",
-            consumes = "application/x-www-urlformencoded",
-            produces = "application/json")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "User with updated login", response = User.class),
-            @ApiResponse(code = 302, message = "User with login already exists"),
-            @ApiResponse(code = 404, message = "User with id not exists"),
-            @ApiResponse(code = 406, message = "JWT token is wrong"),
-            @ApiResponse(code = 501, message = "User login is empty")
-    })
+    @Operation(
+            summary = "Update login",
+            description = "Update user login",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "User with updated login",
+                            content = @Content(schema = @Schema(implementation = User.class))),
+                    @ApiResponse(responseCode = "302", description = "User with login already exists"),
+                    @ApiResponse(responseCode = "404", description = "User with id not exists"),
+                    @ApiResponse(responseCode = "406", description = "JWT token is wrong"),
+                    @ApiResponse(responseCode = "501", description = "User login is empty")
+            }
+    )
     @Override
-    public Response updateLogin(@FormParam("login") @ApiParam(required = true) String login,
-                                @FormParam("id") @ApiParam(required = true) long id) {
+    public Response updateLogin(@FormParam("login") @Parameter(description = "User login", required = true) String login,
+                                @FormParam("id") @Parameter(description = "User ID", required = true) long id) {
         try {
             User user = dao.updateLogin(login, id);
 
@@ -199,22 +209,24 @@ public class UserServiceImpl implements UserService {
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/update_password")
-    @ApiOperation(
-            value = "Update password",
-            notes = "Update user password",
-            consumes = "application/x-www-urlformencoded",
-            produces = "application/json")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "User with updated password", response = User.class),
-            @ApiResponse(code = 401, message = "User password is wrong"),
-            @ApiResponse(code = 404, message = "User with id not exists"),
-            @ApiResponse(code = 406, message = "JWT token is wrong"),
-            @ApiResponse(code = 503, message = "Password hash not created")
-    })
+    @Operation(
+            summary = "Update password",
+            description = "Update user password",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "User with updated password",
+                            content = @Content(schema = @Schema(implementation = User.class))),
+                    @ApiResponse(responseCode = "401", description = "User password is wrong"),
+                    @ApiResponse(responseCode = "404", description = "User with id not exists"),
+                    @ApiResponse(responseCode = "406", description = "JWT token is wrong"),
+                    @ApiResponse(responseCode = "503", description = "Password hash not created")
+            }
+    )
     @Override
-    public Response updatePassword(@FormParam("oldPassword") @ApiParam(required = true) String oldPassword,
-                                   @FormParam("newPassword") @ApiParam(required = true) String newPassword,
-                                   @FormParam("id") @ApiParam(required = true) long id) {
+    public Response updatePassword(@FormParam("oldPassword") @Parameter(description = "Current user password", required = true) String oldPassword,
+                                   @FormParam("newPassword") @Parameter(description = "New user password", required = true) String newPassword,
+                                   @FormParam("id") @Parameter(description = "User ID", required = true) long id) {
         try {
             User user = dao.updatePassword(oldPassword, newPassword, id);
 
@@ -234,18 +246,21 @@ public class UserServiceImpl implements UserService {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/delete")
-    @ApiOperation(
-            value = "Delete",
-            notes = "Delete user",
-            produces = "application/json")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "User marked as deleted", response = User.class),
-            @ApiResponse(code = 404, message = "User with id not exists"),
-            @ApiResponse(code = 406, message = "JWT token is wrong"),
-            @ApiResponse(code = 501, message = "User is project owner")
-    })
+    @Operation(
+            summary = "Delete",
+            description = "Delete user",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "User marked as deleted",
+                            content = @Content(schema = @Schema(implementation = User.class))),
+                    @ApiResponse(responseCode = "404", description = "User with id not exists"),
+                    @ApiResponse(responseCode = "406", description = "JWT token is wrong"),
+                    @ApiResponse(responseCode = "501", description = "User is project owner")
+            }
+    )
     @Override
-    public Response deleteUser(@QueryParam("id") @ApiParam(required = true) long id) {
+    public Response deleteUser(@QueryParam("id") @Parameter(description = "User ID", required = true) long id) {
         try {
             User user = dao.deleteUser(id);
 
@@ -264,20 +279,21 @@ public class UserServiceImpl implements UserService {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/login")
     @PermitAll
-    @ApiOperation(
-            value = "Login",
-            notes = "Log in user",
-            consumes = "application/x-www-urlformencoded",
-            produces = "application/json")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "User logged in"),
-            @ApiResponse(code = 401, message = "User password is wrong"),
-            @ApiResponse(code = 404, message = "User with id not exists"),
-            @ApiResponse(code = 503, message = "Password hash not created")
-    })
+    @Operation(
+            summary = "Login",
+            description = "Log in user",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "User logged in"),
+                    @ApiResponse(responseCode = "401", description = "User password is wrong"),
+                    @ApiResponse(responseCode = "404", description = "User with id not exists"),
+                    @ApiResponse(responseCode = "503", description = "Password hash not created")
+            }
+    )
     @Override
-    public Response loginUser(@FormParam("login") @ApiParam(required = true) String login,
-                              @FormParam("password") @ApiParam(required = true) String password) {
+    public Response loginUser(@FormParam("login") @Parameter(description = "User login", required = true) String login,
+                              @FormParam("password") @Parameter(description = "User password", required = true) String password) {
         try {
             dao.loginUser(login, password);
 
@@ -297,17 +313,19 @@ public class UserServiceImpl implements UserService {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/logout")
-    @ApiOperation(
-            value = "Logout",
-            notes = "Log out user",
-            produces = "application/json")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "User logged out"),
-            @ApiResponse(code = 404, message = "User with id not exists"),
-            @ApiResponse(code = 406, message = "JWT token is wrong"),
-    })
+    @Operation(
+            summary = "Logout",
+            description = "Log out user",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "User logged out"),
+                    @ApiResponse(responseCode = "404", description = "User with id not exists"),
+                    @ApiResponse(responseCode = "406", description = "JWT token is wrong")
+            }
+    )
     @Override
-    public Response logoutUser(@QueryParam("id") @ApiParam(required = true) long id) {
+    public Response logoutUser(@QueryParam("id") @Parameter(description = "User ID", required = true) long id) {
         try {
             dao.findUserById(id);
 

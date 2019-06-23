@@ -1,7 +1,6 @@
 package org.abondar.experimental.wsboard.datamodel;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.Date;
 
@@ -10,25 +9,25 @@ import java.util.Date;
  *
  * @author a.bondar
  */
-@ApiModel(value = "Project", description = "Scrum project")
+@Schema(name = "Project", description = "Scrum project")
 public class Project {
 
-    @ApiModelProperty(value = "Project id")
+    @Schema(description = "Project id")
     private long id;
 
-    @ApiModelProperty(value = "Project name")
+    @Schema(description = "Project name")
     private String name;
 
-    @ApiModelProperty(value = "Project start date")
+    @Schema(description = "Project start date")
     private Date startDate;
 
-    @ApiModelProperty(value = "Project end date")
+    @Schema(description = "Project end date")
     private Date endDate;
 
-    @ApiModelProperty(value = "Project repository")
+    @Schema(description = "Project repository")
     private String repository;
 
-    @ApiModelProperty(value = "Project is project active or not?")
+    @Schema(description = "Project is project active or not?")
     private boolean isActive;
 
     public Project(){

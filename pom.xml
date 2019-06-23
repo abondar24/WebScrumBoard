@@ -10,7 +10,7 @@
 
     <properties>
         <springboot.version>2.1.5.RELEASE</springboot.version>
-        <cxf.version>3.3.0</cxf.version>
+        <cxf.version>3.3.2</cxf.version>
         <junit.version>5.3.2</junit.version>
         <jaxb.version>2.3.1</jaxb.version>
         <camel.version>2.24.0</camel.version>
@@ -50,10 +50,11 @@
             <artifactId>jaxws-api</artifactId>
             <version>2.3.0</version>
         </dependency>
+
         <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-rs-service-description-swagger</artifactId>
-            <version>${cxf.version}</version>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-annotations</artifactId>
+            <version>2.0.8</version>
         </dependency>
 
     </dependencies>

@@ -1,7 +1,6 @@
 package org.abondar.experimental.wsboard.datamodel;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.Date;
 
@@ -10,19 +9,19 @@ import java.util.Date;
  *
  * @author a.bondar
  */
-@ApiModel(value = "Sprint", description = "Project sprint")
+@Schema(name = "Sprint", description = "Project sprint")
 public class Sprint {
 
-    @ApiModelProperty(value = "Sprint id")
+    @Schema(description = "Sprint id")
     private long id;
 
-    @ApiModelProperty(value = "Sprint name")
+    @Schema(description = "Sprint name")
     private String name;
 
-    @ApiModelProperty(value = "Sprint start date")
+    @Schema(description = "Sprint start date")
     private Date startDate;
 
-    @ApiModelProperty(value = "Sprint end date")
+    @Schema(description = "Sprint end date")
     private Date endDate;
 
     public Sprint(){}
