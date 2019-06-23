@@ -2,12 +2,11 @@ package org.abondar.experimental.wsboard.test.ws.route;
 
 import org.abondar.experimental.wsboard.base.WebScrumBoardApplication;
 import org.abondar.experimental.wsboard.datamodel.user.User;
-import org.apache.camel.CamelContext;
 import org.apache.camel.EndpointInject;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.test.spring.CamelSpringBootRunner;
-import org.apache.camel.test.spring.MockEndpointsAndSkip;
+import org.apache.camel.test.spring.MockEndpoints;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,14 +18,12 @@ import java.util.Map;
 @SpringBootTest(classes = WebScrumBoardApplication.class)
 @RunWith(CamelSpringBootRunner.class)
 @ActiveProfiles("test")
-@MockEndpointsAndSkip
+@MockEndpoints
 public class UserEmailRouteTest {
 
     @Autowired
     private ProducerTemplate producerTemplate;
 
-    @Autowired
-    private CamelContext camelContext;
 
     @EndpointInject(uri = "mock:sendEmail")
     private MockEndpoint mockEndpoint;
