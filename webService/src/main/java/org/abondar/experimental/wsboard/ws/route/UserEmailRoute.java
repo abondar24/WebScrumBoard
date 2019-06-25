@@ -17,6 +17,9 @@ public class UserEmailRoute extends RouteBuilder {
                 .log(simple("${header.operationName}").toString())
                 .toD("direct:${header.operationName}");
 
+//        from("direct:getOpenApi").log("Fetching OpenAPI specification");
+//        from("direct:getResource").log("Hui");
+
         from("direct:createUser").routeId("createUser")
                 .transform()
                 .body((bdy, hdrs) -> hdrs.put("emailType", "createUser"))

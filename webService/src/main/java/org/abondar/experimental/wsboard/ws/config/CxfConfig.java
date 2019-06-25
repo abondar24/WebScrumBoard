@@ -47,17 +47,17 @@ public class CxfConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    PreferencesPlaceholderConfigurer configurer() {
+    public PreferencesPlaceholderConfigurer configurer() {
         return new PreferencesPlaceholderConfigurer();
     }
 
     @Bean
-    RestService userService(AuthService authService) {
+    public RestService userService(AuthService authService) {
         return new UserServiceImpl(authService);
     }
 
     @Bean
-    RestService projectService() {
+    public RestService projectService() {
         return new ProjectServiceImpl();
     }
 
@@ -67,17 +67,17 @@ public class CxfConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    RestService taskService() {
+    public RestService taskService() {
         return new TaskServiceImpl();
     }
 
     @Bean
-    RestService sprintService() {
+    public RestService sprintService() {
         return new SprintServiceImpl();
     }
 
     @Bean
-    AuthService authService() {
+    public AuthService authService() {
         return new AuthServiceImpl();
     }
 
@@ -93,6 +93,7 @@ public class CxfConfig implements WebMvcConfigurer {
         factory.setProviders(List.of(jsonProvider, authenticationFilter(authService)));
         factory.setInInterceptors(List.of(new LoggingInInterceptor(), secureAnnotationsInterceptor()));
         factory.setOutInterceptors(List.of(new LoggingOutInterceptor()));
+
 
         factory.setFeatures(List.of(createSwaggerFeature()));
         Map<Object, Object> extMappings = new HashMap<>();
@@ -122,10 +123,15 @@ public class CxfConfig implements WebMvcConfigurer {
         swagger2Feature.setPrettyPrint(true);
         swagger2Feature.setHost("localhost:8024");
         swagger2Feature.setBasePath("/cxf/wsboard/api");
-        swagger2Feature.findSwaggerUiRoot();
-        swagger2Feature.isSupportSwaggerUi();
-        swagger2Feature.setScanAllResources(true);
-        swagger2Feature.setSwaggerUiVersion("3.0");
+        swagger2Feature.setSupportSwaggerUi(true);
+        swagger2Feature.setRunAsFilter(true);
+
+        swagger2Feature.setTitle("Web Scrum Board");
+        swagger2Feature.setDescription("Web Scrum Board REST API");
+        swagger2Feature.setContact("Alex Bondar(abondar1992@gmail.com)");
+        swagger2Feature.setLicense("MIT");
+
+
         return swagger2Feature;
     }
 

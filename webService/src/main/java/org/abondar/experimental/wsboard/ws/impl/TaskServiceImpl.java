@@ -1,10 +1,11 @@
 package org.abondar.experimental.wsboard.ws.impl;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.abondar.experimental.wsboard.dao.TaskDao;
 import org.abondar.experimental.wsboard.dao.data.LogMessageUtil;
 import org.abondar.experimental.wsboard.dao.exception.DataCreationException;
@@ -33,6 +34,7 @@ import java.util.Date;
  * @author a.bondar
  */
 @Path("/task")
+@Api("Task api")
 public class TaskServiceImpl implements TaskService {
 
     private static Logger logger = LoggerFactory.getLogger(TaskService.class);
@@ -46,29 +48,21 @@ public class TaskServiceImpl implements TaskService {
     @Path("/create")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(
-            summary = "Create task",
-            description = "Create a new task by contributor id,start date,devOps requirement",
-            responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "Task created",
-                            content = @Content(schema = @Schema(implementation = Task.class))),
-                    @ApiResponse(responseCode = "404", description = "Contributor not found"),
-                    @ApiResponse(responseCode = "206", description = "Start date not parsed"),
-                    @ApiResponse(responseCode = "406", description = "JWT token is wrong")
-            }
-    )
+    @ApiOperation(
+            value = "Create task",
+            notes = "Create a new task by contributor id,start date,devOps requirement",
+            consumes = "application/x-www-urlformencoded",
+            produces = "application/json")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Task created", response = Task.class),
+            @ApiResponse(code = 404, message = "Contributor not found"),
+            @ApiResponse(code = 206, message = "Start date not parsed"),
+            @ApiResponse(code = 406, message = "JWT token is wrong")
+    })
     @Override
-    public Response createTask(@FormParam("ctrId")
-                               @Parameter(description = "contributor id", required = true)
-                                       long contributorId,
-                               @FormParam("startDate")
-                               @Parameter(description = "task start date", required = true)
-                                       String startDate,
-                               @FormParam("devOps")
-                               @Parameter(description = "dev ops status", required = true)
-                                       boolean devOpsEnabled) {
+    public Response createTask(@FormParam("ctrId") @ApiParam(required = true) long contributorId,
+                               @FormParam("startDate") @ApiParam(required = true) String startDate,
+                               @FormParam("devOps") @ApiParam(required = true) boolean devOpsEnabled) {
 
         try {
             Date stDate = convertDate(startDate);
@@ -90,31 +84,21 @@ public class TaskServiceImpl implements TaskService {
     @Path("/update")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(
-            summary = "Update task",
-            description = "Update an existing task's contributor,devops requirement and story points",
-            responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "Task updated",
-                            content = @Content(schema = @Schema(implementation = Task.class))),
-                    @ApiResponse(responseCode = "404", description = "Task or contributor not found"),
-                    @ApiResponse(responseCode = "406", description = "JWT token is wrong")
-            }
-    )
+    @ApiOperation(
+            value = "Update task",
+            notes = "Update an existing task's contributor,devops requirement and story points",
+            consumes = "application/x-www-urlformencoded",
+            produces = "application/json")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Task updated", response = Task.class),
+            @ApiResponse(code = 404, message = "Task or contributor not found"),
+            @ApiResponse(code = 406, message = "JWT token is wrong")
+    })
     @Override
-    public Response updateTask(@FormParam("id")
-                               @Parameter(description = "task id", required = true)
-                                       long taskId,
-                               @FormParam("ctrId")
-                               @Parameter(description = "contributor id")
-                                       Long contributorId,
-                               @FormParam("devOps")
-                               @Parameter(description = "dev ops status")
-                                       boolean devOpsEnabled,
-                               @FormParam("storyPoints")
-                               @Parameter(description = "story points")
-                                       Integer storyPoints) {
+    public Response updateTask(@FormParam("id") @ApiParam(required = true) long taskId,
+                               @FormParam("ctrId") @ApiParam Long contributorId,
+                               @FormParam("devOps") @ApiParam boolean devOpsEnabled,
+                               @FormParam("storyPoints") @ApiParam Integer storyPoints) {
         try {
             var task = taskDao.updateTask(taskId, contributorId, devOpsEnabled, storyPoints);
             return Response.ok(task).build();
@@ -130,25 +114,19 @@ public class TaskServiceImpl implements TaskService {
     @Path("/update_sprint")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(
-            summary = "Update task sprint",
-            description = "Update an existing task's sprint",
-            responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "Task updated",
-                            content = @Content(schema = @Schema(implementation = Task.class))),
-                    @ApiResponse(responseCode = "404", description = "Task or sprint not found"),
-                    @ApiResponse(responseCode = "406", description = "JWT token is wrong")
-            }
-    )
+    @ApiOperation(
+            value = "Update task sprint",
+            notes = "Update an existing task's sprint",
+            consumes = "application/x-www-urlformencoded",
+            produces = "application/json")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Task updated", response = Task.class),
+            @ApiResponse(code = 404, message = "Task or sprint not found"),
+            @ApiResponse(code = 406, message = "JWT token is wrong")
+    })
     @Override
-    public Response updateTaskSprint(@FormParam("id")
-                                     @Parameter(description = "task id", required = true)
-                                             long taskId,
-                                     @FormParam("sprintId")
-                                     @Parameter(description = "sprint id", required = true)
-                                             long sprintId) {
+    public Response updateTaskSprint(@FormParam("id") @ApiParam(required = true) long taskId,
+                                     @FormParam("sprintId") @ApiParam(required = true) long sprintId) {
         try {
             var task = taskDao.updateTaskSprint(taskId, sprintId);
             return Response.ok(task).build();
@@ -163,33 +141,26 @@ public class TaskServiceImpl implements TaskService {
     @Path("/update_state")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(
-            summary = "Update task state",
-            description = "Update an existing task's state",
-            responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "Task updated",
-                            content = @Content(schema = @Schema(implementation = Task.class))),
-                    @ApiResponse(responseCode = "201", description = "Task is already created"),
-                    @ApiResponse(responseCode = "202", description = "Task contributor must be changed"),
-                    @ApiResponse(responseCode = "204", description = "Dev ops is not enabled for task"),
-                    @ApiResponse(responseCode = "302", description = "Task is already completed"),
-                    @ApiResponse(responseCode = "400", description = "Task state unknown"),
-                    @ApiResponse(responseCode = "404", description = "Task not found"),
-                    @ApiResponse(responseCode = "406", description = "JWT token is wrong"),
-                    @ApiResponse(responseCode = "409", description = "Task is returned to a wrong state after pause"),
-                    @ApiResponse(responseCode = "501", description = "Task can't be changed to the state")
-
-            }
-    )
+    @ApiOperation(
+            value = "Update task state",
+            notes = "Update an existing task's state",
+            consumes = "application/x-www-urlformencoded",
+            produces = "application/json")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Task updated", response = Task.class),
+            @ApiResponse(code = 201, message = "Task is already created"),
+            @ApiResponse(code = 202, message = "Task contributor must be changed"),
+            @ApiResponse(code = 204, message = "Dev ops is not enabled for task"),
+            @ApiResponse(code = 302, message = "Task is already completed"),
+            @ApiResponse(code = 400, message = "Task state unknown"),
+            @ApiResponse(code = 404, message = "Task not found"),
+            @ApiResponse(code = 406, message = "JWT token is wrong"),
+            @ApiResponse(code = 409, message = "Task is returned to a wrong state after pause"),
+            @ApiResponse(code = 501, message = "Task can't be changed to the state")
+    })
     @Override
-    public Response updateTaskState(@FormParam("id")
-                                    @Parameter(description = "task id", required = true)
-                                            long taskId,
-                                    @FormParam("state")
-                                    @Parameter(description = "task state")
-                                            String state) {
+    public Response updateTaskState(@FormParam("id") @ApiParam(required = true) long taskId,
+                                    @FormParam("state") @ApiParam String state) {
 
         try {
             var task = taskDao.updateTaskState(taskId, state);
@@ -228,19 +199,17 @@ public class TaskServiceImpl implements TaskService {
     @GET
     @Path("/delete")
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(
-            summary = "Delete task",
-            description = "Delete task by id",
-            responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "Task deleted"),
-                    @ApiResponse(responseCode = "404", description = "Task not found"),
-                    @ApiResponse(responseCode = "406", description = "JWT token is wrong")
-            }
-    )
+    @ApiOperation(
+            value = "Delete task",
+            notes = "Delete task by id",
+            produces = "application/json")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Task deleted"),
+            @ApiResponse(code = 404, message = "Task not found"),
+            @ApiResponse(code = 406, message = "JWT token is wrong")
+    })
     @Override
-    public Response deleteTask(@QueryParam("id") @Parameter(description = "task id", required = true) long id) {
+    public Response deleteTask(@QueryParam("id") @ApiParam(required = true) long id) {
         if (taskDao.deleteTask(id)) {
             return Response.ok().build();
         } else {
@@ -251,20 +220,17 @@ public class TaskServiceImpl implements TaskService {
     @GET
     @Path("/find")
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(
-            summary = "Find task",
-            description = "Find task by id",
-            responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "Task found",
-                            content = @Content(schema = @Schema(implementation = Task.class))),
-                    @ApiResponse(responseCode = "404", description = "Task  not found"),
-                    @ApiResponse(responseCode = "406", description = "JWT token is wrong")
-            }
-    )
+    @ApiOperation(
+            value = "Find task",
+            notes = "Find task by id",
+            produces = "application/json")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Task found", response = Task.class),
+            @ApiResponse(code = 404, message = "Task  not found"),
+            @ApiResponse(code = 406, message = "JWT token is wrong")
+    })
     @Override
-    public Response getTaskById(@QueryParam("id") @Parameter(description = "task id", required = true) long taskId) {
+    public Response getTaskById(@QueryParam("id") @ApiParam(required = true) long taskId) {
         try {
             var task = taskDao.getTaskById(taskId);
             return Response.ok(task).build();
@@ -279,26 +245,20 @@ public class TaskServiceImpl implements TaskService {
     @GET
     @Path("/find_project_tasks")
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(
-            summary = "Find project tasks",
-            description = "Find tasks assigned to a project",
-            responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "Tasks found",
-                            content = @Content(schema = @Schema(implementation = Task.class))),
-                    @ApiResponse(responseCode = "204", description = "No tasks not found"),
-                    @ApiResponse(responseCode = "404", description = "Project not found"),
-                    @ApiResponse(responseCode = "406", description = "JWT token is wrong")
-            }
-    )
+    @ApiOperation(
+            value = "Find project tasks",
+            notes = "Find tasks assigned to a project",
+            produces = "application/json")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Tasks found", response = Task.class),
+            @ApiResponse(code = 204, message = "No tasks not found"),
+            @ApiResponse(code = 404, message = "Project not found"),
+            @ApiResponse(code = 406, message = "JWT token is wrong")
+    })
     @Override
-    public Response getTasksForProject(@QueryParam("prId")
-                                       @Parameter(description = "project id", required = true) long projectId,
-                                       @QueryParam("offset")
-                                       @Parameter(description = "Start of the range", required = true) int offset,
-                                       @QueryParam("limit")
-                                       @Parameter(description = "Number of tasks", required = true)
+    public Response getTasksForProject(@QueryParam("prId") @ApiParam(required = true) long projectId,
+                                       @QueryParam("offset") @ApiParam(required = true) int offset,
+                                       @QueryParam("limit") @ApiParam(required = true)
                                                int limit) {
         try {
             var tasks = taskDao.getTasksForProject(projectId, offset, limit);
@@ -318,29 +278,20 @@ public class TaskServiceImpl implements TaskService {
     @GET
     @Path("/find_contributor_tasks")
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(
-            summary = "Find contributor tasks",
-            description = "Find tasks assigned to a contributor",
-            responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "Tasks found",
-                            content = @Content(schema = @Schema(implementation = Task.class))),
-                    @ApiResponse(responseCode = "204", description = "No tasks not found"),
-                    @ApiResponse(responseCode = "404", description = "Contributor not found"),
-                    @ApiResponse(responseCode = "406", description = "JWT token is wrong")
-            }
-    )
+    @ApiOperation(
+            value = "Find contributor tasks",
+            notes = "Find tasks assigned to a contributor",
+            produces = "application/json")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Tasks found", response = Task.class),
+            @ApiResponse(code = 204, message = "No tasks not found"),
+            @ApiResponse(code = 404, message = "Contributor not found"),
+            @ApiResponse(code = 406, message = "JWT token is wrong")
+    })
     @Override
-    public Response getTasksForContributor(@QueryParam("ctrId")
-                                           @Parameter(description = "contributor id", required = true)
-                                                   long ctrId,
-                                           @QueryParam("offset")
-                                           @Parameter(description = "Start of the range", required = true)
-                                                   int offset,
-                                           @QueryParam("limit")
-                                           @Parameter(description = "Number of tasks", required = true)
-                                                   int limit) {
+    public Response getTasksForContributor(@QueryParam("ctrId") @ApiParam(required = true) long ctrId,
+                                           @QueryParam("offset") @ApiParam(required = true) int offset,
+                                           @QueryParam("limit") @ApiParam(required = true) int limit) {
         try {
             var tasks = taskDao.getTasksForContributor(ctrId, offset, limit);
             if (tasks.isEmpty()) {
@@ -359,29 +310,20 @@ public class TaskServiceImpl implements TaskService {
     @GET
     @Path("/find_user_tasks")
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(
-            summary = "Find user tasks",
-            description = "Find tasks assigned to a user",
-            responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "Tasks found",
-                            content = @Content(schema = @Schema(implementation = Task.class))),
-                    @ApiResponse(responseCode = "204", description = "No tasks not found"),
-                    @ApiResponse(responseCode = "404", description = "Contributor not found"),
-                    @ApiResponse(responseCode = "406", description = "JWT token is wrong")
-            }
-    )
+    @ApiOperation(
+            value = "Find user tasks",
+            notes = "Find tasks assigned to a user",
+            produces = "application/json")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Tasks found", response = Task.class),
+            @ApiResponse(code = 204, message = "No tasks not found"),
+            @ApiResponse(code = 404, message = "Contributor not found"),
+            @ApiResponse(code = 406, message = "JWT token is wrong")
+    })
     @Override
-    public Response getTasksForUser(@QueryParam("usrId")
-                                    @Parameter(description = "user id", required = true)
-                                            long usrId,
-                                    @QueryParam("offset")
-                                    @Parameter(description = "Start of the range", required = true)
-                                            int offset,
-                                    @QueryParam("limit")
-                                    @Parameter(description = "Number of tasks", required = true)
-                                            int limit) {
+    public Response getTasksForUser(@QueryParam("usrId") @ApiParam(required = true) long usrId,
+                                    @QueryParam("offset") @ApiParam(required = true) int offset,
+                                    @QueryParam("limit") @ApiParam(required = true) int limit) {
 
         try {
             var tasks = taskDao.getTasksForUser(usrId, offset, limit);
@@ -400,29 +342,21 @@ public class TaskServiceImpl implements TaskService {
     @GET
     @Path("/find_sprint_tasks")
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(
-            summary = "Find sprint tasks",
-            description = "Find tasks assigned in a sprint",
-            responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "Tasks found",
-                            content = @Content(schema = @Schema(implementation = Task.class))),
-                    @ApiResponse(responseCode = "204", description = "No tasks not found"),
-                    @ApiResponse(responseCode = "404", description = "Contributor not found"),
-                    @ApiResponse(responseCode = "406", description = "JWT token is wrong")
-            }
+    @ApiOperation(
+            value = "Find sprint tasks",
+            notes = "Find tasks assigned in a sprint",
+            produces = "application/json")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Tasks found", response = Task.class),
+            @ApiResponse(code = 204, message = "No tasks not found"),
+            @ApiResponse(code = 404, message = "Contributor not found"),
+            @ApiResponse(code = 406, message = "JWT token is wrong")
+    }
     )
     @Override
-    public Response getTasksForSprint(@QueryParam("spId")
-                                      @Parameter(description = "sprint id", required = true)
-                                              long sprintId,
-                                      @QueryParam("offset")
-                                      @Parameter(description = "Start of the range", required = true)
-                                              int offset,
-                                      @QueryParam("limit")
-                                      @Parameter(description = "Number of tasks", required = true)
-                                              int limit) {
+    public Response getTasksForSprint(@QueryParam("spId") @ApiParam(required = true) long sprintId,
+                                      @QueryParam("offset") @ApiParam(required = true) int offset,
+                                      @QueryParam("limit") @ApiParam(required = true) int limit) {
         try {
             var tasks = taskDao.getTasksForSprint(sprintId, offset, limit);
             if (tasks.isEmpty()) {

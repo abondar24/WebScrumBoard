@@ -1,6 +1,7 @@
 package org.abondar.experimental.wsboard.datamodel.task;
 
-import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 import java.util.Date;
 
@@ -9,34 +10,34 @@ import java.util.Date;
  *
  * @author a.bondar
  */
-@Schema(name = "Task", description = "Project task")
+@ApiModel(value = "Task", description = "Project task")
 public class Task {
 
-    @Schema(description = "Task id")
+    @ApiModelProperty(value = "Task id")
     private long id;
 
-    @Schema(description = "Task contributor id")
+    @ApiModelProperty(value = "Task contributor id")
     private long contributorId;
 
-    @Schema(description = "Task current state")
+    @ApiModelProperty(value = "Task current state")
     private TaskState taskState;
 
-    @Schema(description = "Task previous state")
+    @ApiModelProperty(value = "Task previous state")
     private TaskState prevState;
 
-    @Schema(description = "Task story points")
+    @ApiModelProperty(value = "Task story points")
     private int storyPoints;
 
-    @Schema(description = "Task start date")
+    @ApiModelProperty(value = "Task start date")
     private Date startDate;
 
-    @Schema(description = "Task end date")
+    @ApiModelProperty(value = "Task end date")
     private Date endDate;
 
-    @Schema(description = "Task sprint id")
+    @ApiModelProperty(value = "Task sprint id")
     private long sprintId;
 
-    @Schema(description = "Does't task have dev ops state or not?")
+    @ApiModelProperty(value = "Does't task have dev ops state or not?")
     private boolean devOpsEnabled;
 
 
