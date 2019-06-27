@@ -30,6 +30,7 @@ public interface UserService extends RestService {
     
     //TODO add method to find user by login
     //TODO add method for sending reset password email
+    //TODO add method for entering code
 
 
 }
