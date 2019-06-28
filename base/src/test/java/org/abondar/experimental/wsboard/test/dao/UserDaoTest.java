@@ -169,6 +169,25 @@ public class UserDaoTest {
     }
 
     @Test
+    public void resetPasswordTest() throws Exception {
+        var usr = createUser();
+        var id = usr.getId();
+
+        userDao.resetPassword(id);
+
+        usr = userDao.findUserById(id);
+        assertEquals("reset", usr.getPassword());
+
+        mapper.deleteUsers();
+    }
+
+    @Test
+    public void resetPasswordUserNotFoundTest() throws Exception {
+
+        assertThrows(DataExistenceException.class, () -> userDao.resetPassword(10));
+    }
+
+    @Test
     public void findUserByIdTest() throws Exception {
         var usr = createUser();
         var id = usr.getId();
@@ -181,9 +200,7 @@ public class UserDaoTest {
 
     @Test
     public void findUserNotFoundByIdTest() {
-        var id = 10;
-
-        assertThrows(DataExistenceException.class, () -> userDao.findUserById(id));
+        assertThrows(DataExistenceException.class, () -> userDao.findUserById(10));
     }
 
 
@@ -200,9 +217,7 @@ public class UserDaoTest {
 
     @Test
     public void findUserNotFoundByLoginTest() {
-        var login = "test";
-
-        assertThrows(DataExistenceException.class, () -> userDao.findUserByLogin(login));
+        assertThrows(DataExistenceException.class, () -> userDao.findUserByLogin("test"));
     }
 
     @Test

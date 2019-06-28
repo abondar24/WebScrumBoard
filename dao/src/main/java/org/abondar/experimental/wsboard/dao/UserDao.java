@@ -192,6 +192,22 @@ public class UserDao extends BaseDao {
         return usr;
     }
 
+    public void resetPassword(long id) throws DataExistenceException {
+        var usr = mapper.getUserById(id);
+        if (usr == null) {
+            var msg = String.format(LogMessageUtil.LOG_FORMAT, LogMessageUtil.USER_NOT_EXISTS, id);
+            logger.error(msg);
+
+            throw new DataExistenceException(LogMessageUtil.USER_NOT_EXISTS);
+        }
+
+        usr.setPassword("reset");
+        mapper.updateUser(usr);
+        var msg = String.format("Password reset for " + LogMessageUtil.LOG_FORMAT, "user ", usr.getId());
+        logger.info(msg);
+
+    }
+
     /**
      * Mark user as deleted and set all its data as 'deleted'
      *
@@ -244,7 +260,9 @@ public class UserDao extends BaseDao {
     /**
      * Find user By Id
      *
-     * @param id - user login
+     * @param id - user id
+     * @throws DataExistenceException - user not found
+     * @return user with id
      */
     public User findUserById(long id) throws DataExistenceException {
 
@@ -256,9 +274,19 @@ public class UserDao extends BaseDao {
             throw new DataExistenceException(LogMessageUtil.USER_NOT_EXISTS);
         }
 
+        var msg = String.format(LogMessageUtil.LOG_FORMAT, "User ", usr.getId());
+        logger.info(msg);
+
         return usr;
     }
 
+    /**
+     * Find user By Login
+     *
+     * @param login - user login
+     * @return user with login
+     * @throws DataExistenceException - user not found
+     */
     public User findUserByLogin(String login) throws DataExistenceException {
         var usr = mapper.getUserByLogin(login);
         if (usr == null) {
@@ -267,6 +295,7 @@ public class UserDao extends BaseDao {
             throw new DataExistenceException(LogMessageUtil.USER_NOT_EXISTS);
         }
 
+        logger.info("User found with required login");
         return usr;
     }
 
