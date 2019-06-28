@@ -386,6 +386,34 @@ public class UserServiceTest {
 
     }
 
+    @Test
+    public void findUserByLoginTest() {
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+        var usr = createUser();
+
+        client.path("/user/find").accept(MediaType.APPLICATION_JSON).query("login", usr.getLogin());
+
+        var resp = client.get();
+        assertEquals(200, resp.getStatus());
+
+        usr = resp.readEntity(User.class);
+        assertEquals(10, usr.getId());
+        assertEquals(login, usr.getLogin());
+    }
+
+    @Test
+    public void findUserByLoginNotFoubdTest() {
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+        createUser();
+
+        client.path("/user/find").accept(MediaType.APPLICATION_JSON).query("login", "test");
+
+        var resp = client.get();
+        assertEquals(404, resp.getStatus());
+
+        var msg = resp.readEntity(String.class);
+        assertEquals(LogMessageUtil.USER_NOT_EXISTS, msg);
+    }
 
     @Test
     public void deleteUserTest() {

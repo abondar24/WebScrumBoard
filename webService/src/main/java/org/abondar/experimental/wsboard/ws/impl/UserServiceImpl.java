@@ -321,6 +321,29 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/find")
+    @ApiOperation(
+            value = "Find",
+            notes = "Find user by login",
+            produces = "application/json")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "User found"),
+            @ApiResponse(code = 404, message = "User not found"),
+            @ApiResponse(code = 406, message = "JWT token is wrong"),
+    })
+    @Override
+    public Response findUserByLogin(@QueryParam("login") @ApiParam(required = true) String login) {
+        try {
+            var usr = dao.findUserByLogin(login);
+            return Response.ok(usr).build();
+        } catch (DataExistenceException ex) {
+            return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
+        }
+
+    }
+
 
     private NewCookie createLoginCookie(String login) {
         return new NewCookie(new Cookie("X-JWT-AUTH",

@@ -237,6 +237,18 @@ public class UserServiceTestImpl implements UserService {
     }
 
     @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/find")
+    @Override
+    public Response findUserByLogin(@QueryParam("login") String login) {
+        if (!testUser.getLogin().equals(login)) {
+            return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.USER_NOT_EXISTS).build();
+        }
+
+        return Response.ok(testUser).build();
+    }
+
+    @GET
     @Path("create_test_contributor")
     public Response createTestContributor(@QueryParam("id") long userId) {
         this.testContributor = new Contributor(userId, 7, true);
