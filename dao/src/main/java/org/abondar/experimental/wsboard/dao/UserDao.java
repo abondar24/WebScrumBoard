@@ -13,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-
 /**
  * Data access object for user
  *
@@ -259,6 +258,18 @@ public class UserDao extends BaseDao {
 
         return usr;
     }
+
+    public User findUserByLogin(String login) throws DataExistenceException {
+        var usr = mapper.getUserByLogin(login);
+        if (usr == null) {
+            logger.error(LogMessageUtil.USER_NOT_EXISTS);
+
+            throw new DataExistenceException(LogMessageUtil.USER_NOT_EXISTS);
+        }
+
+        return usr;
+    }
+
 
     /**
      * Checks if user roles are correct

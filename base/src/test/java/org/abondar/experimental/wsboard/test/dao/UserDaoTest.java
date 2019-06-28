@@ -168,7 +168,42 @@ public class UserDaoTest {
         mapper.deleteUsers();
     }
 
+    @Test
+    public void findUserByIdTest() throws Exception {
+        var usr = createUser();
+        var id = usr.getId();
 
+        usr = userDao.findUserById(id);
+        assertEquals(id, usr.getId());
+        mapper.deleteUsers();
+    }
+
+
+    @Test
+    public void findUserNotFoundByIdTest() {
+        var id = 10;
+
+        assertThrows(DataExistenceException.class, () -> userDao.findUserById(id));
+    }
+
+
+    @Test
+    public void findUserByLoginTest() throws Exception {
+        var usr = createUser();
+        var login = usr.getLogin();
+
+        usr = userDao.findUserByLogin(login);
+        assertEquals(login, usr.getLogin());
+        mapper.deleteUsers();
+    }
+
+
+    @Test
+    public void findUserNotFoundByLoginTest() {
+        var login = "test";
+
+        assertThrows(DataExistenceException.class, () -> userDao.findUserByLogin(login));
+    }
 
     @Test
     public void deleteUserTest() throws Exception {
