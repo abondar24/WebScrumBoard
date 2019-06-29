@@ -248,6 +248,19 @@ public class UserServiceTestImpl implements UserService {
         return Response.ok(testUser).build();
     }
 
+
+    @GET
+    @Path("/reset_pwd")
+    @Override
+    public Response resetPassword(@QueryParam("id") long id) {
+        if (testUser.getId() != id) {
+            return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.USER_NOT_EXISTS).build();
+        }
+
+        testUser.setPassword("reset");
+        return Response.ok().build();
+    }
+
     @GET
     @Path("create_test_contributor")
     public Response createTestContributor(@QueryParam("id") long userId) {

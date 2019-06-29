@@ -29,9 +29,10 @@ public class EmailRoute extends RouteBuilder {
                 .to("velocity:/velocity/updateLogin.html")
                 .when(header("emailType").isEqualTo("updatePassword"))
                 .to("velocity:/velocity/updatePassword.html")
+                .when(header("emailType").isEqualTo("resetPassword"))
+                .to("velocity:/velocity/resetPassword.html")
                 .when(header("emailType").isEqualTo("deleteUser"))
                 .to("velocity:/velocity/deleteUser.html")
-            //TODO: add choice for pwreset link
                 .doTry()
                 .to("{{email.server}}")
                 .doCatch(Exception.class)

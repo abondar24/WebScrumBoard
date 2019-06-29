@@ -339,9 +339,34 @@ public class UserServiceImpl implements UserService {
             var usr = dao.findUserByLogin(login);
             return Response.ok(usr).build();
         } catch (DataExistenceException ex) {
+            logger.error(ex.getMessage());
             return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
         }
 
+    }
+
+    @GET
+    @Path("/reset_pwd")
+    @ApiOperation(
+            value = "Reset password",
+            notes = "Reset user password to value 'reset'",
+            produces = "application/json")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Password reset"),
+            @ApiResponse(code = 404, message = "User not found"),
+            @ApiResponse(code = 406, message = "JWT token is wrong"),
+    })
+    @Override
+    public Response resetPassword(@QueryParam("id") @ApiParam(required = true) long id) {
+        try {
+            dao.resetPassword(id);
+            Response.ok().build();
+        } catch (DataExistenceException ex) {
+            logger.error(ex.getMessage());
+            return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
+        }
+
+        return null;
     }
 
 

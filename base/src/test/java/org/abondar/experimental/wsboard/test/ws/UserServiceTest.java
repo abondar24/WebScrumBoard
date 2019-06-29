@@ -402,11 +402,38 @@ public class UserServiceTest {
     }
 
     @Test
-    public void findUserByLoginNotFoubdTest() {
+    public void findUserByLoginNotFoundTest() {
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
         createUser();
 
         client.path("/user/find").accept(MediaType.APPLICATION_JSON).query("login", "test");
+
+        var resp = client.get();
+        assertEquals(404, resp.getStatus());
+
+        var msg = resp.readEntity(String.class);
+        assertEquals(LogMessageUtil.USER_NOT_EXISTS, msg);
+    }
+
+    @Test
+    public void resetPasswordTest() {
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+        var usr = createUser();
+
+        client.path("/user/reset_pwd").accept(MediaType.APPLICATION_JSON).query("id", usr.getId());
+
+        var resp = client.get();
+        assertEquals(200, resp.getStatus());
+
+
+    }
+
+    @Test
+    public void resetPasswordUserNotFoundTest() {
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+        createUser();
+
+        client.path("/user/reset_pwd").accept(MediaType.APPLICATION_JSON).query("id", 7);
 
         var resp = client.get();
         assertEquals(404, resp.getStatus());

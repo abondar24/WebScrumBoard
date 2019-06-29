@@ -29,6 +29,12 @@ public class UserEmailRoute extends RouteBuilder {
                 .body((bdy, hdrs) -> hdrs.put("emailType", "updateLogin"))
                 .to("direct:sendEmail");
 
+        from("direct:resetPassword").routeId("resetPassword")
+                .transform()
+                .body((bdy, hdrs) -> hdrs.put("emailType", "resetPassword"))
+                .to("direct:sendEmail");
+
+
         from("direct:updatePassword").routeId("updatePassword")
                 .transform()
                 .body((bdy, hdrs) -> hdrs.put("emailType", "updatePassword"))

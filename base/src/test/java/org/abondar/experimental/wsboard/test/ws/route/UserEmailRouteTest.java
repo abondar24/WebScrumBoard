@@ -71,4 +71,16 @@ public class UserEmailRouteTest {
         mockEndpoint.expectedMessageCount(1);
         mockEndpoint.reset();
     }
+
+    @Test
+    public void resetPasswordRouteTest() throws Exception {
+        producerTemplate.sendBodyAndHeaders("direct:resetPassword", 7,
+                Map.of("emailType", "resetPassword"));
+        mockEndpoint.assertIsSatisfied();
+        mockEndpoint.expectedBodiesReceived();
+        mockEndpoint.expectedHeaderValuesReceivedInAnyOrder("emailType", "resetPassword");
+        mockEndpoint.expectedMessageCount(1);
+        mockEndpoint.reset();
+    }
+
 }

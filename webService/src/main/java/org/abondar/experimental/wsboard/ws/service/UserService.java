@@ -29,8 +29,9 @@ public interface UserService extends RestService {
     Response logoutUser(long id);
 
     Response findUserByLogin(String login);
+
+    Response resetPassword(long id);
     
-    //TODO add method for sending reset password email
     //TODO add method for entering code
 
 
