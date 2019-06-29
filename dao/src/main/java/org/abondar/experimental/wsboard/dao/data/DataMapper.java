@@ -3,6 +3,7 @@ package org.abondar.experimental.wsboard.dao.data;
 
 import org.abondar.experimental.wsboard.datamodel.Contributor;
 import org.abondar.experimental.wsboard.datamodel.Project;
+import org.abondar.experimental.wsboard.datamodel.SecurityCode;
 import org.abondar.experimental.wsboard.datamodel.Sprint;
 import org.abondar.experimental.wsboard.datamodel.task.Task;
 import org.abondar.experimental.wsboard.datamodel.user.User;
@@ -28,6 +29,8 @@ public interface DataMapper {
 
     void insertSprint(@Param("sprint") Sprint sprint);
 
+    void insertCode(@Param("securityCode") SecurityCode code);
+
     void updateUser(@Param("user") User user);
 
     void updateProject(@Param("project") Project project);
@@ -39,6 +42,8 @@ public interface DataMapper {
     void updateSprint(@Param("sprint") Sprint sprint);
 
     void updateTaskSprint(@Param("id")Long id,@Param("sprintId") long sprintId);
+
+    void updateCode(@Param("id") long id);
 
     User getUserByLogin(@Param("login") String login);
 
@@ -59,6 +64,8 @@ public interface DataMapper {
     User getUserByContributorId(@Param("ctrId") long ctrId);
 
     Task getTaskById(@Param("id") long id);
+
+    SecurityCode getCodeById(@Param("id") long id);
 
     List<Task> getTasksForProject(@Param("projectId") long projectId, @Param("offset") int offset, @Param("limit") int limit);
 
@@ -91,4 +98,6 @@ public interface DataMapper {
     void deleteProjects();
 
     void deleteSprints();
+
+    void deleteCodes();
 }

@@ -4,6 +4,7 @@ import org.abondar.experimental.wsboard.base.WebScrumBoardApplication;
 import org.abondar.experimental.wsboard.dao.data.DataMapper;
 import org.abondar.experimental.wsboard.datamodel.Contributor;
 import org.abondar.experimental.wsboard.datamodel.Project;
+import org.abondar.experimental.wsboard.datamodel.SecurityCode;
 import org.abondar.experimental.wsboard.datamodel.Sprint;
 import org.abondar.experimental.wsboard.datamodel.task.Task;
 import org.abondar.experimental.wsboard.datamodel.task.TaskState;
@@ -190,6 +191,34 @@ public class MapperTest {
         var ctr = createContributor(user.getId(), project.getId(), true);
 
         assertTrue(ctr.getId() > 0);
+
+        cleanData();
+    }
+
+    @Test
+    public void insertCodeTest() {
+        var user = createUser();
+
+        var code = new SecurityCode(123345, user.getId());
+        mapper.insertCode(code);
+
+        assertTrue(code.getId() > 0);
+
+        cleanData();
+    }
+
+    @Test
+    public void updateCodeTest() {
+        var user = createUser();
+
+        var code = new SecurityCode(123345, user.getId());
+        mapper.insertCode(code);
+
+        mapper.updateCode(code.getId());
+
+        code = mapper.getCodeById(code.getId());
+
+        assertTrue(code.isActivated());
 
         cleanData();
     }
@@ -477,6 +506,7 @@ public class MapperTest {
         mapper.deleteTasks();
         mapper.deleteSprints();
         mapper.deleteContributors();
+        mapper.deleteCodes();
         mapper.deleteUsers();
         mapper.deleteProjects();
     }
