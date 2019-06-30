@@ -67,6 +67,8 @@ public interface DataMapper {
 
     SecurityCode getCodeById(@Param("id") long id);
 
+    Integer checkCodeExists(@Param("code") long code);
+
     List<Task> getTasksForProject(@Param("projectId") long projectId, @Param("offset") int offset, @Param("limit") int limit);
 
     List<Task> getTasksForContributor(@Param("contributorId") long contributorId, @Param("offset") int offset, @Param("limit") int limit);

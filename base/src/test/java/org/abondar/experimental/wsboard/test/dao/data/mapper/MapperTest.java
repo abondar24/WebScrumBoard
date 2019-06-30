@@ -224,6 +224,20 @@ public class MapperTest {
     }
 
     @Test
+    public void checkCodeExistsTest() {
+        var user = createUser();
+
+        var code = new SecurityCode(123345, user.getId());
+        mapper.insertCode(code);
+
+        Integer exists = mapper.checkCodeExists(code.getCode());
+
+        assertEquals(Integer.valueOf(1), exists);
+
+        cleanData();
+    }
+
+    @Test
     public void getUserByContributorIdTest() {
         var user = createUser();
         var project = createProject();

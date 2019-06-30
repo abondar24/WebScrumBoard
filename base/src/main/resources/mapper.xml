@@ -387,6 +387,13 @@
         WHERE sc.id=#{id}
     </select>
 
+    <select id="checkCodeExists" resultType="Integer">
+        SELECT 1 FROM
+        <include refid="securityCodeTable"/>
+        WHERE sc.code=#{code} LIMIT 1
+    </select>
+
+
     <delete id="deleteUsers">
         DELETE FROM
         <include refid="userTable"/>
