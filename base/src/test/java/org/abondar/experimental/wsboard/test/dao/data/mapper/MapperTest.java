@@ -216,7 +216,7 @@ public class MapperTest {
 
         mapper.updateCode(code.getId());
 
-        code = mapper.getCodeById(code.getId());
+        code = mapper.getCodeByUserId(user.getId());
 
         assertTrue(code.isActivated());
 

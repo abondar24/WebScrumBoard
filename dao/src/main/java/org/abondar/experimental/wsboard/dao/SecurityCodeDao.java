@@ -19,19 +19,19 @@ public class SecurityCodeDao extends BaseDao {
     }
 
     public long insertCode(long userId) throws DataExistenceException {
-        var usr = mapper.getUserById(userId);
-        if (usr == null) {
-            logger.error(LogMessageUtil.USER_NOT_EXISTS);
+        checkUser(userId);
 
-            throw new DataExistenceException(LogMessageUtil.USER_NOT_EXISTS);
-        }
+        long code;
+        while (true) {
+            code = generateCode();
 
-        Random rand = new Random();
-        var code = rand.nextLong();
+            var codeExists = mapper.checkCodeExists(code);
+            if (codeExists == null) {
+                break;
+            } else {
+                logger.info(LogMessageUtil.CODE_ALREADY_EXISTS);
+            }
 
-        var codeExists = mapper.checkCodeExists(code);
-        if (codeExists != null) {
-            throw new DataExistenceException(LogMessageUtil.CODE_ALREADY_EXISTS);
         }
 
         var sc = new SecurityCode(code, userId);
@@ -41,6 +41,36 @@ public class SecurityCodeDao extends BaseDao {
         logger.info(msg);
 
         return code;
+    }
+
+    public void updateCode(long userId) throws DataExistenceException {
+        checkUser(userId);
+
+        var code = mapper.getCodeByUserId(userId);
+
+        mapper.updateCode(code.getId());
+
+        var msg = String.format(LogMessageUtil.LOG_FORMAT, "New security code inserted for user", userId);
+        logger.info(msg);
+
+    }
+
+
+    private long generateCode() {
+        Random rand = new Random();
+
+        int num = rand.nextInt(9000000) + 1000000;
+        return (long) num;
+    }
+
+
+    private void checkUser(long userId) throws DataExistenceException {
+        var usr = mapper.getUserById(userId);
+        if (usr == null) {
+            logger.error(LogMessageUtil.USER_NOT_EXISTS);
+
+            throw new DataExistenceException(LogMessageUtil.USER_NOT_EXISTS);
+        }
     }
 
 }

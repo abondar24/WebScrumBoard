@@ -3,6 +3,7 @@ package org.abondar.experimental.wsboard.dao.config;
 import org.abondar.experimental.wsboard.dao.BaseDao;
 import org.abondar.experimental.wsboard.dao.ContributorDao;
 import org.abondar.experimental.wsboard.dao.ProjectDao;
+import org.abondar.experimental.wsboard.dao.SecurityCodeDao;
 import org.abondar.experimental.wsboard.dao.SprintDao;
 import org.abondar.experimental.wsboard.dao.TaskDao;
 import org.abondar.experimental.wsboard.dao.UserDao;
@@ -50,5 +51,11 @@ public class DaoConfig {
     public BaseDao sprintDao(SqlSessionFactory sqlSessionFactory) {
         return new SprintDao(mapper(sqlSessionFactory));
     }
+
+    @Bean(name = "codeDao")
+    public BaseDao codeDao(SqlSessionFactory sqlSessionFactory) {
+        return new SecurityCodeDao(mapper(sqlSessionFactory));
+    }
+
 
 }

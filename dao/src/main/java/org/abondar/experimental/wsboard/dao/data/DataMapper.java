@@ -65,7 +65,7 @@ public interface DataMapper {
 
     Task getTaskById(@Param("id") long id);
 
-    SecurityCode getCodeById(@Param("id") long id);
+    SecurityCode getCodeByUserId(@Param("id") long id);
 
     Integer checkCodeExists(@Param("code") long code);
 

@@ -380,11 +380,11 @@
     </select>
 
 
-    <select id="getCodeById" resultMap="securityCodeMap">
+    <select id="getCodeByUserId" resultMap="securityCodeMap">
         SELECT *
         FROM
         <include refid="securityCodeTable"/>
-        WHERE sc.id=#{id}
+        WHERE sc.user_id=#{id}
     </select>
 
     <select id="checkCodeExists" resultType="Integer">
