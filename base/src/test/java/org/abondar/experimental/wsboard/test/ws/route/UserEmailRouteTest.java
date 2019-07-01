@@ -1,7 +1,10 @@
 package org.abondar.experimental.wsboard.test.ws.route;
 
 import org.abondar.experimental.wsboard.base.WebScrumBoardApplication;
+import org.abondar.experimental.wsboard.dao.UserDao;
+import org.abondar.experimental.wsboard.dao.data.DataMapper;
 import org.abondar.experimental.wsboard.datamodel.user.User;
+import org.abondar.experimental.wsboard.datamodel.user.UserRole;
 import org.apache.camel.EndpointInject;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.component.mock.MockEndpoint;
@@ -24,19 +27,32 @@ public class UserEmailRouteTest {
     @Autowired
     private ProducerTemplate producerTemplate;
 
+    @Autowired
+    private UserDao userDao;
+
+    @Autowired
+    private DataMapper mapper;
+
 
     @EndpointInject(uri = "mock:sendEmail")
     private MockEndpoint mockEndpoint;
 
     @Test
     public void createUserRouteTest() throws Exception {
-        producerTemplate.sendBodyAndHeaders("direct:createUser", new User(),
+        var user = userDao.createUser("test", "test",
+                "test", "test", "test", UserRole.DEVELOPER.name() + ";");
+        producerTemplate.sendBodyAndHeaders("direct:createUser", user,
                 Map.of("emailType", "createUser"));
+
         mockEndpoint.assertIsSatisfied();
         mockEndpoint.expectedBodiesReceived();
         mockEndpoint.expectedHeaderValuesReceivedInAnyOrder("emailType", "createUser");
         mockEndpoint.expectedMessageCount(1);
         mockEndpoint.reset();
+
+        mapper.deleteCodes();
+        mapper.deleteUsers();
+
     }
 
     @Test
