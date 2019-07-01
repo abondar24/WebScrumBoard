@@ -5,6 +5,7 @@ import org.abondar.experimental.wsboard.dao.exception.CannotPerformOperationExce
 import org.abondar.experimental.wsboard.dao.exception.InvalidHashException;
 import org.abondar.experimental.wsboard.dao.password.PasswordUtil;
 import org.abondar.experimental.wsboard.datamodel.Contributor;
+import org.abondar.experimental.wsboard.datamodel.SecurityCode;
 import org.abondar.experimental.wsboard.datamodel.user.User;
 import org.abondar.experimental.wsboard.ws.service.AuthService;
 import org.abondar.experimental.wsboard.ws.service.UserService;
@@ -33,6 +34,7 @@ public class UserServiceTestImpl implements UserService {
 
     private User testUser;
     private Contributor testContributor;
+    private SecurityCode testCode;
 
     public UserServiceTestImpl(AuthService authService) {
         this.authService = authService;
@@ -81,6 +83,8 @@ public class UserServiceTestImpl implements UserService {
 
         testUser = new User(login, email, firstName, lastName, pwdHash, roles);
         testUser.setId(10);
+
+        testCode = new SecurityCode(12345, testUser.getId());
 
 
         return Response.ok(testUser).cookie(createCookie(testUser.getLogin())).build();
@@ -258,6 +262,18 @@ public class UserServiceTestImpl implements UserService {
         }
 
         testUser.setPassword("reset");
+        return Response.ok().build();
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/enter_code")
+    @Override
+    public Response enterCode(@QueryParam("userId") long userId) {
+        if (testUser.getId() != userId) {
+            return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.USER_NOT_EXISTS).build();
+        }
+
         return Response.ok().build();
     }
 

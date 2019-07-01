@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.abondar.experimental.wsboard.dao.SecurityCodeDao;
 import org.abondar.experimental.wsboard.dao.UserDao;
 import org.abondar.experimental.wsboard.dao.data.LogMessageUtil;
 import org.abondar.experimental.wsboard.dao.exception.CannotPerformOperationException;
@@ -48,6 +49,10 @@ public class UserServiceImpl implements UserService {
     @Autowired
     @Qualifier("userDao")
     private UserDao dao;
+
+    @Autowired
+    @Qualifier("codeDao")
+    private SecurityCodeDao codeDao;
 
     private AuthService authService;
 
@@ -360,6 +365,31 @@ public class UserServiceImpl implements UserService {
     public Response resetPassword(@QueryParam("id") @ApiParam(required = true) long id) {
         try {
             dao.resetPassword(id);
+            Response.ok().build();
+        } catch (DataExistenceException ex) {
+            logger.error(ex.getMessage());
+            return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
+        }
+
+        return null;
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/enter_code")
+    @ApiOperation(
+            value = "Update code",
+            notes = "Activates security code sent to user",
+            produces = "application/json")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Code activated"),
+            @ApiResponse(code = 404, message = "User or code not found"),
+            @ApiResponse(code = 406, message = "JWT token is wrong"),
+    })
+    @Override
+    public Response enterCode(@QueryParam("userId") long userId) {
+        try {
+            codeDao.updateCode(userId);
             Response.ok().build();
         } catch (DataExistenceException ex) {
             logger.error(ex.getMessage());

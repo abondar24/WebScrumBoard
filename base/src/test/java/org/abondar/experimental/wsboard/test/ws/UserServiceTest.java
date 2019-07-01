@@ -589,6 +589,36 @@ public class UserServiceTest {
 
     }
 
+    @Test
+    public void enterCodeTest() {
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+
+        var usr = createUser();
+
+        client.path("/user/enter_code").query("userId", usr.getId()).accept(MediaType.APPLICATION_JSON);
+
+        var resp = client.get();
+        assertEquals(200, resp.getStatus());
+
+
+    }
+
+    @Test
+    public void enterCodeUserNotFoundTest() {
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+
+        createUser();
+
+        client.path("/user/enter_code").query("userId", 1024).accept(MediaType.APPLICATION_JSON);
+
+        var resp = client.get();
+        assertEquals(404, resp.getStatus());
+
+        var msg = resp.readEntity(String.class);
+        assertEquals(LogMessageUtil.USER_NOT_EXISTS, msg);
+
+    }
+
 
 
     private User createUser() {

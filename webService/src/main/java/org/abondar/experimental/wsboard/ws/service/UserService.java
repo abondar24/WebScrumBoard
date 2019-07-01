@@ -31,8 +31,7 @@ public interface UserService extends RestService {
     Response findUserByLogin(String login);
 
     Response resetPassword(long id);
-    
-    //TODO add method for entering code
 
+    Response enterCode(long userId);
 
 }
