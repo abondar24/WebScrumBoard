@@ -47,6 +47,9 @@ public class SecurityCodeDao extends BaseDao {
         checkUser(userId);
 
         var code = mapper.getCodeByUserId(userId);
+        if (code == null) {
+            throw new DataExistenceException(LogMessageUtil.CODE_NOT_EXISTS);
+        }
 
         mapper.updateCode(code.getId());
 

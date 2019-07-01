@@ -69,6 +69,14 @@ public class SecurityDaoTest {
         assertThrows(DataExistenceException.class, () -> codeDao.updateCode(7));
     }
 
+    @Test
+    public void updateCodeNotFoundTest() throws Exception {
+        var usr = createUser();
+
+        assertThrows(DataExistenceException.class, () -> codeDao.updateCode(usr.getId()));
+        cleanData();
+    }
+
 
     private User createUser() throws Exception {
         var login = "login";

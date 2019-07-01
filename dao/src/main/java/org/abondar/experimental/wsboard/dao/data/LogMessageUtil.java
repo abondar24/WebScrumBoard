@@ -40,6 +40,7 @@ public class LogMessageUtil {
     public static final String NULL_PASS = "Supplied password is null!";
     public static final String LOG_FORMAT = "%s with id: %d";
     public static final String CODE_ALREADY_EXISTS = "Generated code already exists";
+    public static final String CODE_NOT_EXISTS = "Security code does not exist";
 
     private LogMessageUtil() {
     }
