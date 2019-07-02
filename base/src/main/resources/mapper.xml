@@ -4,6 +4,14 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.abondar.experimental.wsboard.dao.data.DataMapper">
 
+    <cache type="org.mybatis.caches.ehcache.EhcacheCache">
+        <property name="timeToIdleSeconds" value="500"/>
+        <property name="timeToLiveSeconds" value="500"/>
+        <property name="maxEntriesLocalHeap" value="1000"/>
+        <property name="maxEntriesLocalDisk" value="10000"/>
+        <property name="memoryStoreEvictionPolicy" value="LRU"/>
+    </cache>
+
     <sql id="userTable">
         wsuser usr
     </sql>
@@ -273,7 +281,7 @@
     </select>
 
 
-    <select id="getContributorsForProject" resultMap="userMap">
+    <select id="getContributorsForProject" resultMap="userMap" useCache="true">
         SELECT *
         FROM
         <include refid="userTable"/>
@@ -298,7 +306,7 @@
         WHERE ts.id=#{id}
     </select>
 
-    <select id="getTasksForProject" resultMap="taskMap">
+    <select id="getTasksForProject" resultMap="taskMap" useCache="true">
         SELECT *
         FROM
         <include refid="taskTable"/>
@@ -312,7 +320,7 @@
         LIMIT #{limit}
     </select>
 
-    <select id="getTasksForContributor" resultMap="taskMap">
+    <select id="getTasksForContributor" resultMap="taskMap" useCache="true">
         SELECT *
         FROM
         <include refid="taskTable"/>
@@ -326,7 +334,7 @@
         LIMIT #{limit}
     </select>
 
-    <select id="getTasksForUser" resultMap="taskMap">
+    <select id="getTasksForUser" resultMap="taskMap" useCache="true">
         SELECT *
         FROM
         <include refid="taskTable"/>
@@ -344,7 +352,7 @@
         LIMIT #{limit}
     </select>
 
-    <select id="getTasksForSprint" resultMap="taskMap">
+    <select id="getTasksForSprint" resultMap="taskMap" useCache="true">
         SELECT *
         FROM
         <include refid="taskTable"/>
@@ -370,7 +378,7 @@
         WHERE sp.name=#{name}
     </select>
 
-    <select id="getSprints" resultMap="sprintMap">
+    <select id="getSprints" resultMap="sprintMap" useCache="true">
         SELECT *
         FROM
         <include refid="sprintTable"/>
