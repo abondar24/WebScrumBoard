@@ -4,7 +4,12 @@
 
 ## TODO
 
-- verification code gen(mapper,dao method)
-- nginx redirect setup
-- env variables
 - email server setup
+- env variables
+- replace certificates with normal and setup host
+- change nginx config to docker host
+
+
+// certs are not commited here
+
+// create acess and error.log files before building image
