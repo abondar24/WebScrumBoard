@@ -81,11 +81,7 @@ public class SprintDao extends BaseDao {
     public Sprint updateSprint(long sprintId, String name, Date startDate, Date endDate)
             throws DataExistenceException, DataCreationException {
 
-        var sprint = mapper.getSprintById(sprintId);
-        if (sprint == null) {
-            logger.error(LogMessageUtil.SPRINT_NOT_EXISTS);
-            throw new DataExistenceException(LogMessageUtil.SPRINT_NOT_EXISTS);
-        }
+        var sprint = getSprintById(sprintId);
 
         if (name != null && !name.isBlank()) {
             if (mapper.getSprintByName(name) != null) {
@@ -166,12 +162,7 @@ public class SprintDao extends BaseDao {
      */
     public void deleteSprint(long sprintId) throws DataExistenceException {
 
-        var sprint = mapper.getSprintById(sprintId);
-        if (sprint == null) {
-            var msg = String.format(LogMessageUtil.LOG_FORMAT, LogMessageUtil.SPRINT_NOT_EXISTS, sprintId);
-            logger.error(msg);
-            throw new DataExistenceException(LogMessageUtil.SPRINT_NOT_EXISTS);
-        }
+        var sprint = getSprintById(sprintId);
 
         mapper.deleteSprint(sprintId);
 

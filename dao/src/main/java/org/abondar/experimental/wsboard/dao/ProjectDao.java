@@ -37,25 +37,19 @@ public class ProjectDao extends BaseDao {
      */
     public Project createProject(String name, Date startDate) throws DataExistenceException,
             DataCreationException {
-        var prj = mapper.getProjectByName(name);
-
-        if (prj != null) {
-            logger.error(LogMessageUtil.PROJECT_EXISTS);
-            throw new DataExistenceException(LogMessageUtil.PROJECT_EXISTS);
-
-        }
-
         if (name == null || name.isBlank()) {
             logger.error(LogMessageUtil.BLANK_DATA);
             throw new DataCreationException(LogMessageUtil.BLANK_DATA);
         }
+
+        checkProjectExists(name);
 
         if (startDate == null) {
             logger.error(LogMessageUtil.BLANK_DATA);
             throw new DataCreationException(LogMessageUtil.BLANK_DATA);
         }
 
-        prj = new Project(name, startDate);
+        var prj = new Project(name, startDate);
         mapper.insertProject(prj);
 
         var msg = String.format(LogMessageUtil.LOG_FORMAT, "Project successfully created ", prj.getId());
@@ -72,23 +66,17 @@ public class ProjectDao extends BaseDao {
      * @param isActive - project currently active
      * @param endDate  - project end date
      * @return project POJO
+     * @throws DataExistenceException - project not exists
+     * @throws DataCreationException - project activation or end date issue
      */
     public Project updateProject(long id, String name, String repo,
                                  Boolean isActive, Date endDate)
             throws DataExistenceException, DataCreationException {
-        var prj = mapper.getProjectById(id);
 
-        if (prj == null) {
-            logger.error(LogMessageUtil.PROJECT_NOT_EXISTS);
-            throw new DataExistenceException(LogMessageUtil.PROJECT_NOT_EXISTS);
-        }
-
-        if (mapper.getProjectByName(name) != null) {
-            logger.error(LogMessageUtil.PROJECT_EXISTS);
-            throw new DataExistenceException(LogMessageUtil.PROJECT_EXISTS);
-        }
+        var prj = findProjectById(id);
 
         if (name != null && !name.isBlank()) {
+            checkProjectExists(name);
             prj.setName(name);
         }
 
@@ -122,14 +110,10 @@ public class ProjectDao extends BaseDao {
      *
      * @param id - project id
      * @return project id
+     * @throws DataExistenceException
      */
     public long deleteProject(long id) throws DataExistenceException {
-        var prj = mapper.getProjectById(id);
-
-        if (prj == null) {
-            logger.error(LogMessageUtil.PROJECT_NOT_EXISTS);
-            throw new DataExistenceException(LogMessageUtil.PROJECT_NOT_EXISTS);
-        }
+        findProjectById(id);
 
         mapper.deleteProject(id);
 
@@ -144,7 +128,8 @@ public class ProjectDao extends BaseDao {
      * Find a project by id
      *
      * @param id - project id
-     * @return Object wrapper with project pojo or with error message
+     * @return project pojo
+     * @throws DataExistenceException
      */
     public Project findProjectById(long id) throws DataExistenceException {
         var prj = mapper.getProjectById(id);
@@ -159,6 +144,23 @@ public class ProjectDao extends BaseDao {
         msg = String.format(LogMessageUtil.LOG_FORMAT, "Project found ", prj.getId());
         logger.info(msg);
         return prj;
+    }
+
+
+    /**
+     * Check project with name exists
+     *
+     * @param name - project name
+     * @throws DataExistenceException
+     */
+    private void checkProjectExists(String name) throws DataExistenceException {
+        var prj = mapper.getProjectByName(name);
+
+        if (prj != null) {
+            logger.error(LogMessageUtil.PROJECT_EXISTS);
+            throw new DataExistenceException(LogMessageUtil.PROJECT_EXISTS);
+
+        }
     }
 
 }

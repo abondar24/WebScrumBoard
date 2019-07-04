@@ -5,6 +5,7 @@ import org.abondar.experimental.wsboard.dao.data.LogMessageUtil;
 import org.abondar.experimental.wsboard.dao.exception.DataCreationException;
 import org.abondar.experimental.wsboard.dao.exception.DataExistenceException;
 import org.abondar.experimental.wsboard.datamodel.Contributor;
+import org.abondar.experimental.wsboard.datamodel.Project;
 import org.abondar.experimental.wsboard.datamodel.user.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,12 +49,7 @@ public class ContributorDao extends BaseDao {
         }
 
 
-        var prj = mapper.getProjectById(projectId);
-        if (prj == null) {
-            msg = String.format(LogMessageUtil.LOG_FORMAT, LogMessageUtil.PROJECT_NOT_EXISTS, projectId);
-            logger.error(msg);
-            throw new DataExistenceException(LogMessageUtil.PROJECT_NOT_EXISTS);
-        }
+        var prj = findProjectById(projectId);
 
         if (!prj.isActive()) {
             logger.error(LogMessageUtil.PROJECT_NOT_ACTIVE);
@@ -62,12 +58,7 @@ public class ContributorDao extends BaseDao {
         }
 
         if (isOwner) {
-            var ownr = mapper.getProjectOwner(projectId);
-            if (ownr != null && ownr.getId() == userId) {
-                logger.error(LogMessageUtil.PROJECT_HAS_OWNER);
-                throw new DataCreationException(LogMessageUtil.PROJECT_HAS_OWNER);
-
-            }
+            checkUserIsOwner(projectId, userId);
         }
 
 
@@ -156,12 +147,7 @@ public class ContributorDao extends BaseDao {
      */
     public User findProjectOwner(long projectId) throws DataExistenceException,DataCreationException {
 
-        var prj = mapper.getProjectById(projectId);
-        if (prj == null) {
-            var msg = String.format(LogMessageUtil.LOG_FORMAT, LogMessageUtil.PROJECT_NOT_EXISTS, projectId);
-            logger.error(msg);
-            throw new DataExistenceException(LogMessageUtil.PROJECT_NOT_EXISTS);
-        }
+        findProjectById(projectId);
 
         var ownr = mapper.getProjectOwner(projectId);
         if (ownr == null) {
@@ -185,13 +171,7 @@ public class ContributorDao extends BaseDao {
 
 
         var msg = "";
-        var prj = mapper.getProjectById(projectId);
-        if (prj == null) {
-            msg = String.format(LogMessageUtil.LOG_FORMAT, LogMessageUtil.PROJECT_NOT_EXISTS, projectId);
-            logger.error(msg);
-            throw new DataExistenceException(LogMessageUtil.PROJECT_NOT_EXISTS);
-
-        }
+        findProjectById(projectId);
 
         var contrs = mapper.getContributorsForProject(projectId, offset, limit);
 
@@ -202,4 +182,38 @@ public class ContributorDao extends BaseDao {
     }
 
 
+    /**
+     * Find a project by id
+     *
+     * @param projectId - project id
+     * @return project pojo
+     * @throws DataExistenceException
+     */
+    private Project findProjectById(long projectId) throws DataExistenceException {
+        var prj = mapper.getProjectById(projectId);
+
+        if (prj == null) {
+            var msg = String.format(LogMessageUtil.LOG_FORMAT, LogMessageUtil.PROJECT_NOT_EXISTS, projectId);
+            logger.error(msg);
+            throw new DataExistenceException(LogMessageUtil.PROJECT_NOT_EXISTS);
+        }
+
+        return prj;
+    }
+
+
+    /**
+     * Check if user is already an owner for selected project
+     *
+     * @param projectId
+     * @param userId
+     * @throws DataCreationException
+     */
+    private void checkUserIsOwner(long projectId, long userId) throws DataCreationException {
+        var owner = mapper.getProjectOwner(projectId);
+        if (owner != null && owner.getId() == userId) {
+            logger.error(LogMessageUtil.PROJECT_HAS_OWNER);
+            throw new DataCreationException(LogMessageUtil.PROJECT_HAS_OWNER);
+        }
+    }
 }

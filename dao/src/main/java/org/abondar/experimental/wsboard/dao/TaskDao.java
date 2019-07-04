@@ -46,13 +46,7 @@ public class TaskDao extends BaseDao {
      */
     public Task createTask(long contributorId, Date startDate, boolean devOpsEnabled)
             throws DataExistenceException {
-
-        var ctr = mapper.getContributorById(contributorId);
-        if (ctr == null || !ctr.isActive()) {
-            logger.error(LogMessageUtil.CONTRIBUTOR_NOT_EXISTS);
-            throw new DataExistenceException(LogMessageUtil.CONTRIBUTOR_NOT_EXISTS);
-
-        }
+        checkContributor(contributorId);
 
         var task = new Task(contributorId, startDate, devOpsEnabled);
 
@@ -78,21 +72,10 @@ public class TaskDao extends BaseDao {
     public Task updateTask(long taskId, Long contributorId, Boolean devOpsEnabled, Integer storyPoints)
             throws DataExistenceException {
 
-        var task = mapper.getTaskById(taskId);
-        if (task == null) {
-            var msg = String.format(LogMessageUtil.LOG_FORMAT, LogMessageUtil.TASK_NOT_EXISTS, taskId);
-            logger.info(msg);
-            throw new DataExistenceException(LogMessageUtil.TASK_NOT_EXISTS);
-
-        }
+        var task = getTaskById(taskId);
 
         if (contributorId != null) {
-            var ctr = mapper.getContributorById(contributorId);
-            if (ctr == null || !ctr.isActive()) {
-                logger.error(LogMessageUtil.CONTRIBUTOR_NOT_EXISTS);
-                throw new DataExistenceException(LogMessageUtil.CONTRIBUTOR_NOT_EXISTS);
-            }
-
+            checkContributor(contributorId);
 
             task.setContributorId(contributorId);
 
@@ -124,19 +107,9 @@ public class TaskDao extends BaseDao {
      * @throws DataExistenceException - task or sprint doesn't exist
      */
     public Task updateTaskSprint(long taskId, long sprintId) throws DataExistenceException {
-        var task = mapper.getTaskById(taskId);
-        if (task == null) {
-            var msg = String.format(LogMessageUtil.LOG_FORMAT, LogMessageUtil.TASK_NOT_EXISTS, taskId);
-            logger.info(msg);
-            throw new DataExistenceException(LogMessageUtil.TASK_NOT_EXISTS);
-        }
+        var task = getTaskById(taskId);
 
-        var sprint = mapper.getSprintById(sprintId);
-        if (sprint == null) {
-            var msg = String.format(LogMessageUtil.LOG_FORMAT, LogMessageUtil.SPRINT_NOT_EXISTS, sprintId);
-            logger.info(msg);
-            throw new DataExistenceException(LogMessageUtil.SPRINT_NOT_EXISTS);
-        }
+        checkSprint(sprintId);
 
         mapper.updateTaskSprint(taskId, sprintId);
 
@@ -163,12 +136,7 @@ public class TaskDao extends BaseDao {
 
         var taskState = getTaskState(state);
 
-        var task = mapper.getTaskById(taskId);
-        if (task == null) {
-            var msg = String.format(LogMessageUtil.LOG_FORMAT, LogMessageUtil.TASK_NOT_EXISTS, taskId);
-            logger.info(msg);
-            throw new DataExistenceException(LogMessageUtil.TASK_NOT_EXISTS);
-        }
+        var task = getTaskById(taskId);
 
         if (task.getTaskState() == TaskState.COMPLETED) {
             logger.info(LogMessageUtil.TASK_ALREADY_COMPLETED);
@@ -311,12 +279,7 @@ public class TaskDao extends BaseDao {
     public List<Task> getTasksForContributor(long ctrId, int offset, int limit)
             throws DataExistenceException {
 
-        var ctr = mapper.getContributorById(ctrId);
-        if (ctr == null) {
-            var msg = String.format(LogMessageUtil.LOG_FORMAT, LogMessageUtil.CONTRIBUTOR_NOT_EXISTS, ctrId);
-            logger.info(msg);
-            throw new DataExistenceException(LogMessageUtil.CONTRIBUTOR_NOT_EXISTS);
-        }
+        checkContributor(ctrId);
 
         var tasks = mapper.getTasksForContributor(ctrId, offset, limit);
 
@@ -364,12 +327,7 @@ public class TaskDao extends BaseDao {
      */
     public List<Task> getTasksForSprint(long sprintId, int offset, int limit) throws DataExistenceException {
 
-        var sprint = mapper.getSprintById(sprintId);
-        if (sprint == null) {
-            var msg = String.format(LogMessageUtil.LOG_FORMAT, LogMessageUtil.SPRINT_NOT_EXISTS, sprintId);
-            logger.info(msg);
-            throw new DataExistenceException(LogMessageUtil.SPRINT_NOT_EXISTS);
-        }
+        checkSprint(sprintId);
 
         var tasks = mapper.getTasksForSprint(sprintId, offset, limit);
 
@@ -446,6 +404,37 @@ public class TaskDao extends BaseDao {
         } catch (IllegalArgumentException ex) {
             logger.error(ex.getMessage());
             throw new DataExistenceException(LogMessageUtil.TASK_STATE_UNKNOWN);
+        }
+    }
+
+    /**
+     * Check contributor for existence
+     *
+     * @param contributorId
+     * @throws DataExistenceException
+     */
+    private void checkContributor(long contributorId) throws DataExistenceException {
+        var ctr = mapper.getContributorById(contributorId);
+        if (ctr == null || !ctr.isActive()) {
+            var msg = String.format(LogMessageUtil.LOG_FORMAT, LogMessageUtil.CONTRIBUTOR_NOT_EXISTS, contributorId);
+            logger.info(msg);
+            throw new DataExistenceException(LogMessageUtil.CONTRIBUTOR_NOT_EXISTS);
+
+        }
+    }
+
+    /**
+     * Check sprint for existence
+     *
+     * @param sprintId
+     * @throws DataExistenceException
+     */
+    private void checkSprint(long sprintId) throws DataExistenceException {
+        var sprint = mapper.getSprintById(sprintId);
+        if (sprint == null) {
+            var msg = String.format(LogMessageUtil.LOG_FORMAT, LogMessageUtil.SPRINT_NOT_EXISTS, sprintId);
+            logger.info(msg);
+            throw new DataExistenceException(LogMessageUtil.SPRINT_NOT_EXISTS);
         }
     }
 }
