@@ -5,9 +5,11 @@
 ## TODO
 
 - email server setup
+- velocity templates
+- dao refactoring 
 - replace certificates with normal and setup host
 - change nginx config to docker host
-
+- add stages to travis
 
 // certs are not commited here
 
