@@ -6,7 +6,7 @@
 
 - email server setup
 - velocity templates
-- dao refactoring 
+- sonar code smells
 - replace certificates with normal and setup host
 - change nginx config to docker host
 - add stages to travis
