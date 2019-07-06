@@ -310,7 +310,7 @@ public class UserDao extends BaseDao {
     private String checkRoles(String roles) throws DataCreationException {
 
         String[] rolesArr = roles.split(";");
-        if (rolesArr.length == 0 || !roles.contains(";")) {
+        if (rolesArr.length == 0) {
             throw new DataCreationException(LogMessageUtil.USER_NO_ROLES);
         }
 

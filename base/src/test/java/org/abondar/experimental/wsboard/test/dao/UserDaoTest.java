@@ -299,7 +299,7 @@ public class UserDaoTest {
         var password = "pwd";
         var firstName = "fname";
         var lastName = "lname";
-        var roles = UserRole.DEVELOPER.name() + ";" + UserRole.DEV_OPS.name();
+        var roles = UserRole.DEVELOPER.name();
 
         return userDao.createUser(login, password, email, firstName, lastName, roles);
     }
