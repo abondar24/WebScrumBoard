@@ -5,14 +5,7 @@ import org.abondar.experimental.wsboard.dao.exception.DataCreationException;
 import org.abondar.experimental.wsboard.datamodel.Sprint;
 import org.abondar.experimental.wsboard.ws.service.SprintService;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.FormParam;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.Date;
 import java.util.List;
@@ -27,14 +20,8 @@ public class SprintServiceTestImpl implements SprintService {
 
     private Sprint testSprint;
 
-    @POST
-    @Path("/create")
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    @Produces(MediaType.APPLICATION_JSON)
     @Override
-    public Response createSprint(@FormParam("name") String name,
-                                 @FormParam("startDate") String startDate,
-                                 @FormParam("endDate") String endDate) {
+    public Response createSprint(String name, String startDate, String endDate) {
 
         var existingSprint = new Sprint("exist", new Date(), new Date());
 
@@ -68,15 +55,8 @@ public class SprintServiceTestImpl implements SprintService {
 
     }
 
-    @POST
-    @Path("/update")
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    @Produces(MediaType.APPLICATION_JSON)
     @Override
-    public Response updateSprint(@FormParam("id") long sprintId,
-                                 @FormParam("name") String name,
-                                 @FormParam("startDate") String startDate,
-                                 @FormParam("endDate") String endDate) {
+    public Response updateSprint(long sprintId, String name, String startDate, String endDate) {
 
         if (testSprint.getId() != sprintId) {
             return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.SPRINT_NOT_EXISTS).build();
@@ -115,11 +95,8 @@ public class SprintServiceTestImpl implements SprintService {
 
     }
 
-    @GET
-    @Path("/find")
-    @Produces(MediaType.APPLICATION_JSON)
     @Override
-    public Response getSprintById(@QueryParam("id") long sprintId) {
+    public Response getSprintById(long sprintId) {
         if (testSprint.getId() != sprintId) {
             return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.SPRINT_NOT_EXISTS).build();
         }
@@ -127,11 +104,8 @@ public class SprintServiceTestImpl implements SprintService {
         return Response.ok(testSprint).build();
     }
 
-    @GET
-    @Path("/find_all")
-    @Produces(MediaType.APPLICATION_JSON)
     @Override
-    public Response getSprints(@QueryParam("offset") int offset, @QueryParam("limit") int limit) {
+    public Response getSprints(int offset, int limit) {
         var sprints = List.of(testSprint, new Sprint(), new Sprint(), new Sprint(), new Sprint());
 
         if (offset == -1) {
@@ -151,10 +125,8 @@ public class SprintServiceTestImpl implements SprintService {
         return Response.ok(sprints).build();
     }
 
-    @GET
-    @Path("/delete")
     @Override
-    public Response deleteSprint(@QueryParam("id") long sprintId) {
+    public Response deleteSprint(long sprintId) {
         if (testSprint.getId() != sprintId) {
             return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.SPRINT_NOT_EXISTS).build();
         }

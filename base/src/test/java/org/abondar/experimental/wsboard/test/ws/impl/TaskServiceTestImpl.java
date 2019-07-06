@@ -11,13 +11,10 @@ import org.abondar.experimental.wsboard.datamodel.task.TaskState;
 import org.abondar.experimental.wsboard.datamodel.user.User;
 import org.abondar.experimental.wsboard.ws.service.TaskService;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.Date;
@@ -37,14 +34,8 @@ public class TaskServiceTestImpl implements TaskService {
     private Sprint testSprint;
     private Contributor testContributor;
 
-    @POST
-    @Path("/create")
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    @Produces(MediaType.APPLICATION_JSON)
     @Override
-    public Response createTask(@FormParam("ctrId") long contributorId,
-                               @FormParam("startDate") String startDate,
-                               @FormParam("devOps") boolean devOpsEnabled) {
+    public Response createTask(long contributorId, String startDate, boolean devOpsEnabled) {
         try {
             Date stDate = convertDate(startDate);
 
@@ -62,15 +53,8 @@ public class TaskServiceTestImpl implements TaskService {
         }
     }
 
-    @POST
-    @Path("/update")
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    @Produces(MediaType.APPLICATION_JSON)
     @Override
-    public Response updateTask(@FormParam("id") long taskId,
-                               @FormParam("ctrId") Long contributorId,
-                               @FormParam("devOps") boolean devOpsEnabled,
-                               @FormParam("storyPoints") Integer storyPoints) {
+    public Response updateTask(long taskId, Long contributorId, boolean devOpsEnabled, Integer storyPoints) {
 
         if (testTask.getId() != taskId) {
             return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.TASK_NOT_EXISTS).build();
@@ -87,13 +71,8 @@ public class TaskServiceTestImpl implements TaskService {
         return Response.ok(testTask).build();
     }
 
-    @POST
-    @Path("/update_sprint")
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    @Produces(MediaType.APPLICATION_JSON)
     @Override
-    public Response updateTaskSprint(@FormParam("id") long taskId,
-                                     @FormParam("sprintId") long sprintId) {
+    public Response updateTaskSprint(long taskId, long sprintId) {
 
         if (testTask.getId() != taskId) {
             return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.TASK_NOT_EXISTS).build();
@@ -108,13 +87,8 @@ public class TaskServiceTestImpl implements TaskService {
         return Response.ok(testTask).build();
     }
 
-    @POST
-    @Path("/update_state")
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    @Produces(MediaType.APPLICATION_JSON)
     @Override
-    public Response updateTaskState(@FormParam("id") long taskId,
-                                    @FormParam("state") String state) {
+    public Response updateTaskState(long taskId, String state) {
 
         if (testTask.getId() != taskId) {
             return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.TASK_NOT_EXISTS).build();
@@ -165,11 +139,8 @@ public class TaskServiceTestImpl implements TaskService {
 
     }
 
-    @GET
-    @Path("/delete")
-    @Produces(MediaType.APPLICATION_JSON)
     @Override
-    public Response deleteTask(@QueryParam("id") long id) {
+    public Response deleteTask(long id) {
         if (testTask.getId() != id) {
             return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.TASK_NOT_EXISTS).build();
         }
@@ -177,11 +148,8 @@ public class TaskServiceTestImpl implements TaskService {
         return Response.ok().build();
     }
 
-    @GET
-    @Path("/find")
-    @Produces(MediaType.APPLICATION_JSON)
     @Override
-    public Response getTaskById(@QueryParam("id") long taskId) {
+    public Response getTaskById(long taskId) {
         if (testTask.getId() != taskId) {
             return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.TASK_NOT_EXISTS).build();
         }
@@ -189,13 +157,8 @@ public class TaskServiceTestImpl implements TaskService {
         return Response.ok(testTask).build();
     }
 
-    @GET
-    @Path("/find_project_tasks")
-    @Produces(MediaType.APPLICATION_JSON)
     @Override
-    public Response getTasksForProject(@QueryParam("prId") long projectId,
-                                       @QueryParam("offset") int offset,
-                                       @QueryParam("limit") int limit) {
+    public Response getTasksForProject(long projectId, int offset, int limit) {
         if (testProject.getId() != projectId) {
             return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.PROJECT_NOT_EXISTS).build();
         }
@@ -218,13 +181,8 @@ public class TaskServiceTestImpl implements TaskService {
         return Response.ok(tasks).build();
     }
 
-    @GET
-    @Path("/find_contributor_tasks")
-    @Produces(MediaType.APPLICATION_JSON)
     @Override
-    public Response getTasksForContributor(@QueryParam("ctrId") long ctrId,
-                                           @QueryParam("offset") int offset,
-                                           @QueryParam("limit") int limit) {
+    public Response getTasksForContributor(long ctrId, int offset, int limit) {
         if (testContributor.getId() != ctrId) {
             return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.CONTRIBUTOR_NOT_EXISTS).build();
         }
@@ -244,13 +202,8 @@ public class TaskServiceTestImpl implements TaskService {
         return Response.ok(tasks).build();
     }
 
-    @GET
-    @Path("/find_user_tasks")
-    @Produces(MediaType.APPLICATION_JSON)
     @Override
-    public Response getTasksForUser(@QueryParam("usrId") long usrId,
-                                    @QueryParam("offset") int offset,
-                                    @QueryParam("limit") int limit) {
+    public Response getTasksForUser(long usrId, int offset, int limit) {
 
         if (testUser.getId() != usrId) {
             return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.USER_NOT_EXISTS).build();
@@ -272,13 +225,8 @@ public class TaskServiceTestImpl implements TaskService {
         return Response.ok(tasks).build();
     }
 
-    @GET
-    @Path("/find_sprint_tasks")
-    @Produces(MediaType.APPLICATION_JSON)
     @Override
-    public Response getTasksForSprint(@QueryParam("spId") long sprintId,
-                                      @QueryParam("offset") int offset,
-                                      @QueryParam("limit") int limit) {
+    public Response getTasksForSprint(long sprintId, int offset, int limit) {
         if (testSprint.getId() != sprintId) {
             return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.SPRINT_NOT_EXISTS).build();
         }

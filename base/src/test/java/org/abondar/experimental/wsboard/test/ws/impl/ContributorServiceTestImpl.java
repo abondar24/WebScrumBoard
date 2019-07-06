@@ -13,7 +13,6 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.Date;
@@ -30,14 +29,8 @@ public class ContributorServiceTestImpl implements ContributorService {
     private User testUser;
     private Project testProject;
 
-    @POST
-    @Path("/create")
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    @Produces(MediaType.APPLICATION_JSON)
     @Override
-    public Response createContributor(@FormParam("userId") long userId,
-                                      @FormParam("projectId") long projectId,
-                                      @FormParam("isOwner") boolean isOwner) {
+    public Response createContributor(long userId, long projectId, boolean isOwner) {
 
         if (testUser.getId() != userId) {
             return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.USER_NOT_EXISTS).build();
@@ -63,14 +56,8 @@ public class ContributorServiceTestImpl implements ContributorService {
         return Response.ok(testContributor).build();
     }
 
-    @POST
-    @Path("/update")
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    @Produces(MediaType.APPLICATION_JSON)
     @Override
-    public Response updateContributor(@FormParam("ctrId") long contributorId,
-                                      @FormParam("isOwner") Boolean isOwner,
-                                      @FormParam("isActive") Boolean isActive) {
+    public Response updateContributor(long contributorId, Boolean isOwner, Boolean isActive) {
 
         if (testContributor.getId() != contributorId) {
             return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.CONTRIBUTOR_NOT_EXISTS).build();
@@ -106,10 +93,8 @@ public class ContributorServiceTestImpl implements ContributorService {
         return Response.ok(testContributor).build();
     }
 
-    @GET
-    @Path("/find_project_owner")
     @Override
-    public Response findProjectOwner(@QueryParam("projectId") long projectId) {
+    public Response findProjectOwner(long projectId) {
 
 
         if (testProject.getId() != projectId) {
@@ -123,12 +108,8 @@ public class ContributorServiceTestImpl implements ContributorService {
         return Response.ok(testContributor).build();
     }
 
-    @GET
-    @Path("/find_project_contributors")
     @Override
-    public Response findProjectContributors(@QueryParam("projectId") long projectId,
-                                            @QueryParam("offset") int offset,
-                                            @QueryParam("limit") int limit) {
+    public Response findProjectContributors(long projectId, int offset, int limit) {
 
         if (testProject.getId() != projectId) {
             return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.PROJECT_NOT_EXISTS).build();

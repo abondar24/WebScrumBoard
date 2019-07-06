@@ -2,6 +2,8 @@ package org.abondar.experimental.wsboard.ws.config;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
+import org.abondar.experimental.wsboard.dao.SecurityCodeDao;
+import org.abondar.experimental.wsboard.dao.UserDao;
 import org.abondar.experimental.wsboard.ws.impl.AuthServiceImpl;
 import org.abondar.experimental.wsboard.ws.impl.ContributorServiceImpl;
 import org.abondar.experimental.wsboard.ws.impl.ProjectServiceImpl;
@@ -21,6 +23,8 @@ import org.apache.cxf.jaxrs.JAXRSServerFactoryBean;
 import org.apache.cxf.jaxrs.swagger.Swagger2Feature;
 import org.apache.cxf.rs.security.jose.jwa.SignatureAlgorithm;
 import org.apache.cxf.rs.security.jose.jws.HmacJwsSignatureVerifier;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.PreferencesPlaceholderConfigurer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -39,6 +43,14 @@ import java.util.Map;
 @Configuration
 @Component
 public class CxfConfig implements WebMvcConfigurer {
+
+    @Autowired
+    @Qualifier("userDao")
+    private UserDao dao;
+
+    @Autowired
+    @Qualifier("codeDao")
+    private SecurityCodeDao codeDao;
 
 
     @Bean(name = Bus.DEFAULT_BUS_ID)
@@ -62,7 +74,7 @@ public class CxfConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    RestService contributorService() {
+    public RestService contributorService() {
         return new ContributorServiceImpl();
     }
 

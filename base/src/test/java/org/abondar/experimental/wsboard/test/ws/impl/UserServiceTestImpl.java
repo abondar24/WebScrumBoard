@@ -10,16 +10,10 @@ import org.abondar.experimental.wsboard.datamodel.user.User;
 import org.abondar.experimental.wsboard.ws.service.AuthService;
 import org.abondar.experimental.wsboard.ws.service.UserService;
 
-import javax.annotation.security.PermitAll;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Cookie;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
 import java.util.Date;
@@ -27,7 +21,7 @@ import java.util.Date;
 /**
  * Test implementation of user web service
  */
-@Path("/user")
+
 public class UserServiceTestImpl implements UserService {
 
     private AuthService authService;
@@ -41,17 +35,8 @@ public class UserServiceTestImpl implements UserService {
 
     }
 
-    @POST
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("/create")
-    @Override
-    public Response createUser(@FormParam("login") String login,
-                               @FormParam("email") String email,
-                               @FormParam("firstName") String firstName,
-                               @FormParam("lastName") String lastName,
-                               @FormParam("password") String password,
-                               @FormParam("roles") String roles) {
+    public Response createUser(String login, String email, String firstName,
+                               String lastName, String password, String roles) {
 
         var existingUser = new User();
         existingUser.setLogin("testLogin");
@@ -92,16 +77,8 @@ public class UserServiceTestImpl implements UserService {
 
     }
 
-    @POST
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("/update")
     @Override
-    public Response updateUser(@FormParam("id") long id,
-                               @FormParam("firstName") String firstName,
-                               @FormParam("lastName") String lastName,
-                               @FormParam("email") String email,
-                               @FormParam("roles") String roles) {
+    public Response updateUser(long id, String firstName, String lastName, String email, String roles) {
         if (testUser.getId() != id) {
             return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.USER_NOT_EXISTS).build();
         }
@@ -122,10 +99,6 @@ public class UserServiceTestImpl implements UserService {
         return Response.ok(testUser).build();
     }
 
-    @POST
-    @Consumes(MediaType.APPLICATION_OCTET_STREAM)
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("/update_avatar")
     @Override
     public Response updateAvatar(@QueryParam("id") long id, byte[] avatar) {
         if (testUser.getId() != id) {
@@ -138,12 +111,8 @@ public class UserServiceTestImpl implements UserService {
         return Response.ok(testUser).build();
     }
 
-    @POST
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("/update_login")
     @Override
-    public Response updateLogin(@FormParam("login") String login, @FormParam("id") long id) {
+    public Response updateLogin(String login, long id) {
         if (testUser.getId() != id) {
             return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.USER_NOT_EXISTS).build();
         }
@@ -156,14 +125,8 @@ public class UserServiceTestImpl implements UserService {
         return Response.ok(testUser).build();
     }
 
-    @POST
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("/update_password")
     @Override
-    public Response updatePassword(@FormParam("oldPassword") String oldPassword,
-                                   @FormParam("newPassword") String newPassword,
-                                   @FormParam("id") long id) {
+    public Response updatePassword(String oldPassword, String newPassword, long id) {
 
         if (testUser.getId() != id) {
             return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.USER_NOT_EXISTS).build();
@@ -183,11 +146,8 @@ public class UserServiceTestImpl implements UserService {
         return Response.status(Response.Status.UNAUTHORIZED).entity(LogMessageUtil.USER_UNAUTHORIZED).build();
     }
 
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("/delete")
     @Override
-    public Response deleteUser(@QueryParam("id") long id) {
+    public Response deleteUser(long id) {
         if (testUser.getId() != id) {
             return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.USER_NOT_EXISTS).build();
         }
@@ -201,14 +161,8 @@ public class UserServiceTestImpl implements UserService {
         return Response.ok(testUser).build();
     }
 
-    @POST
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("/login")
-    @PermitAll
     @Override
-    public Response loginUser(@FormParam("login") String login,
-                              @FormParam("password") String password) {
+    public Response loginUser(String login, String password) {
 
         if (!testUser.getLogin().equals(login)) {
             return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.USER_NOT_EXISTS).build();
@@ -227,11 +181,8 @@ public class UserServiceTestImpl implements UserService {
         return Response.status(Response.Status.UNAUTHORIZED).entity(LogMessageUtil.USER_UNAUTHORIZED).build();
     }
 
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("/logout")
     @Override
-    public Response logoutUser(@QueryParam("id") long id) {
+    public Response logoutUser(long id) {
         if (testUser.getId() != id) {
             return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.USER_NOT_EXISTS).build();
         }
@@ -240,11 +191,8 @@ public class UserServiceTestImpl implements UserService {
                 "JWT token", 24000, false)).build();
     }
 
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("/find")
     @Override
-    public Response findUserByLogin(@QueryParam("login") String login) {
+    public Response findUserByLogin(String login) {
         if (!testUser.getLogin().equals(login)) {
             return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.USER_NOT_EXISTS).build();
         }
@@ -252,11 +200,8 @@ public class UserServiceTestImpl implements UserService {
         return Response.ok(testUser).build();
     }
 
-
-    @GET
-    @Path("/reset_pwd")
     @Override
-    public Response resetPassword(@QueryParam("id") long id) {
+    public Response resetPassword(long id) {
         if (testUser.getId() != id) {
             return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.USER_NOT_EXISTS).build();
         }
@@ -265,11 +210,8 @@ public class UserServiceTestImpl implements UserService {
         return Response.ok().build();
     }
 
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("/enter_code")
     @Override
-    public Response enterCode(@QueryParam("userId") long userId) {
+    public Response enterCode(long userId) {
         if (testUser.getId() != userId) {
             return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.USER_NOT_EXISTS).build();
         }
