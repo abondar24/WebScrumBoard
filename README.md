@@ -4,7 +4,7 @@
 
 ## TODO
 
-- email server setup
+- fix getById bug on security code
 - sonar code smells
 - replace certificates with normal and setup host
 - change nginx config to docker host
