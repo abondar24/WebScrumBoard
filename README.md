@@ -9,6 +9,7 @@
 - replace certificates with normal and setup host
 - change nginx config to docker host
 - add stages to travis
+- fix user service tests
 
 // certs are not commited here
 

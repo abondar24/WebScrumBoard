@@ -100,11 +100,10 @@ public class UserServiceTestImpl implements UserService {
     }
 
     @Override
-    public Response updateAvatar(@QueryParam("id") long id, byte[] avatar) {
+    public Response updateAvatar(long id, byte[] avatar) {
         if (testUser.getId() != id) {
             return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.USER_NOT_EXISTS).build();
         }
-
 
         testUser.setAvatar(avatar);
 
