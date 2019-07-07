@@ -5,8 +5,8 @@
     <title>Welcome to Web Scrum Board</title>
 </head>
 <body>
-<p>Dear User</p>
-<p>You have registered in our service as $user.getLogin().</p>
+<p>Dear $body.getFirstName()</p>
+<p>You have registered in our service as $body.getLogin().</p>
 <p> In order to verify your login please enter the following code: $headers["code"]</p>
 
 <p>Thanks, yours Web Scrum Board team</p>

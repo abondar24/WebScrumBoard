@@ -56,13 +56,10 @@ public class UserServiceImpl implements UserService {
 
             return Response.ok(user).cookie(createLoginCookie(user.getLogin())).build();
         } catch (CannotPerformOperationException ex) {
-            logger.error(ex.getMessage());
             return Response.status(Response.Status.SERVICE_UNAVAILABLE).entity(LogMessageUtil.HASH_NOT_CREATED).build();
         } catch (DataExistenceException ex) {
-            logger.error(ex.getMessage());
             return Response.status(Response.Status.FOUND).entity(ex.getLocalizedMessage()).build();
         } catch (DataCreationException ex) {
-            logger.error(ex.getMessage());
             return Response.status(Response.Status.PARTIAL_CONTENT).entity(ex.getLocalizedMessage()).build();
         }
 
@@ -76,10 +73,8 @@ public class UserServiceImpl implements UserService {
 
             return Response.ok(user).build();
         } catch (DataExistenceException ex) {
-            logger.error(ex.getMessage());
             return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
         } catch (DataCreationException ex) {
-            logger.error(ex.getMessage());
             return Response.status(Response.Status.NO_CONTENT).entity(ex.getLocalizedMessage()).build();
         }
     }
@@ -92,7 +87,6 @@ public class UserServiceImpl implements UserService {
 
             return Response.ok(user).build();
         } catch (DataExistenceException ex) {
-            logger.error(ex.getMessage());
             return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
         } catch (DataCreationException ignored) {
             return Response.ok().build();
@@ -107,7 +101,6 @@ public class UserServiceImpl implements UserService {
 
             return Response.ok(user).build();
         } catch (DataExistenceException ex) {
-            logger.error(ex.getMessage());
             if (ex.getMessage().equals(LogMessageUtil.USER_EXISTS)) {
                 return Response.status(Response.Status.CREATED).entity(ex.getLocalizedMessage()).build();
             } else {
@@ -115,7 +108,6 @@ public class UserServiceImpl implements UserService {
             }
 
         } catch (DataCreationException ex) {
-            logger.error(ex.getMessage());
             return Response.status(Response.Status.NOT_IMPLEMENTED).entity(ex.getLocalizedMessage()).build();
         }
     }
@@ -128,13 +120,10 @@ public class UserServiceImpl implements UserService {
 
             return Response.ok(user).build();
         } catch (InvalidHashException ex) {
-            logger.error(ex.getMessage());
             return Response.status(Response.Status.UNAUTHORIZED).entity(ex.getLocalizedMessage()).build();
         } catch (CannotPerformOperationException ex) {
-            logger.error(ex.getMessage());
             return Response.status(Response.Status.SERVICE_UNAVAILABLE).entity(LogMessageUtil.HASH_NOT_CREATED).build();
         } catch (DataExistenceException ex) {
-            logger.error(ex.getMessage());
             return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
         }
     }
@@ -147,10 +136,8 @@ public class UserServiceImpl implements UserService {
 
             return Response.ok(user).build();
         } catch (DataExistenceException ex) {
-            logger.error(ex.getMessage());
             return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
         } catch (DataCreationException ex) {
-            logger.error(ex.getMessage());
             return Response.status(Response.Status.NOT_IMPLEMENTED).entity(ex.getLocalizedMessage()).build();
         }
     }
@@ -163,13 +150,10 @@ public class UserServiceImpl implements UserService {
 
             return Response.ok().cookie(createLoginCookie(login)).build();
         } catch (InvalidHashException ex) {
-            logger.error(ex.getMessage());
             return Response.status(Response.Status.UNAUTHORIZED).entity(ex.getLocalizedMessage()).build();
         } catch (CannotPerformOperationException ex) {
-            logger.error(ex.getMessage());
             return Response.status(Response.Status.SERVICE_UNAVAILABLE).entity(LogMessageUtil.HASH_NOT_CREATED).build();
         } catch (DataExistenceException ex) {
-            logger.error(ex.getMessage());
             return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
         }
     }
@@ -183,7 +167,6 @@ public class UserServiceImpl implements UserService {
             return Response.ok().cookie(new NewCookie(new Cookie("X-JWT-AUTH", "", "/", ""),
                     "JWT token", 24000, false)).build();
         } catch (DataExistenceException ex) {
-            logger.error(ex.getMessage());
             return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
         }
     }
@@ -195,7 +178,6 @@ public class UserServiceImpl implements UserService {
             var usr = dao.findUserByLogin(login);
             return Response.ok(usr).build();
         } catch (DataExistenceException ex) {
-            logger.error(ex.getMessage());
             return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
         }
 
@@ -208,7 +190,6 @@ public class UserServiceImpl implements UserService {
             dao.resetPassword(id);
             Response.ok().build();
         } catch (DataExistenceException ex) {
-            logger.error(ex.getMessage());
             return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
         }
 
@@ -222,7 +203,6 @@ public class UserServiceImpl implements UserService {
             codeDao.updateCode(userId);
             Response.ok().build();
         } catch (DataExistenceException ex) {
-            logger.error(ex.getMessage());
             return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
         }
 

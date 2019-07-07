@@ -10,6 +10,7 @@ import org.apache.camel.test.spring.MockEndpointsAndSkip;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -24,6 +25,11 @@ public class EmailRouteTest {
     @Autowired
     private ProducerTemplate producerTemplate;
 
+    @Value("${email.admin}")
+    private String emailAdmin;
+
+    @Value("${email.from}")
+    private String emailFrom;
 
     @EndpointInject(uri = "mock:{{email.server}}")
     private MockEndpoint mockEndpoint;
@@ -34,13 +40,12 @@ public class EmailRouteTest {
         producerTemplate.sendBodyAndHeaders("direct:sendEmail", new User(),
                 Map.of("emailType", "createUser",
                         "To", "email",
-                        "From", "Scrum Admin<" + "{{email.admin}}@{{email.server}}>",
+                        "From", "Scrum Admin<" + emailAdmin + "@" + emailFrom + ">",
                         "contentType", "text/html"));
         mockEndpoint.assertIsSatisfied();
         mockEndpoint.expectedBodiesReceived();
         mockEndpoint.expectedHeaderValuesReceivedInAnyOrder("emailType", "createUser");
         mockEndpoint.expectedMessageCount(1);
-        System.out.println(mockEndpoint.getReceivedExchanges());
 
         mockEndpoint.reset();
     }
