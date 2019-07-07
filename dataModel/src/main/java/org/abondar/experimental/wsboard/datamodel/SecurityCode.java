@@ -2,8 +2,12 @@ package org.abondar.experimental.wsboard.datamodel;
 
 /**
  * POJO for security code table
+ *
+ * @author a.bondar
  */
 public class SecurityCode {
+
+    private static final long SerialVersionUID = -235433L;
 
     private long id;
 

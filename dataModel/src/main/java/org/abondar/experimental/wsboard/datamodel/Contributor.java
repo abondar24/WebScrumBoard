@@ -3,12 +3,16 @@ package org.abondar.experimental.wsboard.datamodel;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
+import java.io.Serializable;
+
 /**
  * POJO for Contributor data model
  * @author a.bondar
  */
 @ApiModel(value = "Contributor", description = "Project contributor")
-public class Contributor {
+public class Contributor implements Serializable {
+
+    private static final long SerialVersionUID = -345433L;
 
     @ApiModelProperty(value = "Contributor id")
     private long id;

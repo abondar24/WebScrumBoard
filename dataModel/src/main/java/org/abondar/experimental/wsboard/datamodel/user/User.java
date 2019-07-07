@@ -3,13 +3,17 @@ package org.abondar.experimental.wsboard.datamodel.user;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
+import java.io.Serializable;
+
 /**
  * POJO for User data model
  *
  * @author a.bondar
  */
 @ApiModel(value = "User", description = "Application user")
-public class User {
+public class User implements Serializable {
+
+    private static final long SerialVersionUID = -456L;
 
     private static final String DELETED_DATA = "deleted";
 
@@ -31,7 +35,7 @@ public class User {
     @ApiModelProperty(value = "User password hash")
     private String password;
 
-    @ApiModelProperty(value = "User roles as comma-separated list")
+    @ApiModelProperty(value = "User roles as ; separated list. Can be: DEVELOPER, QA, DEV_OPS")
     private String roles;
 
     @ApiModelProperty(value = "User avatar")

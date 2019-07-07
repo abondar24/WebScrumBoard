@@ -3,6 +3,7 @@ package org.abondar.experimental.wsboard.datamodel.task;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -11,7 +12,9 @@ import java.util.Date;
  * @author a.bondar
  */
 @ApiModel(value = "Task", description = "Project task")
-public class Task {
+public class Task implements Serializable {
+
+    private static final long SerialVersionUID = -1276893L;
 
     @ApiModelProperty(value = "Task id")
     private long id;

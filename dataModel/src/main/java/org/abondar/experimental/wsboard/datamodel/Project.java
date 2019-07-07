@@ -3,6 +3,7 @@ package org.abondar.experimental.wsboard.datamodel;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -11,7 +12,9 @@ import java.util.Date;
  * @author a.bondar
  */
 @ApiModel(value = "Project", description = "Scrum project")
-public class Project {
+public class Project implements Serializable {
+
+    private static final long SerialVersionUID = -34556L;
 
     @ApiModelProperty(value = "Project id")
     private long id;
