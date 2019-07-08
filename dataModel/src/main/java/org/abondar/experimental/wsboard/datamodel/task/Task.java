@@ -31,10 +31,10 @@ public class Task implements Serializable {
     @ApiModelProperty(value = "Task story points")
     private int storyPoints;
 
-    @ApiModelProperty(value = "Task start date")
+    @ApiModelProperty(value = "Task start date in format dd/MM/yyyy")
     private Date startDate;
 
-    @ApiModelProperty(value = "Task end date")
+    @ApiModelProperty(value = "Task end in date in format dd/MM/yyyy")
     private Date endDate;
 
     @ApiModelProperty(value = "Task sprint id")

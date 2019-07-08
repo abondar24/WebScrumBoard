@@ -22,10 +22,10 @@ public class Project implements Serializable {
     @ApiModelProperty(value = "Project name")
     private String name;
 
-    @ApiModelProperty(value = "Project start date")
+    @ApiModelProperty(value = "Project start date in format dd/MM/yyyy")
     private Date startDate;
 
-    @ApiModelProperty(value = "Project end date")
+    @ApiModelProperty(value = "Project end date dd/MM/yyyy")
     private Date endDate;
 
     @ApiModelProperty(value = "Project repository")

@@ -70,12 +70,11 @@ public class UserServiceTest {
         assertEquals(200, resp.getStatus());
 
         var user = resp.readEntity(User.class);
-        var token = resp.getCookies().get("X-JWT-AUTH").getValue();
+
 
 
         assertEquals(10, user.getId());
         assertEquals(login, user.getLogin());
-        assertEquals("testToken", token);
 
     }
 
@@ -96,9 +95,12 @@ public class UserServiceTest {
         var resp = client.post(form);
         assertEquals(302, resp.getStatus());
 
+        var token = resp.getCookies().get("X-JWT-AUTH").getValue();
+
         var err = resp.readEntity(String.class);
         assertEquals(LogMessageUtil.USER_EXISTS, err);
 
+        assertEquals("testToken", token);
 
     }
 

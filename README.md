@@ -4,12 +4,13 @@
 
 ## TODO
 
-- fix getById bug on security code
 - sonar code smells
 - replace certificates with normal and setup host
 - change nginx config to docker host
 - add stages to travis
-- fix user service tests
+- decrease non found endpoints lookup time
+- fix security
+- fix code check
 
 // certs are not commited here
 

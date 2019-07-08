@@ -11,8 +11,6 @@ import org.abondar.experimental.wsboard.dao.exception.InvalidHashException;
 import org.abondar.experimental.wsboard.datamodel.user.User;
 import org.abondar.experimental.wsboard.ws.service.AuthService;
 import org.abondar.experimental.wsboard.ws.service.UserService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
@@ -32,7 +30,6 @@ import java.util.Date;
 public class UserServiceImpl implements UserService {
 
     private static final String COOKIE_ISSUER = "borscht systems";
-    private static Logger logger = LoggerFactory.getLogger(UserService.class);
 
     @Autowired
     @Qualifier("userDao")
@@ -54,7 +51,7 @@ public class UserServiceImpl implements UserService {
         try {
             User user = dao.createUser(login, password, email, firstName, lastName, roles);
 
-            return Response.ok(user).cookie(createLoginCookie(user.getLogin())).build();
+            return Response.ok(user).build();
         } catch (CannotPerformOperationException ex) {
             return Response.status(Response.Status.SERVICE_UNAVAILABLE).entity(LogMessageUtil.HASH_NOT_CREATED).build();
         } catch (DataExistenceException ex) {

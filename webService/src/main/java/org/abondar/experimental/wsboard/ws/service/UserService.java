@@ -206,6 +206,7 @@ public interface UserService extends RestService {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/enter_code")
+    @PermitAll
     @ApiOperation(
             value = "Update code",
             notes = "Activates security code sent to user",
@@ -213,8 +214,7 @@ public interface UserService extends RestService {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Code activated"),
             @ApiResponse(code = 404, message = "User or code not found"),
-            @ApiResponse(code = 406, message = "JWT token is wrong"),
     })
-    Response enterCode(@QueryParam("userId") long userId);
+    Response enterCode(@QueryParam("userId") @ApiParam(required = true) long userId);
 
 }

@@ -6,8 +6,6 @@ import org.abondar.experimental.wsboard.dao.data.LogMessageUtil;
 import org.abondar.experimental.wsboard.dao.exception.DataCreationException;
 import org.abondar.experimental.wsboard.dao.exception.DataExistenceException;
 import org.abondar.experimental.wsboard.ws.service.SprintService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
@@ -21,7 +19,6 @@ import java.util.Date;
  */
 public class SprintServiceImpl implements SprintService {
 
-    private static Logger logger = LoggerFactory.getLogger(SprintService.class);
 
     @Autowired
     @Qualifier("sprintDao")

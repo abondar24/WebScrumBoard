@@ -10,11 +10,11 @@ import javax.ws.rs.client.ResponseProcessingException;
 import javax.ws.rs.core.Response;
 
 /**
- * Route for invoking sending emails by user service events
+ * Route for user service events
  *
  * @author a.bondar
  */
-public class UserEmailRoute extends RouteBuilder {
+public class UserServiceRoute extends RouteBuilder {
 
     @Autowired
     private SecurityCodeDao securityCodeDao;
@@ -22,9 +22,7 @@ public class UserEmailRoute extends RouteBuilder {
 
     @Override
     public void configure() throws Exception {
-        from("cxfrs:bean:jaxRsServer?bindingStyle=SimpleConsumer&performInvocation=true&synchronous=true")
-                .routeId("userEmailRoute")
-                .toD("direct:${headers.operationName}", false);
+
 
         from("direct:createUser").routeId("createUser")
                 .log("${headers}")
@@ -48,7 +46,16 @@ public class UserEmailRoute extends RouteBuilder {
                     return bdy;
                 })
                 .log("${body}")
-                .wireTap("direct:sendEmail");
+                .wireTap("direct:sendEmail")
+                .removeHeaders("*");
+
+        from("direct:updateUser").routeId("updateUser")
+                .log("${headers}")
+                .log("${body}");
+
+        from("direct:updateAvatar").routeId("updateAvatar")
+                .log("${headers}")
+                .log("${body}");
 
         from("direct:updateLogin").routeId("updateLogin")
                 .transform()
@@ -68,28 +75,8 @@ public class UserEmailRoute extends RouteBuilder {
                     return bdy;
                 })
                 .log("${body}")
-                .wireTap("direct:sendEmail");
-
-
-        from("direct:resetPassword").routeId("resetPassword")
-                .transform()
-                .body((bdy, hdrs) -> {
-
-                    try {
-                        var resp = (Response) bdy;
-                        var usr = resp.readEntity(User.class);
-
-                        hdrs.put("emailType", "resetPassword");
-                        hdrs.put("To", usr.getEmail());
-                        return usr;
-                    } catch (ResponseProcessingException ex) {
-
-                    }
-
-                    return bdy;
-                })
-                .log("${body}")
-                .wireTap("direct:sendEmail");
+                .wireTap("direct:sendEmail")
+                .removeHeaders("*");
 
 
         from("direct:updatePassword").routeId("updatePassword")
@@ -110,7 +97,8 @@ public class UserEmailRoute extends RouteBuilder {
                     return bdy;
                 })
                 .log("${body}")
-                .wireTap("direct:sendEmail");
+                .wireTap("direct:sendEmail")
+                .removeHeaders("*");
 
         from("direct:deleteUser").routeId("deleteUser")
                 .transform()
@@ -130,7 +118,46 @@ public class UserEmailRoute extends RouteBuilder {
                     return bdy;
                 })
                 .log("${body}")
-                .wireTap("direct:sendEmail");
+                .wireTap("direct:sendEmail")
+                .removeHeaders("*");
+
+        from("direct:loginUser").routeId("login")
+                .log("${body}");
+
+        from("direct:logoutUser").routeId("logout")
+                .log("${body}");
+
+
+        from("direct:findUserByLogin").routeId("findUserByLogin")
+                .log("${headers}")
+                .log("${body}");
+
+        from("direct:resetPassword").routeId("resetPassword")
+                .transform()
+                .body((bdy, hdrs) -> {
+
+                    try {
+                        var resp = (Response) bdy;
+                        var usr = resp.readEntity(User.class);
+
+                        hdrs.put("emailType", "resetPassword");
+                        hdrs.put("To", usr.getEmail());
+                        return usr;
+                    } catch (ResponseProcessingException ex) {
+
+                    }
+
+                    return bdy;
+                })
+                .log("${body}")
+                .wireTap("direct:sendEmail")
+                .removeHeaders("*");
+
+
+        from("direct:enterCode").routeId("enterCode")
+                .log("${headers}")
+                .log("${body}");
+
 
     }
 }

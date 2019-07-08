@@ -72,7 +72,7 @@ public class UserServiceTestImpl implements UserService {
         testCode = new SecurityCode(12345, testUser.getId());
 
 
-        return Response.ok(testUser).cookie(createCookie(testUser.getLogin())).build();
+        return Response.ok(testUser).build();
 
 
     }
