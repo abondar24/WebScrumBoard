@@ -213,8 +213,10 @@ public interface UserService extends RestService {
             produces = "application/json")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Code activated"),
+            @ApiResponse(code = 400, message = "Wrong code entered"),
             @ApiResponse(code = 404, message = "User or code not found"),
     })
-    Response enterCode(@QueryParam("userId") @ApiParam(required = true) long userId);
+    Response enterCode(@QueryParam("userId") @ApiParam(required = true) long userId,
+                       @QueryParam("code") @ApiParam(required = true) long code);
 
 }

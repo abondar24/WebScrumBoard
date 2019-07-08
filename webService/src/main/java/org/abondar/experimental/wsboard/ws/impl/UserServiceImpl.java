@@ -195,12 +195,17 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public Response enterCode(long userId) {
+    public Response enterCode(long userId, long code) {
         try {
-            codeDao.updateCode(userId);
+            codeDao.updateCode(userId, code);
             Response.ok().build();
         } catch (DataExistenceException ex) {
-            return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
+            if (ex.getMessage().equals(LogMessageUtil.CODE_NOT_EXISTS)) {
+                return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
+            } else {
+                return Response.status(Response.Status.BAD_REQUEST).entity(ex.getLocalizedMessage()).build();
+            }
+
         }
 
         return null;

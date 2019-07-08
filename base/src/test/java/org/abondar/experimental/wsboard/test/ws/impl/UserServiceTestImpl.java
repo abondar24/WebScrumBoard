@@ -210,9 +210,13 @@ public class UserServiceTestImpl implements UserService {
     }
 
     @Override
-    public Response enterCode(long userId) {
+    public Response enterCode(long userId, long code) {
         if (testUser.getId() != userId) {
             return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.USER_NOT_EXISTS).build();
+        }
+
+        if (testCode.getCode() != code) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(LogMessageUtil.CODE_NOT_MATCHES).build();
         }
 
         return Response.ok().build();

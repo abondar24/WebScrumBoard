@@ -43,15 +43,20 @@ public class SecurityCodeDao extends BaseDao {
         return code;
     }
 
-    public void updateCode(long userId) throws DataExistenceException {
+    public void updateCode(long userId, long code) throws DataExistenceException {
         checkUser(userId);
 
-        var code = mapper.getCodeByUserId(userId);
-        if (code == null) {
+        var foundCode = mapper.getCodeByUserId(userId);
+        if (foundCode == null) {
             throw new DataExistenceException(LogMessageUtil.CODE_NOT_EXISTS);
         }
 
-        mapper.updateCode(code.getId());
+        if (foundCode.getCode() != code) {
+            throw new DataExistenceException(LogMessageUtil.CODE_NOT_MATCHES);
+        }
+
+
+        mapper.updateCode(foundCode.getId());
 
         var msg = String.format(LogMessageUtil.LOG_FORMAT, "New security code inserted for user", userId);
         logger.info(msg);

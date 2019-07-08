@@ -55,9 +55,9 @@ public class SecurityDaoTest {
     @Test
     public void updateCodeTest() throws Exception {
         var usr = createUser();
-        codeDao.insertCode(usr.getId());
+        var code = codeDao.insertCode(usr.getId());
 
-        codeDao.updateCode(usr.getId());
+        codeDao.updateCode(usr.getId(), code);
         var sc = mapper.getCodeByUserId(usr.getId());
         assertTrue(sc.isActivated());
 
@@ -65,15 +65,24 @@ public class SecurityDaoTest {
     }
 
     @Test
-    public void updateCodeeUserNotFoundTest() {
-        assertThrows(DataExistenceException.class, () -> codeDao.updateCode(7));
+    public void updateCodeUserNotFoundTest() {
+        assertThrows(DataExistenceException.class, () -> codeDao.updateCode(7, 123));
     }
 
     @Test
     public void updateCodeNotFoundTest() throws Exception {
         var usr = createUser();
 
-        assertThrows(DataExistenceException.class, () -> codeDao.updateCode(usr.getId()));
+        assertThrows(DataExistenceException.class, () -> codeDao.updateCode(usr.getId(), 123));
+        cleanData();
+    }
+
+    @Test
+    public void updateCodeNotMatchesTest() throws Exception {
+        var usr = createUser();
+        codeDao.insertCode(usr.getId());
+
+        assertThrows(DataExistenceException.class, () -> codeDao.updateCode(usr.getId(), 123));
         cleanData();
     }
 

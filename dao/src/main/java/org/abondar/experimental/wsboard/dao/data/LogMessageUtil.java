@@ -41,6 +41,7 @@ public class LogMessageUtil {
     public static final String LOG_FORMAT = "%s with id: %d";
     public static final String CODE_ALREADY_EXISTS = "Generated code already exists";
     public static final String CODE_NOT_EXISTS = "Security code does not exist";
+    public static final String CODE_NOT_MATCHES = "Codes don't match";
 
     private LogMessageUtil() {
     }

@@ -95,12 +95,9 @@ public class UserServiceTest {
         var resp = client.post(form);
         assertEquals(302, resp.getStatus());
 
-        var token = resp.getCookies().get("X-JWT-AUTH").getValue();
-
         var err = resp.readEntity(String.class);
         assertEquals(LogMessageUtil.USER_EXISTS, err);
 
-        assertEquals("testToken", token);
 
     }
 
@@ -597,7 +594,10 @@ public class UserServiceTest {
 
         var usr = createUser();
 
-        client.path("/user/enter_code").query("userId", usr.getId()).accept(MediaType.APPLICATION_JSON);
+        client.path("/user/enter_code")
+                .query("userId", usr.getId())
+                .query("code", 12345)
+                .accept(MediaType.APPLICATION_JSON);
 
         var resp = client.get();
         assertEquals(200, resp.getStatus());
@@ -621,6 +621,23 @@ public class UserServiceTest {
 
     }
 
+    @Test
+    public void enterCodeNotMatchesTest() {
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+
+        var usr = createUser();
+
+        client.path("/user/enter_code")
+                .query("userId", usr.getId())
+                .query("code", 123)
+                .accept(MediaType.APPLICATION_JSON);
+
+        var resp = client.get();
+        assertEquals(400, resp.getStatus());
+
+        var msg = resp.readEntity(String.class);
+        assertEquals(LogMessageUtil.CODE_NOT_MATCHES, msg);
+    }
 
 
     private User createUser() {
