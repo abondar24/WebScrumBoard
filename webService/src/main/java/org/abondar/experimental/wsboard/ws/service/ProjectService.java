@@ -24,7 +24,7 @@ import javax.ws.rs.core.Response;
  */
 @Path("/project")
 @Api("Project api")
-public interface ProjectService extends RestService {
+public interface ProjectService {
 
     @POST
     @Path("/create")

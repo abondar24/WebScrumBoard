@@ -2,16 +2,14 @@ package org.abondar.experimental.wsboard.ws.config;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
-import org.abondar.experimental.wsboard.dao.SecurityCodeDao;
-import org.abondar.experimental.wsboard.dao.UserDao;
 import org.abondar.experimental.wsboard.ws.impl.AuthServiceImpl;
 import org.abondar.experimental.wsboard.ws.impl.ContributorServiceImpl;
-import org.abondar.experimental.wsboard.ws.impl.ProjectServiceImpl;
 import org.abondar.experimental.wsboard.ws.impl.SprintServiceImpl;
 import org.abondar.experimental.wsboard.ws.impl.TaskServiceImpl;
 import org.abondar.experimental.wsboard.ws.security.TokenExpiredMapper;
 import org.abondar.experimental.wsboard.ws.security.TokenRenewalFilter;
 import org.abondar.experimental.wsboard.ws.service.AuthService;
+import org.abondar.experimental.wsboard.ws.service.ProjectService;
 import org.abondar.experimental.wsboard.ws.service.RestService;
 import org.abondar.experimental.wsboard.ws.service.UserService;
 import org.apache.cxf.Bus;
@@ -23,8 +21,6 @@ import org.apache.cxf.jaxrs.JAXRSServerFactoryBean;
 import org.apache.cxf.jaxrs.swagger.Swagger2Feature;
 import org.apache.cxf.rs.security.jose.jwa.SignatureAlgorithm;
 import org.apache.cxf.rs.security.jose.jws.HmacJwsSignatureVerifier;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.PreferencesPlaceholderConfigurer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -44,14 +40,6 @@ import java.util.Map;
 @Component
 public class CxfConfig implements WebMvcConfigurer {
 
-    @Autowired
-    @Qualifier("userDao")
-    private UserDao dao;
-
-    @Autowired
-    @Qualifier("codeDao")
-    private SecurityCodeDao codeDao;
-
 
     @Bean(name = Bus.DEFAULT_BUS_ID)
     public SpringBus springBus() {
@@ -63,11 +51,6 @@ public class CxfConfig implements WebMvcConfigurer {
         return new PreferencesPlaceholderConfigurer();
     }
 
-
-    @Bean
-    public RestService projectService() {
-        return new ProjectServiceImpl();
-    }
 
     @Bean
     public RestService contributorService() {
@@ -95,9 +78,7 @@ public class CxfConfig implements WebMvcConfigurer {
 
         var factory = new JAXRSServerFactoryBean();
         factory.setBus(springBus());
-//        factory.setServiceBeanObjects(userService(authService), projectService(),
-//                contributorService(), taskService(), sprintService());
-        factory.setResourceClasses(List.of(UserService.class));
+        factory.setResourceClasses(List.of(UserService.class, ProjectService.class));
 
         factory.setProviders(List.of(jsonProvider, authenticationFilter(authService)));
         factory.setInInterceptors(List.of(new LoggingInInterceptor(), secureAnnotationsInterceptor()));

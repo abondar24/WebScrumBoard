@@ -7,6 +7,8 @@ import org.abondar.experimental.wsboard.ws.service.ProjectService;
 
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 
@@ -107,6 +109,18 @@ public class ProjectServiceTestImpl implements ProjectService {
         }
 
         return Response.ok(testProject).build();
+    }
+
+
+    private Date convertDate(String strDate) throws DataCreationException {
+        var format = new SimpleDateFormat("dd/MM/yyyy");
+
+        try {
+            return format.parse(strDate);
+        } catch (ParseException ex) {
+            throw new DataCreationException(LogMessageUtil.PARSE_DATE_FAILED);
+        }
+
     }
 
 }

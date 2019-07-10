@@ -25,7 +25,7 @@ import javax.ws.rs.core.Response;
  */
 @Path("/user")
 @Api("User api")
-public interface UserService extends RestService {
+public interface UserService {
 
     @POST
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
