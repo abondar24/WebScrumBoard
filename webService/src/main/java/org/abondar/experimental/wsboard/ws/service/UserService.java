@@ -44,10 +44,10 @@ public interface UserService extends RestService {
             @ApiResponse(code = 503, message = "Password hash not created")
     })
     Response createUser(@FormParam("login") @ApiParam(required = true) String login,
+                        @FormParam("password") @ApiParam(required = true) String password,
                         @FormParam("email") @ApiParam(required = true) String email,
                         @FormParam("firstName") @ApiParam(required = true) String firstName,
                         @FormParam("lastName") @ApiParam(required = true) String lastName,
-                        @FormParam("password") @ApiParam(required = true) String password,
                         @FormParam("roles") @ApiParam(required = true) String roles);
 
     @POST

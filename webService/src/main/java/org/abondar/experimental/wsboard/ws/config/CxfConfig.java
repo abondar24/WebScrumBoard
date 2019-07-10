@@ -9,11 +9,11 @@ import org.abondar.experimental.wsboard.ws.impl.ContributorServiceImpl;
 import org.abondar.experimental.wsboard.ws.impl.ProjectServiceImpl;
 import org.abondar.experimental.wsboard.ws.impl.SprintServiceImpl;
 import org.abondar.experimental.wsboard.ws.impl.TaskServiceImpl;
-import org.abondar.experimental.wsboard.ws.impl.UserServiceImpl;
 import org.abondar.experimental.wsboard.ws.security.TokenExpiredMapper;
 import org.abondar.experimental.wsboard.ws.security.TokenRenewalFilter;
 import org.abondar.experimental.wsboard.ws.service.AuthService;
 import org.abondar.experimental.wsboard.ws.service.RestService;
+import org.abondar.experimental.wsboard.ws.service.UserService;
 import org.apache.cxf.Bus;
 import org.apache.cxf.bus.spring.SpringBus;
 import org.apache.cxf.ext.logging.LoggingInInterceptor;
@@ -63,10 +63,6 @@ public class CxfConfig implements WebMvcConfigurer {
         return new PreferencesPlaceholderConfigurer();
     }
 
-    @Bean
-    public RestService userService(AuthService authService) {
-        return new UserServiceImpl(authService);
-    }
 
     @Bean
     public RestService projectService() {
@@ -99,8 +95,9 @@ public class CxfConfig implements WebMvcConfigurer {
 
         var factory = new JAXRSServerFactoryBean();
         factory.setBus(springBus());
-        factory.setServiceBeanObjects(userService(authService), projectService(),
-                contributorService(), taskService(), sprintService());
+//        factory.setServiceBeanObjects(userService(authService), projectService(),
+//                contributorService(), taskService(), sprintService());
+        factory.setResourceClasses(List.of(UserService.class));
 
         factory.setProviders(List.of(jsonProvider, authenticationFilter(authService)));
         factory.setInInterceptors(List.of(new LoggingInInterceptor(), secureAnnotationsInterceptor()));

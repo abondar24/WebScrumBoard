@@ -35,8 +35,9 @@ public class UserServiceTestImpl implements UserService {
 
     }
 
-    public Response createUser(String login, String email, String firstName,
-                               String lastName, String password, String roles) {
+    @Override
+    public Response createUser(String login, String password, String email, String firstName,
+                               String lastName, String roles) {
 
         var existingUser = new User();
         existingUser.setLogin("testLogin");
