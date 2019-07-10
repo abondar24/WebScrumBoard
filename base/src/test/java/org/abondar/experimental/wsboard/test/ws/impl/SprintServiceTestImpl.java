@@ -7,6 +7,8 @@ import org.abondar.experimental.wsboard.ws.service.SprintService;
 
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,7 +17,7 @@ import java.util.stream.Collectors;
  * Test implementation of sprint web service
  */
 @Path("/sprint")
-public class SprintServiceTestImpl extends TestRestServiceImpl implements SprintService {
+public class SprintServiceTestImpl implements SprintService {
 
 
     private Sprint testSprint;
@@ -132,5 +134,23 @@ public class SprintServiceTestImpl extends TestRestServiceImpl implements Sprint
         }
 
         return Response.ok().build();
+    }
+
+    /**
+     * Method for converting string to date
+     *
+     * @param strDate - date as string
+     * @return Date
+     * @throws DataCreationException - string parsing failed
+     */
+    private Date convertDate(String strDate) throws DataCreationException {
+        var format = new SimpleDateFormat("dd/MM/yyyy");
+
+        try {
+            return format.parse(strDate);
+        } catch (ParseException ex) {
+            throw new DataCreationException(LogMessageUtil.PARSE_DATE_FAILED);
+        }
+
     }
 }

@@ -17,6 +17,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,7 +27,7 @@ import java.util.stream.Collectors;
  * Test implementation of task web service
  */
 @Path("/task")
-public class TaskServiceTestImpl extends TestRestServiceImpl implements TaskService {
+public class TaskServiceTestImpl implements TaskService {
 
 
     private Task testTask;
@@ -306,5 +308,15 @@ public class TaskServiceTestImpl extends TestRestServiceImpl implements TaskServ
         }
     }
 
+    private Date convertDate(String strDate) throws DataCreationException {
+        var format = new SimpleDateFormat("dd/MM/yyyy");
+
+        try {
+            return format.parse(strDate);
+        } catch (ParseException ex) {
+            throw new DataCreationException(LogMessageUtil.PARSE_DATE_FAILED);
+        }
+
+    }
 
 }

@@ -15,6 +15,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,7 +25,7 @@ import java.util.stream.Collectors;
  * Test implementation of contributor web service
  */
 @Path("/contributor")
-public class ContributorServiceTestImpl extends TestRestServiceImpl implements ContributorService {
+public class ContributorServiceTestImpl implements ContributorService {
 
     private Contributor testContributor;
     private User testUser;
@@ -200,5 +202,17 @@ public class ContributorServiceTestImpl extends TestRestServiceImpl implements C
     public Response delete() {
         testContributor = null;
         return Response.ok().build();
+    }
+
+
+    private Date convertDate(String strDate) throws DataCreationException {
+        var format = new SimpleDateFormat("dd/MM/yyyy");
+
+        try {
+            return format.parse(strDate);
+        } catch (ParseException ex) {
+            throw new DataCreationException(LogMessageUtil.PARSE_DATE_FAILED);
+        }
+
     }
 }
