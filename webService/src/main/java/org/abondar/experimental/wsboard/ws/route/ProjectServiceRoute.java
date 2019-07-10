@@ -61,7 +61,7 @@ public class ProjectServiceRoute extends RouteBuilder {
                         }
 
                         var prj = projectDao.updateProject((long) formData.get(0), (String) formData.get(1),
-                                (String) formData.get(2), (Boolean) formData.get(4), endDt);
+                                (String) formData.get(2), (Boolean) formData.get(3), endDt);
                         return Response.ok(prj).build();
                     } catch (DataExistenceException ex) {
                         if (ex.getMessage().equals(LogMessageUtil.PROJECT_NOT_EXISTS)) {

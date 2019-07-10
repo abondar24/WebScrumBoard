@@ -86,7 +86,7 @@ public class TaskServiceRoute extends RouteBuilder {
                     MessageContentsList formData = (MessageContentsList) bdy;
 
                     try {
-                        var task = taskDao.updateTaskState((long) formData.get(0), (String) formData.get(0));
+                        var task = taskDao.updateTaskState((long) formData.get(0), (String) formData.get(1));
                         return Response.ok(task).build();
                     } catch (DataExistenceException ex) {
                         if (ex.getMessage().equals(LogMessageUtil.TASK_NOT_EXISTS)) {
