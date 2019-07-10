@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
  * Test implementation of contributor web service
  */
 @Path("/contributor")
-public class ContributorServiceTestImpl implements ContributorService {
+public class ContributorServiceTestImpl extends TestRestServiceImpl implements ContributorService {
 
     private Contributor testContributor;
     private User testUser;

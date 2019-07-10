@@ -24,7 +24,7 @@ import javax.ws.rs.core.Response;
  */
 @Path("/contributor")
 @Api("Contributor api")
-public interface ContributorService extends RestService {
+public interface ContributorService {
 
     @POST
     @Path("/create")

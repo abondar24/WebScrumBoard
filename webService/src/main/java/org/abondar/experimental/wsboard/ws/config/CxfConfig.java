@@ -3,14 +3,13 @@ package org.abondar.experimental.wsboard.ws.config;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import org.abondar.experimental.wsboard.ws.impl.AuthServiceImpl;
-import org.abondar.experimental.wsboard.ws.impl.ContributorServiceImpl;
-import org.abondar.experimental.wsboard.ws.impl.SprintServiceImpl;
-import org.abondar.experimental.wsboard.ws.impl.TaskServiceImpl;
 import org.abondar.experimental.wsboard.ws.security.TokenExpiredMapper;
 import org.abondar.experimental.wsboard.ws.security.TokenRenewalFilter;
 import org.abondar.experimental.wsboard.ws.service.AuthService;
+import org.abondar.experimental.wsboard.ws.service.ContributorService;
 import org.abondar.experimental.wsboard.ws.service.ProjectService;
-import org.abondar.experimental.wsboard.ws.service.RestService;
+import org.abondar.experimental.wsboard.ws.service.SprintService;
+import org.abondar.experimental.wsboard.ws.service.TaskService;
 import org.abondar.experimental.wsboard.ws.service.UserService;
 import org.apache.cxf.Bus;
 import org.apache.cxf.bus.spring.SpringBus;
@@ -53,21 +52,6 @@ public class CxfConfig implements WebMvcConfigurer {
 
 
     @Bean
-    public RestService contributorService() {
-        return new ContributorServiceImpl();
-    }
-
-    @Bean
-    public RestService taskService() {
-        return new TaskServiceImpl();
-    }
-
-    @Bean
-    public RestService sprintService() {
-        return new SprintServiceImpl();
-    }
-
-    @Bean
     public AuthService authService() {
         return new AuthServiceImpl();
     }
@@ -78,7 +62,8 @@ public class CxfConfig implements WebMvcConfigurer {
 
         var factory = new JAXRSServerFactoryBean();
         factory.setBus(springBus());
-        factory.setResourceClasses(List.of(UserService.class, ProjectService.class));
+        factory.setResourceClasses(List.of(UserService.class, ProjectService.class, ContributorService.class,
+                TaskService.class, SprintService.class));
 
         factory.setProviders(List.of(jsonProvider, authenticationFilter(authService)));
         factory.setInInterceptors(List.of(new LoggingInInterceptor(), secureAnnotationsInterceptor()));

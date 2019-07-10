@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
  * Test implementation of sprint web service
  */
 @Path("/sprint")
-public class SprintServiceTestImpl implements SprintService {
+public class SprintServiceTestImpl extends TestRestServiceImpl implements SprintService {
 
 
     private Sprint testSprint;

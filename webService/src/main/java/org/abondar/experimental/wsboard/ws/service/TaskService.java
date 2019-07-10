@@ -24,7 +24,7 @@ import javax.ws.rs.core.Response;
  */
 @Path("/task")
 @Api("Task api")
-public interface TaskService extends RestService {
+public interface TaskService {
 
     @POST
     @Path("/create")

@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
  * Test implementation of task web service
  */
 @Path("/task")
-public class TaskServiceTestImpl implements TaskService {
+public class TaskServiceTestImpl extends TestRestServiceImpl implements TaskService {
 
 
     private Task testTask;
@@ -305,5 +305,6 @@ public class TaskServiceTestImpl implements TaskService {
             throw new DataExistenceException(LogMessageUtil.TASK_STATE_UNKNOWN);
         }
     }
+
 
 }

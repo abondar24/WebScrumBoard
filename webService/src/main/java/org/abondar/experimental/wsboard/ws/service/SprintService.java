@@ -24,7 +24,7 @@ import javax.ws.rs.core.Response;
  */
 @Path("/sprint")
 @Api("Sprint api")
-public interface SprintService extends RestService {
+public interface SprintService {
 
     @POST
     @Path("/create")

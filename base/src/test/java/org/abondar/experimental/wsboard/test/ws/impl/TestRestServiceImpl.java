@@ -1,5 +1,4 @@
-package org.abondar.experimental.wsboard.ws.service;
-
+package org.abondar.experimental.wsboard.test.ws.impl;
 
 import org.abondar.experimental.wsboard.dao.data.LogMessageUtil;
 import org.abondar.experimental.wsboard.dao.exception.DataCreationException;
@@ -8,22 +7,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-/**
- * Basic web service interface
- *
- * @author a.bondar
- */
+public class TestRestServiceImpl {
 
-public interface RestService {
-
-    /**
-     * Method for converting string to date
-     *
-     * @param strDate - date as string
-     * @return Date
-     * @throws DataCreationException - string parsing failed
-     */
-    default Date convertDate(String strDate) throws DataCreationException {
+    protected Date convertDate(String strDate) throws DataCreationException {
         var format = new SimpleDateFormat("dd/MM/yyyy");
 
         try {
@@ -33,5 +19,4 @@ public interface RestService {
         }
 
     }
-
 }
