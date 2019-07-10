@@ -1,4 +1,4 @@
-package org.abondar.experimental.wsboard.ws.impl;
+package org.abondar.experimental.wsboard.ws.service;
 
 import org.abondar.experimental.wsboard.dao.data.DataMapper;
 import org.abondar.experimental.wsboard.dao.exception.CannotPerformOperationException;
@@ -6,7 +6,6 @@ import org.abondar.experimental.wsboard.dao.exception.InvalidHashException;
 import org.abondar.experimental.wsboard.dao.exception.InvalidPasswordException;
 import org.abondar.experimental.wsboard.dao.password.PasswordUtil;
 import org.abondar.experimental.wsboard.datamodel.user.User;
-import org.abondar.experimental.wsboard.ws.service.AuthService;
 import org.apache.cxf.common.util.Base64Exception;
 import org.apache.cxf.common.util.Base64Utility;
 import org.apache.cxf.rs.security.jose.jwa.SignatureAlgorithm;

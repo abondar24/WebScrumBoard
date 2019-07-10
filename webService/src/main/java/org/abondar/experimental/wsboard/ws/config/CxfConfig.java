@@ -2,10 +2,10 @@ package org.abondar.experimental.wsboard.ws.config;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
-import org.abondar.experimental.wsboard.ws.impl.AuthServiceImpl;
 import org.abondar.experimental.wsboard.ws.security.TokenExpiredMapper;
 import org.abondar.experimental.wsboard.ws.security.TokenRenewalFilter;
 import org.abondar.experimental.wsboard.ws.service.AuthService;
+import org.abondar.experimental.wsboard.ws.service.AuthServiceImpl;
 import org.abondar.experimental.wsboard.ws.service.ContributorService;
 import org.abondar.experimental.wsboard.ws.service.ProjectService;
 import org.abondar.experimental.wsboard.ws.service.SprintService;
