@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import org.abondar.experimental.wsboard.ws.security.TokenExpiredMapper;
 import org.abondar.experimental.wsboard.ws.security.TokenRenewalFilter;
+import org.abondar.experimental.wsboard.ws.security.UnauthorizedMapper;
 import org.abondar.experimental.wsboard.ws.service.AuthService;
 import org.abondar.experimental.wsboard.ws.service.AuthServiceImpl;
 import org.abondar.experimental.wsboard.ws.service.ContributorService;
@@ -65,7 +66,9 @@ public class CxfConfig implements WebMvcConfigurer {
         factory.setResourceClasses(List.of(UserService.class, ProjectService.class, ContributorService.class,
                 TaskService.class, SprintService.class));
 
-        factory.setProviders(List.of(jsonProvider, authenticationFilter(authService)));
+
+        factory.setProviders(List.of(jsonProvider, authenticationFilter(authService),
+                unauthorizedMapper(), expiredMapper()));
         factory.setInInterceptors(List.of(new LoggingInInterceptor(), secureAnnotationsInterceptor()));
         factory.setOutInterceptors(List.of(new LoggingOutInterceptor()));
 
@@ -128,8 +131,13 @@ public class CxfConfig implements WebMvcConfigurer {
 
 
     @Bean
-    public TokenExpiredMapper exceptionMapper() {
+    public TokenExpiredMapper expiredMapper() {
         return new TokenExpiredMapper();
+    }
+
+    @Bean
+    public UnauthorizedMapper unauthorizedMapper(){
+        return new UnauthorizedMapper();
     }
 
 

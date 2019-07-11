@@ -39,7 +39,6 @@ public interface ContributorService {
             @ApiResponse(code = 200, message = "Contributor created", response = Contributor.class),
             @ApiResponse(code = 404, message = "User or project not found"),
             @ApiResponse(code = 301, message = "Project is not active"),
-            @ApiResponse(code = 406, message = "JWT token is wrong"),
             @ApiResponse(code = 409, message = "Project has owner(if isOwner param is set to true)"),
 
     })
@@ -61,7 +60,6 @@ public interface ContributorService {
             @ApiResponse(code = 404, message = "Contributor not found"),
             @ApiResponse(code = 302, message = "Project has owner"),
             @ApiResponse(code = 403, message = "Contributor can't be deactivated"),
-            @ApiResponse(code = 406, message = "JWT token is wrong"),
             @ApiResponse(code = 409, message = "Project has no owner"),
             @ApiResponse(code = 410, message = "Contributor not active and can't be an owner"),
     })
@@ -78,8 +76,7 @@ public interface ContributorService {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Project owner", response = Contributor.class),
             @ApiResponse(code = 204, message = "Project has no owner"),
-            @ApiResponse(code = 404, message = "Project not found"),
-            @ApiResponse(code = 406, message = "JWT token is wrong")})
+            @ApiResponse(code = 404, message = "Project not found")})
     Response findProjectOwner(@QueryParam("projectId") @ApiParam(required = true) long projectId);
 
 
@@ -92,8 +89,7 @@ public interface ContributorService {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Project contributors", response = Contributor.class),
             @ApiResponse(code = 204, message = "No contributors found"),
-            @ApiResponse(code = 404, message = "Project not found"),
-            @ApiResponse(code = 406, message = "JWT token is wrong"),
+            @ApiResponse(code = 404, message = "Project not found")
     })
     Response findProjectContributors(@QueryParam("projectId") @ApiParam(required = true) long projectId,
                                      @QueryParam("offset") @ApiParam(required = true) int offset,

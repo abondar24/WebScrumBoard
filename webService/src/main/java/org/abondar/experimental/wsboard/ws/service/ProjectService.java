@@ -38,8 +38,7 @@ public interface ProjectService {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Project created", response = Project.class),
             @ApiResponse(code = 206, message = "Form data is not complete"),
-            @ApiResponse(code = 302, message = "Project with name already exists"),
-            @ApiResponse(code = 406, message = "JWT token is wrong")
+            @ApiResponse(code = 302, message = "Project with name already exists")
     })
     Response createProject(@FormParam("name") @ApiParam(required = true) String name,
                            @FormParam("startDate") @ApiParam(required = true) String startDate);
@@ -59,8 +58,7 @@ public interface ProjectService {
             @ApiResponse(code = 206, message = "End date can't be parsed"),
             @ApiResponse(code = 301, message = "Project can't be reactivated"),
             @ApiResponse(code = 302, message = "Project with name already exists"),
-            @ApiResponse(code = 404, message = "Project not found"),
-            @ApiResponse(code = 406, message = "JWT token is wrong")
+            @ApiResponse(code = 404, message = "Project not found")
     })
     Response updateProject(@FormParam("id") @ApiParam(required = true) long id,
                            @FormParam("name") @ApiParam String name,
@@ -78,8 +76,7 @@ public interface ProjectService {
             produces = "application/json")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Project deleted"),
-            @ApiResponse(code = 404, message = "Project with id not exists"),
-            @ApiResponse(code = 406, message = "JWT token is wrong")
+            @ApiResponse(code = 404, message = "Project with id not exists")
     })
     Response deleteProject(@QueryParam("id") @ApiParam(required = true) long id);
 
@@ -93,8 +90,7 @@ public interface ProjectService {
             produces = "application/json")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Project found", response = Project.class),
-            @ApiResponse(code = 404, message = "Project with id not exists"),
-            @ApiResponse(code = 406, message = "JWT token is wrong")
+            @ApiResponse(code = 404, message = "Project with id not exists")
     })
     Response findProjectById(@QueryParam("id") @ApiParam(required = true) long id);
 }

@@ -31,7 +31,6 @@ public interface UserService {
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/create")
-    @PermitAll
     @ApiOperation(
             value = "Create user",
             notes = "Creates a new user based on form data",
@@ -62,8 +61,7 @@ public interface UserService {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "User updated", response = User.class),
             @ApiResponse(code = 204, message = ""),
-            @ApiResponse(code = 404, message = "User with id not exists"),
-            @ApiResponse(code = 406, message = "JWT token is wrong")
+            @ApiResponse(code = 404, message = "User with id not exists")
     })
     Response updateUser(@FormParam("id") @ApiParam(required = true) long id,
                         @FormParam("firstName") @ApiParam(required = true) String firstName,
@@ -83,7 +81,6 @@ public interface UserService {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "User avatar updated", response = User.class),
             @ApiResponse(code = 404, message = "User with id not exists"),
-            @ApiResponse(code = 406, message = "JWT token is wrong"),
             @ApiResponse(code = 500, message = "Avatar is empty")
     })
     Response updateAvatar(@QueryParam("id") @ApiParam(required = true) long id, byte[] avatar);
@@ -101,7 +98,6 @@ public interface UserService {
             @ApiResponse(code = 200, message = "User with updated login", response = User.class),
             @ApiResponse(code = 302, message = "User with login already exists"),
             @ApiResponse(code = 404, message = "User with id not exists"),
-            @ApiResponse(code = 406, message = "JWT token is wrong"),
             @ApiResponse(code = 501, message = "User login is empty")
     })
     Response updateLogin(@FormParam("login") @ApiParam(required = true) String login,
@@ -120,7 +116,6 @@ public interface UserService {
             @ApiResponse(code = 200, message = "User with updated password", response = User.class),
             @ApiResponse(code = 401, message = "User password is wrong"),
             @ApiResponse(code = 404, message = "User with id not exists"),
-            @ApiResponse(code = 406, message = "JWT token is wrong"),
             @ApiResponse(code = 503, message = "Password hash not created")
     })
     Response updatePassword(@FormParam("oldPassword") @ApiParam(required = true) String oldPassword,
@@ -137,7 +132,6 @@ public interface UserService {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "User marked as deleted", response = User.class),
             @ApiResponse(code = 404, message = "User with id not exists"),
-            @ApiResponse(code = 406, message = "JWT token is wrong"),
             @ApiResponse(code = 501, message = "User is project owner")
     })
     Response deleteUser(@QueryParam("id") @ApiParam(required = true) long id);
@@ -170,8 +164,7 @@ public interface UserService {
             produces = "application/json")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "User logged out"),
-            @ApiResponse(code = 404, message = "User with id not exists"),
-            @ApiResponse(code = 406, message = "JWT token is wrong"),
+            @ApiResponse(code = 404, message = "User with id not exists")
     })
     Response logoutUser(@QueryParam("id") @ApiParam(required = true) long id);
 
@@ -184,8 +177,7 @@ public interface UserService {
             produces = "application/json")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "User found"),
-            @ApiResponse(code = 404, message = "User not found"),
-            @ApiResponse(code = 406, message = "JWT token is wrong"),
+            @ApiResponse(code = 404, message = "User not found")
     })
     Response findUserByLogin(@QueryParam("login") @ApiParam(required = true) String login);
 
@@ -197,8 +189,7 @@ public interface UserService {
             produces = "application/json")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Password reset"),
-            @ApiResponse(code = 404, message = "User not found"),
-            @ApiResponse(code = 406, message = "JWT token is wrong"),
+            @ApiResponse(code = 404, message = "User not found")
     })
     Response resetPassword(@QueryParam("id") @ApiParam(required = true) long id);
 

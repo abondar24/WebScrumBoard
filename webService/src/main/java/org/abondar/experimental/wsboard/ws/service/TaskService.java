@@ -38,8 +38,7 @@ public interface TaskService {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Task created", response = Task.class),
             @ApiResponse(code = 404, message = "Contributor not found"),
-            @ApiResponse(code = 206, message = "Start date not parsed"),
-            @ApiResponse(code = 406, message = "JWT token is wrong")
+            @ApiResponse(code = 206, message = "Start date not parsed")
     })
     Response createTask(@FormParam("ctrId") @ApiParam(required = true) long contributorId,
                         @FormParam("startDate") @ApiParam(required = true) String startDate,
@@ -58,8 +57,7 @@ public interface TaskService {
             produces = "application/json")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Task updated", response = Task.class),
-            @ApiResponse(code = 404, message = "Task or contributor not found"),
-            @ApiResponse(code = 406, message = "JWT token is wrong")
+            @ApiResponse(code = 404, message = "Task or contributor not found")
     })
     Response updateTask(@FormParam("id") @ApiParam(required = true) long taskId,
                         @FormParam("ctrId") @ApiParam Long contributorId,
@@ -80,8 +78,7 @@ public interface TaskService {
             produces = "application/json")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Task updated", response = Task.class),
-            @ApiResponse(code = 404, message = "Task or sprint not found"),
-            @ApiResponse(code = 406, message = "JWT token is wrong")
+            @ApiResponse(code = 404, message = "Task or sprint not found")
     })
     Response updateTaskSprint(@FormParam("id") @ApiParam(required = true) long taskId,
                               @FormParam("sprintId") @ApiParam(required = true) long sprintId);
@@ -103,7 +100,6 @@ public interface TaskService {
             @ApiResponse(code = 302, message = "Task is already completed"),
             @ApiResponse(code = 400, message = "Task state unknown"),
             @ApiResponse(code = 404, message = "Task not found"),
-            @ApiResponse(code = 406, message = "JWT token is wrong"),
             @ApiResponse(code = 409, message = "Task is returned to a wrong state after pause"),
             @ApiResponse(code = 501, message = "Task can't be changed to the state")
     })
@@ -119,8 +115,7 @@ public interface TaskService {
             produces = "application/json")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Task deleted"),
-            @ApiResponse(code = 404, message = "Task not found"),
-            @ApiResponse(code = 406, message = "JWT token is wrong")
+            @ApiResponse(code = 404, message = "Task not found")
     })
     Response deleteTask(@QueryParam("id") @ApiParam(required = true) long id);
 
@@ -133,8 +128,7 @@ public interface TaskService {
             produces = "application/json")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Task found", response = Task.class),
-            @ApiResponse(code = 404, message = "Task  not found"),
-            @ApiResponse(code = 406, message = "JWT token is wrong")
+            @ApiResponse(code = 404, message = "Task  not found")
     })
     Response getTaskById(@QueryParam("id") @ApiParam(required = true) long taskId);
 
@@ -148,8 +142,7 @@ public interface TaskService {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Tasks found", response = Task.class),
             @ApiResponse(code = 204, message = "No tasks not found"),
-            @ApiResponse(code = 404, message = "Project not found"),
-            @ApiResponse(code = 406, message = "JWT token is wrong")
+            @ApiResponse(code = 404, message = "Project not found")
     })
     Response getTasksForProject(@QueryParam("prId") @ApiParam(required = true) long projectId,
                                 @QueryParam("offset") @ApiParam(required = true) int offset,
@@ -165,8 +158,7 @@ public interface TaskService {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Tasks found", response = Task.class),
             @ApiResponse(code = 204, message = "No tasks not found"),
-            @ApiResponse(code = 404, message = "Contributor not found"),
-            @ApiResponse(code = 406, message = "JWT token is wrong")
+            @ApiResponse(code = 404, message = "Contributor not found")
     })
     Response getTasksForContributor(@QueryParam("ctrId") @ApiParam(required = true) long ctrId,
                                     @QueryParam("offset") @ApiParam(required = true) int offset,
@@ -182,8 +174,7 @@ public interface TaskService {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Tasks found", response = Task.class),
             @ApiResponse(code = 204, message = "No tasks not found"),
-            @ApiResponse(code = 404, message = "Contributor not found"),
-            @ApiResponse(code = 406, message = "JWT token is wrong")
+            @ApiResponse(code = 404, message = "Contributor not found")
     })
     Response getTasksForUser(@QueryParam("usrId") @ApiParam(required = true) long usrId,
                              @QueryParam("offset") @ApiParam(required = true) int offset,
@@ -199,8 +190,7 @@ public interface TaskService {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Tasks found", response = Task.class),
             @ApiResponse(code = 204, message = "No tasks not found"),
-            @ApiResponse(code = 404, message = "Contributor not found"),
-            @ApiResponse(code = 406, message = "JWT token is wrong")
+            @ApiResponse(code = 404, message = "Contributor not found")
     })
     Response getTasksForSprint(@QueryParam("spId") @ApiParam(required = true) long sprintId,
                                @QueryParam("offset") @ApiParam(required = true) int offset,

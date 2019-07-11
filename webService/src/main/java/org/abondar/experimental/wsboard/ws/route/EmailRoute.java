@@ -31,7 +31,6 @@ public class EmailRoute extends RouteBuilder {
                 .choice()
                 .when(header("emailType").isEqualTo("createUser"))
                 .to("velocity:/velocity/createUser.html")
-                .log("${body}")
                 .endChoice()
                 .when(header("emailType").isEqualTo("updateLogin"))
                 .to("velocity:/velocity/updateLogin.html")

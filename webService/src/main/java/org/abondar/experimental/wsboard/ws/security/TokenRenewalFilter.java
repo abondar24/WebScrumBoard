@@ -1,6 +1,7 @@
 package org.abondar.experimental.wsboard.ws.security;
 
 
+import org.abondar.experimental.wsboard.dao.data.LogMessageUtil;
 import org.abondar.experimental.wsboard.ws.service.AuthService;
 import org.apache.cxf.common.util.Base64Exception;
 import org.apache.cxf.jaxrs.utils.JAXRSUtils;
@@ -14,7 +15,6 @@ import org.slf4j.LoggerFactory;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.container.ContainerRequestContext;
-import java.io.IOException;
 
 /**
  * Filter for token renewal after expiration
@@ -29,13 +29,13 @@ public class TokenRenewalFilter extends JwtAuthenticationFilter {
 
 
     @Override
-    public void filter(ContainerRequestContext requestContext) throws IOException {
+    public void filter(ContainerRequestContext requestContext) {
         String encodedJwtToken;
         try {
             encodedJwtToken = getEncodedJwtToken(requestContext);
         } catch (JoseException ex) {
             logger.error(ex.getMessage());
-            return;
+            throw new JoseException(LogMessageUtil.JWT_TOKEN_NOT_SET);
         }
 
         JwtToken token = super.getJwtToken(encodedJwtToken);

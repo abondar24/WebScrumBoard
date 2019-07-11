@@ -39,8 +39,7 @@ public interface SprintService {
             @ApiResponse(code = 200, message = "Sprint created", response = Sprint.class),
             @ApiResponse(code = 205, message = "Sprint end date is wrong"),
             @ApiResponse(code = 206, message = "Form data is not complete or wrong"),
-            @ApiResponse(code = 302, message = "Sprint with name already exists"),
-            @ApiResponse(code = 406, message = "JWT token is wrong")
+            @ApiResponse(code = 302, message = "Sprint with name already exists")
     })
     Response createSprint(@FormParam("name") @ApiParam(required = true) String name,
                           @FormParam("startDate") @ApiParam(required = true) String startDate,
@@ -60,8 +59,7 @@ public interface SprintService {
             @ApiResponse(code = 204, message = "Form data is not complete or wrong"),
             @ApiResponse(code = 205, message = "Sprint end date is wrong"),
             @ApiResponse(code = 302, message = "Sprint with name already exists"),
-            @ApiResponse(code = 404, message = "Sprint with id not exists"),
-            @ApiResponse(code = 406, message = "JWT token is wrong")
+            @ApiResponse(code = 404, message = "Sprint with id not exists")
     })
     Response updateSprint(@FormParam("id") @ApiParam(required = true) long sprintId,
                           @FormParam("name") @ApiParam String name,
@@ -77,8 +75,7 @@ public interface SprintService {
             produces = "application/json")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Sprint with selected id", response = Sprint.class),
-            @ApiResponse(code = 404, message = "Sprint with id not exists"),
-            @ApiResponse(code = 406, message = "JWT token is wrong")
+            @ApiResponse(code = 404, message = "Sprint with id not exists")
     })
     Response getSprintById(@QueryParam("id") @ApiParam(required = true) long sprintId);
 
@@ -91,8 +88,7 @@ public interface SprintService {
             produces = "application/json")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "List of existing sprints", response = Sprint.class),
-            @ApiResponse(code = 404, message = "No sprints are found"),
-            @ApiResponse(code = 406, message = "JWT token is wrong")
+            @ApiResponse(code = 404, message = "No sprints are found")
     })
     Response getSprints(@QueryParam("offset") @ApiParam(required = true) int offset,
                         @QueryParam("limit") @ApiParam(required = true) int limit);
@@ -105,8 +101,7 @@ public interface SprintService {
             produces = "application/json")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Sprint is deleted"),
-            @ApiResponse(code = 404, message = "Sprint with id not exists"),
-            @ApiResponse(code = 406, message = "JWT token is wrong")
+            @ApiResponse(code = 404, message = "Sprint with id not exists")
     })
     Response deleteSprint(@QueryParam("id") @ApiParam(required = true) long sprintId);
 
