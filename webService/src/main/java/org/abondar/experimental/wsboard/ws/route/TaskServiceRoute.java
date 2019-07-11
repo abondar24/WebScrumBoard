@@ -35,7 +35,8 @@ public class TaskServiceRoute extends RouteBuilder {
 
                     try {
                         Date stDate = convertDate((String) formData.get(1));
-                        var task = taskDao.createTask((long) formData.get(0), stDate, (boolean) formData.get(2));
+                        var task = taskDao.createTask((long) formData.get(0), stDate, (boolean) formData.get(2),
+                                (String) formData.get(3), (String) formData.get(4));
                         return Response.ok(task).build();
 
                     } catch (DataCreationException ex) {
@@ -54,7 +55,8 @@ public class TaskServiceRoute extends RouteBuilder {
 
                     try {
                         var task = taskDao.updateTask((long) formData.get(0), (Long) formData.get(1),
-                                (boolean) formData.get(2), (Integer) formData.get(3));
+                                (boolean) formData.get(2), (Integer) formData.get(3),
+                                (String) formData.get(4), (String) formData.get(5));
                         return Response.ok(task).build();
                     } catch (DataExistenceException ex) {
                         return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();

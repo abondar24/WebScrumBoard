@@ -403,7 +403,7 @@ public class MapperTest {
 
         var res = mapper.getTaskById(task.getId());
 
-        assertEquals(storyPoints, task.getStoryPoints());
+        assertEquals(storyPoints, res.getStoryPoints());
 
         cleanData();
     }
@@ -505,7 +505,7 @@ public class MapperTest {
     }
 
     private Task createTask(long contributorId) {
-        var task = new Task(contributorId, new Date(), true);
+        var task = new Task(contributorId, new Date(), true, "name", "descr");
         mapper.insertTask(task);
         return task;
     }

@@ -37,7 +37,8 @@ public class TaskServiceTestImpl implements TaskService {
     private Contributor testContributor;
 
     @Override
-    public Response createTask(long contributorId, String startDate, boolean devOpsEnabled) {
+    public Response createTask(long contributorId, String startDate, boolean devOpsEnabled,
+                               String taskName, String taskDescription) {
         try {
             Date stDate = convertDate(startDate);
 
@@ -45,7 +46,7 @@ public class TaskServiceTestImpl implements TaskService {
                 return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.CONTRIBUTOR_NOT_EXISTS).build();
             }
 
-            testTask = new Task(contributorId, stDate, devOpsEnabled);
+            testTask = new Task(contributorId, stDate, devOpsEnabled, taskName, taskDescription);
             testTask.setTaskState(TaskState.CREATED);
 
             return Response.ok(testTask).build();
@@ -56,7 +57,8 @@ public class TaskServiceTestImpl implements TaskService {
     }
 
     @Override
-    public Response updateTask(long taskId, Long contributorId, boolean devOpsEnabled, Integer storyPoints) {
+    public Response updateTask(long taskId, Long contributorId, boolean devOpsEnabled, Integer storyPoints,
+                               String taskName, String taskDescription) {
 
         if (testTask.getId() != taskId) {
             return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.TASK_NOT_EXISTS).build();
@@ -69,6 +71,8 @@ public class TaskServiceTestImpl implements TaskService {
         testTask.setContributorId(contributorId);
         testTask.setDevOpsEnabled(devOpsEnabled);
         testTask.setStoryPoints(storyPoints);
+        testTask.setTaskName(taskName);
+        testTask.setTaskDescription(taskDescription);
 
         return Response.ok(testTask).build();
     }

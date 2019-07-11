@@ -29,7 +29,6 @@ public class SprintServiceRouteTest {
     private long someId = 7L;
     private String someName = "mame";
     private String date = "01/01/1111";
-    private int page = 3;
 
     @Test
     public void createSprintRouteTest() throws Exception {
@@ -69,7 +68,7 @@ public class SprintServiceRouteTest {
 
     @Test
     public void getSprintsRouteTest() throws Exception {
-        Object[] values = new Object[]{page, page};
+        Object[] values = new Object[]{0, 3};
         MessageContentsList testList = new MessageContentsList(values);
         producerTemplate.sendBodyAndHeaders("direct:getSprints", testList,
                 Map.of());

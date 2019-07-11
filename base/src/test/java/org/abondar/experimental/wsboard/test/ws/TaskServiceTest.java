@@ -71,6 +71,9 @@ public class TaskServiceTest {
         form.param("ctrId", String.valueOf(ctrId));
         form.param("startDate", "31/12/2119");
         form.param("devOps", "false");
+        form.param("taskName", "name");
+        form.param("taskDescription", "descr");
+
 
         var resp = client.post(form);
         assertEquals(200, resp.getStatus());
@@ -92,6 +95,8 @@ public class TaskServiceTest {
         form.param("ctrId", String.valueOf(ctrId));
         form.param("startDate", "bla");
         form.param("devOps", "false");
+        form.param("taskName", "name");
+        form.param("taskDescription", "descr");
 
         var resp = client.post(form);
         assertEquals(206, resp.getStatus());
@@ -110,6 +115,8 @@ public class TaskServiceTest {
         form.param("ctrId", "7");
         form.param("startDate", "31/12/2119");
         form.param("devOps", "false");
+        form.param("taskName", "name");
+        form.param("taskDescription", "descr");
 
         var resp = client.post(form);
         assertEquals(404, resp.getStatus());
@@ -134,6 +141,8 @@ public class TaskServiceTest {
         form.param("startDate", "31/12/2119");
         form.param("devOps", "false");
         form.param("storyPoints", "8");
+        form.param("taskName", "newName");
+        form.param("taskDescription", "newDescr");
 
         var resp = client.post(form);
         assertEquals(200, resp.getStatus());
@@ -158,6 +167,8 @@ public class TaskServiceTest {
         form.param("startDate", "31/12/2119");
         form.param("devOps", "false");
         form.param("storyPoints", "8");
+        form.param("taskName", "newName");
+        form.param("taskDescription", "newDescr");
 
         var resp = client.post(form);
         assertEquals(404, resp.getStatus());
@@ -182,6 +193,8 @@ public class TaskServiceTest {
         form.param("startDate", "31/12/2119");
         form.param("devOps", "false");
         form.param("storyPoints", "8");
+        form.param("taskName", "newName");
+        form.param("taskDescription", "newDescr");
 
         var resp = client.post(form);
         assertEquals(404, resp.getStatus());

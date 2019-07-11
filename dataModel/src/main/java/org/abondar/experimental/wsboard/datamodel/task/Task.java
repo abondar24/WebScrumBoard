@@ -43,13 +43,20 @@ public class Task implements Serializable {
     @ApiModelProperty(value = "Does't task have dev ops state or not?")
     private boolean devOpsEnabled;
 
+    @ApiModelProperty(value = "Task name")
+    private String taskName;
+
+    @ApiModelProperty(value = "Task description")
+    private String taskDescription;
 
     public Task(){}
 
-    public Task(long contributorId, Date startDate, boolean devOpsEnabled) {
+    public Task(long contributorId, Date startDate, boolean devOpsEnabled, String taskName, String taskDescription) {
         this.contributorId = contributorId;
         this.startDate = startDate;
         this.devOpsEnabled = devOpsEnabled;
+        this.taskName = taskName;
+        this.taskDescription = taskDescription;
     }
 
     public long getId() {
@@ -125,6 +132,22 @@ public class Task implements Serializable {
         this.devOpsEnabled = devOpsEnabled;
     }
 
+    public String getTaskName() {
+        return taskName;
+    }
+
+    public void setTaskName(String taskName) {
+        this.taskName = taskName;
+    }
+
+    public String getTaskDescription() {
+        return taskDescription;
+    }
+
+    public void setTaskDescription(String taskDescription) {
+        this.taskDescription = taskDescription;
+    }
+
     @Override
     public String toString() {
         return "Task{" +
@@ -136,6 +159,9 @@ public class Task implements Serializable {
                 ", startDate=" + startDate +
                 ", endDate=" + endDate +
                 ", sprintId=" + sprintId +
+                ", devOpsEnabled=" + devOpsEnabled +
+                ", taskName='" + taskName + '\'' +
+                ", taskDescription='" + taskDescription + '\'' +
                 '}';
     }
 }

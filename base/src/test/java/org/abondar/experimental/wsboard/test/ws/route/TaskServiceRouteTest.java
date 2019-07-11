@@ -29,10 +29,11 @@ public class TaskServiceRouteTest {
     private long someId = 7L;
     private boolean someState = true;
     private int page = 3;
+    private String someName = "name";
 
     @Test
     public void createTaskRouteTest() throws Exception {
-        Object[] values = new Object[]{someId, "01/01/1111", someState};
+        Object[] values = new Object[]{someId, "01/01/1111", someState, someName, someName};
         MessageContentsList testList = new MessageContentsList(values);
         producerTemplate.sendBodyAndHeaders("direct:createTask", testList,
                 Map.of());
@@ -44,7 +45,7 @@ public class TaskServiceRouteTest {
 
     @Test
     public void updateTaskRouteTest() throws Exception {
-        Object[] values = new Object[]{someId, someId, someState, 5};
+        Object[] values = new Object[]{someId, someId, someState, 5, someName, someName};
         MessageContentsList testList = new MessageContentsList(values);
         producerTemplate.sendBodyAndHeaders("direct:updateTask", testList,
                 Map.of());

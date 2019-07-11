@@ -43,7 +43,9 @@ public interface TaskService {
     })
     Response createTask(@FormParam("ctrId") @ApiParam(required = true) long contributorId,
                         @FormParam("startDate") @ApiParam(required = true) String startDate,
-                        @FormParam("devOps") @ApiParam(required = true) boolean devOpsEnabled);
+                        @FormParam("devOps") @ApiParam(required = true) boolean devOpsEnabled,
+                        @FormParam("taskName") @ApiParam(required = true) String taskName,
+                        @FormParam("taskDescription") @ApiParam(required = true) String taskDescription);
 
     @POST
     @Path("/update")
@@ -62,7 +64,9 @@ public interface TaskService {
     Response updateTask(@FormParam("id") @ApiParam(required = true) long taskId,
                         @FormParam("ctrId") @ApiParam Long contributorId,
                         @FormParam("devOps") @ApiParam boolean devOpsEnabled,
-                        @FormParam("storyPoints") @ApiParam Integer storyPoints);
+                        @FormParam("storyPoints") @ApiParam Integer storyPoints,
+                        @FormParam("taskName") @ApiParam(required = true) String taskName,
+                        @FormParam("taskDescription") @ApiParam(required = true) String taskDescription);
 
 
     @POST

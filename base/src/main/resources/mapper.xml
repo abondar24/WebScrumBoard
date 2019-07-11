@@ -75,6 +75,9 @@
         <result column="story_points" property="storyPoints"/>
         <result column="sprint_id" property="sprintId"/>
         <result column="dev_ops_enabled" property="devOpsEnabled"/>
+        <result column="task_name" property="taskName"/>
+        <result column="task_description" property="taskDescription"/>
+
     </resultMap>
 
     <resultMap id="sprintMap" type="Sprint">
@@ -124,10 +127,12 @@
 
 
     <insert id="insertTask" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
-        INSERT INTO task (contributor_id, start_date, dev_ops_enabled)
+        INSERT INTO task (contributor_id, start_date, dev_ops_enabled, task_name, task_description)
         VALUES (#{task.contributorId},
                 #{task.startDate},
-                #{task.devOpsEnabled})
+                #{task.devOpsEnabled},
+                #{task.taskName},
+                #{task.taskDescription})
         ON CONFLICT (id) DO NOTHING;
     </insert>
 
@@ -189,12 +194,14 @@
 
     <update id="updateTask" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
         UPDATE task
-        SET contributor_id  = #{task.contributorId},
-            dev_ops_enabled = #{task.devOpsEnabled},
-            story_points    = #{task.storyPoints},
-            end_date        = #{task.endDate},
-            task_state      = #{task.taskState},
-            prev_state      = #{task.prevState}
+        SET contributor_id   = #{task.contributorId},
+            dev_ops_enabled  = #{task.devOpsEnabled},
+            story_points     = #{task.storyPoints},
+            end_date         = #{task.endDate},
+            task_state       = #{task.taskState},
+            prev_state       = #{task.prevState},
+            task_name        = #{task.taskName},
+            task_description = #{task.taskDescription}
         WHERE id = #{task.id}
     </update>
 

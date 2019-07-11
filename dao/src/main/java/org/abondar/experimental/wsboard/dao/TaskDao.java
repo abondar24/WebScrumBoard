@@ -41,14 +41,17 @@ public class TaskDao extends BaseDao {
      * @param contributorId - contributor id
      * @param startDate     - start date of task
      * @param devOpsEnabled - dev ops state to be ignored or not
+     * @param taskName - task name
+     * @param taskDescription - task description
      * @return task POJO
      * @throws DataExistenceException - contributor not exists or is not active
      */
-    public Task createTask(long contributorId, Date startDate, boolean devOpsEnabled)
+    public Task createTask(long contributorId, Date startDate, boolean devOpsEnabled,
+                           String taskName, String taskDescription)
             throws DataExistenceException {
         checkContributor(contributorId);
 
-        var task = new Task(contributorId, startDate, devOpsEnabled);
+        var task = new Task(contributorId, startDate, devOpsEnabled, taskName, taskDescription);
 
 
         mapper.insertTask(task);
@@ -66,10 +69,13 @@ public class TaskDao extends BaseDao {
      * @param contributorId - contributor id
      * @param devOpsEnabled - dev ops state to be ignored or not
      * @param storyPoints   - task story points
+     * @param taskName - task name
+     * @param taskDescription - task description
      * @return task POJO
      * @throws DataExistenceException - task or contributor does not exist or contributor is not active
      */
-    public Task updateTask(long taskId, Long contributorId, Boolean devOpsEnabled, Integer storyPoints)
+    public Task updateTask(long taskId, Long contributorId, Boolean devOpsEnabled,
+                           Integer storyPoints, String taskName, String taskDescription)
             throws DataExistenceException {
 
         var task = getTaskById(taskId);
@@ -88,6 +94,15 @@ public class TaskDao extends BaseDao {
         if (storyPoints != null) {
             task.setStoryPoints(storyPoints);
         }
+
+        if (taskName != null && !taskName.isBlank()) {
+            task.setTaskName(taskName);
+        }
+
+        if (taskDescription != null && !taskDescription.isBlank()) {
+            task.setTaskDescription(taskDescription);
+        }
+
 
 
         mapper.updateTask(task);
