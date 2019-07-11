@@ -227,7 +227,7 @@ public class UserDao extends BaseDao {
         }
         usr.setDeleted();
 
-        mapper.insertUser(usr);
+        mapper.updateUser(usr);
 
         var msg = String.format(LogMessageUtil.LOG_FORMAT + "%s", "User ", usr.getId(), " marked as deleted");
         logger.info(msg);
