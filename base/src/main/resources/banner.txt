@@ -1,0 +1,6 @@
+Web Scrum Board
+==================
+Version 1.0
+==================
+Author: Alex Bondar<abondar1992@gmail.com>
+===================
