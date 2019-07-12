@@ -1,7 +1,7 @@
 package org.abondar.experimental.wsboard.ws.route;
 
 /**
- * Constant values used in routes
+ * Constant values commonly used in routes
  *
  * @author a.bondar
  */
