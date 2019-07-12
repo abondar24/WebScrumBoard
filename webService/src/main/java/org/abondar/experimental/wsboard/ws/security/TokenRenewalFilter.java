@@ -1,7 +1,6 @@
 package org.abondar.experimental.wsboard.ws.security;
 
 
-import org.abondar.experimental.wsboard.dao.data.LogMessageUtil;
 import org.abondar.experimental.wsboard.ws.service.AuthService;
 import org.apache.cxf.common.util.Base64Exception;
 import org.apache.cxf.jaxrs.utils.JAXRSUtils;
@@ -35,7 +34,8 @@ public class TokenRenewalFilter extends JwtAuthenticationFilter {
             encodedJwtToken = getEncodedJwtToken(requestContext);
         } catch (JoseException ex) {
             logger.error(ex.getMessage());
-            throw new JoseException(LogMessageUtil.JWT_TOKEN_NOT_SET);
+            return;
+
         }
 
         JwtToken token = super.getJwtToken(encodedJwtToken);

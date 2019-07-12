@@ -100,7 +100,6 @@ public class CxfConfig implements WebMvcConfigurer {
         var swagger2Feature = new Swagger2Feature();
         swagger2Feature.setPrettyPrint(true);
         swagger2Feature.setHost("localhost:8024");
-        swagger2Feature.setBasePath("/cxf/wsboard/api");
         swagger2Feature.setSupportSwaggerUi(true);
         swagger2Feature.setRunAsFilter(true);
 
