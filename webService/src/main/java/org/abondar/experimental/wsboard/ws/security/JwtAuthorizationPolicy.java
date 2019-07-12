@@ -28,7 +28,7 @@ public class JwtAuthorizationPolicy implements AuthorizationPolicy {
 
     @Override
     public void beforeWrap(RouteContext rc, ProcessorDefinition<?> pd) {
-        throw new UnsupportedOperationException();
+       // throw new UnsupportedOperationException();
     }
 
     @Override
