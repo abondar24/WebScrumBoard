@@ -13,7 +13,7 @@ import java.io.Serializable;
 @ApiModel(value = "User", description = "Application user")
 public class User implements Serializable {
 
-    private static final long SerialVersionUID = -456L;
+    private static final long serialVersionUID = -456L;
 
     private static final String DELETED_DATA = "deleted";
 

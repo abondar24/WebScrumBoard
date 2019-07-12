@@ -22,12 +22,13 @@ import java.util.stream.Collectors;
 
 public class JwtAuthorizationPolicy implements AuthorizationPolicy {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(JwtAuthorizationPolicy.class);
+    private static final Logger logger = LoggerFactory.getLogger(JwtAuthorizationPolicy.class);
     private List<String> allowedRoles = new ArrayList<>();
     private boolean allowAnyRole = false;
 
     @Override
     public void beforeWrap(RouteContext rc, ProcessorDefinition<?> pd) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -35,35 +36,34 @@ public class JwtAuthorizationPolicy implements AuthorizationPolicy {
         return new AuthorizeDelegateProcess(processor);
     }
 
-    protected void beforeProcess(Exchange exchange) throws Exception {
+    private void beforeProcess(Exchange exchange) throws CamelAuthorizationException{
 
         SecurityContext securityContext = getSecurityContext(exchange);
         if (null == securityContext) {
-            CamelAuthorizationException authorizationException = new CamelAuthorizationException("Cannot find the SecurityContext instance.", exchange);
-            throw authorizationException;
+            throw new CamelAuthorizationException("Cannot find the SecurityContext instance.", exchange);
         }
         if (!(LoginSecurityContext.class.isAssignableFrom(securityContext.getClass()))) {
-            LOGGER.info("the security context an instance of {}", securityContext.getClass());
+            logger.info("the security context an instance of {}", securityContext.getClass());
             throw new CamelAuthorizationException("User was not recognized by security filters!", exchange);
         }
         Collection<String> userRoles = ((LoginSecurityContext) securityContext).getUserRoles().stream().map(Principal::getName).collect(Collectors.toSet());
         boolean isRolesAllowed = false;
-        LOGGER.debug("User Prinicipal - {}", getUserPrincipal(exchange));
-        LOGGER.debug("the security context contains {}", userRoles);
+        logger.debug("User Prinicipal - {}", getUserPrincipal(exchange));
+        logger.debug("the security context contains {}", userRoles);
         if (allowAnyRole && isAuthenticated(exchange)) {
             if (userRoles.isEmpty()) {
-                LOGGER.error("User {} not autheticated!", getUserPrincipal(exchange));
+                logger.error("User {} not autheticated!", getUserPrincipal(exchange));
                 throw new CamelAuthorizationException(String.format("User %s is not authenticated!", getUserPrincipal(exchange)), exchange);
             }
             return;
         }
-        LOGGER.debug("Allowed roles {}", allowedRoles);
+        logger.debug("Allowed roles {}", allowedRoles);
         for (String role : allowedRoles) {
             if (userRoles.contains(role)) {
                 isRolesAllowed = true;
             }
         }
-        LOGGER.debug("User {} authorized - {}", getUserPrincipal(exchange), isRolesAllowed);
+        logger.debug("User {} authorized - {}", getUserPrincipal(exchange), isRolesAllowed);
         if (!isRolesAllowed) {
             throw new CamelAuthorizationException(allowedRoles.stream().collect(Collectors.joining(",", String.format("User %s not in roles: ", getUserPrincipal(exchange)), "!")), exchange);
         }
@@ -109,11 +109,10 @@ public class JwtAuthorizationPolicy implements AuthorizationPolicy {
 
     protected SecurityContext getSecurityContext(Exchange exchange) throws CamelAuthorizationException {
         try {
-            SecurityContext sc = ((org.apache.cxf.message.Message) exchange.getIn().getHeader("CamelCxfMessage")).get(SecurityContext.class);
-            return sc;
+            return ((org.apache.cxf.message.Message) exchange.getIn()
+                    .getHeader("CamelCxfMessage")).get(SecurityContext.class);
         } catch (Exception ex) {
-            CamelAuthorizationException authorizationException = new CamelAuthorizationException("Cannot find the SecurityContext instance.", exchange, ex);
-            throw authorizationException;
+            throw new CamelAuthorizationException("Cannot find the SecurityContext instance.", exchange, ex);
         }
     }
 

@@ -14,7 +14,7 @@ import java.util.Date;
 @ApiModel(value = "Project", description = "Scrum project")
 public class Project implements Serializable {
 
-    private static final long SerialVersionUID = -34556L;
+    private static final long serialVersionUID = -34556L;
 
     @ApiModelProperty(value = "Project id")
     private long id;

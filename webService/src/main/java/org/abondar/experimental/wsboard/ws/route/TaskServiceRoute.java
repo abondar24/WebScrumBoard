@@ -4,6 +4,7 @@ import org.abondar.experimental.wsboard.dao.TaskDao;
 import org.abondar.experimental.wsboard.dao.data.LogMessageUtil;
 import org.abondar.experimental.wsboard.dao.exception.DataCreationException;
 import org.abondar.experimental.wsboard.dao.exception.DataExistenceException;
+import org.apache.camel.LoggingLevel;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.cxf.message.MessageContentsList;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,8 @@ import javax.ws.rs.core.Response;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import static org.abondar.experimental.wsboard.ws.route.RouteConstantUtil.LOG_HEADERS;
 
 /**
  * Route for task service events
@@ -28,7 +31,7 @@ public class TaskServiceRoute extends RouteBuilder {
     @Override
     public void configure() throws Exception {
         from("direct:createTask").routeId("createTask")
-                .log("${headers}")
+                .log(LoggingLevel.DEBUG,LOG_HEADERS)
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList formData = (MessageContentsList) bdy;
@@ -48,7 +51,7 @@ public class TaskServiceRoute extends RouteBuilder {
                 });
 
         from("direct:updateTask").routeId("updateTask")
-                .log("${headers}")
+                .log(LoggingLevel.DEBUG,LOG_HEADERS)
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList formData = (MessageContentsList) bdy;
@@ -67,7 +70,7 @@ public class TaskServiceRoute extends RouteBuilder {
 
 
         from("direct:updateTaskSprint").routeId("updateTaskSprint")
-                .log("${headers}")
+                .log(LoggingLevel.DEBUG,LOG_HEADERS)
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList formData = (MessageContentsList) bdy;
@@ -82,7 +85,7 @@ public class TaskServiceRoute extends RouteBuilder {
 
 
         from("direct:updateTaskState").routeId("updateTaskState")
-                .log("${headers}")
+                .log(LoggingLevel.DEBUG,LOG_HEADERS)
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList formData = (MessageContentsList) bdy;
@@ -110,15 +113,14 @@ public class TaskServiceRoute extends RouteBuilder {
                                 return Response.status(Response.Status.NOT_IMPLEMENTED).entity(ex.getLocalizedMessage()).build();
                             case LogMessageUtil.TASK_CONTRIBUTOR_UPDATE:
                                 return Response.status(Response.Status.ACCEPTED).entity(ex.getLocalizedMessage()).build();
-
+                            default:
+                                return Response.status(Response.Status.FORBIDDEN).build();
                         }
                     }
-
-                    return null;
                 });
 
         from("direct:deleteTask").routeId("deleteTask")
-                .log("${headers}")
+                .log(LoggingLevel.DEBUG,LOG_HEADERS)
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList queryData = (MessageContentsList) bdy;
@@ -132,7 +134,7 @@ public class TaskServiceRoute extends RouteBuilder {
 
 
         from("direct:getTaskById").routeId("getTaskById")
-                .log("${headers}")
+                .log(LoggingLevel.DEBUG,LOG_HEADERS)
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList queryData = (MessageContentsList) bdy;
@@ -147,7 +149,7 @@ public class TaskServiceRoute extends RouteBuilder {
                 });
 
         from("direct:getTasksForProject").routeId("getTasksForProject")
-                .log("${headers}")
+                .log(LoggingLevel.DEBUG,LOG_HEADERS)
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList queryData = (MessageContentsList) bdy;
@@ -167,7 +169,7 @@ public class TaskServiceRoute extends RouteBuilder {
                 });
 
         from("direct:getTasksForContributor").routeId("getTasksForContributor")
-                .log("${headers}")
+                .log(LoggingLevel.DEBUG,LOG_HEADERS)
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList queryData = (MessageContentsList) bdy;
@@ -187,7 +189,7 @@ public class TaskServiceRoute extends RouteBuilder {
                 });
 
         from("direct:getTasksForUser").routeId("getTasksForUser")
-                .log("${headers}")
+                .log(LoggingLevel.DEBUG,LOG_HEADERS)
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList queryData = (MessageContentsList) bdy;
@@ -207,7 +209,7 @@ public class TaskServiceRoute extends RouteBuilder {
                 });
 
         from("direct:getTasksForSprint").routeId("getTasksForSprint")
-                .log("${headers}")
+                .log(LoggingLevel.DEBUG,LOG_HEADERS)
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList queryData = (MessageContentsList) bdy;

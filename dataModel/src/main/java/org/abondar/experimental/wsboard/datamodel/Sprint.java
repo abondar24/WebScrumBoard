@@ -14,7 +14,7 @@ import java.util.Date;
 @ApiModel(value = "Sprint", description = "Project sprint")
 public class Sprint implements Serializable {
 
-    private static final long SerialVersionUID = -125433L;
+    private static final long serialVersionUID = -125433L;
 
     @ApiModelProperty(value = "Sprint id")
     private long id;

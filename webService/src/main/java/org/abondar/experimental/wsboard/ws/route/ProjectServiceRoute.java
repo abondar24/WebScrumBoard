@@ -4,6 +4,7 @@ import org.abondar.experimental.wsboard.dao.ProjectDao;
 import org.abondar.experimental.wsboard.dao.data.LogMessageUtil;
 import org.abondar.experimental.wsboard.dao.exception.DataCreationException;
 import org.abondar.experimental.wsboard.dao.exception.DataExistenceException;
+import org.apache.camel.LoggingLevel;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.cxf.message.MessageContentsList;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,8 @@ import javax.ws.rs.core.Response;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import static org.abondar.experimental.wsboard.ws.route.RouteConstantUtil.LOG_HEADERS;
 
 /**
  * Route for project service events
@@ -29,7 +32,7 @@ public class ProjectServiceRoute extends RouteBuilder {
     public void configure() throws Exception {
 
         from("direct:createProject").routeId("createProject")
-                .log("${headers}")
+                .log(LoggingLevel.DEBUG,LOG_HEADERS)
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList formData = (MessageContentsList) bdy;
@@ -48,7 +51,7 @@ public class ProjectServiceRoute extends RouteBuilder {
 
 
         from("direct:updateProject").routeId("updateProject")
-                .log("${headers}")
+                .log(LoggingLevel.DEBUG,LOG_HEADERS)
                 .transform()
                 .body((bdy, hdrs) -> {
 
@@ -87,7 +90,7 @@ public class ProjectServiceRoute extends RouteBuilder {
 
 
         from("direct:deleteProject").routeId("deleteProject")
-                .log("${headers}")
+                .log(LoggingLevel.DEBUG,LOG_HEADERS)
                 .transform()
                 .body((bdy, hdrs) -> {
 
@@ -103,7 +106,7 @@ public class ProjectServiceRoute extends RouteBuilder {
 
 
         from("direct:findProjectById").routeId("findProjectById")
-                .log("${headers}")
+                .log(LoggingLevel.DEBUG,LOG_HEADERS)
                 .log("${headers}")
                 .transform()
                 .body((bdy, hdrs) -> {

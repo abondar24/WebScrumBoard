@@ -7,12 +7,16 @@ import org.abondar.experimental.wsboard.datamodel.SecurityCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.Random;
 
 
 public class SecurityCodeDao extends BaseDao {
 
     private static Logger logger = LoggerFactory.getLogger(SecurityCodeDao.class);
+
+
 
     public SecurityCodeDao(DataMapper mapper) {
         super(mapper);
@@ -65,9 +69,16 @@ public class SecurityCodeDao extends BaseDao {
 
 
     private long generateCode() {
-        Random rand = new Random();
 
-        int num = rand.nextInt(9000000) + 1000000;
+        int num = 0;
+        try {
+            Random rand = SecureRandom.getInstanceStrong();
+            num = rand.nextInt(9000000) + 1000000;
+
+        } catch (NoSuchAlgorithmException ex){
+            logger.debug(ex.getMessage());
+        }
+
         return (long) num;
     }
 

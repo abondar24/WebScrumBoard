@@ -9,6 +9,7 @@ import org.abondar.experimental.wsboard.dao.exception.DataExistenceException;
 import org.abondar.experimental.wsboard.dao.exception.InvalidHashException;
 import org.abondar.experimental.wsboard.datamodel.user.User;
 import org.abondar.experimental.wsboard.ws.service.AuthService;
+import org.apache.camel.LoggingLevel;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.cxf.message.MessageContentsList;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,10 @@ import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
 import java.util.Date;
+
+import static org.abondar.experimental.wsboard.ws.route.RouteConstantUtil.EMAIL_TYPE_HEADER;
+import static org.abondar.experimental.wsboard.ws.route.RouteConstantUtil.LOG_HEADERS;
+import static org.abondar.experimental.wsboard.ws.route.RouteConstantUtil.SEND_EMAIL_ENDPOINT;
 
 /**
  * Route for user service events
@@ -41,7 +46,7 @@ public class UserServiceRoute extends RouteBuilder {
 
 
         from("direct:createUser").routeId("createUser")
-                .log("${headers}")
+                .log(LoggingLevel.DEBUG,LOG_HEADERS)
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList formData = (MessageContentsList) bdy;
@@ -51,7 +56,7 @@ public class UserServiceRoute extends RouteBuilder {
                                 (String) formData.get(2), (String) formData.get(3),
                                 (String) formData.get(4), (String) formData.get(5));
 
-                        hdrs.put("emailType", "createUser");
+                        hdrs.put(EMAIL_TYPE_HEADER, "createUser");
                         hdrs.put("code", codeDao.insertCode(user.getId()));
                         hdrs.put("To", user.getEmail());
                         return Response.ok(user).build();
@@ -65,11 +70,11 @@ public class UserServiceRoute extends RouteBuilder {
                     }
                 })
 
-                .wireTap("direct:sendEmail")
+                .wireTap(SEND_EMAIL_ENDPOINT)
                 .removeHeaders("*");
 
         from("direct:updateUser").routeId("updateUser")
-                .log("${headers}")
+                .log(LoggingLevel.DEBUG,LOG_HEADERS)
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList formData = (MessageContentsList) bdy;
@@ -89,14 +94,13 @@ public class UserServiceRoute extends RouteBuilder {
                 });
 
         from("direct:updateAvatar").routeId("updateAvatar")
-                .log("${headers}")
+                .log(LoggingLevel.DEBUG,LOG_HEADERS)
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList formData = (MessageContentsList) bdy;
 
                     try {
 
-                        //potentially buggy place
                         User user = dao.updateUser((long) formData.get(0), null, null,
                                 null, null, (byte[]) formData.get(1));
 
@@ -112,12 +116,13 @@ public class UserServiceRoute extends RouteBuilder {
 
 
         from("direct:updateLogin").routeId("updateLogin")
+                .log(LoggingLevel.DEBUG,LOG_HEADERS)
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList formData = (MessageContentsList) bdy;
                     try {
                         User user = dao.updateLogin((String) formData.get(0), (long) formData.get(1));
-                        hdrs.put("emailType", "updateLogin");
+                        hdrs.put(EMAIL_TYPE_HEADER, "updateLogin");
                         hdrs.put("To", user.getEmail());
 
                         return Response.ok(user).build();
@@ -134,11 +139,12 @@ public class UserServiceRoute extends RouteBuilder {
                     }
 
                 })
-                .wireTap("direct:sendEmail")
+                .wireTap(SEND_EMAIL_ENDPOINT)
                 .removeHeaders("*");
 
 
         from("direct:updatePassword").routeId("updatePassword")
+                .log(LoggingLevel.DEBUG,LOG_HEADERS)
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList formData = (MessageContentsList) bdy;
@@ -146,7 +152,7 @@ public class UserServiceRoute extends RouteBuilder {
                         User user = dao.updatePassword((String) formData.get(0), (String) formData.get(1),
                                 (long) formData.get(2));
 
-                        hdrs.put("emailType", "updatePassword");
+                        hdrs.put(EMAIL_TYPE_HEADER, "updatePassword");
                         hdrs.put("To", user.getEmail());
 
 
@@ -159,17 +165,18 @@ public class UserServiceRoute extends RouteBuilder {
                         return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
                     }
                 })
-                .wireTap("direct:sendEmail")
+                .wireTap(SEND_EMAIL_ENDPOINT)
                 .removeHeaders("*");
 
         from("direct:deleteUser").routeId("deleteUser")
+                .log(LoggingLevel.DEBUG,LOG_HEADERS)
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList queryData = (MessageContentsList) bdy;
 
                     try {
                         User user = dao.deleteUser((long) queryData.get(0));
-                        hdrs.put("emailType", "deleteUser");
+                        hdrs.put(EMAIL_TYPE_HEADER, "deleteUser");
                         hdrs.put("To", user.getEmail());
 
                         return Response.ok(user).build();
@@ -180,10 +187,11 @@ public class UserServiceRoute extends RouteBuilder {
                     }
 
                 })
-                .wireTap("direct:sendEmail")
+                .wireTap(SEND_EMAIL_ENDPOINT)
                 .removeHeaders("*");
 
         from("direct:loginUser").routeId("login")
+                .log(LoggingLevel.DEBUG,LOG_HEADERS)
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList formData = (MessageContentsList) bdy;
@@ -202,7 +210,7 @@ public class UserServiceRoute extends RouteBuilder {
 
 
         from("direct:logoutUser").routeId("logout")
-                .log("${headers}")
+                .log(LoggingLevel.DEBUG,LOG_HEADERS)
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList formData = (MessageContentsList) bdy;
@@ -218,7 +226,7 @@ public class UserServiceRoute extends RouteBuilder {
 
 
         from("direct:findUserByLogin").routeId("findUserByLogin")
-                .log("${headers}")
+                .log(LoggingLevel.DEBUG,LOG_HEADERS)
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList formData = (MessageContentsList) bdy;
@@ -232,7 +240,7 @@ public class UserServiceRoute extends RouteBuilder {
 
 
         from("direct:resetPassword").routeId("resetPassword")
-                .log("${headers}")
+                .log(LoggingLevel.DEBUG,LOG_HEADERS)
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList formData = (MessageContentsList) bdy;
@@ -250,12 +258,12 @@ public class UserServiceRoute extends RouteBuilder {
 
 
                 })
-                .wireTap("direct:sendEmail")
+                .wireTap(SEND_EMAIL_ENDPOINT)
                 .removeHeaders("*");
 
 
         from("direct:enterCode").routeId("enterCode")
-                .log("${headers}")
+                .log(LoggingLevel.DEBUG,LOG_HEADERS)
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList formData = (MessageContentsList) bdy;

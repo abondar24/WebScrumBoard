@@ -5,12 +5,15 @@ import org.abondar.experimental.wsboard.dao.ContributorDao;
 import org.abondar.experimental.wsboard.dao.data.LogMessageUtil;
 import org.abondar.experimental.wsboard.dao.exception.DataCreationException;
 import org.abondar.experimental.wsboard.dao.exception.DataExistenceException;
+import org.apache.camel.LoggingLevel;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.cxf.message.MessageContentsList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import javax.ws.rs.core.Response;
+
+import static org.abondar.experimental.wsboard.ws.route.RouteConstantUtil.LOG_HEADERS;
 
 /**
  * Route for contributor service events
@@ -29,7 +32,7 @@ public class ContributorServiceRoute extends RouteBuilder {
     public void configure() throws Exception {
 
         from("direct:createContributor").routeId("createContributor")
-                .log("${headers}")
+                .log(LoggingLevel.DEBUG,LOG_HEADERS)
                 .transform()
                 .body((bdy, hdrs) -> {
 
@@ -52,7 +55,7 @@ public class ContributorServiceRoute extends RouteBuilder {
                 });
 
         from("direct:updateContributor").routeId("updateContributor")
-                .log("${headers}")
+                .log(LoggingLevel.DEBUG,LOG_HEADERS)
                 .transform()
                 .body((bdy, hdrs) -> {
 
@@ -75,14 +78,15 @@ public class ContributorServiceRoute extends RouteBuilder {
                                 return Response.status(Response.Status.GONE).entity(ex.getLocalizedMessage()).build();
                             case LogMessageUtil.CONTRIBUTOR_CANNOT_BE_DEACTIVATED:
                                 return Response.status(Response.Status.FORBIDDEN).entity(ex.getLocalizedMessage()).build();
+                            default:
+                                return Response.status(Response.Status.FORBIDDEN).build();
                         }
 
                     }
-                    return null;
                 });
 
         from("direct:findProjectOwner").routeId("findProjectOwner")
-                .log("${headers}")
+                .log(LoggingLevel.DEBUG,LOG_HEADERS)
                 .transform()
                 .body((bdy, hdrs) -> {
 
@@ -100,7 +104,7 @@ public class ContributorServiceRoute extends RouteBuilder {
                 });
 
         from("direct:findProjectContributors").routeId("findProjectContributors")
-                .log("${headers}")
+                .log(LoggingLevel.DEBUG,LOG_HEADERS)
                 .transform()
                 .body((bdy, hdrs) -> {
 

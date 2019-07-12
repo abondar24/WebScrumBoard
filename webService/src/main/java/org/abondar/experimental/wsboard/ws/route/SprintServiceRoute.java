@@ -4,6 +4,7 @@ import org.abondar.experimental.wsboard.dao.SprintDao;
 import org.abondar.experimental.wsboard.dao.data.LogMessageUtil;
 import org.abondar.experimental.wsboard.dao.exception.DataCreationException;
 import org.abondar.experimental.wsboard.dao.exception.DataExistenceException;
+import org.apache.camel.LoggingLevel;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.cxf.message.MessageContentsList;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,8 @@ import javax.ws.rs.core.Response;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import static org.abondar.experimental.wsboard.ws.route.RouteConstantUtil.LOG_HEADERS;
 
 /**
  * Route for contributor route events
@@ -30,7 +33,7 @@ public class SprintServiceRoute extends RouteBuilder {
     public void configure() throws Exception {
 
         from("direct:createSprint").routeId("createSprint")
-                .log("${headers}")
+                .log(LoggingLevel.DEBUG,LOG_HEADERS)
                 .transform()
                 .body((bdy, hdrs) -> {
 
@@ -55,7 +58,7 @@ public class SprintServiceRoute extends RouteBuilder {
                 });
 
         from("direct:updateSprint").routeId("updateSprint")
-                .log("${headers}")
+                .log(LoggingLevel.DEBUG,LOG_HEADERS)
                 .transform()
                 .body((bdy, hdrs) -> {
 
@@ -93,7 +96,7 @@ public class SprintServiceRoute extends RouteBuilder {
                 });
 
         from("direct:getSprintById").routeId("getSprintById")
-                .log("${headers}")
+                .log(LoggingLevel.DEBUG,LOG_HEADERS)
                 .transform()
                 .body((bdy, hdrs) -> {
 
@@ -108,7 +111,7 @@ public class SprintServiceRoute extends RouteBuilder {
                 });
 
         from("direct:getSprints").routeId("getSprints")
-                .log("${headers}")
+                .log(LoggingLevel.DEBUG,LOG_HEADERS)
                 .transform()
                 .body((bdy, hdrs) -> {
 
@@ -123,7 +126,7 @@ public class SprintServiceRoute extends RouteBuilder {
                 });
 
         from("direct:deleteSprint").routeId("deleteSprint")
-                .log("${headers}")
+                .log(LoggingLevel.DEBUG,LOG_HEADERS)
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList queryData = (MessageContentsList) bdy;

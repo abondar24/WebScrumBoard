@@ -14,7 +14,7 @@ import java.util.Date;
 @ApiModel(value = "Task", description = "Project task")
 public class Task implements Serializable {
 
-    private static final long SerialVersionUID = -1276893L;
+    private static final long serialVersionUID = -1276893L;
 
     @ApiModelProperty(value = "Task id")
     private long id;

@@ -12,7 +12,7 @@ import java.io.Serializable;
 @ApiModel(value = "Contributor", description = "Project contributor")
 public class Contributor implements Serializable {
 
-    private static final long SerialVersionUID = -345433L;
+    private static final long serialVersionUID = -345433L;
 
     @ApiModelProperty(value = "Contributor id")
     private long id;
