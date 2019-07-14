@@ -32,7 +32,7 @@ public class SprintServiceRouteTest {
 
     @Test
     public void createSprintRouteTest() throws Exception {
-        Object[] values = new Object[]{someName, date, date};
+        Object[] values = new Object[]{someName, date, date,someId};
         MessageContentsList testList = new MessageContentsList(values);
         producerTemplate.sendBodyAndHeaders("direct:createSprint", testList,
                 Map.of());

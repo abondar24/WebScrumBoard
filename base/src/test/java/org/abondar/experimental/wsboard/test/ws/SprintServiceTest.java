@@ -52,6 +52,7 @@ public class SprintServiceTest {
         form.param("name", sprintName);
         form.param("startDate", startDate);
         form.param("endDate", endDate);
+        form.param("projectId","7");
 
         client.path("/sprint/create").accept(MediaType.APPLICATION_JSON);
 
@@ -356,6 +357,8 @@ public class SprintServiceTest {
         form.param("name", sprintName);
         form.param("startDate", startDate);
         form.param("endDate", endDate);
+        form.param("projectId","7");
+
 
         client.path("/sprint/create").accept(MediaType.APPLICATION_JSON);
 

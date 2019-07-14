@@ -511,7 +511,7 @@ public class MapperTest {
     }
 
     private Sprint createSprint() {
-        var sprint = new Sprint("test", new Date(), new Date());
+        var sprint = new Sprint("test", new Date(), new Date(),createProject().getId());
         mapper.insertSprint(sprint);
         return sprint;
     }

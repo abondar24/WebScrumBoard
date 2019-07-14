@@ -43,7 +43,8 @@ public class SprintServiceRoute extends RouteBuilder {
                         var startDt = convertDate((String) formData.get(1));
                         var endDt = convertDate((String) formData.get(2));
 
-                        var sprint = sprintDao.createSprint((String) formData.get(0), startDt, endDt);
+                        var sprint = sprintDao.createSprint((String) formData.get(0), startDt, endDt,
+                                (long) formData.get(3));
                         return Response.ok(sprint).build();
 
                     } catch (DataCreationException ex) {

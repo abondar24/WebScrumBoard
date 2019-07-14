@@ -86,6 +86,7 @@
         <result column="name" property="name"/>
         <result column="start_date" property="startDate"/>
         <result column="end_date" property="endDate"/>
+        <result column="project_id" property="projectId"/>
     </resultMap>
 
     <resultMap id="securityCodeMap" type="SecurityCode">
@@ -138,10 +139,11 @@
     </insert>
 
     <insert id="insertSprint" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
-        INSERT INTO sprint (name, start_date, end_date)
+        INSERT INTO sprint (name, start_date, end_date,project_id)
         VALUES (#{sprint.name},
                 #{sprint.startDate},
-                #{sprint.endDate})
+                #{sprint.endDate},
+                #{sprint.projectId})
         ON CONFLICT (id) DO NOTHING;
     </insert>
 

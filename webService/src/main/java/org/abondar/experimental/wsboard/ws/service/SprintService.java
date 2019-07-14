@@ -43,7 +43,8 @@ public interface SprintService {
     })
     Response createSprint(@FormParam("name") @ApiParam(required = true) String name,
                           @FormParam("startDate") @ApiParam(required = true) String startDate,
-                          @FormParam("endDate") @ApiParam(required = true) String endDate);
+                          @FormParam("endDate") @ApiParam(required = true) String endDate,
+                          @FormParam("projectId") @ApiParam(required = true) long projectId);
 
     @POST
     @Path("/update")

@@ -65,6 +65,7 @@ public class ProjectDao extends BaseDao {
      * @param repo     - project git repository
      * @param isActive - project currently active
      * @param endDate  - project end date
+     * @param description - project description
      * @return project POJO
      * @throws DataExistenceException - project not exists
      * @throws DataCreationException - project activation or end date issue

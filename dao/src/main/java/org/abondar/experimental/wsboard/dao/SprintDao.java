@@ -32,11 +32,12 @@ public class SprintDao extends BaseDao {
      * @param name      - sprint name
      * @param startDate - sprint start date
      * @param endDate   - sprint end date
+     * @param projectId - project linked to sprint
      * @throws DataExistenceException sprint with such name exists
      * @throws DataCreationException sprint end date is before start date or blank data
      * @return sprint POJO
      */
-    public Sprint createSprint(String name, Date startDate, Date endDate) throws DataExistenceException, DataCreationException {
+    public Sprint createSprint(String name, Date startDate, Date endDate,long projectId) throws DataExistenceException, DataCreationException {
 
 
         var sprint = mapper.getSprintByName(name);
@@ -44,6 +45,11 @@ public class SprintDao extends BaseDao {
             logger.error(LogMessageUtil.SPRINT_EXISTS);
             throw new DataExistenceException(LogMessageUtil.SPRINT_EXISTS);
 
+        }
+
+        if (mapper.getProjectById(projectId)==null){
+            logger.error(LogMessageUtil.PROJECT_NOT_EXISTS);
+            throw new DataExistenceException(LogMessageUtil.PROJECT_NOT_EXISTS);
         }
 
         if (name == null || name.isBlank()) {
@@ -57,7 +63,7 @@ public class SprintDao extends BaseDao {
             throw new DataCreationException(LogMessageUtil.WRONG_END_DATE);
         }
 
-        sprint = new Sprint(name, startDate, endDate);
+        sprint = new Sprint(name, startDate, endDate,projectId);
 
         mapper.insertSprint(sprint);
 

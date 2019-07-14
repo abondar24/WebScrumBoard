@@ -23,9 +23,9 @@ public class SprintServiceTestImpl implements SprintService {
     private Sprint testSprint;
 
     @Override
-    public Response createSprint(String name, String startDate, String endDate) {
+    public Response createSprint(String name, String startDate, String endDate,long projectId) {
 
-        var existingSprint = new Sprint("exist", new Date(), new Date());
+        var existingSprint = new Sprint("exist", new Date(), new Date(),projectId);
 
         if (existingSprint.getName().equals(name)) {
             return Response.status(Response.Status.FOUND).entity(LogMessageUtil.SPRINT_EXISTS).build();
@@ -47,7 +47,7 @@ public class SprintServiceTestImpl implements SprintService {
 
             }
 
-            testSprint = new Sprint(name, startDt, endDt);
+            testSprint = new Sprint(name, startDt, endDt,projectId);
             testSprint.setId(10);
 
             return Response.ok(testSprint).build();

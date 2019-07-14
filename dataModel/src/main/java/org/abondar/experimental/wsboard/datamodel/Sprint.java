@@ -28,15 +28,17 @@ public class Sprint implements Serializable {
     @ApiModelProperty(value = "Sprint end date")
     private Date endDate;
 
-    //TODO: link sprint to a project
+    @ApiModelProperty(value = "Sprint project id")
+    private long projectId;
 
 
     public Sprint(){}
 
-    public Sprint(String name, Date startDate, Date endDate) {
+    public Sprint(String name, Date startDate, Date endDate, long projectId) {
         this.name = name;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.projectId = projectId;
     }
 
     public long getId() {
@@ -71,6 +73,18 @@ public class Sprint implements Serializable {
         this.endDate = endDate;
     }
 
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
+
+    public long getProjectId() {
+        return projectId;
+    }
+
+    public void setProjectId(long projectId) {
+        this.projectId = projectId;
+    }
+
     @Override
     public String toString() {
         return "Sprint{" +
@@ -78,6 +92,7 @@ public class Sprint implements Serializable {
                 ", name='" + name + '\'' +
                 ", startDate=" + startDate +
                 ", endDate=" + endDate +
+                ", projectId=" + projectId +
                 '}';
     }
 }
