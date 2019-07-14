@@ -239,7 +239,6 @@ public class UserServiceRoute extends RouteBuilder {
                 });
 
 
-        //TODO: send code on reset in reset email
         from("direct:resetPassword").routeId("resetPassword")
                 .log(LoggingLevel.DEBUG,LOG_HEADERS)
                 .transform()
@@ -250,6 +249,7 @@ public class UserServiceRoute extends RouteBuilder {
                         dao.resetPassword(((long) formData.get(0)));
 
                         hdrs.put("emailType", "resetPassword");
+                        hdrs.put("code",codeDao.insertCode(user.getId()));
                         hdrs.put("To", user.getEmail());
 
                         return Response.ok().build();
