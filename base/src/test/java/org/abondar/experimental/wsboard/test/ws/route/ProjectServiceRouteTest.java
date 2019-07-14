@@ -80,5 +80,17 @@ public class ProjectServiceRouteTest {
         mockEndpoint.reset();
     }
 
+    @Test
+    public void findUserProjectsRouteTest() throws Exception {
+        Object[] values = new Object[]{prId};
+        MessageContentsList testList = new MessageContentsList(values);
+        producerTemplate.sendBodyAndHeaders("direct:findUserProjects", testList,
+                Map.of());
+        mockEndpoint.assertIsSatisfied();
+        mockEndpoint.expectedBodiesReceived();
+        mockEndpoint.expectedMessageCount(1);
+        mockEndpoint.reset();
+    }
+
 }
 

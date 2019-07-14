@@ -172,6 +172,20 @@ public class MapperTest {
     }
 
     @Test
+    public void getUserProjectTest(){
+        var user = createUser();
+        var project = createProject();
+        var project1 = createProject();
+        createContributor(user.getId(),project.getId(),true);
+        createContributor(user.getId(),project1.getId(),true);
+
+        var res = mapper.getUserProjects(user.getId());
+        assertEquals(2,res.size());
+
+        cleanData();
+    }
+
+    @Test
     public void getContributorByIdTest() {
         var user = createUser();
         var project = createProject();

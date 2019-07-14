@@ -4,6 +4,8 @@ import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import org.abondar.experimental.wsboard.base.WebScrumBoardApplication;
 import org.abondar.experimental.wsboard.dao.data.LogMessageUtil;
 import org.abondar.experimental.wsboard.datamodel.Project;
+import org.abondar.experimental.wsboard.datamodel.user.User;
+import org.abondar.experimental.wsboard.datamodel.user.UserRole;
 import org.abondar.experimental.wsboard.test.ws.impl.ProjectServiceTestImpl;
 import org.apache.cxf.endpoint.Server;
 import org.apache.cxf.jaxrs.JAXRSBindingFactory;
@@ -18,6 +20,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MediaType;
+import java.util.Collection;
 import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -292,6 +295,38 @@ public class ProjectServiceTest {
         assertEquals(LogMessageUtil.PROJECT_NOT_EXISTS, msg);
     }
 
+    @Test
+    public void findUserProjectsTest() {
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+        createProject();
+        var usr = createUser();
+
+        client.path("/project/find_user_projects").query("id", String.valueOf(usr))
+                .accept(MediaType.APPLICATION_JSON);
+
+        var res = client.get();
+        assertEquals(200, res.getStatus());
+
+        Collection<? extends Project> projects = client.getCollection(Project.class);
+        assertEquals(2, projects.size());
+    }
+
+    @Test
+    public void findUserProjectsNotFoundTest() {
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+        createProject();
+        createUser();
+
+        client.path("/project/find_user_projects").query("id", "7")
+                .accept(MediaType.APPLICATION_JSON);
+
+        var res = client.get();
+        assertEquals(404, res.getStatus());
+
+        var msg = res.readEntity(String.class);
+        assertEquals(LogMessageUtil.USER_NOT_EXISTS, msg);
+    }
+
     private Project createProject() {
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
@@ -320,4 +355,24 @@ public class ProjectServiceTest {
         return res.readEntity(Project.class);
 
     }
+
+    private long createUser() {
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+
+        client.path("/project/create_user").accept(MediaType.APPLICATION_JSON);
+
+        var form = new Form();
+        form.param("login", "login");
+        form.param("email", "email");
+        form.param("firstName", "First");
+        form.param("lastName", "Last");
+        form.param("password", "pass");
+        form.param("roles", UserRole.DEVELOPER.name());
+
+
+        var resp = client.post(form);
+
+        return resp.readEntity(User.class).getId();
+    }
+
 }

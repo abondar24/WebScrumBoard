@@ -94,4 +94,19 @@ public interface ProjectService {
             @ApiResponse(code = 404, message = "Project with id not exists")
     })
     Response findProjectById(@QueryParam("id") @ApiParam(required = true) long id);
+
+    @GET
+    @Path("/find_user_projects")
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(
+            value = "Find User Projects",
+            notes = "Find projects related to user",
+            produces = "application/json")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Project found", response = Project.class),
+            @ApiResponse(code = 404, message = "User id not exists")
+    })
+    Response findUserProjects(@QueryParam("id") @ApiParam(required = true) long userId);
+
+
 }

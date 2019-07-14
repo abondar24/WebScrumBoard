@@ -1,11 +1,15 @@
 package org.abondar.experimental.wsboard.test.dao;
 
 import org.abondar.experimental.wsboard.base.WebScrumBoardApplication;
+import org.abondar.experimental.wsboard.dao.ContributorDao;
 import org.abondar.experimental.wsboard.dao.ProjectDao;
+import org.abondar.experimental.wsboard.dao.UserDao;
 import org.abondar.experimental.wsboard.dao.data.DataMapper;
 import org.abondar.experimental.wsboard.dao.exception.DataCreationException;
 import org.abondar.experimental.wsboard.dao.exception.DataExistenceException;
 import org.abondar.experimental.wsboard.datamodel.Project;
+import org.abondar.experimental.wsboard.datamodel.user.User;
+import org.abondar.experimental.wsboard.datamodel.user.UserRole;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +38,15 @@ public class ProjectDaoTest {
     @Autowired
     @Qualifier("projectDao")
     private ProjectDao dao;
+
+    @Autowired
+    @Qualifier("userDao")
+    private UserDao userDao;
+
+    @Autowired
+    @Qualifier("contributorDao")
+    private ContributorDao contributorDao;
+
 
 
     @Test
@@ -170,6 +183,28 @@ public class ProjectDaoTest {
 
     }
 
+    @Test
+    public void findUserProjectsTest() throws Exception{
+
+        var usr = createUser();
+        var project = createProject();
+        contributorDao.createContributor(usr.getId(), project.getId(), false);
+
+        var projects = dao.findUserProjects(usr.getId());
+        assertEquals(1,projects.size());
+
+        mapper.deleteContributors();
+        mapper.deleteUsers();
+        mapper.deleteProjects();
+
+    }
+
+    @Test
+    public void findUserProjectsNotFoundTest() {
+           assertThrows(DataExistenceException.class,()-> dao.findUserProjects(7));
+    }
+
+
     private Date yesterday() {
         final Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, -1);
@@ -182,6 +217,17 @@ public class ProjectDaoTest {
         var startDate = new Date();
 
         return dao.createProject(name, startDate);
+    }
+
+    private User createUser() throws Exception {
+        var login = "login";
+        var email = "email@email.com";
+        var password = "pwd";
+        var firstName = "fname";
+        var lastName = "lname";
+        var roles = UserRole.DEVELOPER.name() + ";" + UserRole.DEV_OPS.name();
+
+        return userDao.createUser(login, password, email, firstName, lastName, roles);
     }
 
 }

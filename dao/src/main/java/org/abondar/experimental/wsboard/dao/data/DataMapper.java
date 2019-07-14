@@ -55,9 +55,8 @@ public interface DataMapper {
 
     Project getProjectByName(@Param("name") String name);
 
-    //TODO: get list of projects for user
-    //TODO: deactivate all contributors
-    //TODO: deactivate all user contributions.
+    List<Project> getUserProjects(@Param("userId") long userId);
+
     User getProjectOwner(@Param("projectId") Long projectId);
 
     List<User> getContributorsForProject(@Param("projectId") long projectId, @Param("offset") int offset, @Param("limit") int limit);
@@ -91,6 +90,8 @@ public interface DataMapper {
     //TODO: get sprints for a selected project
     List<Sprint> getSprints(@Param("offset") int offset, @Param("limit") int limit);
 
+    //TODO: deactivate all contributors for project
+    //TODO: deactivate all user contributions.
 
     void deleteTask(@Param("id") long id);
 

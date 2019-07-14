@@ -107,7 +107,6 @@ public class ProjectServiceRoute extends RouteBuilder {
 
         from("direct:findProjectById").routeId("findProjectById")
                 .log(LoggingLevel.DEBUG,LOG_HEADERS)
-                .log("${headers}")
                 .transform()
                 .body((bdy, hdrs) -> {
 
@@ -121,6 +120,20 @@ public class ProjectServiceRoute extends RouteBuilder {
                     }
                 });
 
+        from("direct:findUserProjects").routeId("findUserProjects")
+                .log(LoggingLevel.DEBUG,LOG_HEADERS)
+                .transform()
+                .body((bdy, hdrs) -> {
+
+                    MessageContentsList queryData = (MessageContentsList) bdy;
+
+                    try {
+                        var prj = projectDao.findUserProjects((long) queryData.get(0));
+                        return Response.ok(prj).build();
+                    } catch (DataExistenceException ex) {
+                        return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
+                    }
+                });
 
     }
 

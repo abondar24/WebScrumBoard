@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -152,6 +153,23 @@ public class ProjectDao extends BaseDao {
         return prj;
     }
 
+    /**
+     * Returns all projects where has contributed
+     * @param userId - user id
+     * @return - list of projects related to user
+     * @throws DataExistenceException - user not exists
+     */
+    public List<Project> findUserProjects(long userId) throws DataExistenceException{
+
+        var msg = "";
+        if (mapper.getUserById(userId) == null){
+            msg = String.format(LogMessageUtil.LOG_FORMAT, LogMessageUtil.USER_NOT_EXISTS, userId);
+            logger.error(msg);
+            throw new DataExistenceException(LogMessageUtil.PROJECT_NOT_EXISTS);
+        }
+
+        return mapper.getUserProjects(userId);
+    }
 
     /**
      * Check project with name exists

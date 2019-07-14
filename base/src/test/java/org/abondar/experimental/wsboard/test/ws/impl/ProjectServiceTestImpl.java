@@ -3,13 +3,18 @@ package org.abondar.experimental.wsboard.test.ws.impl;
 import org.abondar.experimental.wsboard.dao.data.LogMessageUtil;
 import org.abondar.experimental.wsboard.dao.exception.DataCreationException;
 import org.abondar.experimental.wsboard.datamodel.Project;
+import org.abondar.experimental.wsboard.datamodel.user.User;
 import org.abondar.experimental.wsboard.ws.service.ProjectService;
 
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -20,6 +25,8 @@ public class ProjectServiceTestImpl implements ProjectService {
 
 
     private Project testProject;
+    private User testUser;
+
 
     @Override
     public Response createProject(String name, String startDate) {
@@ -113,6 +120,28 @@ public class ProjectServiceTestImpl implements ProjectService {
         return Response.ok(testProject).build();
     }
 
+    @Override
+    public Response findUserProjects(long userId) {
+        if (userId!=testUser.getId()){
+            return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.USER_NOT_EXISTS).build();
+        }
+
+        return Response.ok(List.of(testProject,new Project())).build();
+    }
+
+
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/create_user")
+    public Response createUser() {
+
+
+        testUser = new User("test", "test", "test", "testy", "test", "test");
+        testUser.setId(10);
+
+
+        return Response.ok(testUser).build();
+    }
 
     private Date convertDate(String strDate) throws DataCreationException {
         var format = new SimpleDateFormat("dd/MM/yyyy");

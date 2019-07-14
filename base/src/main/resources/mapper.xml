@@ -248,6 +248,16 @@
         WHERE prj.name=#{name}
     </select>
 
+    <select id="getUserProjects" resultMap="projectMap" useCache="true">
+        SELECT *
+        FROM
+        <include refid="projectTable"/>
+        JOIN
+        <include refid="contributorTable"/>
+        ON ctr.project_id = prj.id
+        WHERE ctr.user_id = #{userId}
+    </select>
+
 
     <select id="getProjectOwner" resultMap="userMap">
         SELECT *
