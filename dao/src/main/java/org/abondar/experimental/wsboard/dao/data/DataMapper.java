@@ -19,6 +19,8 @@ import java.util.List;
  */
 @Mapper
 public interface DataMapper {
+
+    //TODO: enable transactions for user delete and project deactivation
     void insertUser(@Param("user") User user);
 
     void insertProject(@Param("project") Project project);
@@ -55,6 +57,8 @@ public interface DataMapper {
     Project getProjectByName(@Param("name") String name);
 
     //TODO: get list of projects for user
+    //TODO: deactivate all contributors
+    //TODO: deactivate all user contributions.
     User getProjectOwner(@Param("projectId") Long projectId);
 
     List<User> getContributorsForProject(@Param("projectId") long projectId, @Param("offset") int offset, @Param("limit") int limit);

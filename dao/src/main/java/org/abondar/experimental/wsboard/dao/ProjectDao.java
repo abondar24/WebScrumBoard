@@ -84,6 +84,7 @@ public class ProjectDao extends BaseDao {
             prj.setName(name);
         }
 
+        //TODO: deactivate all contributors for inactive project
         if (isActive != null) {
             if (isActive && !prj.isActive()) {
                 throw new DataCreationException(LogMessageUtil.PROJECT_CANNOT_BE_REACTIVATED);

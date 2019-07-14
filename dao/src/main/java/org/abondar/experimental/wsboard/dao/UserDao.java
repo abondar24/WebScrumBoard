@@ -223,6 +223,7 @@ public class UserDao extends BaseDao {
                 logger.error(LogMessageUtil.USER_IS_PROJECT_OWNER);
                 throw new DataCreationException(LogMessageUtil.USER_IS_PROJECT_OWNER);
             }
+            //TODO: deactivate all user contributions.
             contributorDao.updateContributor(contributor.getId(), contributor.isOwner(), false);
         }
         usr.setDeleted();
