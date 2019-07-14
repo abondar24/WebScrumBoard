@@ -66,7 +66,8 @@ public class ProjectDaoTest {
     public void updateProjectTest() throws Exception {
         var prj = createProject();
         var id = prj.getId();
-        prj = dao.updateProject(prj.getId(), "newTest", "github.com/aaaa/aaa.git", true, null);
+        prj = dao.updateProject(prj.getId(), "newTest", "github.com/aaaa/aaa.git", true,
+                null,"test");
 
         assertEquals(id, prj.getId());
 
@@ -79,7 +80,7 @@ public class ProjectDaoTest {
 
 
         assertThrows(DataExistenceException.class, () ->
-                dao.updateProject(prj.getId(), prj.getName(), null, true, null));
+                dao.updateProject(prj.getId(), prj.getName(), null, true, null,null));
 
         mapper.deleteProjects();
     }
@@ -89,7 +90,7 @@ public class ProjectDaoTest {
         var prj = createProject();
         var id = prj.getId();
 
-        prj = dao.updateProject(prj.getId(), "newTest", "github.com/aaaa/aaa.git", false, new Date());
+        prj = dao.updateProject(prj.getId(), "newTest", "github.com/aaaa/aaa.git", false, new Date(),null);
 
         assertEquals(id, prj.getId());
 
@@ -100,7 +101,7 @@ public class ProjectDaoTest {
     public void updateProjectInactiveNullEndDateTest() throws Exception {
         var prj = createProject();
         assertThrows(DataCreationException.class, () -> dao.updateProject(prj.getId(), "newTest",
-                "github.com/aaaa/aaa.git", false, null));
+                "github.com/aaaa/aaa.git", false, null,null));
 
         mapper.deleteProjects();
     }
@@ -109,11 +110,12 @@ public class ProjectDaoTest {
     public void updateProjectReactivateTest() throws Exception {
         var prj = createProject();
 
-        prj = dao.updateProject(prj.getId(), "newTest", "github.com/aaaa/aaa.git", false, new Date());
+        prj = dao.updateProject(prj.getId(), "newTest", "github.com/aaaa/aaa.git",
+                false, new Date(),null);
 
         final long id = prj.getId();
         assertThrows(DataCreationException.class, () -> dao.updateProject(id, null,
-                null, true, null));
+                null, true, null,null));
 
         mapper.deleteProjects();
     }
@@ -123,7 +125,7 @@ public class ProjectDaoTest {
         var prj = createProject();
 
         assertThrows(DataCreationException.class, () -> dao.updateProject(prj.getId(), "newTest",
-                "github.com/aaaa/aaa.git", false, yesterday()));
+                "github.com/aaaa/aaa.git", false, yesterday(),null));
         mapper.deleteProjects();
     }
 
@@ -133,7 +135,7 @@ public class ProjectDaoTest {
         var prj = createProject();
         var id = prj.getId();
 
-        prj = dao.updateProject(prj.getId(), null, null, null, null);
+        prj = dao.updateProject(prj.getId(), null, null, null, null,null);
 
         assertEquals(id, prj.getId());
         mapper.deleteProjects();

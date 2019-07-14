@@ -70,7 +70,7 @@ public class ProjectDao extends BaseDao {
      * @throws DataCreationException - project activation or end date issue
      */
     public Project updateProject(long id, String name, String repo,
-                                 Boolean isActive, Date endDate)
+                                 Boolean isActive, Date endDate,String description)
             throws DataExistenceException, DataCreationException {
 
         var prj = findProjectById(id);
@@ -82,6 +82,10 @@ public class ProjectDao extends BaseDao {
 
         if (repo != null && !repo.isBlank()) {
             prj.setName(name);
+        }
+
+        if (description != null && !description.isBlank()) {
+            prj.setDescription(description);
         }
 
         //TODO: deactivate all contributors for inactive project

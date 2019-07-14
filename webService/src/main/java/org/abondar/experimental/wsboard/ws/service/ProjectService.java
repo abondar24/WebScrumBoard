@@ -64,7 +64,8 @@ public interface ProjectService {
                            @FormParam("name") @ApiParam String name,
                            @FormParam("repo") @ApiParam String repo,
                            @FormParam("isActive") @ApiParam Boolean isActive,
-                           @FormParam("endDate") @ApiParam String endDate);
+                           @FormParam("endDate") @ApiParam String endDate,
+                           @FormParam("description") @ApiParam String description);
 
 
     @GET

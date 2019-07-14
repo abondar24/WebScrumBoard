@@ -46,7 +46,7 @@ public class ProjectServiceRouteTest {
 
     @Test
     public void updateProjectRouteTest() throws Exception {
-        Object[] values = new Object[]{prId, name, "repo", true, date};
+        Object[] values = new Object[]{prId, name, "repo", true, date,"descr"};
         MessageContentsList testList = new MessageContentsList(values);
         producerTemplate.sendBodyAndHeaders("direct:updateProject", testList,
                 Map.of());

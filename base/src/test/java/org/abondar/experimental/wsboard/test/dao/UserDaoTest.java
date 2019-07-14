@@ -306,7 +306,7 @@ public class UserDaoTest {
 
     private Project createProject() throws Exception {
         var project = projectDao.createProject("test", new Date());
-        return projectDao.updateProject(project.getId(), null, null, true, null);
+        return projectDao.updateProject(project.getId(), null, null, true, null,null);
     }
 
 }

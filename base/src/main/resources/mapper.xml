@@ -55,6 +55,7 @@
         <result column="end_date" property="endDate"/>
         <result column="repository" property="repository"/>
         <result column="is_active" property="isActive"/>
+        <result column="description" property="description"/>
     </resultMap>
 
     <resultMap id="contributorMap" type="Contributor">
@@ -217,7 +218,7 @@
         WHERE id = #{id}
     </update>
 
-    <select id="getUserByLogin" resultMap="userMap">
+    <select id="getUserByLogin" resultMap="userMap" useCache="true">
         SELECT *
         FROM
         <include refid="userTable"/>

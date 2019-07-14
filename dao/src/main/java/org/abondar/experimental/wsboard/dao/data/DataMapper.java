@@ -47,7 +47,6 @@ public interface DataMapper {
 
     void updateCode(@Param("id") long id);
 
-    //TODO: make cacheable
     User getUserByLogin(@Param("login") String login);
 
     User getUserById(@Param("id") long id);

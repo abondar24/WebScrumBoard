@@ -120,6 +120,7 @@ public class ProjectServiceTest {
         var form = new Form();
         form.param("id", String.valueOf(prj.getId()));
         form.param("repo", "test.repo.com");
+        form.param("description","descr");
 
         client.path("/project/update").accept(MediaType.APPLICATION_JSON);
 

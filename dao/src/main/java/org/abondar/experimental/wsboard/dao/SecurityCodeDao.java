@@ -26,6 +26,8 @@ public class SecurityCodeDao extends BaseDao {
         checkUser(userId);
 
         long code;
+
+        //TODO: fix this part of code
         while (true) {
             code = generateCode();
 

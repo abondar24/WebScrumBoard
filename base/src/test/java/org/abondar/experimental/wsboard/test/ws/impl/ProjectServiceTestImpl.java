@@ -47,7 +47,8 @@ public class ProjectServiceTestImpl implements ProjectService {
     }
 
     @Override
-    public Response updateProject(long id, String name, String repo, Boolean isActive, String endDate) {
+    public Response updateProject(long id, String name, String repo, Boolean isActive,
+                                  String endDate,String description) {
         if (testProject.getId() != id) {
             return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.PROJECT_NOT_EXISTS).build();
         }
@@ -62,6 +63,7 @@ public class ProjectServiceTestImpl implements ProjectService {
         }
 
         testProject.setRepository(repo);
+        testProject.setDescription(description);
 
         if (isActive != null) {
 

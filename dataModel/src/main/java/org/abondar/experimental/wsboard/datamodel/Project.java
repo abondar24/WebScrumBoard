@@ -34,7 +34,8 @@ public class Project implements Serializable {
     @ApiModelProperty(value = "Project is project active or not?")
     private boolean isActive;
 
-    //TODO: add description field
+    @ApiModelProperty(value = "Project description")
+    private String description;
 
     public Project(){
 
@@ -94,6 +95,18 @@ public class Project implements Serializable {
         isActive = active;
     }
 
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     @Override
     public String toString() {
         return "Project{" +
@@ -103,6 +116,7 @@ public class Project implements Serializable {
                 ", endDate=" + endDate +
                 ", repository='" + repository + '\'' +
                 ", isActive=" + isActive +
+                ", description='" + description + '\'' +
                 '}';
     }
 }

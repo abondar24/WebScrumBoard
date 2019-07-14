@@ -496,7 +496,7 @@ public class TaskDaoTest {
 
         var prj = projectDao.createProject(name, startDate);
         if (isActive) {
-            prj = projectDao.updateProject(prj.getId(), null, null, true, null);
+            prj = projectDao.updateProject(prj.getId(), null, null, true, null,null);
         }
 
         return prj;
