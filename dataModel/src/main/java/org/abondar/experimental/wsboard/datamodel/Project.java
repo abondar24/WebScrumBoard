@@ -34,6 +34,8 @@ public class Project implements Serializable {
     @ApiModelProperty(value = "Project is project active or not?")
     private boolean isActive;
 
+    //TODO: add description field
+
     public Project(){
 
     }

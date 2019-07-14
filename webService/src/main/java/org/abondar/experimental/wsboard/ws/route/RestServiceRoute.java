@@ -27,7 +27,8 @@ public class RestServiceRoute extends RouteBuilder {
         from("cxfrs:bean:jaxRsServer?bindingStyle=SimpleConsumer&synchronous=true")
                 .routeId("restServiceRoute")
                 .choice()
-                .when(header("operationName").in("createUser","loginUser","enterCode"))
+                .when(header("operationName").in("createUser","loginUser",
+                        "enterCode","resetPassword","updatePassword","findUserByLogin"))
                 .toD("direct:${headers.operationName}", false)
                 .endChoice()
                 .otherwise()

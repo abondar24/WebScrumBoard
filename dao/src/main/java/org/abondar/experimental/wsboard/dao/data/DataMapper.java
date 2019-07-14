@@ -45,6 +45,7 @@ public interface DataMapper {
 
     void updateCode(@Param("id") long id);
 
+    //TODO: make cacheable
     User getUserByLogin(@Param("login") String login);
 
     User getUserById(@Param("id") long id);
@@ -53,14 +54,17 @@ public interface DataMapper {
 
     Project getProjectByName(@Param("name") String name);
 
+    //TODO: get list of projects for user
     User getProjectOwner(@Param("projectId") Long projectId);
 
     List<User> getContributorsForProject(@Param("projectId") long projectId, @Param("offset") int offset, @Param("limit") int limit);
 
     Contributor getContributorById(@Param("id") long id);
 
+    //TODO: switch to list with offset and limit
     Contributor getContributorByUserId(@Param("userId") long userId);
 
+    //TODO: return list of users by list of ids
     User getUserByContributorId(@Param("ctrId") long ctrId);
 
     Task getTaskById(@Param("id") long id);
@@ -81,6 +85,7 @@ public interface DataMapper {
 
     Sprint getSprintById(@Param("id")long id);
 
+    //TODO: get sprints for a selected project
     List<Sprint> getSprints(@Param("offset") int offset, @Param("limit") int limit);
 
 

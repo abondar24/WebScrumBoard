@@ -28,6 +28,9 @@ public class Sprint implements Serializable {
     @ApiModelProperty(value = "Sprint end date")
     private Date endDate;
 
+    //TODO: link sprint to a project
+
+
     public Sprint(){}
 
     public Sprint(String name, Date startDate, Date endDate) {

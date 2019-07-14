@@ -239,6 +239,7 @@ public class UserServiceRoute extends RouteBuilder {
                 });
 
 
+        //TODO: send code on reset in reset email
         from("direct:resetPassword").routeId("resetPassword")
                 .log(LoggingLevel.DEBUG,LOG_HEADERS)
                 .transform()
