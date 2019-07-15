@@ -30,6 +30,7 @@ public class ContributorServiceRouteTest {
 
     private long someId = 7L;
     private boolean someState = true;
+    private int somePagination = 0;
 
     @Test
     public void createContributorRouteTest() throws Exception {
@@ -69,7 +70,7 @@ public class ContributorServiceRouteTest {
 
     @Test
     public void findProjectContributorsRouteTest() throws Exception {
-        Object[] values = new Object[]{someId, 0, 3};
+        Object[] values = new Object[]{someId, somePagination, somePagination+1};
         MessageContentsList testList = new MessageContentsList(values);
         producerTemplate.sendBodyAndHeaders("direct:findProjectContributors", testList,
                 Map.of());
@@ -79,4 +80,15 @@ public class ContributorServiceRouteTest {
         mockEndpoint.reset();
     }
 
+    @Test
+    public void findContributorsByUserId() throws Exception {
+        Object[] values = new Object[]{someId, somePagination, somePagination+1};
+        MessageContentsList testList = new MessageContentsList(values);
+        producerTemplate.sendBodyAndHeaders("direct:findContributorsByUserId", testList,
+                Map.of());
+        mockEndpoint.assertIsSatisfied();
+        mockEndpoint.expectedBodiesReceived();
+        mockEndpoint.expectedMessageCount(1);
+        mockEndpoint.reset();
+    }
 }

@@ -223,6 +223,26 @@ public class ContributorDaoTest {
         cleanData();
     }
 
+    @Test
+    public void findContributorsByUserIdTest() throws Exception {
+        var usr = createUser();
+        var prj = createProject(true);
+        var ctr = contributorDao.createContributor(usr.getId(), prj.getId(), true);
+
+        var contrs = contributorDao.findContributorsByUserId(usr.getId(), 0, 1);
+
+        assertEquals(1, contrs.size());
+        assertEquals(ctr.getId(),contrs.get(0).getId());
+
+        cleanData();
+    }
+
+    @Test
+    public void findContributorsByUserNotFoundTest()  {
+        assertThrows(DataExistenceException.class,
+                ()->contributorDao.findContributorsByUserId(7, 0, 1));
+
+    }
 
     private User createUser() throws Exception {
         var login = "login";

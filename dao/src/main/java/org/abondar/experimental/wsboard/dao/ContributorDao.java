@@ -181,6 +181,24 @@ public class ContributorDao extends BaseDao {
         return contrs;
     }
 
+    /**
+     * Returns list of all contributors assigned to selected user
+     * @param userId - user id
+     * @param offset    - beginning of the list
+     * @param limit     - end of the list
+     * @return contributors list
+     * @throws DataExistenceException - selected user doesn't exist
+     */
+    public List<Contributor> findContributorsByUserId(long userId, int offset, int limit)
+            throws DataExistenceException {
+
+        if (mapper.getUserById(userId)==null){
+            throw  new DataExistenceException(LogMessageUtil.USER_NOT_EXISTS);
+        }
+
+        return mapper.getContributorsByUserId(userId,offset,limit);
+    }
+
 
     /**
      * Find a project by id

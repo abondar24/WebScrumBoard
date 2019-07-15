@@ -129,6 +129,11 @@ public class ProjectServiceRoute extends RouteBuilder {
 
                     try {
                         var prj = projectDao.findUserProjects((long) queryData.get(0));
+
+                        if (prj.isEmpty()){
+                            return Response.status(Response.Status.NO_CONTENT).build();
+                        }
+
                         return Response.ok(prj).build();
                     } catch (DataExistenceException ex) {
                         return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();

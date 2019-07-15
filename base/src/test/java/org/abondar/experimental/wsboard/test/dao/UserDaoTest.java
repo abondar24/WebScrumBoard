@@ -22,7 +22,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -254,26 +253,7 @@ public class UserDaoTest {
         mapper.deleteUsers();
     }
 
-    @Test
-    public void deleteUserContributorTest() throws Exception {
-        var usr = createUser();
 
-        var project = createProject();
-        contributorDao.createContributor(usr.getId(), project.getId(), true);
-
-        var delUsr = userDao.createUser("testLogin", "psw", "aaa",
-                "aa", "aa", UserRole.DEVELOPER.name() + ";");
-        var ctr = contributorDao.createContributor(delUsr.getId(), project.getId(), false);
-
-        userDao.deleteUser(delUsr.getId());
-        var ctrObj = mapper.getContributorById(ctr.getId());
-
-        assertFalse(ctrObj.isActive());
-
-        mapper.deleteContributors();
-        mapper.deleteProjects();
-        mapper.deleteUsers();
-    }
 
 
     @Test

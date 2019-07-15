@@ -23,6 +23,8 @@ import java.util.stream.Collectors;
 
 /**
  * Test implementation of contributor web service
+ *
+ * @author a.bondar
  */
 @Path("/contributor")
 public class ContributorServiceTestImpl implements ContributorService {
@@ -139,6 +141,35 @@ public class ContributorServiceTestImpl implements ContributorService {
 
         return Response.ok(contributors).build();
 
+
+    }
+
+    @Override
+    public Response findContributorsByUserId(long userId, int offset, int limit) {
+        if (testUser.getId()!=userId){
+            return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.USER_NOT_EXISTS).build();
+        }
+
+        var contributors = List.of(testContributor,
+                new Contributor(1, testProject.getId(), false),
+                new Contributor(2, testProject.getId(), false),
+                new Contributor(3, testProject.getId(), false),
+                new Contributor(4, testProject.getId(), false));
+
+        if (offset == -1) {
+            return Response.ok(contributors).build();
+        }
+
+        contributors = contributors.stream()
+                .skip(offset)
+                .limit(limit)
+                .collect(Collectors.toList());
+
+        if (contributors.isEmpty()) {
+            return Response.status(Response.Status.NO_CONTENT).build();
+        }
+
+        return Response.ok(contributors).build();
 
     }
 

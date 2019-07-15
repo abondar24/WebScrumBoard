@@ -251,17 +251,6 @@ public class MapperTest {
         cleanData();
     }
 
-    @Test
-    public void getUserByContributorIdTest() {
-        var user = createUser();
-        var project = createProject();
-        var ctr = createContributor(user.getId(), project.getId(), true);
-
-        var res = mapper.getUserByContributorId(ctr.getId());
-        assertEquals(user.getId(), res.getId());
-
-        cleanData();
-    }
 
     @Test
     public void updateContributorTest() {
@@ -298,15 +287,28 @@ public class MapperTest {
     }
 
     @Test
-    public void getContributorByUserId() {
+    public void getContributorsByUserId() {
         var user = createUser();
         var project = createProject();
         createContributor(user.getId(), project.getId(), true);
 
-        var res = mapper.getContributorByUserId(user.getId());
-        assertEquals(user.getId(), res.getUserId());
+        var res = mapper.getContributorsByUserId(user.getId(),0,1);
+
+        assertEquals(1,res.size());
+        assertEquals(user.getId(), res.get(0).getUserId());
 
         cleanData();
+    }
+
+    @Test
+    public void deactivateContributorsTest(){
+        var user = createUser();
+        var project = createProject();
+        var ctr = createContributor(user.getId(), project.getId(), false);
+
+        mapper.deactivateContributors(user.getId());
+        var res = mapper.getContributorById(ctr.getId());
+        assertFalse(res.isActive());
     }
 
     @Test

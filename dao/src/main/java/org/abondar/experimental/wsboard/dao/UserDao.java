@@ -7,10 +7,14 @@ import org.abondar.experimental.wsboard.dao.exception.DataCreationException;
 import org.abondar.experimental.wsboard.dao.exception.DataExistenceException;
 import org.abondar.experimental.wsboard.dao.exception.InvalidHashException;
 import org.abondar.experimental.wsboard.dao.password.PasswordUtil;
+import org.abondar.experimental.wsboard.datamodel.Contributor;
 import org.abondar.experimental.wsboard.datamodel.user.User;
 import org.abondar.experimental.wsboard.datamodel.user.UserRole;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.jta.JtaTransactionManager;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 
 /**
@@ -23,12 +27,12 @@ public class UserDao extends BaseDao {
 
     private static Logger logger = LoggerFactory.getLogger(UserDao.class);
 
-    private ContributorDao contributorDao;
 
+    private JtaTransactionManager transactionManager;
 
-    public UserDao(DataMapper mapper, BaseDao contributorDao) {
+    public UserDao(DataMapper mapper,JtaTransactionManager transactionManager) {
         super(mapper);
-        this.contributorDao = (ContributorDao) contributorDao;
+        this.transactionManager = transactionManager;
     }
 
     /**
@@ -215,24 +219,37 @@ public class UserDao extends BaseDao {
      * @return user POJO
      */
     public User deleteUser(long id) throws DataExistenceException, DataCreationException {
-        var usr = findUserById(id);
+        TransactionStatus txStatus =
+                transactionManager.getTransaction(new DefaultTransactionDefinition());
+        User usr;
+        try {
+            usr = findUserById(id);
+        } catch (DataExistenceException ex){
+            transactionManager.rollback(txStatus);
+            throw new DataExistenceException(ex.getMessage());
+        }
 
-        var contributor = mapper.getContributorByUserId(id);
-        if (contributor != null) {
-            if (contributor.isOwner()) {
+        var contributors = mapper.getContributorsByUserId(id,-1,0);
+        if (!contributors.isEmpty()) {
+            var isOwnerOnce = contributors.stream().anyMatch(Contributor::isOwner);
+            if (isOwnerOnce) {
                 logger.error(LogMessageUtil.USER_IS_PROJECT_OWNER);
+                transactionManager.rollback(txStatus);
                 throw new DataCreationException(LogMessageUtil.USER_IS_PROJECT_OWNER);
             }
-            //TODO: deactivate all user contributions.
-            contributorDao.updateContributor(contributor.getId(), contributor.isOwner(), false);
+
+            mapper.deactivateContributors(usr.getId());
+
+            usr.setDeleted();
+
+            mapper.updateUser(usr);
+
+            var msg = String.format(LogMessageUtil.LOG_FORMAT + "%s", "User ", usr.getId(), " marked as deleted");
+            logger.info(msg);
+            transactionManager.commit(txStatus);
+
+
         }
-        usr.setDeleted();
-
-        mapper.updateUser(usr);
-
-        var msg = String.format(LogMessageUtil.LOG_FORMAT + "%s", "User ", usr.getId(), " marked as deleted");
-        logger.info(msg);
-
         return usr;
     }
 

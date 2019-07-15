@@ -19,6 +19,12 @@
             <version>2.0.0</version>
         </dependency>
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jta-atomikos</artifactId>
+            <version>${springboot.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.abondar.experimental.wsboard</groupId>
             <artifactId>dataModel</artifactId>
             <version>1.0</version>

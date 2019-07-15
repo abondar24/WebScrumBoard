@@ -220,6 +220,12 @@
         WHERE id = #{id}
     </update>
 
+    <update id="deactivateContributors">
+        UPDATE contributor
+        SET is_active = false
+        WHERE user_id = #{userId}
+    </update>
+
     <select id="getUserByLogin" resultMap="userMap" useCache="true">
         SELECT *
         FROM
@@ -282,24 +288,12 @@
         WHERE ctr.id=#{id}
     </select>
 
-    <select id="getContributorByUserId" resultMap="contributorMap">
+    <select id="getContributorsByUserId" resultMap="contributorMap" useCache="true">
         SELECT *
         FROM
         <include refid="contributorTable"/>
         WHERE ctr.user_id=#{userId}
     </select>
-
-    <select id="getUserByContributorId" resultMap="userMap">
-        SELECT *
-        FROM
-        <include refid="userTable"/>
-        JOIN
-        <include refid="contributorTable"/>
-        ON ctr.user_id = usr.id
-
-        WHERE ctr.id=#{ctrId}
-    </select>
-
 
     <select id="getContributorsForProject" resultMap="userMap" useCache="true">
         SELECT *

@@ -97,7 +97,6 @@ public class ProjectServiceTestImpl implements ProjectService {
             testProject.setActive(isActive);
 
         }
-        System.out.println(testProject);
 
         return Response.ok(testProject).build();
     }

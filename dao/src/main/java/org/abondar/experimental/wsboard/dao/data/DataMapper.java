@@ -49,6 +49,7 @@ public interface DataMapper {
 
     User getUserByLogin(@Param("login") String login);
 
+    //TODO: return list of users by list of ids with offset and limit
     User getUserById(@Param("id") long id);
 
     Project getProjectById(@Param("id") long id);
@@ -63,11 +64,7 @@ public interface DataMapper {
 
     Contributor getContributorById(@Param("id") long id);
 
-    //TODO: switch to list with offset and limit
-    Contributor getContributorByUserId(@Param("userId") long userId);
-
-    //TODO: return list of users by list of ids
-    User getUserByContributorId(@Param("ctrId") long ctrId);
+    List<Contributor> getContributorsByUserId(@Param("userId") long userId, @Param("offset") int offset, @Param("limit") int limit);
 
     Task getTaskById(@Param("id") long id);
 
@@ -91,7 +88,7 @@ public interface DataMapper {
     List<Sprint> getSprints(@Param("offset") int offset, @Param("limit") int limit);
 
     //TODO: deactivate all contributors for project
-    //TODO: deactivate all user contributions.
+    void deactivateContributors(@Param("userId") long userId);
 
     void deleteTask(@Param("id") long id);
 

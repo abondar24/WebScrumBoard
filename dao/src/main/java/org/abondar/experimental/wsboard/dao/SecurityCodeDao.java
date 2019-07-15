@@ -49,6 +49,7 @@ public class SecurityCodeDao extends BaseDao {
         return code;
     }
 
+    // replace with hard delete
     public void updateCode(long userId, long code) throws DataExistenceException {
         checkUser(userId);
 

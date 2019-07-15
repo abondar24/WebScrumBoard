@@ -104,6 +104,7 @@ public interface ProjectService {
             produces = "application/json")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Project found", response = Project.class),
+            @ApiResponse(code = 204, message = "No contributors found"),
             @ApiResponse(code = 404, message = "User id not exists")
     })
     Response findUserProjects(@QueryParam("id") @ApiParam(required = true) long userId);
