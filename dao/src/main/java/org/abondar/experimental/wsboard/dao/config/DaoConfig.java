@@ -47,7 +47,7 @@ public class DaoConfig {
 
     @Bean(name = "projectDao")
     public BaseDao projectDao(SqlSessionFactory sqlSessionFactory) {
-        return new ProjectDao(mapper(sqlSessionFactory));
+        return new ProjectDao(mapper(sqlSessionFactory),txManager());
     }
 
     @Bean(name="contributorDao")

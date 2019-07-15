@@ -7,6 +7,9 @@ import org.abondar.experimental.wsboard.dao.exception.DataExistenceException;
 import org.abondar.experimental.wsboard.datamodel.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.jta.JtaTransactionManager;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import java.util.Date;
 import java.util.List;
@@ -21,9 +24,11 @@ public class ProjectDao extends BaseDao {
 
     private static Logger logger = LoggerFactory.getLogger(ProjectDao.class);
 
+    private JtaTransactionManager transactionManager;
 
-    public ProjectDao(DataMapper mapper) {
+    public ProjectDao(DataMapper mapper,JtaTransactionManager transactionManager) {
         super(mapper);
+        this.transactionManager = transactionManager;
     }
 
 
@@ -120,14 +125,26 @@ public class ProjectDao extends BaseDao {
      * @throws DataExistenceException
      */
     public long deleteProject(long id) throws DataExistenceException {
-        findProjectById(id);
+        TransactionStatus txStatus =
+                transactionManager.getTransaction(new DefaultTransactionDefinition());
 
-        mapper.deleteProject(id);
+        try {
+            findProjectById(id);
 
-        var msg = String.format(LogMessageUtil.LOG_FORMAT + " %s", "Project ", id, " successfully updated");
-        logger.info(msg);
+            mapper.deactivateProjectContributors(id);
+            mapper.deleteProject(id);
 
-        return id;
+            var msg = String.format(LogMessageUtil.LOG_FORMAT + " %s", "Project ", id, " successfully updated");
+            logger.info(msg);
+
+            transactionManager.commit(txStatus);
+            return id;
+        } catch (DataExistenceException ex){
+            transactionManager.rollback(txStatus);
+            throw  new DataExistenceException(ex.getMessage());
+        }
+
+
     }
 
 

@@ -238,7 +238,7 @@ public class UserDao extends BaseDao {
                 throw new DataCreationException(LogMessageUtil.USER_IS_PROJECT_OWNER);
             }
 
-            mapper.deactivateContributors(usr.getId());
+            mapper.deactivateUserContributors(usr.getId());
 
             usr.setDeleted();
 

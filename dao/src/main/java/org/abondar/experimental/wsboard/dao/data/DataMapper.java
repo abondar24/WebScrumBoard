@@ -20,7 +20,6 @@ import java.util.List;
 @Mapper
 public interface DataMapper {
 
-    //TODO: enable transactions for user delete and project deactivation
     void insertUser(@Param("user") User user);
 
     void insertProject(@Param("project") Project project);
@@ -87,8 +86,9 @@ public interface DataMapper {
     //TODO: get sprints for a selected project
     List<Sprint> getSprints(@Param("offset") int offset, @Param("limit") int limit);
 
-    //TODO: deactivate all contributors for project
-    void deactivateContributors(@Param("userId") long userId);
+    void deactivateUserContributors(@Param("userId") long userId);
+
+    void deactivateProjectContributors(@Param("projectId") long projectId);
 
     void deleteTask(@Param("id") long id);
 

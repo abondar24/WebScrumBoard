@@ -220,10 +220,16 @@
         WHERE id = #{id}
     </update>
 
-    <update id="deactivateContributors">
+    <update id="deactivateUserContributors">
         UPDATE contributor
         SET is_active = false
         WHERE user_id = #{userId}
+    </update>
+
+    <update id="deactivateProjectContributors">
+        UPDATE contributor
+        SET is_active = false
+        WHERE project_id = #{projectId}
     </update>
 
     <select id="getUserByLogin" resultMap="userMap" useCache="true">

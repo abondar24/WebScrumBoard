@@ -301,12 +301,23 @@ public class MapperTest {
     }
 
     @Test
-    public void deactivateContributorsTest(){
+    public void deactivateUserContributorsTest(){
         var user = createUser();
         var project = createProject();
         var ctr = createContributor(user.getId(), project.getId(), false);
 
-        mapper.deactivateContributors(user.getId());
+        mapper.deactivateUserContributors(user.getId());
+        var res = mapper.getContributorById(ctr.getId());
+        assertFalse(res.isActive());
+    }
+
+    @Test
+    public void deactivateProjectContributorsTest(){
+        var user = createUser();
+        var project = createProject();
+        var ctr = createContributor(user.getId(), project.getId(), false);
+
+        mapper.deactivateProjectContributors(project.getId());
         var res = mapper.getContributorById(ctr.getId());
         assertFalse(res.isActive());
     }
