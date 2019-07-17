@@ -48,8 +48,7 @@ public class SecurityCodeDao extends BaseDao {
         return code;
     }
 
-    //TODO: replace with hard delete
-    public void updateCode(long userId, long code) throws DataExistenceException {
+    public void enterCode(long userId, long code) throws DataExistenceException {
         checkUser(userId);
 
         var foundCode = mapper.getCodeByUserId(userId);
@@ -61,12 +60,7 @@ public class SecurityCodeDao extends BaseDao {
             throw new DataExistenceException(LogMessageUtil.CODE_NOT_MATCHES);
         }
 
-
-        mapper.updateCode(foundCode.getId());
-
-        var msg = String.format(LogMessageUtil.LOG_FORMAT, "New security code inserted for user", userId);
-        logger.info(msg);
-
+        mapper.deleteCode(foundCode.getId());
     }
 
 

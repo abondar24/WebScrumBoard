@@ -69,7 +69,6 @@
     <resultMap id="securityCodeMap" type="SecurityCode">
         <id column="id" property="id"/>
         <result column="code" property="code"/>
-        <result column="is_activated" property="isActivated"/>
         <result column="user_id" property="userId"/>
     </resultMap>
 
@@ -125,9 +124,8 @@
     </insert>
 
     <insert id="insertCode" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
-        INSERT INTO security_code (code, is_activated, user_id)
+        INSERT INTO security_code (code, user_id)
         VALUES (#{securityCode.code},
-                #{securityCode.isActivated},
                 #{securityCode.userId})
         ON CONFLICT (id) DO NOTHING;
     </insert>
@@ -188,12 +186,6 @@
     <update id="updateTaskSprint">
         UPDATE task
         SET sprint_id = #{sprintId}
-        WHERE id = #{id}
-    </update>
-
-    <update id="updateCode">
-        UPDATE security_code
-        SET is_activated = true
         WHERE id = #{id}
     </update>
 
@@ -351,6 +343,10 @@
 
     <delete id="deleteCodes">
         DELETE FROM security_code
+    </delete>
+
+    <delete id="deleteCode">
+        DELETE FROM security_code WHERE id=#{id}
     </delete>
 
 

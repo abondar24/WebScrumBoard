@@ -15,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -53,36 +54,36 @@ public class SecurityDaoTest {
 
 
     @Test
-    public void updateCodeTest() throws Exception {
+    public void enterCodeTest() throws Exception {
         var usr = createUser();
         var code = codeDao.insertCode(usr.getId());
 
-        codeDao.updateCode(usr.getId(), code);
+        codeDao.enterCode(usr.getId(), code);
         var sc = mapper.getCodeByUserId(usr.getId());
-        assertTrue(sc.isActivated());
+        assertNull(sc);
 
         cleanData();
     }
 
     @Test
-    public void updateCodeUserNotFoundTest() {
-        assertThrows(DataExistenceException.class, () -> codeDao.updateCode(7, 123));
+    public void enterCodeUserNotFoundTest() {
+        assertThrows(DataExistenceException.class, () -> codeDao.enterCode(7, 123));
     }
 
     @Test
-    public void updateCodeNotFoundTest() throws Exception {
+    public void enterCodeNotFoundTest() throws Exception {
         var usr = createUser();
 
-        assertThrows(DataExistenceException.class, () -> codeDao.updateCode(usr.getId(), 123));
+        assertThrows(DataExistenceException.class, () -> codeDao.enterCode(usr.getId(), 123));
         cleanData();
     }
 
     @Test
-    public void updateCodeNotMatchesTest() throws Exception {
+    public void enterCodeNotMatchesTest() throws Exception {
         var usr = createUser();
         codeDao.insertCode(usr.getId());
 
-        assertThrows(DataExistenceException.class, () -> codeDao.updateCode(usr.getId(), 123));
+        assertThrows(DataExistenceException.class, () -> codeDao.enterCode(usr.getId(), 123));
         cleanData();
     }
 

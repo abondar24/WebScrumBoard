@@ -13,8 +13,6 @@ public class SecurityCode {
 
     private long code;
 
-    private boolean isActivated;
-
     private long userId;
 
     public SecurityCode() {
@@ -22,7 +20,6 @@ public class SecurityCode {
 
     public SecurityCode(long code, long userId) {
         this.code = code;
-        this.isActivated = false;
         this.userId = userId;
     }
 
@@ -42,14 +39,6 @@ public class SecurityCode {
         this.code = code;
     }
 
-    public boolean isActivated() {
-        return isActivated;
-    }
-
-    public void setActivated(boolean activated) {
-        isActivated = activated;
-    }
-
     public long getUserId() {
         return userId;
     }
@@ -63,7 +52,6 @@ public class SecurityCode {
         return "SecurityCode{" +
                 "id=" + id +
                 ", code=" + code +
-                ", isActivated=" + isActivated +
                 ", userId=" + userId +
                 '}';
     }

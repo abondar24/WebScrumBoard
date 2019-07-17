@@ -44,8 +44,6 @@ public interface DataMapper {
 
     void updateTaskSprint(@Param("id")Long id,@Param("sprintId") long sprintId);
 
-    void updateCode(@Param("id") long id);
-
     User getUserByLogin(@Param("login") String login);
 
     //TODO: return list of users by list of ids with offset and limit
@@ -93,8 +91,9 @@ public interface DataMapper {
 
     void deleteProject(@Param("id") long id);
 
-
     void deleteSprint(@Param("id") long id);
+
+    void deleteCode(@Param("id") long id);
 
     void deleteUsers();
 
@@ -107,4 +106,6 @@ public interface DataMapper {
     void deleteSprints();
 
     void deleteCodes();
+
+
 }

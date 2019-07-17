@@ -269,7 +269,7 @@ public class UserServiceRoute extends RouteBuilder {
                 .body((bdy, hdrs) -> {
                     MessageContentsList formData = (MessageContentsList) bdy;
                     try {
-                        codeDao.updateCode((long) formData.get(0), (long) formData.get(1));
+                        codeDao.enterCode((long) formData.get(0), (long) formData.get(1));
                         return Response.ok().build();
                     } catch (DataExistenceException ex) {
                         if (ex.getMessage().equals(LogMessageUtil.CODE_NOT_EXISTS)) {

@@ -222,17 +222,16 @@ public class MapperTest {
     }
 
     @Test
-    public void updateCodeTest() {
+    public void deleteCodeTest() {
         var user = createUser();
 
         var code = new SecurityCode(123345, user.getId());
         mapper.insertCode(code);
 
-        mapper.updateCode(code.getId());
-
+        mapper.deleteCode(code.getId());
         code = mapper.getCodeByUserId(user.getId());
 
-        assertTrue(code.isActivated());
+        assertNull(code);
 
         cleanData();
     }
