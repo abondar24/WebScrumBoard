@@ -17,6 +17,7 @@ import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Test implementation of user web service
@@ -198,6 +199,18 @@ public class UserServiceTestImpl implements UserService {
         }
 
         return Response.ok(testUser).build();
+    }
+
+    @Override
+    public Response findUsersByIds(List<Long> ids) {
+        var res = List.of(testUser);
+
+        if (ids.contains(testUser.getId())){
+            return Response.ok(res).build();
+        } else {
+            return Response.status(Response.Status.NO_CONTENT).build();
+        }
+
     }
 
     @Override

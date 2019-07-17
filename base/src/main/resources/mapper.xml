@@ -209,6 +209,13 @@
         SELECT * FROM wsuser WHERE id=#{id}
     </select>
 
+    <select id="getUsersByIds" resultMap="userMap">
+        SELECT * FROM wsuser WHERE id IN
+        <foreach item='id' index='index' collection='idList' open='(' separator=',' close=')'>
+              #{id}
+       </foreach>
+    </select>
+
     <select id="getProjectById" resultMap="projectMap">
         SELECT * FROM project WHERE id=#{id}
     </select>

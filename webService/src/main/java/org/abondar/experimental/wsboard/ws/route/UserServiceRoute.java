@@ -19,6 +19,7 @@ import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
 import java.util.Date;
+import java.util.List;
 
 import static org.abondar.experimental.wsboard.ws.route.RouteConstantUtil.EMAIL_TYPE_HEADER;
 import static org.abondar.experimental.wsboard.ws.route.RouteConstantUtil.LOG_HEADERS;
@@ -46,7 +47,7 @@ public class UserServiceRoute extends RouteBuilder {
 
 
         from("direct:createUser").routeId("createUser")
-                .log(LoggingLevel.DEBUG,LOG_HEADERS)
+                .log(LoggingLevel.DEBUG, LOG_HEADERS)
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList formData = (MessageContentsList) bdy;
@@ -74,7 +75,7 @@ public class UserServiceRoute extends RouteBuilder {
                 .removeHeaders("*");
 
         from("direct:updateUser").routeId("updateUser")
-                .log(LoggingLevel.DEBUG,LOG_HEADERS)
+                .log(LoggingLevel.DEBUG, LOG_HEADERS)
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList formData = (MessageContentsList) bdy;
@@ -94,7 +95,7 @@ public class UserServiceRoute extends RouteBuilder {
                 });
 
         from("direct:updateAvatar").routeId("updateAvatar")
-                .log(LoggingLevel.DEBUG,LOG_HEADERS)
+                .log(LoggingLevel.DEBUG, LOG_HEADERS)
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList formData = (MessageContentsList) bdy;
@@ -116,7 +117,7 @@ public class UserServiceRoute extends RouteBuilder {
 
 
         from("direct:updateLogin").routeId("updateLogin")
-                .log(LoggingLevel.DEBUG,LOG_HEADERS)
+                .log(LoggingLevel.DEBUG, LOG_HEADERS)
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList formData = (MessageContentsList) bdy;
@@ -144,7 +145,7 @@ public class UserServiceRoute extends RouteBuilder {
 
 
         from("direct:updatePassword").routeId("updatePassword")
-                .log(LoggingLevel.DEBUG,LOG_HEADERS)
+                .log(LoggingLevel.DEBUG, LOG_HEADERS)
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList formData = (MessageContentsList) bdy;
@@ -169,7 +170,7 @@ public class UserServiceRoute extends RouteBuilder {
                 .removeHeaders("*");
 
         from("direct:deleteUser").routeId("deleteUser")
-                .log(LoggingLevel.DEBUG,LOG_HEADERS)
+                .log(LoggingLevel.DEBUG, LOG_HEADERS)
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList queryData = (MessageContentsList) bdy;
@@ -191,7 +192,7 @@ public class UserServiceRoute extends RouteBuilder {
                 .removeHeaders("*");
 
         from("direct:loginUser").routeId("login")
-                .log(LoggingLevel.DEBUG,LOG_HEADERS)
+                .log(LoggingLevel.DEBUG, LOG_HEADERS)
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList formData = (MessageContentsList) bdy;
@@ -210,7 +211,7 @@ public class UserServiceRoute extends RouteBuilder {
 
 
         from("direct:logoutUser").routeId("logout")
-                .log(LoggingLevel.DEBUG,LOG_HEADERS)
+                .log(LoggingLevel.DEBUG, LOG_HEADERS)
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList formData = (MessageContentsList) bdy;
@@ -226,7 +227,7 @@ public class UserServiceRoute extends RouteBuilder {
 
 
         from("direct:findUserByLogin").routeId("findUserByLogin")
-                .log(LoggingLevel.DEBUG,LOG_HEADERS)
+                .log(LoggingLevel.DEBUG, LOG_HEADERS)
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList formData = (MessageContentsList) bdy;
@@ -238,9 +239,22 @@ public class UserServiceRoute extends RouteBuilder {
                     }
                 });
 
+        from("direct:findUsersByIds").routeId("findUsersByIds")
+                .log(LoggingLevel.DEBUG, LOG_HEADERS)
+                .transform()
+                .body((bdy, hdrs) -> {
+                    MessageContentsList formData = (MessageContentsList) bdy;
+                    var usrs = dao.findUsersByIds((List<Long>) formData.get(0));
+                    if (usrs.isEmpty()){
+                        return Response.status(Response.Status.NO_CONTENT);
+                    }
+
+                    return Response.ok(usrs).build();
+                });
+
 
         from("direct:resetPassword").routeId("resetPassword")
-                .log(LoggingLevel.DEBUG,LOG_HEADERS)
+                .log(LoggingLevel.DEBUG, LOG_HEADERS)
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList formData = (MessageContentsList) bdy;
@@ -249,7 +263,7 @@ public class UserServiceRoute extends RouteBuilder {
                         dao.resetPassword(((long) formData.get(0)));
 
                         hdrs.put("emailType", "resetPassword");
-                        hdrs.put("code",codeDao.insertCode(user.getId()));
+                        hdrs.put("code", codeDao.insertCode(user.getId()));
                         hdrs.put("To", user.getEmail());
 
                         return Response.ok().build();
@@ -264,7 +278,7 @@ public class UserServiceRoute extends RouteBuilder {
 
 
         from("direct:enterCode").routeId("enterCode")
-                .log(LoggingLevel.DEBUG,LOG_HEADERS)
+                .log(LoggingLevel.DEBUG, LOG_HEADERS)
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList formData = (MessageContentsList) bdy;

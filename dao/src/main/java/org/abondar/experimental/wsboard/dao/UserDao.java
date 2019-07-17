@@ -16,6 +16,8 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.jta.JtaTransactionManager;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
+import java.util.List;
+
 
 /**
  * Data access object for user
@@ -296,6 +298,15 @@ public class UserDao extends BaseDao {
         logger.info(msg);
 
         return usr;
+    }
+
+    /**
+     * Get users by ids
+     * @param ids - user ids
+     * @return - list of users
+     */
+    public List<User> findUsersByIds(List<Long> ids){
+        return mapper.getUsersByIds(ids);
     }
 
     /**

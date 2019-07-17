@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.List;
 import java.util.Map;
 
 @SpringBootTest(classes = WebScrumBoardApplication.class)
@@ -170,6 +171,22 @@ public class UserServiceRouteTest {
 
         mockEndpoint.reset();
     }
+
+    @Test
+    public void findUsersByIdsTest() throws Exception {
+        Object[] values = new Object[]{List.of(1L,2L,3L)};
+        MessageContentsList testList = new MessageContentsList(values);
+
+        producerTemplate.sendBodyAndHeaders("direct:findUsersByIds", testList, Map.of());
+
+        mockEndpoint.assertIsSatisfied();
+        mockEndpoint.expectedBodiesReceived();
+        mockEndpoint.expectedMessageCount(1);
+
+
+        mockEndpoint.reset();
+    }
+
 
     @Test
     public void resetPasswordRouteTest() throws Exception {

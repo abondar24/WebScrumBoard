@@ -20,6 +20,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Date;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -218,6 +219,27 @@ public class UserDaoTest {
     public void findUserNotFoundByLoginTest() {
         assertThrows(DataExistenceException.class, () -> userDao.findUserByLogin("test"));
     }
+
+    @Test
+    public void findUsersByIdsTest() throws Exception {
+        var usr = createUser();
+        var id = usr.getId();
+
+        var res = userDao.findUsersByIds(List.of(id));
+        assertEquals(1, res.size());
+        mapper.deleteUsers();
+    }
+
+    @Test
+    public void findUsersByIdsNotExistingIdsTest() throws Exception {
+        var usr = createUser();
+        var id = usr.getId();
+
+        var res = userDao.findUsersByIds(List.of(id,7L,3L));
+        assertEquals(1, res.size());
+        mapper.deleteUsers();
+    }
+
 
     @Test
     public void deleteUserTest() throws Exception {

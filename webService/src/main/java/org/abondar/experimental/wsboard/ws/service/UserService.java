@@ -17,6 +17,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.List;
 
 /**
  * User CRUD and login web service
@@ -180,6 +181,20 @@ public interface UserService {
             @ApiResponse(code = 404, message = "User not found")
     })
     Response findUserByLogin(@QueryParam("login") @ApiParam(required = true) String login);
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/find_by_ids")
+    @ApiOperation(
+            value = "Find by IDs",
+            notes = "Find users by ids",
+            produces = "application/json")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "User found"),
+            @ApiResponse(code = 204, message = "Empty result")
+    })
+    Response findUsersByIds(@QueryParam("id") @ApiParam(required = true)List<Long>ids);
+
 
     @GET
     @Path("/reset_pwd")

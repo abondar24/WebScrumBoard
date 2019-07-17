@@ -20,6 +20,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MediaType;
+import java.util.Collection;
 import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -70,7 +71,6 @@ public class UserServiceTest {
         assertEquals(200, resp.getStatus());
 
         var user = resp.readEntity(User.class);
-
 
 
         assertEquals(10, user.getId());
@@ -413,6 +413,36 @@ public class UserServiceTest {
         var msg = resp.readEntity(String.class);
         assertEquals(LogMessageUtil.USER_NOT_EXISTS, msg);
     }
+
+    @Test
+    public void findUsersByIdsTest() {
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+        var usr = createUser();
+
+        client.path("/user/find_by_ids").accept(MediaType.APPLICATION_JSON)
+                .query("id", usr.getId())
+                .query("id", 1L)
+                .query("id", 2L);
+
+        var resp = client.get();
+        assertEquals(200, resp.getStatus());
+
+        Collection<? extends User> users = client.getCollection(User.class);
+        assertEquals(1, users.size());
+    }
+
+    @Test
+    public void findUsersByIdsEmptyResTest() {
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+        createUser();
+
+        client.path("/user/find_by_ids").accept(MediaType.APPLICATION_JSON)
+                .query("id", 1L)
+                .query("id", 2L);
+
+        var resp = client.get();
+        assertEquals(204, resp.getStatus());
+}
 
     @Test
     public void resetPasswordTest() {

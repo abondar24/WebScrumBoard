@@ -18,6 +18,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Date;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -137,6 +138,17 @@ public class MapperTest {
         assertEquals(user.getId(), res.getId());
         cleanData();
     }
+
+    @Test
+    public void getUsersByIdsTest() {
+        var user = createUser();
+        var user1 = createUser();
+        var res = mapper.getUsersByIds(List.of(user.getId(),user1.getId()));
+
+        assertEquals(2,res.size());
+        cleanData();
+    }
+
 
 
     @Test

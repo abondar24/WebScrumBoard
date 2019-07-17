@@ -46,8 +46,9 @@ public interface DataMapper {
 
     User getUserByLogin(@Param("login") String login);
 
-    //TODO: return list of users by list of ids with offset and limit
     User getUserById(@Param("id") long id);
+
+    List<User> getUsersByIds(@Param("idList") List<Long> idList);
 
     Project getProjectById(@Param("id") long id);
 
