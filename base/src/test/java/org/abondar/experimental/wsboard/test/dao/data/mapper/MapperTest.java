@@ -380,7 +380,7 @@ public class MapperTest {
 
     @Test
     public void insertSprintTest() {
-        var sprint = createSprint();
+        var sprint = createSprint(createProject().getId());
         assertTrue(sprint.getId() > 0);
 
         cleanData();
@@ -388,7 +388,7 @@ public class MapperTest {
 
     @Test
     public void getSprintByIdTest() {
-        var sprint = createSprint();
+        var sprint = createSprint(createProject().getId());
         var res = mapper.getSprintById(sprint.getId());
         assertEquals(sprint.getName(), res.getName());
 
@@ -397,7 +397,7 @@ public class MapperTest {
 
     @Test
     public void getSprintByNameTest() {
-        var sprint = createSprint();
+        var sprint = createSprint(createProject().getId());
         var res = mapper.getSprintByName(sprint.getName());
         assertEquals(sprint.getName(), res.getName());
 
@@ -405,12 +405,13 @@ public class MapperTest {
     }
 
     @Test
-    public void getAllSprintsTest() {
-        createSprint();
-        createSprint();
-        createSprint();
+    public void getSprintsTest() {
+        var prId = createProject().getId();
+        createSprint(prId);
+        createSprint(prId);
+        createSprint(prId);
 
-        var sprints = mapper.getSprints(0, 3);
+        var sprints = mapper.getSprints(prId,0, 3);
         assertEquals(3, sprints.size());
 
         cleanData();
@@ -442,7 +443,7 @@ public class MapperTest {
         var project = createProject();
         var contributor = createContributor(user.getId(), project.getId(), false);
         var task = createTask(contributor.getId());
-        var sprint = createSprint();
+        var sprint = createSprint(project.getId());
 
         task.setSprintId(sprint.getId());
         mapper.updateTaskSprint(task.getId(), task.getSprintId());
@@ -460,7 +461,7 @@ public class MapperTest {
         var contributor = createContributor(user.getId(), project.getId(), false);
         var task = createTask(contributor.getId());
         task.setTaskState(TaskState.COMPLETED);
-        var sprint = createSprint();
+        var sprint = createSprint(project.getId());
 
         task.setSprintId(sprint.getId());
         mapper.updateTaskSprint(task.getId(), sprint.getId());
@@ -499,7 +500,7 @@ public class MapperTest {
 
     @Test
     public void deleteSprintTest() {
-        var sprint = createSprint();
+        var sprint = createSprint(createProject().getId());
 
         mapper.deleteSprint(sprint.getId());
 
@@ -537,8 +538,8 @@ public class MapperTest {
         return task;
     }
 
-    private Sprint createSprint() {
-        var sprint = new Sprint("test", new Date(), new Date(),createProject().getId());
+    private Sprint createSprint(long projectId) {
+        var sprint = new Sprint("test", new Date(), new Date(),projectId);
         mapper.insertSprint(sprint);
         return sprint;
     }

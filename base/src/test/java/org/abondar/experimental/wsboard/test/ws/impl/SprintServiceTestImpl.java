@@ -2,10 +2,16 @@ package org.abondar.experimental.wsboard.test.ws.impl;
 
 import org.abondar.experimental.wsboard.dao.data.LogMessageUtil;
 import org.abondar.experimental.wsboard.dao.exception.DataCreationException;
+import org.abondar.experimental.wsboard.datamodel.Project;
 import org.abondar.experimental.wsboard.datamodel.Sprint;
 import org.abondar.experimental.wsboard.ws.service.SprintService;
 
+import javax.ws.rs.Consumes;
+import javax.ws.rs.FormParam;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -20,6 +26,7 @@ import java.util.stream.Collectors;
 public class SprintServiceTestImpl implements SprintService {
 
 
+    private Project testProject;
     private Sprint testSprint;
 
     @Override
@@ -45,6 +52,10 @@ public class SprintServiceTestImpl implements SprintService {
             if (startDt.after(endDt)) {
                 return Response.status(Response.Status.RESET_CONTENT).entity(LogMessageUtil.WRONG_END_DATE).build();
 
+            }
+
+            if (testProject.getId()!=projectId){
+                return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.PROJECT_NOT_EXISTS).build();
             }
 
             testSprint = new Sprint(name, startDt, endDt,projectId);
@@ -107,13 +118,16 @@ public class SprintServiceTestImpl implements SprintService {
     }
 
     @Override
-    public Response getSprints(int offset, int limit) {
+    public Response getSprints(long projectId,int offset, int limit) {
+        if (testProject.getId()!=projectId){
+            return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.PROJECT_NOT_EXISTS).build();
+        }
+
         var sprints = List.of(testSprint, new Sprint(), new Sprint(), new Sprint(), new Sprint());
 
         if (offset == -1) {
             return Response.ok(sprints).build();
         }
-
 
         sprints = sprints.stream()
                 .skip(offset)
@@ -121,7 +135,7 @@ public class SprintServiceTestImpl implements SprintService {
                 .collect(Collectors.toList());
 
         if (sprints.isEmpty()) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(Response.Status.NO_CONTENT).build();
         }
 
         return Response.ok(sprints).build();
@@ -134,6 +148,28 @@ public class SprintServiceTestImpl implements SprintService {
         }
 
         return Response.ok().build();
+    }
+
+
+    @POST
+    @Path("/create_project")
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response createProject(@FormParam("name") String name,
+                                  @FormParam("startDate") String startDate) {
+
+
+        Date stDate;
+        try {
+            stDate = convertDate(startDate);
+        } catch (DataCreationException ex) {
+            return Response.status(Response.Status.PARTIAL_CONTENT).entity(LogMessageUtil.PARSE_DATE_FAILED).build();
+        }
+
+        testProject = new Project(name, stDate);
+        testProject.setId(10);
+
+        return Response.ok(testProject).build();
     }
 
     /**

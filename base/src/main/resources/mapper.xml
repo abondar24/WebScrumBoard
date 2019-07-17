@@ -403,6 +403,7 @@
         FROM
         <include refid="sprintTable"/>
 
+        WHERE sp.project_id = #{projectId}
         OFFSET #{offset}
         LIMIT #{limit}
     </select>

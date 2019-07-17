@@ -68,7 +68,7 @@ public class SprintServiceRouteTest {
 
     @Test
     public void getSprintsRouteTest() throws Exception {
-        Object[] values = new Object[]{0, 3};
+        Object[] values = new Object[]{someId,0, 3};
         MessageContentsList testList = new MessageContentsList(values);
         producerTemplate.sendBodyAndHeaders("direct:getSprints", testList,
                 Map.of());

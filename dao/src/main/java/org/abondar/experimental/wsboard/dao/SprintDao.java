@@ -147,14 +147,23 @@ public class SprintDao extends BaseDao {
     /**
      * Get the list of sprints with offset and limit
      *
+     * @param projectId - project for which sprints to retrieve
      * @param offset - start of list
      * @param limit  - list size
      * @return Object wrapper with sprint POJO list or with error message
      */
-    public List<Sprint> getSprints(int offset, int limit) {
-        var sprints = mapper.getSprints(offset, limit);
+    public List<Sprint> getSprints(long projectId,int offset, int limit) throws DataExistenceException {
 
-        var msg = String.format("%s %d", "Found sprints: ", sprints.size());
+        String msg;
+        if (mapper.getProjectById(projectId)==null) {
+            msg = String.format(LogMessageUtil.LOG_FORMAT,LogMessageUtil.PROJECT_NOT_EXISTS,projectId);
+            logger.error(msg);
+            throw new DataExistenceException(LogMessageUtil.PROJECT_NOT_EXISTS);
+        }
+
+        var sprints = mapper.getSprints(projectId,offset, limit);
+
+        msg = String.format("%s %d", "Found sprints: ", sprints.size());
         logger.info(msg);
 
         return sprints;

@@ -83,8 +83,7 @@ public interface DataMapper {
 
     Sprint getSprintById(@Param("id")long id);
 
-    //TODO: get sprints for a selected project
-    List<Sprint> getSprints(@Param("offset") int offset, @Param("limit") int limit);
+    List<Sprint> getSprints(@Param("projectId")long projectId, @Param("offset") int offset, @Param("limit") int limit);
 
     void deactivateUserContributors(@Param("userId") long userId);
 

@@ -118,12 +118,17 @@ public class SprintServiceRoute extends RouteBuilder {
 
                     MessageContentsList queryData = (MessageContentsList) bdy;
 
-                    var sprints = sprintDao.getSprints((int) queryData.get(0), (int) queryData.get(1));
-                    if (sprints.isEmpty()) {
-                        return Response.status(Response.Status.NOT_FOUND).build();
+                    try{
+                        var sprints = sprintDao.getSprints((long)queryData.get(0),(int) queryData.get(1), (int) queryData.get(2));
+                        if (sprints.isEmpty()) {
+                            return Response.status(Response.Status.NO_CONTENT).build();
+                        }
+
+                        return Response.ok(sprints).build();
+                    } catch (DataExistenceException ex){
+                        return Response.status(Response.Status.NOT_FOUND).entity(ex.getMessage()).build();
                     }
 
-                    return Response.ok(sprints).build();
                 });
 
         from("direct:deleteSprint").routeId("deleteSprint")

@@ -3,6 +3,7 @@ package org.abondar.experimental.wsboard.test.ws;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import org.abondar.experimental.wsboard.base.WebScrumBoardApplication;
 import org.abondar.experimental.wsboard.dao.data.LogMessageUtil;
+import org.abondar.experimental.wsboard.datamodel.Project;
 import org.abondar.experimental.wsboard.datamodel.Sprint;
 import org.abondar.experimental.wsboard.test.ws.impl.SprintServiceTestImpl;
 import org.apache.cxf.endpoint.Server;
@@ -52,7 +53,7 @@ public class SprintServiceTest {
         form.param("name", sprintName);
         form.param("startDate", startDate);
         form.param("endDate", endDate);
-        form.param("projectId","7");
+        form.param("projectId",String.valueOf(createProject()));
 
         client.path("/sprint/create").accept(MediaType.APPLICATION_JSON);
 
@@ -142,10 +143,32 @@ public class SprintServiceTest {
     }
 
     @Test
+    public void createSprintProjectNotFoundTest() {
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+
+        var form = new Form();
+        form.param("name", sprintName);
+        form.param("startDate", startDate);
+        form.param("endDate", endDate);
+        form.param("projectId","7");
+
+        client.path("/sprint/create").accept(MediaType.APPLICATION_JSON);
+
+        var res = client.post(form);
+        assertEquals(404, res.getStatus());
+
+        var msg = res.readEntity(String.class);
+
+        assertEquals(LogMessageUtil.PROJECT_NOT_EXISTS, msg);
+    }
+
+
+    @Test
     public void updateSprintTest() {
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
-        var sp = createSprint();
+
+        var sp = createSprint(createProject());
 
         var form = new Form();
         form.param("id", String.valueOf(sp.getId()));
@@ -165,7 +188,7 @@ public class SprintServiceTest {
     public void updateSprintWrongStartDateTest() {
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
-        var sp = createSprint();
+        var sp = createSprint(createProject());
 
         var form = new Form();
         form.param("id", String.valueOf(sp.getId()));
@@ -185,7 +208,7 @@ public class SprintServiceTest {
     public void updateSprintWrongEndDateTest() {
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
-        var sp = createSprint();
+        var sp = createSprint(createProject());
 
         var form = new Form();
         form.param("id", String.valueOf(sp.getId()));
@@ -206,7 +229,7 @@ public class SprintServiceTest {
     public void updateSprintNotExistsTest() {
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
-        createSprint();
+        createSprint(createProject());
 
         var form = new Form();
         form.param("id", "7");
@@ -224,7 +247,7 @@ public class SprintServiceTest {
     public void updateSprintExistsTest() {
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
-        var sp = createSprint();
+        var sp = createSprint(createProject());
 
         var form = new Form();
         form.param("id", String.valueOf(sp.getId()));
@@ -244,7 +267,7 @@ public class SprintServiceTest {
     public void findSprintTest() {
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
-        var sp = createSprint();
+        var sp = createSprint(createProject());
 
         client.path("/sprint/find").query("id", sp.getId());
 
@@ -259,7 +282,7 @@ public class SprintServiceTest {
     public void findSprintNotFoundTest() {
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
-        createSprint();
+        createSprint(createProject());
 
         client.path("/sprint/find").query("id", 7);
 
@@ -271,12 +294,14 @@ public class SprintServiceTest {
     }
 
     @Test
-    public void findAllSprintsTest() {
+    public void findSprintsTest() {
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
-        var sp = createSprint();
+        var prj = createProject();
+        var sp = createSprint(prj);
 
         client.path("/sprint/find_all")
+                .query("projectId",prj)
                 .query("offset", 0)
                 .query("limit", 2);
 
@@ -290,12 +315,15 @@ public class SprintServiceTest {
     }
 
     @Test
-    public void findAllSprintsMinusOffsetTest() {
+    public void findSprintsMinusOffsetTest() {
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
-        var sp = createSprint();
+        var prj = createProject();
+        var sp = createSprint(prj);
 
-        client.path("/sprint/find_all").query("offset", -1);
+        client.path("/sprint/find_all")
+                .query("projectId",prj)
+                .query("offset", -1);
 
         var res = client.get();
         assertEquals(200, res.getStatus());
@@ -310,7 +338,7 @@ public class SprintServiceTest {
     public void findAllSprintsNotFoundTest() {
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
-        createSprint();
+        createSprint(createProject());
 
         client.path("/sprint/find_all")
                 .query("offset", 6)
@@ -326,7 +354,7 @@ public class SprintServiceTest {
     public void deleteSprintTest() {
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
-        var sp = createSprint();
+        var sp = createSprint(createProject());
 
         client.path("/sprint/delete").query("id", sp.getId());
 
@@ -339,7 +367,7 @@ public class SprintServiceTest {
     public void deleteSprintNotFoundTest() {
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
-        createSprint();
+        createSprint(createProject());
 
         client.path("/sprint/delete").query("id", 7);
 
@@ -350,14 +378,27 @@ public class SprintServiceTest {
         assertEquals(LogMessageUtil.SPRINT_NOT_EXISTS, found);
     }
 
-    private Sprint createSprint() {
+    private long createProject() {
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+
+        var form = new Form();
+        form.param("name", "prjName");
+        form.param("startDate", "31/10/1999");
+
+        client.path("/sprint/create_project").accept(MediaType.APPLICATION_JSON);
+
+        var res = client.post(form);
+        return res.readEntity(Project.class).getId();
+    }
+
+    private Sprint createSprint(long projectId) {
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
         var form = new Form();
         form.param("name", sprintName);
         form.param("startDate", startDate);
         form.param("endDate", endDate);
-        form.param("projectId","7");
+        form.param("projectId",String.valueOf(projectId));
 
 
         client.path("/sprint/create").accept(MediaType.APPLICATION_JSON);

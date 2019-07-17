@@ -146,12 +146,23 @@ public class SprintDaoTest {
 
     @Test
     public void getSprintsTest() throws Exception {
-        var sp = sprintDao.createSprint("test", new Date(), new Date(),createProject());
+        var prj = createProject();
+        var sp = sprintDao.createSprint("test", new Date(), new Date(),prj);
 
-        var res = sprintDao.getSprints(0, 1);
+        var res = sprintDao.getSprints(prj,0, 1);
 
         assertEquals(1, res.size());
         assertEquals(sp.getName(), res.get(0).getName());
+
+        cleanData();
+    }
+
+    @Test
+    public void getSprintsProjectNotFoundTest() throws Exception {
+        var prj = createProject();
+        sprintDao.createSprint("test", new Date(), new Date(),prj);
+
+        assertThrows(DataExistenceException.class,()-> sprintDao.getSprints(7,0, 1));
 
         cleanData();
     }
