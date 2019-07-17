@@ -12,29 +12,6 @@
         <property name="memoryStoreEvictionPolicy" value="LRU"/>
     </cache>
 
-    <sql id="userTable">
-        wsuser usr
-    </sql>
-
-    <sql id="projectTable">
-        project prj
-    </sql>
-
-    <sql id="taskTable">
-        task ts
-    </sql>
-
-    <sql id="contributorTable">
-        contributor ctr
-    </sql>
-
-    <sql id="sprintTable">
-        sprint sp
-    </sql>
-
-    <sql id="securityCodeTable">
-        security_code sc
-    </sql>
 
 
     <resultMap id="userMap" type="User">
@@ -195,7 +172,7 @@
         WHERE id = #{sprint.id}
     </update>
 
-    <update id="updateTask" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+    <update id="updateTask" useGeneratedKeys="true" keyColumn="id" >
         UPDATE task
         SET contributor_id   = #{task.contributorId},
             dev_ops_enabled  = #{task.devOpsEnabled},
@@ -233,243 +210,147 @@
     </update>
 
     <select id="getUserByLogin" resultMap="userMap" useCache="true">
-        SELECT *
-        FROM
-        <include refid="userTable"/>
-        WHERE usr.login=#{login}
+        SELECT * FROM wsuser WHERE login=#{login}
     </select>
 
     <select id="getUserById" resultMap="userMap">
-        SELECT *
-        FROM
-        <include refid="userTable"/>
-        WHERE usr.id=#{id}
+        SELECT * FROM wsuser WHERE id=#{id}
     </select>
 
     <select id="getProjectById" resultMap="projectMap">
-        SELECT *
-        FROM
-        <include refid="projectTable"/>
-        WHERE prj.id=#{id}
+        SELECT * FROM project WHERE id=#{id}
     </select>
 
     <select id="getProjectByName" resultMap="projectMap">
-        SELECT *
-        FROM
-        <include refid="projectTable"/>
-        WHERE prj.name=#{name}
+        SELECT *  FROM project  WHERE name=#{name}
     </select>
 
     <select id="getUserProjects" resultMap="projectMap" useCache="true">
-        SELECT *
-        FROM
-        <include refid="projectTable"/>
-        JOIN
-        <include refid="contributorTable"/>
-        ON ctr.project_id = prj.id
+        SELECT *  FROM project prj
+        JOIN contributor ctr ON ctr.project_id = prj.id
         WHERE ctr.user_id = #{userId}
     </select>
 
 
     <select id="getProjectOwner" resultMap="userMap">
-        SELECT *
-        FROM
-        <include refid="userTable"/>
-
-        JOIN
-        <include refid="contributorTable"/>
-        ON ctr.user_id = usr.id
-
-        JOIN
-        <include refid="projectTable"/>
-        ON prj.id = ctr.project_id
-
+        SELECT * FROM  wsuser usr
+        JOIN contributor ctr ON ctr.user_id = usr.id
+        JOIN project prj on ctr.project_id = prj.id
         WHERE prj.id=#{projectId} and ctr.is_owner=true
     </select>
 
     <select id="getContributorById" resultMap="contributorMap">
-        SELECT *
-        FROM
-        <include refid="contributorTable"/>
-        WHERE ctr.id=#{id}
+        SELECT * FROM contributor WHERE id=#{id}
     </select>
 
     <select id="getContributorsByUserId" resultMap="contributorMap" useCache="true">
-        SELECT *
-        FROM
-        <include refid="contributorTable"/>
-        WHERE ctr.user_id=#{userId}
+        SELECT * FROM contributor  WHERE user_id=#{userId}
     </select>
 
     <select id="getContributorsForProject" resultMap="userMap" useCache="true">
-        SELECT *
-        FROM
-        <include refid="userTable"/>
-
-        JOIN
-        <include refid="contributorTable"/>
-        ON ctr.user_id = usr.id
-
-        JOIN
-        <include refid="projectTable"/>
-        ON prj.id = ctr.project_id
-
+        SELECT * FROM wsuser usr
+        JOIN contributor ctr ON ctr.user_id = usr.id
+        JOIN project prj on ctr.project_id = prj.id
         WHERE prj.id=#{projectId} and ctr.is_active=true
         OFFSET #{offset}
         LIMIT #{limit}
     </select>
 
     <select id="getTaskById" resultMap="taskMap">
-        SELECT *
-        FROM
-        <include refid="taskTable"/>
-        WHERE ts.id=#{id}
+        SELECT * FROM task WHERE id=#{id}
     </select>
 
     <select id="getTasksForProject" resultMap="taskMap" useCache="true">
-        SELECT *
-        FROM
-        <include refid="taskTable"/>
-
-        JOIN
-        <include refid="contributorTable"/>
-        ON ctr.id = ts.contributor_id
-
+        SELECT * FROM task ts
+        JOIN contributor ctr ON ctr.id = ts.contributor_id
         WHERE ctr.project_id=#{projectId}
         OFFSET #{offset}
         LIMIT #{limit}
     </select>
 
     <select id="getTasksForContributor" resultMap="taskMap" useCache="true">
-        SELECT *
-        FROM
-        <include refid="taskTable"/>
-
-        JOIN
-        <include refid="contributorTable"/>
-        ON ctr.id = ts.contributor_id
-
+        SELECT * FROM task ts
+        JOIN contributor ctr ON ctr.id = ts.contributor_id
         WHERE ctr.id=#{contributorId}
         OFFSET #{offset}
         LIMIT #{limit}
     </select>
 
     <select id="getTasksForUser" resultMap="taskMap" useCache="true">
-        SELECT *
-        FROM
-        <include refid="taskTable"/>
-
-        JOIN
-        <include refid="contributorTable"/>
-        ON ctr.id = ts.contributor_id
-
-        JOIN
-        <include refid="userTable"/>
-        ON usr.id = ctr.user_id
-
+        SELECT * FROM task ts
+        JOIN contributor ctr ON ctr.id = ts.contributor_id
+        JOIN wsuser usr on ctr.user_id = usr.id
         WHERE usr.id=#{userId}
         OFFSET #{offset}
         LIMIT #{limit}
     </select>
 
     <select id="getTasksForSprint" resultMap="taskMap" useCache="true">
-        SELECT *
-        FROM
-        <include refid="taskTable"/>
-
-        WHERE ts.sprint_id=#{sprintId}
+        SELECT * FROM task WHERE sprint_id=#{sprintId}
         OFFSET #{offset}
         LIMIT #{limit}
     </select>
 
     <select id="getSprintById" resultMap="sprintMap">
-        SELECT *
-        FROM
-        <include refid="sprintTable"/>
-
-        WHERE sp.id=#{id}
+        SELECT * FROM sprint WHERE id=#{id}
     </select>
 
     <select id="getSprintByName" resultMap="sprintMap">
-        SELECT *
-        FROM
-        <include refid="sprintTable"/>
-
-        WHERE sp.name=#{name}
+        SELECT * FROM sprint WHERE name=#{name}
     </select>
 
     <select id="getSprints" resultMap="sprintMap" useCache="true">
-        SELECT *
-        FROM
-        <include refid="sprintTable"/>
-
-        WHERE sp.project_id = #{projectId}
+        SELECT * FROM sprint
+        WHERE project_id = #{projectId}
         OFFSET #{offset}
         LIMIT #{limit}
     </select>
 
 
     <select id="getCodeByUserId" resultMap="securityCodeMap">
-        SELECT *
-        FROM
-        <include refid="securityCodeTable"/>
-        WHERE sc.user_id=#{id}
+        SELECT * FROM security_code WHERE user_id=#{id}
     </select>
 
     <select id="checkCodeExists" resultType="Integer">
-        SELECT 1 FROM
-        <include refid="securityCodeTable"/>
-        WHERE sc.code=#{code} LIMIT 1
+        SELECT 1 FROM security_code WHERE code=#{code} LIMIT 1
     </select>
 
 
     <delete id="deleteUsers">
-        DELETE FROM
-        <include refid="userTable"/>
+        DELETE FROM wsuser
     </delete>
 
     <delete id="deleteProjects">
-        DELETE FROM
-        <include refid="projectTable"/>
+        DELETE FROM project
     </delete>
 
     <delete id="deleteProject">
-        DELETE FROM
-        <include refid="projectTable"/>
-        WHERE prj.id=#{id}
+        DELETE FROM project WHERE id=#{id}
     </delete>
 
     <delete id="deleteContributors">
-        DELETE FROM
-        <include refid="contributorTable"/>
+        DELETE FROM contributor
     </delete>
 
 
     <delete id="deleteTasks">
-        DELETE FROM
-        <include refid="taskTable"/>
+        DELETE FROM task
     </delete>
 
     <delete id="deleteTask">
-        DELETE FROM
-        <include refid="taskTable"/>
-        WHERE ts.id=#{id}
+        DELETE FROM task WHERE id=#{id}
     </delete>
 
     <delete id="deleteSprints">
-        DELETE FROM
-        <include refid="sprintTable"/>
+        DELETE FROM sprint
     </delete>
 
     <delete id="deleteSprint">
-        DELETE FROM
-        <include refid="sprintTable"/>
-        WHERE sp.id=#{id}
+        DELETE FROM sprint WHERE id=#{id}
     </delete>
 
     <delete id="deleteCodes">
-        DELETE FROM
-        <include refid="securityCodeTable"/>
+        DELETE FROM security_code
     </delete>
 
 
