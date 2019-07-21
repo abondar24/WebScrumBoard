@@ -18,6 +18,7 @@ public class RestServiceRoute extends RouteBuilder {
 
         JwtAuthorizationPolicy policy = new JwtAuthorizationPolicy();
         policy.setAllowAnyRole(true);
+        policy.setAllowedRoles("*");
 
         onException(CamelAuthorizationException.class).handled(true)
                 .transform().outBody(bdy-> Response.status(Response.Status.UNAUTHORIZED)

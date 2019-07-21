@@ -16,7 +16,6 @@ import javax.security.auth.Subject;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,7 +37,7 @@ public class JwtAuthorizationPolicy implements AuthorizationPolicy {
 
     private void beforeProcess(Exchange exchange) throws CamelAuthorizationException{
 
-        SecurityContext securityContext = getSecurityContext(exchange);
+        var securityContext = getSecurityContext(exchange);
         if (null == securityContext) {
             throw new CamelAuthorizationException("Cannot find the SecurityContext instance.", exchange);
         }
@@ -46,7 +45,8 @@ public class JwtAuthorizationPolicy implements AuthorizationPolicy {
             logger.info("the security context an instance of {}", securityContext.getClass());
             throw new CamelAuthorizationException("User was not recognized by security filters!", exchange);
         }
-        Collection<String> userRoles = ((LoginSecurityContext) securityContext).getUserRoles().stream().map(Principal::getName).collect(Collectors.toSet());
+        var userRoles = ((LoginSecurityContext) securityContext).getUserRoles().stream()
+                .map(Principal::getName).collect(Collectors.toSet());
         boolean isRolesAllowed = false;
         logger.debug("User Prinicipal - {}", getUserPrincipal(exchange));
         logger.debug("the security context contains {}", userRoles);
@@ -70,27 +70,10 @@ public class JwtAuthorizationPolicy implements AuthorizationPolicy {
 
     }
 
-    public List<String> getAllowedRoles() {
-        return allowedRoles;
-    }
-
-    public boolean isAllowAnyRole() {
-        return allowAnyRole;
-    }
-
-    public JwtAuthorizationPolicy allowAnyRole(final boolean value) {
-        this.allowAnyRole = value;
-        return this;
-    }
-
     public void setAllowAnyRole(boolean allowAnyRole) {
         this.allowAnyRole = allowAnyRole;
     }
 
-    public void setAllowedRoles(List<String> allowedRoles) {
-        this.allowedRoles = allowedRoles;
-        this.allowAnyRole = setAllowAnyRole(this.allowedRoles);
-    }
 
     public JwtAuthorizationPolicy allowedRoles(List<String> allowedRoles) {
         this.allowedRoles = allowedRoles;
@@ -103,11 +86,8 @@ public class JwtAuthorizationPolicy implements AuthorizationPolicy {
         this.allowAnyRole = setAllowAnyRole(this.allowedRoles);
     }
 
-    public JwtAuthorizationPolicy allowedRoles(String... allowedRoles) {
-        return allowedRoles(Arrays.asList(allowedRoles));
-    }
 
-    protected SecurityContext getSecurityContext(Exchange exchange) throws CamelAuthorizationException {
+    private SecurityContext getSecurityContext(Exchange exchange) throws CamelAuthorizationException {
         try {
             return ((org.apache.cxf.message.Message) exchange.getIn()
                     .getHeader("CamelCxfMessage")).get(SecurityContext.class);
@@ -116,7 +96,7 @@ public class JwtAuthorizationPolicy implements AuthorizationPolicy {
         }
     }
 
-    protected boolean isAuthenticated(Exchange exchange) {
+    private boolean isAuthenticated(Exchange exchange) {
         Object subject = exchange.getIn().getHeader("CamelAuthentication");
         return subject != null;
     }

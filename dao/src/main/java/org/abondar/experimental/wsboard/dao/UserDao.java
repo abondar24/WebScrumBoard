@@ -145,7 +145,7 @@ public class UserDao extends BaseDao {
 
         var usr = findUserById(userId);
 
-        verifyPassword(oldPassword, usr.getPassword());
+        PasswordUtil.verifyPassword(oldPassword, usr.getPassword());
         usr.setPassword(PasswordUtil.createHash(newPassword));
         mapper.updateUser(usr);
 
@@ -255,27 +255,6 @@ public class UserDao extends BaseDao {
         return usr;
     }
 
-    /**
-     * Perform user log in
-     *
-     * @param login    - user login
-     * @param password - user password
-     * @throws CannotPerformOperationException - password hash decoding failed
-     * @throws InvalidHashException            - password doesn't match the one in db
-     */
-    public void loginUser(String login, String password)
-            throws CannotPerformOperationException, InvalidHashException, DataExistenceException {
-
-        var usr = mapper.getUserByLogin(login);
-        if (usr == null) {
-            var msg = String.format("%s with login: %s", LogMessageUtil.USER_NOT_EXISTS, login);
-            logger.error(msg);
-            throw new DataExistenceException(LogMessageUtil.USER_NOT_EXISTS);
-        }
-
-        verifyPassword(password, usr.getPassword());
-
-    }
 
     /**
      * Find user By Id
@@ -375,21 +354,6 @@ public class UserDao extends BaseDao {
         }
 
         return false;
-    }
-
-    /**
-     * Verify user password
-     *
-     * @param password - password to verify
-     * @param hash     - existing password hash
-     * @throws InvalidHashException            - passwords don't match
-     * @throws CannotPerformOperationException - hash creation failed
-     */
-    private void verifyPassword(String password, String hash) throws InvalidHashException, CannotPerformOperationException {
-        if (!PasswordUtil.verifyPassword(password, hash)) {
-            logger.error(LogMessageUtil.USER_UNAUTHORIZED);
-            throw new InvalidHashException(LogMessageUtil.USER_UNAUTHORIZED);
-        }
     }
 
 

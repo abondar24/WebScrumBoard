@@ -275,26 +275,6 @@ public class UserDaoTest {
         mapper.deleteUsers();
     }
 
-
-
-
-    @Test
-    public void loginUserNotFoundTest() {
-        assertThrows(DataExistenceException.class, () -> userDao.loginUser("login", "pwd"));
-
-        mapper.deleteUsers();
-    }
-
-    @Test
-    public void loginUserUnauthorizedTest() throws Exception {
-        var user = createUser();
-        assertThrows(InvalidHashException.class, () -> userDao.loginUser(user.getLogin(), "pass"));
-
-        mapper.deleteUsers();
-    }
-
-
-
     private User createUser() throws Exception {
         var login = "login";
         var email = "email@email.com";

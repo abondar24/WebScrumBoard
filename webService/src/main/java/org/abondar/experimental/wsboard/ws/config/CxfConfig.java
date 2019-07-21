@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import org.abondar.experimental.wsboard.ws.security.TokenExpiredMapper;
 import org.abondar.experimental.wsboard.ws.security.TokenRenewalFilter;
-import org.abondar.experimental.wsboard.ws.security.UnauthorizedMapper;
 import org.abondar.experimental.wsboard.ws.service.AuthService;
 import org.abondar.experimental.wsboard.ws.service.AuthServiceImpl;
 import org.abondar.experimental.wsboard.ws.service.ContributorService;
@@ -16,7 +15,6 @@ import org.apache.cxf.Bus;
 import org.apache.cxf.bus.spring.SpringBus;
 import org.apache.cxf.ext.logging.LoggingInInterceptor;
 import org.apache.cxf.ext.logging.LoggingOutInterceptor;
-import org.apache.cxf.interceptor.security.SecureAnnotationsInterceptor;
 import org.apache.cxf.jaxrs.JAXRSServerFactoryBean;
 import org.apache.cxf.jaxrs.swagger.Swagger2Feature;
 import org.apache.cxf.rs.security.jose.jwa.SignatureAlgorithm;
@@ -67,9 +65,8 @@ public class CxfConfig implements WebMvcConfigurer {
                 TaskService.class, SprintService.class));
 
 
-        factory.setProviders(List.of(jsonProvider, authenticationFilter(authService),
-                unauthorizedMapper(), expiredMapper()));
-        factory.setInInterceptors(List.of(new LoggingInInterceptor(), secureAnnotationsInterceptor()));
+        factory.setProviders(List.of(jsonProvider, authenticationFilter(authService),expiredMapper()));
+        factory.setInInterceptors(List.of(new LoggingInInterceptor()));
         factory.setOutInterceptors(List.of(new LoggingOutInterceptor()));
 
 
@@ -117,7 +114,7 @@ public class CxfConfig implements WebMvcConfigurer {
     public TokenRenewalFilter authenticationFilter(AuthService authService) {
         var filter = new TokenRenewalFilter();
         filter.setAuthService(authService);
-        filter.setJweRequired(true);
+        filter.setJweRequired(false);
         filter.setJwsVerifier(signatureVerifier());
 
         return filter;
@@ -134,16 +131,6 @@ public class CxfConfig implements WebMvcConfigurer {
         return new TokenExpiredMapper();
     }
 
-    @Bean
-    public UnauthorizedMapper unauthorizedMapper(){
-        return new UnauthorizedMapper();
-    }
-
-
-    @Bean
-    public SecureAnnotationsInterceptor secureAnnotationsInterceptor() {
-        return new SecureAnnotationsInterceptor();
-    }
 
 
 }

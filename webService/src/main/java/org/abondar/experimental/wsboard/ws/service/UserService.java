@@ -150,8 +150,7 @@ public interface UserService {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "User logged in"),
             @ApiResponse(code = 401, message = "User password is wrong"),
-            @ApiResponse(code = 404, message = "User with id not exists"),
-            @ApiResponse(code = 503, message = "Password hash not created")
+            @ApiResponse(code = 404, message = "User with id not exists")
     })
     Response loginUser(@FormParam("login") @ApiParam(required = true) String login,
                        @FormParam("password") @ApiParam(required = true) String password);

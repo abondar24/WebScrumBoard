@@ -15,10 +15,7 @@ import org.apache.cxf.message.MessageContentsList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
-import javax.ws.rs.core.Cookie;
-import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
-import java.util.Date;
 import java.util.List;
 
 import static org.abondar.experimental.wsboard.ws.route.RouteConstantUtil.EMAIL_TYPE_HEADER;
@@ -32,7 +29,7 @@ import static org.abondar.experimental.wsboard.ws.route.RouteConstantUtil.SEND_E
  */
 public class UserServiceRoute extends RouteBuilder {
 
-    private static final String COOKIE_ISSUER = "borscht systems";
+    private static final String TOKEN_ISSUER = "borscht systems";
     @Autowired
     @Qualifier("userDao")
     private UserDao dao;
@@ -197,17 +194,15 @@ public class UserServiceRoute extends RouteBuilder {
                 .body((bdy, hdrs) -> {
                     MessageContentsList formData = (MessageContentsList) bdy;
                     try {
-                        dao.loginUser((String) formData.get(0), (String) formData.get(1));
-
-                        return Response.ok().cookie(createLoginCookie((String) formData.get(0))).build();
-                    } catch (InvalidHashException ex) {
-                        return Response.status(Response.Status.UNAUTHORIZED).entity(ex.getLocalizedMessage()).build();
-                    } catch (CannotPerformOperationException ex) {
-                        return Response.status(Response.Status.SERVICE_UNAVAILABLE).entity(LogMessageUtil.HASH_NOT_CREATED).build();
+                        return Response.ok().header("Authorization",
+                               "JWT "+ authService.authorizeUser((String) formData.get(0), (String) formData.get(1)))
+                                .build();
                     } catch (DataExistenceException ex) {
                         return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
                     }
-                });
+                })
+                .removeHeader("password")
+                .removeHeader("login");
 
 
         from("direct:logoutUser").routeId("logout")
@@ -218,8 +213,7 @@ public class UserServiceRoute extends RouteBuilder {
                     try {
                         dao.findUserById((long) formData.get(0));
 
-                        return Response.ok().cookie(new NewCookie(new Cookie("X-JWT-AUTH", "", "/", ""),
-                                "JWT token", 24000, false)).build();
+                        return Response.ok().cookie().build();
                     } catch (DataExistenceException ex) {
                         return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
                     }
@@ -299,10 +293,4 @@ public class UserServiceRoute extends RouteBuilder {
 
     }
 
-    private NewCookie createLoginCookie(String login) {
-        return new NewCookie(new Cookie("X-JWT-AUTH",
-                authService.createToken(login, COOKIE_ISSUER, null), "/", null),
-                "JWT token", 6000, new Date((new Date()).getTime() + 60000), false, true);
-
-    }
 }
