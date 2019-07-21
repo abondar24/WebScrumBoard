@@ -29,7 +29,6 @@ import static org.abondar.experimental.wsboard.ws.route.RouteConstantUtil.SEND_E
  */
 public class UserServiceRoute extends RouteBuilder {
 
-    private static final String TOKEN_ISSUER = "borscht systems";
     @Autowired
     @Qualifier("userDao")
     private UserDao dao;

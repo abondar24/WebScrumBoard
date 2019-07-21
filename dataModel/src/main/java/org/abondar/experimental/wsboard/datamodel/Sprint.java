@@ -73,9 +73,6 @@ public class Sprint implements Serializable {
         this.endDate = endDate;
     }
 
-    public static long getSerialVersionUID() {
-        return serialVersionUID;
-    }
 
     public long getProjectId() {
         return projectId;

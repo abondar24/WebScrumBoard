@@ -1,7 +1,6 @@
 package org.abondar.experimental.wsboard.ws.security;
 
 
-import org.abondar.experimental.wsboard.ws.service.AuthService;
 import org.apache.cxf.jaxrs.utils.JAXRSUtils;
 import org.apache.cxf.rs.security.jose.common.JoseException;
 import org.apache.cxf.rs.security.jose.jaxrs.JwtAuthenticationFilter;
@@ -21,8 +20,6 @@ import javax.ws.rs.container.ContainerRequestContext;
 public class TokenRenewalFilter extends JwtAuthenticationFilter {
 
     private static Logger logger = LoggerFactory.getLogger(TokenRenewalFilter.class);
-
-    private AuthService authService;
 
 
     @Override
@@ -48,10 +45,6 @@ public class TokenRenewalFilter extends JwtAuthenticationFilter {
     @Override
     protected SecurityContext configureSecurityContext(JwtToken jwt) {
         return new JwtTokenSecurityContext(jwt, "roles");
-    }
-
-    public void setAuthService(AuthService authService) {
-        this.authService = authService;
     }
 
 }

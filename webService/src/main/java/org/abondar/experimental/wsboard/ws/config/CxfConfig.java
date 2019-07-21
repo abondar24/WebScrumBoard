@@ -65,7 +65,7 @@ public class CxfConfig implements WebMvcConfigurer {
                 TaskService.class, SprintService.class));
 
 
-        factory.setProviders(List.of(jsonProvider, authenticationFilter(authService),expiredMapper()));
+        factory.setProviders(List.of(jsonProvider, authenticationFilter(),expiredMapper()));
         factory.setInInterceptors(List.of(new LoggingInInterceptor()));
         factory.setOutInterceptors(List.of(new LoggingOutInterceptor()));
 
@@ -111,9 +111,8 @@ public class CxfConfig implements WebMvcConfigurer {
 
 
     @Bean
-    public TokenRenewalFilter authenticationFilter(AuthService authService) {
+    public TokenRenewalFilter authenticationFilter() {
         var filter = new TokenRenewalFilter();
-        filter.setAuthService(authService);
         filter.setJweRequired(false);
         filter.setJwsVerifier(signatureVerifier());
 

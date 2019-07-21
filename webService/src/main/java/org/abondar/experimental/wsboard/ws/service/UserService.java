@@ -116,8 +116,7 @@ public interface UserService {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "User with updated password", response = User.class),
             @ApiResponse(code = 401, message = "User password is wrong"),
-            @ApiResponse(code = 404, message = "User with id not exists"),
-            @ApiResponse(code = 503, message = "Password hash not created")
+            @ApiResponse(code = 404, message = "User with id not exists")
     })
     Response updatePassword(@FormParam("oldPassword") @ApiParam(required = true) String oldPassword,
                             @FormParam("newPassword") @ApiParam(required = true) String newPassword,
