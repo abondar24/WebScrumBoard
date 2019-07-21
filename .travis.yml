@@ -1,7 +1,10 @@
 sudo: required
-language: java
-jdk:
-  - openjdk11
+matrix:
+  - language: java
+     jdk: openjdk11
+  - language: node_js
+    node_js: 10.15.3
+
 
 
 addons:
