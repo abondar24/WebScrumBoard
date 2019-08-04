@@ -7,12 +7,10 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 import 'font-awesome/css/font-awesome.min.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import BootstrapVue from 'bootstrap-vue'
-import Vuelidate from "vuelidate";
 
 
 Vue.config.productionTip = false;
 Vue.use(BootstrapVue);
-Vue.use(Vuelidate);
 
 /* eslint-disable no-new */
 new Vue({

@@ -17,7 +17,6 @@
     "font-awesome": "^4.7.0",
     "vue": "^2.5.2",
     "vue-router": "^3.0.1",
-    "vuelidate": "^0.7.4",
     "vuex": "^3.1.1"
   },
   "devDependencies": {
