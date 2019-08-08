@@ -1,6 +1,6 @@
 import Axios from "axios";
 
-const userUrl = process.env.API_ENDPOINT + "/user";
+const userUrl = process.env.VUE_APP_API_ENDPOINT + "/user";
 
 const config = {
   headers: {

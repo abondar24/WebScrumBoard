@@ -115,7 +115,7 @@
 </template>
 
 <script>
-    import {mapActions, mapGetters, mapState} from "vuex";
+    import {mapGetters} from "vuex";
 
     export default {
         name: "Register",
@@ -136,17 +136,18 @@
                 ],
                 selectedRoles:[],
                 errorOccurred: false,
+                errorMessage: '',
             }
 
         },
         methods: {
-            ...mapActions(["registerUser"]),
             ...mapGetters(["getError"]),
             submit() {
                 this.user.roles = this.selectedRoles.join(";");
                 this.$store.dispatch('registerUser',this.user);
 
                 this.errorMessage = this.getError();
+                console.log(this.errorMessage);
                 if (this.errorMessage.length){
                     this.errorOccurred = true;
 

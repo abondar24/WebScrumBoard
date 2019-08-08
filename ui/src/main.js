@@ -11,16 +11,12 @@ import store from './store/store';
 
 Vue.config.productionTip = false;
 
-//remove before release
-Vue.config.devtools = true;
-
 Vue.use(BootstrapVue);
 
 /* eslint-disable no-new */
 new Vue({
-  el: '#app',
+  render: h => h(App),
   store,
   router,
-  components: { App },
-  template: '<App/>'
-});
+  components: { App }
+}).$mount('#app')

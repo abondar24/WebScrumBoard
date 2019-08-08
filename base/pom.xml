@@ -83,7 +83,10 @@
                                 <resource>
                                     <directory>${project.parent.basedir}/ui/dist</directory>
                                     <includes>
-                                        <include>static/</include>
+                                        <include>css/</include>
+                                        <include>fonts/</include>
+                                        <include>img/</include>
+                                        <include>js/</include>
                                         <include>index.html</include>
                                         <include>favicon.ico</include>
                                     </includes>
