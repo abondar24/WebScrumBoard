@@ -7,14 +7,19 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 import 'font-awesome/css/font-awesome.min.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import BootstrapVue from 'bootstrap-vue'
-
+import store from './store/store';
 
 Vue.config.productionTip = false;
+
+//remove before release
+Vue.config.devtools = true;
+
 Vue.use(BootstrapVue);
 
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
+  store,
   router,
   components: { App },
   template: '<App/>'

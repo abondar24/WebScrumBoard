@@ -23,10 +23,10 @@
         },
         methods: {
             redirectToLogin() {
-                this.$router.push("login");
+                this.$router.push("/login");
             },
             redirectToRegister() {
-                this.$router.push("Register");
+                this.$router.push("/register");
             }
         }
     }

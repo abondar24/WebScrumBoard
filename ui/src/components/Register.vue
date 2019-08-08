@@ -14,7 +14,6 @@
     <div id="alert">
       <b-alert
         :show="errorOccurred"
-        dismissible
         variant="danger">
         {{errorMessage}}
       </b-alert>
@@ -116,6 +115,8 @@
 </template>
 
 <script>
+    import {mapActions, mapGetters, mapState} from "vuex";
+
     export default {
         name: "Register",
         data() {
@@ -135,18 +136,35 @@
                 ],
                 selectedRoles:[],
                 errorOccurred: false,
-                errorMessage: ''
-
             }
 
         },
         methods: {
+            ...mapActions(["registerUser"]),
+            ...mapGetters(["getError"]),
             submit() {
+                this.user.roles = this.selectedRoles.join(";");
+                this.$store.dispatch('registerUser',this.user);
+
+                this.errorMessage = this.getError();
+                if (this.errorMessage.length){
+                    this.errorOccurred = true;
+
+                } else {
+                    this.user = {
+                        login: '',
+                        password: '',
+                        email: '',
+                        firstName: '',
+                        lastName: '',
+                        roles: ''
+                    }
+               }
 
             },
             reset() {
                 this.$router.push("/");
-            },
+            }
         },
         computed:{
             loginValidation() {
