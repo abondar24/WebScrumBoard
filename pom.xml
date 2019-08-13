@@ -19,11 +19,12 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>base</module>
         <module>dataModel</module>
         <module>webService</module>
         <module>ui</module>
         <module>dao</module>
+        <module>base</module>
+
     </modules>
 
     <dependencyManagement>
