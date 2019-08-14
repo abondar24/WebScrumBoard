@@ -5,8 +5,8 @@
       <h1>{{ msg }}</h1>
     </div>
     <div>
-      <b-button variant="primary" style="" v-on:click="redirectToRegister">Sign Up</b-button>
-      <b-button variant="success" v-on:click="redirectToLogin">Log in</b-button>
+      <b-button variant="primary" style="" v-on:click="redirectToRegister" id="register">Sign Up</b-button>
+      <b-button variant="success" v-on:click="redirectToLogin" id="login">Log in</b-button>
     </div>
 
   </div>
@@ -50,5 +50,9 @@
 
   a {
     color: #42b983;
+  }
+
+  #login {
+    margin-left: 10px;
   }
 </style>
