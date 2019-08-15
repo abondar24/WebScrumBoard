@@ -25,8 +25,11 @@ export default {
         }
     },
     getters: {
-        getErrorMsg: state=> {
+        getErrorMsg: state => {
             return state.errorMessage;
+        },
+        getUserId: state => {
+            return state.user.id;
         }
     },
     actions: {
@@ -39,7 +42,7 @@ export default {
             form.append('lastName', user.lastName);
             form.append('roles', user.roles);
 
-           return  Axios.post(userUrl + '/create', form, config)
+            return Axios.post(userUrl + '/create', form, config)
                 .then(
                     (response) => {
                         commit('setUser', response.data);
@@ -52,6 +55,21 @@ export default {
                         commit('setErrorMessage', error.response.data);
                     });
 
+        },
+        verifyCode({commit,getters}, code) {
+            return Axios.get(userUrl + '/enter_code', {
+                params: {
+                    userId: getters.getUserId,
+                    code: code
+                }
+            })
+                .then(
+                    (response) => {
+                        commit('setErrorMessage', '');
+                    },
+                    (error) => {
+                        commit('setErrorMessage', error.response.data);
+                    });
         }
     }
 }
