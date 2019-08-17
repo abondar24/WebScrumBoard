@@ -21,7 +21,7 @@
                             label-for="logInp">
                         <b-form-input
                                 id="logInp"
-                                v-model="user.login"
+                                v-model="credentials.login"
                                 required
                                 :state="loginValidation">
                         </b-form-input>
@@ -32,7 +32,7 @@
                     <b-form-group label="Password" label-for="pwdInp">
                         <b-form-input
                                 id="pwdInp"
-                                v-model="user.password"
+                                v-model="credentials.password"
                                 required
                                 type="password"
                                 :state="passwordValidation"
@@ -95,13 +95,15 @@
 </template>
 
 <script>
+    import {mapGetters} from "vuex";
+
     export default {
         name: "Login",
         data() {
             return {
                 errorOccurred: false,
                 errorMessage: '',
-                user: {
+                credentials: {
                     login: '',
                     password: ''
                 },
@@ -110,8 +112,22 @@
         },
         methods: {
             submit() {
+                this.$store.dispatch('loginUser', this.credentials).then(() => {
+                    this.errorMessage = this.getError;
+                    if (this.errorMessage.length) {
+                        this.errorOccurred = true;
 
-                //this.$router.push()
+                    } else {
+                        this.$store.dispatch('getUserByLogin',this.credentials.login).then(() => {
+                            // this.$router.params = {"id":this.getUserId};
+                            // this.$router.push('/user/');
+
+                            this.$router.push({path: '/user/'+this.getUserId});
+                        });
+
+                    }
+                });
+
             },
             resetPassword() {
                 this.$refs['reset'].hide();
@@ -123,12 +139,13 @@
         },
         computed: {
             loginValidation() {
-                return this.user.login.length > 0
+                return this.credentials.login.length > 0
             },
             passwordValidation() {
-                return this.user.password.length > 0
+                return this.credentials.password.length > 0
             },
-        }
+            ...mapGetters({getError: "getErrorMessage",getUserId:"getUserId"}),
+        },
     }
 </script>
 

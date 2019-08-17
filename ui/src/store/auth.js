@@ -1,38 +1,61 @@
 import Axios from "axios";
 
-const loginUrl = process.env.API_ENDPOINT+"/login";
-
-
+const loginUrl = process.env.VUE_APP_API_ENDPOINT+"/user/login";
+const logoutUrl = process.env.VUE_APP_API_ENDPOINT+"/user/logout";
+const authHeaderKey = 'authorization';
 export default {
   state: {
     authenticated: false,
-    jwt: null
+    authorization: '',
+    errorMessage:'',
   },
   getters: {
-    authenticatedAxios(state){
+    authenticatedAxios: state=> {
       return Axios.create({
         headers: {
-          "Authorization": `JWT <${state.jwt}>`
+          authHeaderKey: state.authorization
         }
       });
-    }
+    },
+    getErrorMessage: state => {
+      return state.errorMessage;
+    },
   },
   mutations: {
     setAuthenticated(state,header){
       state.jwt = header;
       state.authenticated = true;
     },
+
     clearAuthenticated(state){
       state.authenticated = false;
       state.jwt = null;
+    },
+    setErrorMessage(state, msg) {
+      state.errorMessage = msg;
     }
   },
   actions: {
-    async authenticate(context, credentials){
-      let response = await Axios.post(loginUrl,credentials);
-      if (response.data.success === true){
-        context.commit("setAuthenticated",response.data.token);
-      }
+    loginUser({commit}, credentials){
+      const form = new URLSearchParams();
+      form.append("login",credentials.login);
+      form.append("password",credentials.password);
+
+      const formConfig = {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      };
+
+      return  Axios.post(loginUrl,form,formConfig).then(
+          (response) => {
+            commit('setErrorMessage', '');
+            commit("setAuthenticated",response.headers[authHeaderKey]);
+          },
+          (error) => {
+            commit('setErrorMessage', error.response.data);
+          });
+
     }
   }
 }

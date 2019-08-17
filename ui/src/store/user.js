@@ -30,6 +30,12 @@ export default {
         },
         getUserId: state => {
             return state.user.id;
+        },
+        getUserLogin: state => {
+            return state.user.login;
+        },
+        getUserPassword: state => {
+            return state.user.password;
         }
     },
     actions: {
@@ -70,6 +76,19 @@ export default {
                     (error) => {
                         commit('setErrorMessage', error.response.data);
                     });
+        },
+        getUserByLogin({commit,getters},login){
+             return getters.authenticatedAxios.get(userUrl+'/find',{
+                  params:{
+                      login: login
+                  }
+              }).then(
+                  (response) => {
+                      commit('setUser', response.data);
+                  },
+                  (error) => {
+                      console.log(error.response.data);
+                  });
         }
     }
 }
