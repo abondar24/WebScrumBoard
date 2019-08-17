@@ -223,7 +223,7 @@
                 return this.selectedRoles.length > 0
             },
             codeValidation() {
-                return this.code.length > 0
+                return this.code.length > 0 && this.code.match(/^[0-9]+$/) != null;
             },
             ...mapGetters({getError: "getErrorMsg"}),
 
