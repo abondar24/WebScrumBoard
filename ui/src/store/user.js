@@ -47,15 +47,15 @@ export default {
                         commit('setUser', response.data);
                         commit('setErrorMessage', '');
                         if (response.status === 206) {
-                            commit('setErrorMessage', response.data,{ root: true });
+                            commit('setErrorMessage', response.data, {root: true});
                         }
                     },
                     (error) => {
-                        commit('setErrorMessage', error.response.data,{ root: true });
+                        commit('setErrorMessage', error.response.data, {root: true});
                     });
 
         },
-        verifyCode({commit,getters}, code) {
+        verifyCode({commit, getters}, code) {
             return Axios.get(userUrl + '/enter_code', {
                 params: {
                     userId: getters.getUserId,
@@ -64,25 +64,25 @@ export default {
             })
                 .then(
                     (response) => {
-                        commit('setErrorMessage', '',{ root: true });
+                        commit('setErrorMessage', '', {root: true});
                     },
                     (error) => {
-                        commit('setErrorMessage', error.response.data,{ root: true });
+                        commit('setErrorMessage', error.response.data, {root: true});
                     });
         },
-        getUserByLogin({commit,getters},login){
-             return getters.authenticatedAxios.get(userUrl+'/find',{
-                  params:{
-                      login: login
-                  }
-              }).then(
-                  (response) => {
-                      commit('setErrorMessage', '',{ root: true });
-                      commit('setUser', response.data);
-                  },
-                  (error) => {
-                      commit('setErrorMessage', error.response.data,{ root: true });
-                  });
+        getUserByLogin({commit, getters}, login) {
+            return getters.authenticatedAxios.get(userUrl + '/find', {
+                params: {
+                    login: login
+                }
+            }).then(
+                (response) => {
+                    commit('setErrorMessage', '', {root: true});
+                    commit('setUser', response.data);
+                },
+                (error) => {
+                    commit('setErrorMessage', error.response.data, {root: true});
+                });
         }
     }
 }

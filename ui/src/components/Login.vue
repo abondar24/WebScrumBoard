@@ -95,7 +95,6 @@
 </template>
 
 <script>
-    import {mapGetters} from "vuex";
 
     export default {
         name: "Login",
@@ -124,7 +123,7 @@
 
                     }
                 });
-
+                this.errorOccurred = false;
             },
             resetPassword() {
                 this.$refs['reset'].hide();
