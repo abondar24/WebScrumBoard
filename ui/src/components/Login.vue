@@ -1,5 +1,10 @@
 <template>
     <div id="root">
+        <div id="heading">
+            <b-navbar type="dark" variant="dark">
+                <b-navbar-brand href="#">Sign in</b-navbar-brand>
+            </b-navbar>
+        </div>
         <b-alert
                 :show="errorOccurred"
                 dismissible
@@ -7,79 +12,85 @@
             {{errorMessage}}
         </b-alert>
 
-        <div class="col-md-4 offset-md-4" id="loginDiv">
-            <b-card id="loginForm"
-                    bg-variant="light">
+        <b-col md="4" offset-md="4" id="loginDiv">
+            <b-card class="text-left" bg-variant="light">
 
-                <b-form @submit="submit" itle="Log in">
-                    <b-form-group id="log" label="Login" label-for="loginInput">
+                <b-form @submit="submit">
+                    <b-form-group
+                            label="Login"
+                            label-for="logInp">
                         <b-form-input
-                                id="log"
+                                id="logInp"
                                 v-model="user.login"
                                 required
-                                :state="loginValidation"
-                                placeholder="Enter login">
+                                :state="loginValidation">
                         </b-form-input>
                         <b-form-invalid-feedback :state="loginValidation">
                         </b-form-invalid-feedback>
                     </b-form-group>
 
-                    <b-form-group id="pwd" label="Password" label-for="passwordInput">
+                    <b-form-group label="Password" label-for="pwdInp">
                         <b-form-input
-                                id="pwd"
+                                id="pwdInp"
                                 v-model="user.password"
                                 required
                                 type="password"
                                 :state="passwordValidation"
-                                aria-describedby="password-help-block"
-                                placeholder="Enter password">
+                                aria-describedby="password-help-block">
                         </b-form-input>
                         <b-form-invalid-feedback :state="passwordValidation">
                         </b-form-invalid-feedback>
                     </b-form-group>
-                    <b-form-group id="pass">
-                        <b-form-checkbox
-                                id="rememberCheck"
-                                v-model="remember"
-                                name="rememberMe"
-                                value="true"
-                                unchecked-value="false">
-                            Remember me
-                        </b-form-checkbox>
-                        <b-button variant="link" v-b-modal.reset> Forgot password</b-button>
+                    <b-form-group>
+                        <b-form-checkbox-group>
+                            <b-form-checkbox
+                                    v-model="remember"
+                                    name="rememberMe"
+                                    value="true"
+                                    unchecked-value="false">
+                                Remember me
+                            </b-form-checkbox>
+                            <b-button variant="link" v-b-modal.reset> Forgot password</b-button>
 
-                        <b-modal id="reset"
-                                 ref="reset"
-                                 hide-header
-                                 size="sm"
-                                 centered>
-                            Are you sure you want to reset your password?
-                            <div slot="modal-footer" class="w-10">
-                                <b-button
-                                        variant="danger"
-                                        size="md"
-                                        v-on:click="resetPassword">
-                                    Reset
-                                </b-button>
+                            <b-modal id="reset"
+                                     ref="reset"
+                                     hide-header
+                                     size="sm"
+                                     centered>
+                                Are you sure you want to reset your password?
+                                <div slot="modal-footer" class="w-10">
+                                    <b-button
+                                            variant="danger"
+                                            size="md"
+                                            v-on:click="resetPassword">
+                                        Reset
+                                    </b-button>
 
-                                <b-button
-                                        id="cancelButton"
-                                        v-on:click="cancel"
-                                        size="md">
-                                    Cancel
-                                </b-button>
+                                    <b-button
+                                            id="cancelButton"
+                                            v-on:click="cancel"
+                                            size="md">
+                                        Cancel
+                                    </b-button>
 
-                            </div>
-                        </b-modal>
+                                </div>
+                            </b-modal>
+
+                        </b-form-checkbox-group>
+
                     </b-form-group>
+
+                    <b-button type="submit" variant="primary" size="md">
+                        Sign in
+                    </b-button>
                 </b-form>
             </b-card>
             <br/>
             <p>OR</p>
             <br/>
-            <b-button variant="success" id="githubButton">Sign in with github</b-button>
+            <b-button variant="success">Sign in with github</b-button>
 
-        </div>
+        </b-col>
     </div>
 </template>
 
@@ -100,6 +111,7 @@
         methods: {
             submit() {
 
+                //this.$router.push()
             },
             resetPassword() {
                 this.$refs['reset'].hide();
@@ -130,4 +142,5 @@
         alignment: center;
         margin-left: 10px;
     }
+
 </style>
