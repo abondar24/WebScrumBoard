@@ -10,12 +10,17 @@ export default new Vuex.Store({
   strict: false,
   modules: {user: UserModule, auth: AuthModule},
   state: {
-  },
-  getters: {
-
+    errorMessage: ''
   },
   mutations: {
-
+    setErrorMessage(state, msg) {
+      state.errorMessage = msg;
+    },
+  },
+  getters: {
+    getErrorMsg: state => {
+      return state.errorMessage;
+    }
   },
   actions: {}
 

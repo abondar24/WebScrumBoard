@@ -119,9 +119,6 @@
 
                     } else {
                         this.$store.dispatch('getUserByLogin',this.credentials.login).then(() => {
-                            // this.$router.params = {"id":this.getUserId};
-                            // this.$router.push('/user/');
-
                             this.$router.push({path: '/user/'+this.getUserId});
                         });
 
@@ -144,7 +141,9 @@
             passwordValidation() {
                 return this.credentials.password.length > 0
             },
-            ...mapGetters({getError: "getErrorMessage",getUserId:"getUserId"}),
+            getError(){
+                return this.$store.getters.getErrorMsg;
+            }
         },
     }
 </script>

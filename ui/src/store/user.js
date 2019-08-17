@@ -10,24 +10,17 @@ const config = {
 
 export default {
     state: {
-        user: null,
-        errorMessage: ''
+        user: null
     },
     mutations: {
         setUser(state, user) {
             state.user = user;
-        },
-        setErrorMessage(state, msg) {
-            state.errorMessage = msg;
         },
         clearUser(state) {
             state.user = null;
         }
     },
     getters: {
-        getErrorMsg: state => {
-            return state.errorMessage;
-        },
         getUserId: state => {
             return state.user.id;
         },
@@ -54,11 +47,11 @@ export default {
                         commit('setUser', response.data);
                         commit('setErrorMessage', '');
                         if (response.status === 206) {
-                            commit('setErrorMessage', response.data);
+                            commit('setErrorMessage', response.data,{ root: true });
                         }
                     },
                     (error) => {
-                        commit('setErrorMessage', error.response.data);
+                        commit('setErrorMessage', error.response.data,{ root: true });
                     });
 
         },
@@ -71,10 +64,10 @@ export default {
             })
                 .then(
                     (response) => {
-                        commit('setErrorMessage', '');
+                        commit('setErrorMessage', '',{ root: true });
                     },
                     (error) => {
-                        commit('setErrorMessage', error.response.data);
+                        commit('setErrorMessage', error.response.data,{ root: true });
                     });
         },
         getUserByLogin({commit,getters},login){
@@ -84,10 +77,11 @@ export default {
                   }
               }).then(
                   (response) => {
+                      commit('setErrorMessage', '',{ root: true });
                       commit('setUser', response.data);
                   },
                   (error) => {
-                      console.log(error.response.data);
+                      commit('setErrorMessage', error.response.data,{ root: true });
                   });
         }
     }

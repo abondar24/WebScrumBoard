@@ -6,8 +6,7 @@ const authHeaderKey = 'authorization';
 export default {
   state: {
     authenticated: false,
-    authorization: '',
-    errorMessage:'',
+    authorization: ''
   },
   getters: {
     authenticatedAxios: state=> {
@@ -16,10 +15,7 @@ export default {
           authHeaderKey: state.authorization
         }
       });
-    },
-    getErrorMessage: state => {
-      return state.errorMessage;
-    },
+    }
   },
   mutations: {
     setAuthenticated(state,header){
@@ -49,11 +45,11 @@ export default {
 
       return  Axios.post(loginUrl,form,formConfig).then(
           (response) => {
-            commit('setErrorMessage', '');
+            commit('setErrorMessage', '',{ root: true });
             commit("setAuthenticated",response.headers[authHeaderKey]);
           },
           (error) => {
-            commit('setErrorMessage', error.response.data);
+            commit('setErrorMessage', error.response.data,{ root: true });
           });
 
     }

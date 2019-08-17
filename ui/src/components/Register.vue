@@ -225,8 +225,9 @@
             codeValidation() {
                 return this.code.length > 0 && this.code.match(/^[0-9]+$/) != null;
             },
-            ...mapGetters({getError: "getErrorMsg"}),
-
+            getError(){
+                return this.$store.getters.getErrorMsg;
+            }
         }
     }
 </script>
