@@ -71,7 +71,7 @@ export default {
                     });
         },
         getUserByLogin({commit, getters}, login) {
-            return getters.authenticatedAxios.get(userUrl + '/find', {
+            return Axios.get(userUrl + '/find', {
                 params: {
                     login: login
                 }
@@ -79,6 +79,33 @@ export default {
                 (response) => {
                     commit('setErrorMessage', '', {root: true});
                     commit('setUser', response.data);
+                },
+                (error) => {
+                    commit('setErrorMessage', error.response.data, {root: true});
+                });
+        },
+        resetPassword({commit,getters}) {
+            return Axios.get(userUrl + '/reset_pwd', {
+                params: {
+                    id: getters.getUserId
+                }
+            }).then(
+                (response) => {
+                    commit('setErrorMessage', '', {root: true});
+                },
+                (error) => {
+                    commit('setErrorMessage', error.response.data, {root: true});
+                });
+        },
+        updatePassword({commit,getters},oldPassword,newPassword){
+            const form = new URLSearchParams();
+            form.append('oldPassword', getters.getUserPassword);
+            form.append('newPassword', newPassword);
+            form.append('id', getters.getUserId);
+
+            return Axios.post(userUrl + '/update_password', form,config).then(
+                (response) => {
+                    commit('setErrorMessage', '', {root: true});
                 },
                 (error) => {
                     commit('setErrorMessage', error.response.data, {root: true});

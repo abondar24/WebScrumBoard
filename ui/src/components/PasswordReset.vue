@@ -1,15 +1,23 @@
 <template>
     <div id="root">
-        <h1>
-            Your password has been reset
-        </h1>
+        <div id="heading">
+            <b-navbar type="dark" variant="dark">
+                <b-navbar-brand href="#">Password Reset</b-navbar-brand>
+            </b-navbar>
+        </div>
         <b-alert
                 :show="errorOccurred"
                 dismissible
                 variant="danger">
             {{errorMessage}}
         </b-alert>
-
+        <b-alert
+                :show="passwordReset"
+                dismissible
+                variant="warning">
+            Your password has been reset!
+            Please enter a code from email. After this you can enter a new password
+        </b-alert>
         <b-col md="4" offset-md="4" id="resetDiv">
             <b-card class="text-left" bg-variant="light">
 
@@ -34,7 +42,7 @@
 
                 <b-input-group id="passGrp" class="mb-3">
                     <b-input-group-text slot="prepend">New Password</b-input-group-text>
-                    <b-form-input v-model="password" :state="passwordValidation">
+                    <b-form-input  type="password" v-model="password" :state="passwordValidation">
 
                     </b-form-input>
                     <b-input-group-append>
@@ -63,19 +71,45 @@
                 errorMessage: '',
                 login: '',
                 code:'',
-                password:''
+                password:'',
+                passwordReset: false,
 
             }
         },
         methods:{
             findLogin(){
+                  this.$store.dispatch('getUserByLogin',this.login).then(()=>{
+                      this.errorMessage = this.getError;
+                      if (this.errorMessage.length) {
+                          this.errorOccurred = true;
 
+                      } else {
+                          this.$store.dispatch('resetPassword').then(()=>{
+                              this.passwordReset = true;
+                          });
+                      }
+                  });
+
+                  this.errorOccurred = false;
+                  this.passwordReset = false;
             },
             enterCode() {
+                this.$store.dispatch('verifyCode', this.code).then(() => {
+                    this.errorMessage = this.getError;
+                    if (this.errorMessage.length) {
+                        this.errorOccurred = true;
 
+                    }
+                });
             },
             updatePass(){
+                this.$store.dispatch('updatePassword','reset' ,this.password).then(() => {
+                    this.errorMessage = this.getError;
+                    if (this.errorMessage.length) {
+                        this.errorOccurred = true;
 
+                    }
+                });
             },
             signIn(){}
         },
@@ -89,6 +123,9 @@
             passwordValidation() {
                 return this.password.length > 4
             },
+            getError(){
+                return this.$store.getters.getErrorMsg;
+            }
         }
     }
 </script>
