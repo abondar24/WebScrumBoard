@@ -99,7 +99,7 @@ export default {
         },
         updatePassword({commit,getters},oldPassword,newPassword){
             const form = new URLSearchParams();
-            form.append('oldPassword', getters.getUserPassword);
+            form.append('oldPassword', oldPassword);
             form.append('newPassword', newPassword);
             form.append('id', getters.getUserId);
 
