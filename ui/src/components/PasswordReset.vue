@@ -42,11 +42,12 @@
 
                 <b-input-group id="passGrp" class="mb-3">
                     <b-input-group-text slot="prepend">New Password</b-input-group-text>
-                    <b-form-input  type="password" v-model="password" :state="passwordValidation">
+                    <b-form-input  type="password" v-model="password" :state="passwordValidation"
+                                   :disabled="!newPwdEnabled">
 
                     </b-form-input>
                     <b-input-group-append>
-                        <b-button variant="outline-success" v-on:click="updatePass">Update</b-button>
+                        <b-button variant="outline-success" v-on:click="updatePass" :disabled="!newPwdEnabled">Update</b-button>
                     </b-input-group-append>
                 </b-input-group>
                 <p>Your password must be 5-20 characters long, contain letters and numbers.</p>
@@ -73,7 +74,7 @@
                 code:'',
                 password:'',
                 passwordReset: false,
-
+                newPwdEnabled: false
             }
         },
         methods:{
@@ -98,7 +99,8 @@
                     this.errorMessage = this.getError;
                     if (this.errorMessage.length) {
                         this.errorOccurred = true;
-
+                    } else {
+                        this.newPwdEnabled = true;
                     }
                 });
             },
@@ -111,7 +113,9 @@
                     }
                 });
             },
-            signIn(){}
+            signIn(){
+                this.$router.push("/login");
+            }
         },
         computed: {
             codeValidation() {
@@ -121,7 +125,7 @@
                 return this.login.length > 0
             },
             passwordValidation() {
-                return this.password.length > 4
+                return this.password.length > 4 && this.password.match(/^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]+$/) != null
             },
             getError(){
                 return this.$store.getters.getErrorMsg;

@@ -262,6 +262,8 @@ public class UserServiceRoute extends RouteBuilder {
                         return Response.ok().build();
                     } catch (DataExistenceException ex) {
                         return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
+                    } catch (CannotPerformOperationException ex){
+                        return Response.status(Response.Status.SERVICE_UNAVAILABLE).entity(LogMessageUtil.HASH_NOT_CREATED).build();
                     }
 
 

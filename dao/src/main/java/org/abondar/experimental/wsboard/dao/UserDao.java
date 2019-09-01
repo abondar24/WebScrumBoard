@@ -200,7 +200,7 @@ public class UserDao extends BaseDao {
         return usr;
     }
 
-    public void resetPassword(long id) throws DataExistenceException {
+    public void resetPassword(long id) throws DataExistenceException,CannotPerformOperationException {
         var usr = mapper.getUserById(id);
         if (usr == null) {
             var msg = String.format(LogMessageUtil.LOG_FORMAT, LogMessageUtil.USER_NOT_EXISTS, id);
@@ -209,7 +209,7 @@ public class UserDao extends BaseDao {
             throw new DataExistenceException(LogMessageUtil.USER_NOT_EXISTS);
         }
 
-        usr.setPassword("reset");
+        usr.setPassword(PasswordUtil.createHash("reset"));
         mapper.updateUser(usr);
         var msg = String.format("Password reset for " + LogMessageUtil.LOG_FORMAT, "user ", usr.getId());
         logger.info(msg);

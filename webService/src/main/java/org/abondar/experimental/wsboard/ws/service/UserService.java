@@ -202,7 +202,8 @@ public interface UserService {
             produces = "application/json")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Password reset"),
-            @ApiResponse(code = 404, message = "User not found")
+            @ApiResponse(code = 404, message = "User not found"),
+            @ApiResponse(code = 503, message = "Password hash not created")
     })
     Response resetPassword(@QueryParam("id") @ApiParam(required = true) long id);
 

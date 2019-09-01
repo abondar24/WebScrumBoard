@@ -25,6 +25,11 @@ public class SecurityCodeDao extends BaseDao {
     public long insertCode(long userId) throws DataExistenceException {
         checkUser(userId);
 
+        var foundCode = mapper.getCodeByUserId(userId);
+        if (foundCode!=null){
+            mapper.deleteCode(foundCode.getId());
+        }
+
         long code;
 
         while (true) {

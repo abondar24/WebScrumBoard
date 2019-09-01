@@ -42,7 +42,7 @@
                             Your password must be 5-20 characters long, contain letters and numbers.
                         </b-form-text>
                         <b-form-invalid-feedback :state="passwordValidation">
-                            Password is too short
+                            Password is too short and contains only letters or numbers
                         </b-form-invalid-feedback>
                     </b-form-group>
 
@@ -213,7 +213,7 @@
                 return this.user.login.length > 4
             },
             passwordValidation() {
-                return this.user.password.length > 4
+                return this.user.password.length > 4 && this.user.password.match(/^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]+$/) != null
             },
             roleValidation() {
                 return this.selectedRoles.length > 0

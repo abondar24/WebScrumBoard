@@ -8,6 +8,7 @@ import org.abondar.experimental.wsboard.dao.data.DataMapper;
 import org.abondar.experimental.wsboard.dao.exception.DataCreationException;
 import org.abondar.experimental.wsboard.dao.exception.DataExistenceException;
 import org.abondar.experimental.wsboard.dao.exception.InvalidHashException;
+import org.abondar.experimental.wsboard.dao.password.PasswordUtil;
 import org.abondar.experimental.wsboard.datamodel.Project;
 import org.abondar.experimental.wsboard.datamodel.user.User;
 import org.abondar.experimental.wsboard.datamodel.user.UserRole;
@@ -176,7 +177,7 @@ public class UserDaoTest {
         userDao.resetPassword(id);
 
         usr = userDao.findUserById(id);
-        assertEquals("reset", usr.getPassword());
+        assertTrue(PasswordUtil.verifyPassword("reset",usr.getPassword()));
 
         mapper.deleteUsers();
     }
