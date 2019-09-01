@@ -18,6 +18,13 @@
             Your password has been reset!
             Please enter a code from email. After this you can enter a new password
         </b-alert>
+        <b-alert
+                :show="passwordUpdated"
+                dismissible
+                variant="success">
+          Your password has been updated. You can login now
+        </b-alert>
+
         <b-col md="3" offset-md="4" id="resetDiv">
             <b-card class="text-left" bg-variant="light">
 
@@ -74,7 +81,8 @@
                 code:'',
                 password:'',
                 passwordReset: false,
-                newPwdEnabled: false
+                newPwdEnabled: false,
+                passwordUpdated: false
             }
         },
         methods:{
@@ -103,15 +111,26 @@
                         this.newPwdEnabled = true;
                     }
                 });
+
+                this.errorOccurred = false;
+                this.newPwdEnabled = false;
             },
             updatePass(){
-                this.$store.dispatch('updatePassword','reset' ,this.password).then(() => {
+                this.$store.dispatch('updatePassword',{
+                    oldPassword:'reset',
+                    newPassword: this.password
+                }).then(() => {
                     this.errorMessage = this.getError;
                     if (this.errorMessage.length) {
                         this.errorOccurred = true;
 
+                    } else {
+                        this.passwordUpdated = true;
                     }
                 });
+
+                this.errorOccurred = false;
+                this.passwordUpdated = false;
             },
             signIn(){
                 this.$router.push("/login");

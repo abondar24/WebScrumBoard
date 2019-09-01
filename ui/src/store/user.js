@@ -97,10 +97,10 @@ export default {
                     commit('setErrorMessage', error.response.data, {root: true});
                 });
         },
-        updatePassword({commit,getters},oldPassword,newPassword){
+        updatePassword({commit,getters},passwords){
             const form = new URLSearchParams();
-            form.append('oldPassword', oldPassword);
-            form.append('newPassword', newPassword);
+            form.append('oldPassword', passwords.oldPassword);
+            form.append('newPassword', passwords.newPassword);
             form.append('id', getters.getUserId);
 
             return Axios.post(userUrl + '/update_password', form,config).then(
