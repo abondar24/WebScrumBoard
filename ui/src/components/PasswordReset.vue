@@ -18,7 +18,7 @@
             Your password has been reset!
             Please enter a code from email. After this you can enter a new password
         </b-alert>
-        <b-col md="4" offset-md="4" id="resetDiv">
+        <b-col md="3" offset-md="4" id="resetDiv">
             <b-card class="text-left" bg-variant="light">
 
                 <b-input-group id="loginGrp" class="mb-3">

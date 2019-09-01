@@ -12,7 +12,7 @@
             {{errorMessage}}
         </b-alert>
 
-        <b-col md="4" offset-md="4" id="loginDiv">
+        <b-col md="3" offset-md="4" id="loginDiv">
             <b-card class="text-left" bg-variant="light">
 
                 <b-form @submit="submit">
@@ -118,7 +118,7 @@
 
                     } else {
                         this.$store.dispatch('getUserByLogin',this.credentials.login).then(() => {
-                            this.$router.push({path: '/user/'+this.getUserId});
+                            this.$router.push({path: '/user/'+this.getId});
                         });
 
                     }
@@ -142,6 +142,9 @@
             },
             getError(){
                 return this.$store.getters.getErrorMsg;
+            },
+            getId(){
+                return this.$store.getters.getUserId;
             }
         },
     }
