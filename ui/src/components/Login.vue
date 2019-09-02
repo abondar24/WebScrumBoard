@@ -42,7 +42,7 @@
                         </b-form-invalid-feedback>
                     </b-form-group>
                     <b-form-group>
-                        <b-button variant="link" v-b-modal.reset> Forgot password</b-button>
+                        <b-button variant="link" v-b-modal.reset>Forgot password</b-button>
                         <b-modal id="reset"
                                  ref="reset"
                                  hide-header

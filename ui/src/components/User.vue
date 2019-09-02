@@ -1,10 +1,14 @@
 <template>
-    <div id="root"></div>
+    <div id="root">
+        <NavbarCommon/>
+    </div>
 </template>
 
 <script>
+    import NavbarCommon from "./NavbarCommon";
     export default {
-        name: "User"
+        name: "User",
+        components: {NavbarCommon}
     }
 </script>
 

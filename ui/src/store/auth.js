@@ -57,6 +57,22 @@ export default {
 
                 });
 
+        },
+        logOutUser({commit,getters}){
+            return getters.authenticatedAxios.get(logoutUrl,{
+                params: {
+                    id: getters.getUserId
+                }
+            }).then(
+                (response) => {
+                    commit('setErrorMessage', '', {root: true});
+                    commit("clearAuthenticated");
+                },
+                (error) => {
+                        commit('setErrorMessage', error.response.data, {root: true});
+
+                });
+
         }
     }
 }
