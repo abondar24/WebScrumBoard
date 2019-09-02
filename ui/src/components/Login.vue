@@ -42,43 +42,33 @@
                         </b-form-invalid-feedback>
                     </b-form-group>
                     <b-form-group>
-                        <b-form-checkbox-group>
-                            <b-form-checkbox
-                                    v-model="remember"
-                                    name="rememberMe"
-                                    value="true"
-                                    unchecked-value="false">
-                                Remember me
-                            </b-form-checkbox>
-                            <b-button variant="link" v-b-modal.reset> Forgot password</b-button>
+                        <b-button variant="link" v-b-modal.reset> Forgot password</b-button>
+                        <b-modal id="reset"
+                                 ref="reset"
+                                 hide-header
+                                 size="sm"
+                                 centered>
+                            Are you sure you want to reset your password?
+                            <div slot="modal-footer" class="w-10">
+                                <b-button
+                                        variant="danger"
+                                        size="md"
+                                        v-on:click="resetPassword">
+                                    Reset
+                                </b-button>
 
-                            <b-modal id="reset"
-                                     ref="reset"
-                                     hide-header
-                                     size="sm"
-                                     centered>
-                                Are you sure you want to reset your password?
-                                <div slot="modal-footer" class="w-10">
-                                    <b-button
-                                            variant="danger"
-                                            size="md"
-                                            v-on:click="resetPassword">
-                                        Reset
-                                    </b-button>
+                                <b-button
+                                        id="cancelButton"
+                                        v-on:click="cancel"
+                                        size="md">
+                                    Cancel
+                                </b-button>
 
-                                    <b-button
-                                            id="cancelButton"
-                                            v-on:click="cancel"
-                                            size="md">
-                                        Cancel
-                                    </b-button>
-
-                                </div>
-                            </b-modal>
-
-                        </b-form-checkbox-group>
+                            </div>
+                        </b-modal>
 
                     </b-form-group>
+
 
                     <b-button type="submit" variant="primary" size="md">
                         Sign in
@@ -117,8 +107,8 @@
                         this.errorOccurred = true;
 
                     } else {
-                        this.$store.dispatch('getUserByLogin',this.credentials.login).then(() => {
-                            this.$router.push({path: '/user/'+this.getId});
+                        this.$store.dispatch('getUserByLogin', this.credentials.login).then(() => {
+                            this.$router.push({path: '/user/' + this.getId});
                         });
 
                     }
@@ -140,10 +130,10 @@
             passwordValidation() {
                 return this.credentials.password.length > 0
             },
-            getError(){
+            getError() {
                 return this.$store.getters.getErrorMsg;
             },
-            getId(){
+            getId() {
                 return this.$store.getters.getUserId;
             }
         },
@@ -156,9 +146,5 @@
         margin-top: 30px
     }
 
-    #cancelButton {
-        alignment: center;
-        margin-left: 10px;
-    }
 
 </style>
