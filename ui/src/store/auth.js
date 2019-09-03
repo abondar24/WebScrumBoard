@@ -2,29 +2,27 @@ import Axios from "axios";
 
 const loginUrl = process.env.VUE_APP_API_ENDPOINT + "/user/login";
 const logoutUrl = process.env.VUE_APP_API_ENDPOINT + "/user/logout";
-const authHeaderKey = 'authorization';
+const authorization = 'authorization';
 export default {
     state: {
         authenticated: false,
-        authorization: ''
+        jwt: ''
     },
     getters: {
         authenticatedAxios: state => {
             return Axios.create({
                 headers: {
-                    authHeaderKey: state.authorization
+                   authorization: state.jwt
                 }
             });
         }
     },
     mutations: {
-        setAuthenticated(state, header) {
-            state.jwt = header;
-            state.authenticated = true;
+        setAuthenticated(state, token) {
+            state.jwt = token;
         },
 
         clearAuthenticated(state) {
-            state.authenticated = false;
             state.jwt = null;
         },
         setErrorMessage(state, msg) {
@@ -46,7 +44,7 @@ export default {
             return Axios.post(loginUrl, form, formConfig).then(
                 (response) => {
                     commit('setErrorMessage', '', {root: true});
-                    commit("setAuthenticated", response.headers[authHeaderKey]);
+                    commit("setAuthenticated", response.headers[authorization]);
                 },
                 (error) => {
                     if (error.response.status===500){
