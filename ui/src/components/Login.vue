@@ -107,7 +107,7 @@
                         this.errorOccurred = true;
 
                     } else {
-                        this.$store.dispatch('getUserByLogin', this.credentials.login).then(() => {
+                        this.$store.dispatch('getUserByLoginAuth', this.credentials.login).then(() => {
                             this.$router.push({path: '/user/' + this.getId});
                         });
 

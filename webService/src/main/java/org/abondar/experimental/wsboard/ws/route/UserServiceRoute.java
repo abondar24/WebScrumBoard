@@ -208,6 +208,7 @@ public class UserServiceRoute extends RouteBuilder {
                 .log(LoggingLevel.DEBUG, LOG_HEADERS)
                 .transform()
                 .body((bdy, hdrs) -> {
+
                     MessageContentsList formData = (MessageContentsList) bdy;
                     try {
                         dao.findUserById((long) formData.get(0));
@@ -226,7 +227,13 @@ public class UserServiceRoute extends RouteBuilder {
                     MessageContentsList formData = (MessageContentsList) bdy;
                     try {
                         var usr = dao.findUserByLogin((String) formData.get(0));
-                        return Response.ok(usr).build();
+
+                        if (hdrs.get("Authorization")!=null){
+                            return Response.ok(usr).build();
+                        } else {
+                            return Response.ok().build();
+                        }
+
                     } catch (DataExistenceException ex) {
                         return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
                     }

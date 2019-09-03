@@ -84,6 +84,20 @@ export default {
                     commit('setErrorMessage', error.response.data, {root: true});
                 });
         },
+        getUserByLoginAuth({commit, getters}, login) {
+            return getters.authenticatedAxios.get(userUrl + '/find', {
+                params: {
+                    login: login
+                }
+            }).then(
+                (response) => {
+                    commit('setErrorMessage', '', {root: true});
+                    commit('setUser', response.data);
+                },
+                (error) => {
+                    commit('setErrorMessage', error.response.data, {root: true});
+                });
+        },
         resetPassword({commit,getters}) {
             return Axios.get(userUrl + '/reset_pwd', {
                 params: {
