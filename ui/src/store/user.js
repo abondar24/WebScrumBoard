@@ -29,6 +29,9 @@ export default {
         },
         getUserPassword: state => {
             return state.user.password;
+        },
+        getUser: state =>{
+            return state.user;
         }
     },
     actions: {
