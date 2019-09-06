@@ -19,6 +19,12 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
+            <groupId>org.abondar.experimental.wsboard</groupId>
+            <artifactId>dao</artifactId>
+            <version>1.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>42.2.5</version>
@@ -26,12 +32,6 @@
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.abondar.experimental.wsboard</groupId>
-            <artifactId>dao</artifactId>
-            <version>1.0</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -81,12 +81,9 @@
                             <overwrite>true</overwrite>
                             <resources>
                                 <resource>
-                                    <directory>${project.parent.basedir}/ui/dist</directory>
+                                    <directory>${project.parent.basedir}/ui/target/dist</directory>
                                     <includes>
-                                        <include>css/</include>
-                                        <include>fonts/</include>
-                                        <include>img/</include>
-                                        <include>js/</include>
+                                        <include>static/</include>
                                         <include>index.html</include>
                                         <include>favicon.ico</include>
                                     </includes>
