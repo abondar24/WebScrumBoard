@@ -9,12 +9,13 @@ import PasswordReset from "../components/PasswordReset";
 Vue.use(Router);
 
 export default new Router({
+  mode: 'history',
   routes: [
     {path: '/', name: 'Hello', component: Hello},
     {path: "/login",name:'Login', component: Login},
     {path: "/register",name:'Register', component: Register},
     {path: "/user/:id",name:'User', component: User},
     {path: "/reset",name:'PasswordReset', component: PasswordReset},
-
+    { path: '*', redirect: '/' }
   ]
 })
