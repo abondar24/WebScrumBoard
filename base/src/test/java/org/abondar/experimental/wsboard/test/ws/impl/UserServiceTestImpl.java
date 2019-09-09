@@ -2,6 +2,7 @@ package org.abondar.experimental.wsboard.test.ws.impl;
 
 import org.abondar.experimental.wsboard.dao.data.LogMessageUtil;
 import org.abondar.experimental.wsboard.dao.exception.CannotPerformOperationException;
+import org.abondar.experimental.wsboard.dao.exception.DataExistenceException;
 import org.abondar.experimental.wsboard.dao.exception.InvalidHashException;
 import org.abondar.experimental.wsboard.dao.password.PasswordUtil;
 import org.abondar.experimental.wsboard.datamodel.Contributor;
@@ -16,7 +17,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -171,12 +171,16 @@ public class UserServiceTestImpl implements UserService {
 
         try {
             if (PasswordUtil.verifyPassword(password, testUser.getPassword())) {
-                return Response.ok().cookie(createCookie(login)).build();
+                return Response.ok(testUser.getId()).header("Authorization",
+                        "JWT "+ authService.authorizeUser(login, password))
+                        .build();
             }
         } catch (CannotPerformOperationException ex) {
             return Response.status(Response.Status.SERVICE_UNAVAILABLE).entity(ex.getLocalizedMessage()).build();
         } catch (InvalidHashException ex) {
             return Response.status(Response.Status.UNAUTHORIZED).entity(ex.getLocalizedMessage()).build();
+        } catch (DataExistenceException ex){
+            return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.USER_NOT_EXISTS).build();
         }
 
         return Response.status(Response.Status.UNAUTHORIZED).entity(LogMessageUtil.USER_UNAUTHORIZED).build();
@@ -244,10 +248,5 @@ public class UserServiceTestImpl implements UserService {
         return Response.ok().build();
     }
 
-    private NewCookie createCookie(String login) {
-        return new NewCookie(new Cookie("X-JWT-AUTH",
-                authService.createToken(login, "test", null), "/", null),
-                "JWT token", 6000, new Date((new Date()).getTime() + 60000), false, true);
 
-    }
 }

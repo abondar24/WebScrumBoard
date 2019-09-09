@@ -22,7 +22,7 @@ public class AuthServiceTestImpl implements AuthService {
 
     @Override
     public String authorizeUser(String login, String pwd) {
-        return null;
+        return "testToken";
     }
 
 
