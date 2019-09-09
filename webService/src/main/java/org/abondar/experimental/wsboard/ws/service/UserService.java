@@ -35,7 +35,7 @@ public interface UserService {
     @ApiOperation(
             value = "Create user",
             notes = "Creates a new user based on form data",
-            consumes = "application/x-www-urlformencoded",
+            consumes = "application/x-www-urlencoded",
             produces = "application/json")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "User created", response = User.class),
@@ -57,7 +57,7 @@ public interface UserService {
     @ApiOperation(
             value = "Update user",
             notes = "Update user first,last name,email and roles",
-            consumes = "application/x-www-urlformencoded",
+            consumes = "application/x-www-urlencoded",
             produces = "application/json")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "User updated", response = User.class),
@@ -93,7 +93,7 @@ public interface UserService {
     @ApiOperation(
             value = "Update login",
             notes = "Update user login",
-            consumes = "application/x-www-urlformencoded",
+            consumes = "application/x-www-urlencoded",
             produces = "application/json")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "User with updated login", response = User.class),
@@ -111,7 +111,7 @@ public interface UserService {
     @ApiOperation(
             value = "Update password",
             notes = "Update user password",
-            consumes = "application/x-www-urlformencoded",
+            consumes = "application/x-www-urlencoded",
             produces = "application/json")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "User with updated password", response = User.class),
@@ -140,11 +140,10 @@ public interface UserService {
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/login")
-    @PermitAll
     @ApiOperation(
             value = "Login",
             notes = "Log in user",
-            consumes = "application/x-www-urlformencoded",
+            consumes = "application/x-www-urlencoded",
             produces = "application/json")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "User logged in"),

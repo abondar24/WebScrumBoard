@@ -171,7 +171,7 @@ public class UserServiceTestImpl implements UserService {
 
         try {
             if (PasswordUtil.verifyPassword(password, testUser.getPassword())) {
-                return Response.ok(testUser.getId()).header("Authorization",
+                return Response.ok().header("Authorization",
                         "JWT "+ authService.authorizeUser(login, password))
                         .build();
             }

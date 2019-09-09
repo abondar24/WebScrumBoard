@@ -537,9 +537,6 @@ public class UserServiceTest {
         var resp = client.post(form);
         assertEquals(200, resp.getStatus());
 
-        var id = resp.readEntity(Long.class);
-        assertEquals(usr.getId(),(long)id);
-
         var token = resp.getHeaders().get("Authorization").get(0);
         assertEquals("JWT testToken", token);
 

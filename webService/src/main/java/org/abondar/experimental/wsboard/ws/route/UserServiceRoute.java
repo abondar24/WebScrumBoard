@@ -193,9 +193,8 @@ public class UserServiceRoute extends RouteBuilder {
                 .body((bdy, hdrs) -> {
                     MessageContentsList formData = (MessageContentsList) bdy;
                     try {
-                        var login = (String) formData.get(0);
-                        return Response.ok(dao.findUserByLogin(login).getId()).header("Authorization",
-                               "JWT "+ authService.authorizeUser(login, (String) formData.get(1)))
+                        return Response.ok().header("Authorization",
+                               "JWT "+ authService.authorizeUser((String) formData.get(0), (String) formData.get(1)))
                                 .build();
                     } catch (DataExistenceException ex) {
                         return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
