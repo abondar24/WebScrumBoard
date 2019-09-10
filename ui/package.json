@@ -16,6 +16,7 @@
     "bootstrap": "^4.3.1",
     "bootstrap-vue": "^2.0.0-rc.27",
     "font-awesome": "^4.7.0",
+    "vue-image-upload-resize": "^2.1.1",
     "vue-router": "^3.0.1",
     "vuex": "^3.1.1"
   },

@@ -10,7 +10,7 @@ const config = {
 
 export default {
     state: {
-        user: null
+        user: null,
     },
     mutations: {
         setUser(state, user) {
@@ -50,11 +50,11 @@ export default {
                         commit('setUser', response.data);
                         commit('setErrorMessage', '');
                         if (response.status === 206) {
-                            commit('setErrorMessage', response.data, {root: true});
+                            commit('setErrorMessage', response.data);
                         }
                     },
                     (error) => {
-                        commit('setErrorMessage', error.response.data, {root: true});
+                        commit('setErrorMessage', error.response.data);
                     });
 
         },
@@ -67,10 +67,10 @@ export default {
             })
                 .then(
                     (response) => {
-                        commit('setErrorMessage', '', {root: true});
+                        commit('setErrorMessage', '');
                     },
                     (error) => {
-                        commit('setErrorMessage', error.response.data, {root: true});
+                        commit('setErrorMessage', error.response.data);
                     });
         },
         getUserByLogin({commit, getters}, login) {
@@ -80,25 +80,11 @@ export default {
                 }
             }).then(
                 (response) => {
-                    commit('setErrorMessage', '', {root: true});
+                    commit('setErrorMessage', '');
                     commit('setUser', response.data);
                 },
                 (error) => {
-                    commit('setErrorMessage', error.response.data, {root: true});
-                });
-        },
-        getUserByLoginAuth({commit, getters}, login) {
-            return getters.authenticatedAxios.get(userUrl + '/find', {
-                params: {
-                    login: login
-                }
-            }).then(
-                (response) => {
-                    commit('setErrorMessage', '', {root: true});
-                    commit('setUser', response.data);
-                },
-                (error) => {
-                    commit('setErrorMessage', error.response.data, {root: true});
+                    commit('setErrorMessage', error.response.data);
                 });
         },
         resetPassword({commit,getters}) {
@@ -108,10 +94,10 @@ export default {
                 }
             }).then(
                 (response) => {
-                    commit('setErrorMessage', '', {root: true});
+                    commit('setErrorMessage', '');
                 },
                 (error) => {
-                    commit('setErrorMessage', error.response.data, {root: true});
+                    commit('setErrorMessage', error.response.data);
                 });
         },
         updatePassword({commit,getters},passwords){
@@ -122,10 +108,10 @@ export default {
 
             return Axios.post(userUrl + '/update_password', form,config).then(
                 (response) => {
-                    commit('setErrorMessage', '', {root: true});
+                    commit('setErrorMessage', '');
                 },
                 (error) => {
-                    commit('setErrorMessage', error.response.data, {root: true});
+                    commit('setErrorMessage', error.response.data);
                 });
         }
     }

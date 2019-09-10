@@ -3,7 +3,6 @@ import Vuex from "vuex";
 import UserModule from "./user";
 import AuthModule from "./auth"
 
-//Vue.config.devtools=true;
 Vue.use(Vuex);
 
 export default new Vuex.Store({
