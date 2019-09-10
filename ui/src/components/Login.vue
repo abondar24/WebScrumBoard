@@ -42,31 +42,7 @@
                         </b-form-invalid-feedback>
                     </b-form-group>
                     <b-form-group>
-                        <b-button variant="link" v-b-modal.reset>Forgot password</b-button>
-                        <b-modal id="reset"
-                                 ref="reset"
-                                 hide-header
-                                 size="sm"
-                                 centered>
-                            Are you sure you want to reset your password?
-                            <div slot="modal-footer" class="w-10">
-                                <b-button
-                                        variant="danger"
-                                        size="md"
-                                        v-on:click="resetPassword">
-                                    Reset
-                                </b-button>
-
-                                <b-button
-                                        id="cancelButton"
-                                        v-on:click="cancel"
-                                        size="md">
-                                    Cancel
-                                </b-button>
-
-                            </div>
-                        </b-modal>
-
+                        <b-button variant="link" v-on:click="resetPassword">Forgot password</b-button>
                     </b-form-group>
 
 
@@ -115,12 +91,8 @@
                 this.errorOccurred = false;
             },
             resetPassword() {
-                this.$refs['reset'].hide();
                 this.$router.push("/reset");
             },
-            cancel() {
-                this.$refs['reset'].hide();
-            }
         },
         computed: {
             loginValidation() {
