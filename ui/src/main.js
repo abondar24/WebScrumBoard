@@ -10,7 +10,7 @@ import BootstrapVue from 'bootstrap-vue'
 import store from './store/store';
 
 Vue.config.productionTip = false;
-Vue.config.devtools=true;
+
 
 Vue.use(BootstrapVue);
 

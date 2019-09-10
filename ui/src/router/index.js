@@ -5,11 +5,12 @@ import Login from "../components/Login";
 import Register from "../components/Register";
 import User from "../components/User";
 import PasswordReset from "../components/PasswordReset";
+import store from "../store/store"
 
 Vue.use(Router);
 
 export default new Router({
-  mode: 'history',
+  //mode: 'history',
   routes: [
     {path: '/', name: 'Hello', component: Hello},
     {path: "/login",name:'Login', component: Login},
@@ -18,4 +19,4 @@ export default new Router({
     {path: "/reset",name:'PasswordReset', component: PasswordReset},
     { path: '*', redirect: '/' }
   ]
-})
+});

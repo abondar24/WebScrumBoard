@@ -103,16 +103,15 @@
             submit() {
                 this.$store.dispatch('loginUser', this.credentials).then(() => {
                     this.errorMessage = this.getError;
+                    console.log(this.errorMessage);
                     if (this.errorMessage.length) {
                         this.errorOccurred = true;
 
                     } else {
-                        this.$store.dispatch('getUserByLoginAuth', this.credentials.login).then(() => {
-                            this.$router.push({path: '/user/' + this.getId});
-                        });
-
+                        this.$router.push({path: '/user/' + this.getId});
                     }
                 });
+
                 this.errorOccurred = false;
             },
             resetPassword() {

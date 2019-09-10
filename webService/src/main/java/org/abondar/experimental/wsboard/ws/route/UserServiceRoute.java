@@ -194,7 +194,7 @@ public class UserServiceRoute extends RouteBuilder {
                     MessageContentsList formData = (MessageContentsList) bdy;
                     try {
                         return Response.ok().header("Authorization",
-                               "JWT "+ authService.authorizeUser((String) formData.get(0), (String) formData.get(1)))
+                                "JWT " + authService.authorizeUser((String) formData.get(0), (String) formData.get(1)))
                                 .build();
                     } catch (DataExistenceException ex) {
                         return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
@@ -228,11 +228,8 @@ public class UserServiceRoute extends RouteBuilder {
                     try {
                         var usr = dao.findUserByLogin((String) formData.get(0));
 
-                        if (hdrs.get("Authorization")!=null){
-                            return Response.ok(usr).build();
-                        } else {
-                            return Response.ok().build();
-                        }
+                        return Response.ok(usr).build();
+
 
                     } catch (DataExistenceException ex) {
                         return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
@@ -245,7 +242,7 @@ public class UserServiceRoute extends RouteBuilder {
                 .body((bdy, hdrs) -> {
                     MessageContentsList formData = (MessageContentsList) bdy;
                     var usrs = dao.findUsersByIds((List<Long>) formData.get(0));
-                    if (usrs.isEmpty()){
+                    if (usrs.isEmpty()) {
                         return Response.status(Response.Status.NO_CONTENT);
                     }
 
@@ -269,7 +266,7 @@ public class UserServiceRoute extends RouteBuilder {
                         return Response.ok().build();
                     } catch (DataExistenceException ex) {
                         return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
-                    } catch (CannotPerformOperationException ex){
+                    } catch (CannotPerformOperationException ex) {
                         return Response.status(Response.Status.SERVICE_UNAVAILABLE).entity(LogMessageUtil.HASH_NOT_CREATED).build();
                     }
 

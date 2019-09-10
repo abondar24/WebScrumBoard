@@ -8,32 +8,34 @@ export default {
         authenticated: false,
         jwt: ''
     },
-    getters: {
-        authenticatedAxios: state => {
-            return Axios.create({
-                headers: {
-                   authorization: state.jwt
-                }
-            });
-        }
-    },
     mutations: {
         setAuthenticated(state, token) {
+            state.authenticated = true;
             state.jwt = token;
         },
 
         clearAuthenticated(state) {
+            state.authenticated = false;
             state.jwt = null;
         },
         setErrorMessage(state, msg) {
             state.errorMessage = msg;
         }
     },
+    getters: {
+        authenticatedAxios: state => {
+            return Axios.create({
+                headers: {
+                    authorization: state.jwt
+                }
+            });
+        }
+    },
     actions: {
-        loginUser({commit}, credentials) {
+        loginUser({commit,dispatch}, credentials) {
             const form = new URLSearchParams();
-            form.append("login", credentials.login);
-            form.append("password", credentials.password);
+            form.append('login', credentials.login);
+            form.append('password', credentials.password);
 
             const formConfig = {
                 headers: {
@@ -43,31 +45,31 @@ export default {
 
             return Axios.post(loginUrl, form, formConfig).then(
                 (response) => {
-                    commit('setErrorMessage', '', {root: true});
-                    commit("setAuthenticated", response.headers[authorization]);
+                    commit('setErrorMessage', '');
+                    commit('setAuthenticated', response.headers[authorization]);
+                    return dispatch('getUserByLogin',credentials.login) ;
                 },
                 (error) => {
-                    if (error.response.status===500){
-                        commit('setErrorMessage', error.response.data.message, {root: true});
+                    if (error.response.status === 500) {
+                        commit('setErrorMessage', error.response.data.message);
                     } else {
-                        commit('setErrorMessage', error.response.data, {root: true});
+                        commit('setErrorMessage', error.response.data);
                     }
-
                 });
-
         },
-        logOutUser({commit,getters}){
-            return getters.authenticatedAxios.get(logoutUrl,{
+        logOutUser({commit, getters}) {
+            return getters.authenticatedAxios.get(logoutUrl, {
                 params: {
                     id: getters.getUserId
                 }
             }).then(
                 (response) => {
-                    commit('setErrorMessage', '', {root: true});
-                    commit("clearAuthenticated");
+                    commit('setErrorMessage', '');
+                    commit('clearAuthenticated');
+                    commit('clearUser')
                 },
                 (error) => {
-                        commit('setErrorMessage', error.response.data, {root: true});
+                    commit('setErrorMessage', error.response.data);
 
                 });
 
