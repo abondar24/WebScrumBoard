@@ -31,6 +31,7 @@ public class EmailRoute extends RouteBuilder {
             hdrs.put("contentType", "text/html");
             return bdy;
         })
+                //TODO: remove headers with user data
                 .choice()
                 .when(header(EMAIL_TYPE_HEADER).isEqualTo("createUser"))
                 .to("velocity:/velocity/createUser.html")

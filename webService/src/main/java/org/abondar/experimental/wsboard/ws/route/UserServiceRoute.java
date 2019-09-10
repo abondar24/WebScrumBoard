@@ -121,6 +121,8 @@ public class UserServiceRoute extends RouteBuilder {
                         User user = dao.updateLogin((String) formData.get(0), (long) formData.get(1));
                         hdrs.put(EMAIL_TYPE_HEADER, "updateLogin");
                         hdrs.put("To", user.getEmail());
+                        hdrs.put("firstName",user.getFirstName());
+                        hdrs.put("login",user.getLogin());
 
                         return Response.ok(user).build();
 
@@ -151,6 +153,8 @@ public class UserServiceRoute extends RouteBuilder {
 
                         hdrs.put(EMAIL_TYPE_HEADER, "updatePassword");
                         hdrs.put("To", user.getEmail());
+                        hdrs.put("firstName",user.getFirstName());
+                        hdrs.put("login",user.getLogin());
 
 
                         return Response.ok(user).build();
@@ -262,6 +266,7 @@ public class UserServiceRoute extends RouteBuilder {
                         hdrs.put("emailType", "resetPassword");
                         hdrs.put("code", codeDao.insertCode(user.getId()));
                         hdrs.put("To", user.getEmail());
+                        hdrs.put("login",user.getLogin());
 
                         return Response.ok().build();
                     } catch (DataExistenceException ex) {
