@@ -10,7 +10,16 @@ const config = {
 
 export default {
     state: {
-        user: null,
+        user: {
+            id: 0,
+            login: '',
+            password: '',
+            email: '',
+            firstName: '',
+            lastName: '',
+            roles: '',
+            avatar: null
+        },
     },
     mutations: {
         setUser(state, user) {
@@ -21,9 +30,9 @@ export default {
         }
     },
     getters: {
-        getUserId: state => {
-            return state.user.id;
-        },
+         getUserId: state => {
+             return state.user.id;
+         },
         getUserLogin: state => {
             return state.user.login;
         },
