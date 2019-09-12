@@ -26,8 +26,12 @@ before_script:
   - psql -c "CREATE USER admin WITH PASSWORD 'admin217';" -U postgres
 
 
-before_install:
-  - nvm install $NODE_VERSION
+cache:
+  directories:
+  - node_modules
+  
 
+script: mvn clean install
 
-script: mvn clean install -DskipTests=false
+after_success:
+  - mvn clean test
