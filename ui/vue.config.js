@@ -11,6 +11,6 @@ module.exports = {
         // Enable CSS source maps.
         sourceMap: true
     },
-    outputDir: 'target/dist',
+    outputDir: 'target/classes/dist',
     assetsDir: 'static'
 };

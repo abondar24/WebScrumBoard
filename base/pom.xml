@@ -20,6 +20,13 @@
         </dependency>
         <dependency>
             <groupId>org.abondar.experimental.wsboard</groupId>
+            <artifactId>ui</artifactId>
+            <version>1.0</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.abondar.experimental.wsboard</groupId>
             <artifactId>dao</artifactId>
             <version>1.0</version>
             <scope>compile</scope>
@@ -68,31 +75,24 @@
     <build>
         <plugins>
             <plugin>
-                <artifactId>maven-resources-plugin</artifactId>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${springboot.version}</version>
                 <executions>
                     <execution>
-                        <id>copy ui content</id>
-                        <phase>generate-resources</phase>
                         <goals>
-                            <goal>copy-resources</goal>
+                            <goal>
+                                repackage
+                            </goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>src/main/resources/public</outputDirectory>
-                            <overwrite>true</overwrite>
-                            <resources>
-                                <resource>
-                                    <directory>${project.parent.basedir}/ui/target/dist</directory>
-                                    <includes>
-                                        <include>static/</include>
-                                        <include>index.html</include>
-                                        <include>favicon.ico</include>
-                                    </includes>
-                                </resource>
-                            </resources>
+                            <attach>false</attach>
+                            <mainClass>org.abondar.experimental.wsboard.base.WebScrumBoardApplication</mainClass>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
+
         </plugins>
     </build>
 </project>

@@ -9,7 +9,7 @@
     <version>1.0</version>
 
     <properties>
-        <springboot.version>2.1.7.RELEASE</springboot.version>
+        <springboot.version>2.1.8.RELEASE</springboot.version>
         <cxf.version>3.3.2</cxf.version>
         <junit.version>5.3.2</junit.version>
         <jaxb.version>2.3.1</jaxb.version>
@@ -128,24 +128,6 @@
                 <groupId>org.sonarsource.scanner.maven</groupId>
                 <artifactId>sonar-maven-plugin</artifactId>
                 <version>3.6.0.1398</version>
-            </plugin>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>${springboot.version}</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>
-                                repackage
-                            </goal>
-                        </goals>
-                        <configuration>
-                            <attach>false</attach>
-                            <mainClass>org.abondar.experimental.wsboard.base.WebScrumBoardApplication</mainClass>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
             <plugin>
                 <groupId>org.jacoco</groupId>
