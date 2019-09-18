@@ -16,7 +16,7 @@ export default {
 
         clearAuthenticated(state) {
             state.authenticated = false;
-            state.jwt = null;
+            state.jwt = '';
         },
         setErrorMessage(state, msg) {
             state.errorMessage = msg;
@@ -66,7 +66,7 @@ export default {
                 (response) => {
                     commit('setErrorMessage', '');
                     commit('clearAuthenticated');
-                    commit('clearUser')
+                    commit('clearUser');
                 },
                 (error) => {
                     commit('setErrorMessage', error.response.data);

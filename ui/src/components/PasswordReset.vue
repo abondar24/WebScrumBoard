@@ -133,7 +133,7 @@
                 this.passwordUpdated = false;
             },
             signIn(){
-                this.$router.push("/login");
+                this.$router.push('/login');
             }
         },
         computed: {

@@ -26,7 +26,16 @@ export default {
             state.user = user;
         },
         clearUser(state) {
-            state.user = null;
+            state.user = {
+                id: 0,
+                login: '',
+                password: '',
+                email: '',
+                firstName: '',
+                lastName: '',
+                roles: '',
+                avatar: null
+            };
         }
     },
     getters: {

@@ -5,10 +5,15 @@
       <h1>{{ msg }}</h1>
     </div>
     <div>
-      <b-button variant="primary" style="" v-on:click="redirectToRegister" id="register">Sign Up</b-button>
-      <b-button variant="success" v-on:click="redirectToLogin" id="login">Log in</b-button>
-    </div>
+      <router-link to="/register">
+        <b-button variant="primary" id="register">Sign Up</b-button>
+      </router-link>
 
+      <router-link to="/login">
+        <b-button variant="success" id="login">Log in</b-button>
+      </router-link>
+
+    </div>
   </div>
 
 </template>
@@ -21,14 +26,6 @@
                 msg: 'Work With your projects in agile manner'
             }
         },
-        methods: {
-            redirectToLogin() {
-                this.$router.push("/login");
-            },
-            redirectToRegister() {
-                this.$router.push("/register");
-            }
-        }
     }
 </script>
 

@@ -42,7 +42,10 @@
                         </b-form-invalid-feedback>
                     </b-form-group>
                     <b-form-group>
-                        <b-button variant="link" v-on:click="resetPassword">Forgot password</b-button>
+                        <router-link to="/reset">
+                            <b-button variant="link" >Forgot password</b-button>
+                        </router-link>
+
                     </b-form-group>
 
 
@@ -72,7 +75,6 @@
                     login: '',
                     password: ''
                 },
-                remember: false
             }
         },
         methods: {
@@ -86,11 +88,6 @@
                         this.$router.push({path: '/user/' + this.getId});
                     }
                 });
-
-                this.errorOccurred = false;
-            },
-            resetPassword() {
-                this.$router.push("/reset");
             },
         },
         computed: {

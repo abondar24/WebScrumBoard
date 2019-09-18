@@ -20,7 +20,7 @@
         methods:{
             logOut(){
                 this.$store.dispatch('logOutUser').then(()=>{
-                    this.$router.push('/login');
+                    this.$router.push('/');
                 });
 
             },

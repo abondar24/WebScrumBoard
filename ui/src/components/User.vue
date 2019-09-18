@@ -21,6 +21,7 @@
         name: "User",
         components: {NavbarCommon},
         data(){
+            return {}
         },
         methods: {
             loadAvatar(){
