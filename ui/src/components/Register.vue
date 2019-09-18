@@ -14,7 +14,7 @@
                         variant="danger">
                     {{errorMessage}}
                 </b-alert>
-                <b-form @submit="submit" @reset="reset">
+                <b-form @submit.prevent="submit" @reset="reset">
                     <b-form-group id="login" label="Login" label-for="loginInput">
                         <b-form-input
                                 id="login"

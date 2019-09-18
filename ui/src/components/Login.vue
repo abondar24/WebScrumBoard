@@ -15,7 +15,7 @@
         <b-col md="3" offset-md="4" id="loginDiv">
             <b-card class="text-left" bg-variant="light">
 
-                <b-form @submit="submit">
+                <b-form @submit.prevent="submit">
                     <b-form-group
                             label="Login"
                             label-for="logInp">
