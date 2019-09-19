@@ -42,10 +42,18 @@
                         </b-form-invalid-feedback>
                     </b-form-group>
                     <b-form-group>
-                        <router-link to="/reset">
-                            <b-button variant="link" >Forgot password</b-button>
-                        </router-link>
-
+                        <b-form-checkbox-group>
+                            <b-form-checkbox
+                                    v-model="remember"
+                                    name="rememberMe"
+                                    value="true"
+                                    unchecked-value="false">
+                                Remember me
+                            </b-form-checkbox>
+                            <router-link to="/reset">
+                                <b-button variant="link">Forgot password</b-button>
+                            </router-link>
+                        </b-form-checkbox-group>
                     </b-form-group>
 
 
@@ -75,6 +83,7 @@
                     login: '',
                     password: ''
                 },
+                remember: false,
             }
         },
         methods: {
