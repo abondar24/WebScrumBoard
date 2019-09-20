@@ -17,6 +17,7 @@ export default {
         clearAuthenticated(state) {
             state.authenticated = false;
             state.jwt = '';
+          //  console.log(JSON.parse(atob(this.jwt.split('.')[1])))
         },
         setErrorMessage(state, msg) {
             state.errorMessage = msg;
