@@ -13,22 +13,23 @@
                     <b-img :src="image" v-bind="imgProps" rounded="circle" alt="Circle image"></b-img>
                     <div>
                         <image-uploader
-                                :preview="true"
                                 :className="['fileinput']"
                                 capture="environment"
+                                :preview="false"
                                 :debug="1"
                                 :quality="0.7"
                                 doNotResize="gif"
                                 :autoRotate="true"
                                 outputFormat="verbose"
-                                @input="setImage">
-                            <label slot="upload-label">
+                                @input="setImage"
+                                @onComplete="saveToServer">
+                            <label for="fileInput" slot="upload-label">
                                 <figure>
-                                        <path
-                                                class="path1"
-                                                d="M9.5 19c0 3.59 2.91 6.5 6.5 6.5s6.5-2.91 6.5-6.5-2.91-6.5-6.5-6.5-6.5 2.91-6.5 6.5zM30 8h-7c-0.5-2-1-4-3-4h-8c-2 0-2.5 2-3 4h-7c-1.1 0-2 0.9-2 2v18c0 1.1 0.9 2 2 2h28c1.1 0 2-0.9 2-2v-18c0-1.1-0.9-2-2-2zM16 27.875c-4.902 0-8.875-3.973-8.875-8.875s3.973-8.875 8.875-8.875c4.902 0 8.875 3.973 8.875 8.875s-3.973 8.875-8.875 8.875zM30 14h-4v-2h4v2z">
+                                    <path
+                                            class="path1"
+                                            d="M9.5 19c0 3.59 2.91 6.5 6.5 6.5s6.5-2.91 6.5-6.5-2.91-6.5-6.5-6.5-6.5 2.91-6.5 6.5zM30 8h-7c-0.5-2-1-4-3-4h-8c-2 0-2.5 2-3 4h-7c-1.1 0-2 0.9-2 2v18c0 1.1 0.9 2 2 2h28c1.1 0 2-0.9 2-2v-18c0-1.1-0.9-2-2-2zM16 27.875c-4.902 0-8.875-3.973-8.875-8.875s3.973-8.875 8.875-8.875c4.902 0 8.875 3.973 8.875 8.875s-3.973 8.875-8.875 8.875zM30 14h-4v-2h4v2z">
 
-                                        </path>
+                                    </path>
                                 </figure>
                                 <span class="upload-caption">Click to upload</span>
                             </label>
@@ -53,24 +54,36 @@
         components: {NavbarCommon},
         data() {
             return {
-                image: require('@/assets/emptyAvatar.png'),
+                image: null,
                 imgProps: {width: 175, height: 175, class: 'm1'},
                 errorMessage: '',
                 errorOccurred: false,
             }
         },
-        methods: {
-            methods: {
-                setImage: function (output) {
-                    this.image = output;
-                    this.$store.dispatch('updateAvatar',this.image).then(()=>{
-                        this.errorMessage = this.getError;
-                        if (this.errorMessage.length) {
-                            this.errorOccurred = true;
-                        }
-                    })
-                }
+        beforeMount() {
+            if (this.getUser.avatar == null) {
+                this.image = require('@/assets/emptyAvatar.png');
+            } else {
+                this.image = this.getUser.avatar;
             }
+
+        },
+        methods: {
+            setImage(output) {
+                this.image = output;
+                console.log(this.image);
+            },
+            saveToServer() {
+                console.log(this.image);
+                this.$store.dispatch('updateAvatar', this.image).then(() => {
+                    this.errorMessage = this.getError;
+                    if (this.errorMessage.length) {
+                        this.errorOccurred = true;
+                        this.image = require('@/assets/emptyAvatar.png');
+                    }
+                });
+            }
+
         },
         computed: {
             getUser() {
@@ -81,5 +94,7 @@
 </script>
 
 <style scoped>
-
+    #fileInput {
+        display: none;
+    }
 </style>

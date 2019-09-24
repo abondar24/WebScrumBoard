@@ -8,11 +8,13 @@ import 'font-awesome/css/font-awesome.min.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import BootstrapVue from 'bootstrap-vue'
 import store from './store/store';
+import ImageUploader from "vue-image-upload-resize";
 
 Vue.config.productionTip = false;
 
 
 Vue.use(BootstrapVue);
+Vue.use(ImageUploader);
 
 /* eslint-disable no-new */
 new Vue({

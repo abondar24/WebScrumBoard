@@ -137,8 +137,11 @@ export default {
         },
         updateAvatar({commit,getters},avatar){
              const config =  {
+                 headers: {
+                     'Content-Type': 'multipart/form-data'
+                 },
                  params: {
-                     id: id
+                     id: getters.getUserId
                  },
                  body: avatar
              };
