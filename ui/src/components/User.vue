@@ -2,6 +2,12 @@
     <div id="root">
         <NavbarCommon/>
         <b-container>
+            <b-alert
+                    :show="errorOccurred"
+                    dismissible
+                    variant="danger">
+                {{errorMessage}}
+            </b-alert>
             <b-row>
                 <b-col>
                     <b-img :src="image" v-bind="imgProps" rounded="circle" alt="Circle image"></b-img>
@@ -48,14 +54,21 @@
         data() {
             return {
                 image: require('@/assets/emptyAvatar.png'),
-                imgProps: {width: 175, height: 175, class: 'm1'}
+                imgProps: {width: 175, height: 175, class: 'm1'},
+                errorMessage: '',
+                errorOccurred: false,
             }
         },
         methods: {
             methods: {
                 setImage: function (output) {
                     this.image = output;
-                    this.$store.dispatch('updateAvatar',this.image)
+                    this.$store.dispatch('updateAvatar',this.image).then(()=>{
+                        this.errorMessage = this.getError;
+                        if (this.errorMessage.length) {
+                            this.errorOccurred = true;
+                        }
+                    })
                 }
             }
         },

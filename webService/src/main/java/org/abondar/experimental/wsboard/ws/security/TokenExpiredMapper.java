@@ -15,6 +15,6 @@ public class TokenExpiredMapper implements ExceptionMapper<JwtException> {
 
     @Override
     public Response toResponse(JwtException e) {
-        return Response.status(Response.Status.NOT_ACCEPTABLE).entity(LogMessageUtil.JWT_TOKEN_EXPIRED).build();
+        return Response.status(Response.Status.NOT_ACCEPTABLE).entity(LogMessageUtil.SESSION_EXPIRED).build();
     }
 }

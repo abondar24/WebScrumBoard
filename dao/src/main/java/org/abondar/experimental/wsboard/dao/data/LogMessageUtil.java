@@ -43,7 +43,7 @@ public class LogMessageUtil {
     public static final String CODE_NOT_EXISTS = "Security code does not exist";
     public static final String CODE_NOT_MATCHES = "Codes don't match";
     public static final String JWT_TOKEN_NOT_SET = "No JWT token is set";
-    public static final String JWT_TOKEN_EXPIRED = "JWT token is expired";
+    public static final String SESSION_EXPIRED = "Session expired. Pleas re-login";
     public static final String WRONG_PASSWORD = "Password is wrong";
 
     private LogMessageUtil() {

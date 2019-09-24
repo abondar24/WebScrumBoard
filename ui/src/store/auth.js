@@ -73,7 +73,8 @@ export default {
                 },
                 (error) => {
                     commit('setErrorMessage', error.response.data);
-
+                    commit('clearAuthenticated');
+                    commit('clearUser');
                 });
 
         }
