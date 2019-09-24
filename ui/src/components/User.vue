@@ -4,7 +4,31 @@
         <b-container>
             <b-row>
                 <b-col>
-                    <b-img v-attr="loadAvatar()" rounded="circle" alt="Circle image"></b-img>
+                    <b-img :src="image" v-bind="imgProps" rounded="circle" alt="Circle image"></b-img>
+                    <div>
+                        <image-uploader
+                                :preview="true"
+                                :className="['fileinput']"
+                                capture="environment"
+                                :debug="1"
+                                :quality="0.7"
+                                doNotResize="gif"
+                                :autoRotate="true"
+                                outputFormat="verbose"
+                                @input="setImage">
+                            <label slot="upload-label">
+                                <figure>
+                                        <path
+                                                class="path1"
+                                                d="M9.5 19c0 3.59 2.91 6.5 6.5 6.5s6.5-2.91 6.5-6.5-2.91-6.5-6.5-6.5-6.5 2.91-6.5 6.5zM30 8h-7c-0.5-2-1-4-3-4h-8c-2 0-2.5 2-3 4h-7c-1.1 0-2 0.9-2 2v18c0 1.1 0.9 2 2 2h28c1.1 0 2-0.9 2-2v-18c0-1.1-0.9-2-2-2zM16 27.875c-4.902 0-8.875-3.973-8.875-8.875s3.973-8.875 8.875-8.875c4.902 0 8.875 3.973 8.875 8.875s-3.973 8.875-8.875 8.875zM30 14h-4v-2h4v2z">
+
+                                        </path>
+                                </figure>
+                                <span class="upload-caption">Click to upload</span>
+                            </label>
+                        </image-uploader>
+                    </div>
+
                 </b-col>
                 <b-col>
                     TABLE WITH TASKS
@@ -17,25 +41,27 @@
 
 <script>
     import NavbarCommon from "./NavbarCommon";
+
     export default {
         name: "User",
         components: {NavbarCommon},
-        data(){
-            return {}
-        },
-        methods: {
-            loadAvatar(){
-               let image = '../../assets/emptyAvatar.png';
-                if ('avatar' in  this.getUser){
-                    image = this.getUser.avatar;
-                }
-
-                return image;
+        data() {
+            return {
+                image: require('@/assets/emptyAvatar.png'),
+                imgProps: {width: 175, height: 175, class: 'm1'}
             }
         },
-        computed:{
+        methods: {
+            methods: {
+                setImage: function (output) {
+                    this.image = output;
+                    this.$store.dispatch('updateAvatar',this.image)
+                }
+            }
+        },
+        computed: {
             getUser() {
-                    return this.$store.getters.getUser;
+                return this.$store.getters.getUser;
             }
         }
     }

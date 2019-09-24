@@ -25,6 +25,9 @@ export default {
         setUser(state, user) {
             state.user = user;
         },
+        setAvatar(state,avatar){
+            state.user.avatar = avatar;
+        },
         clearUser(state) {
             state.user = {
                 id: 0,
@@ -131,6 +134,23 @@ export default {
                 (error) => {
                     commit('setErrorMessage', error.response.data);
                 });
+        },
+        updateAvatar({commit,getters},avatar){
+             const config =  {
+                 params: {
+                     id: id
+                 },
+                 body: avatar
+             };
+
+             return getters.authenticatedAxios.post(userUrl + '/update_avatar', config).then(
+                 (response) => {
+                     commit('setErrorMessage', '');
+                     commit('setAvatar',avatar);
+                 },
+                 (error) => {
+                     commit('setErrorMessage', error.response.data);
+                 });
         }
     }
 }
