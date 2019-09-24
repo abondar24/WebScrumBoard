@@ -30,6 +30,9 @@ export default {
                     authorization: state.jwt
                 }
             });
+        },
+        getAuth: state=>{
+            return state.authenticated;
         }
     },
     actions: {

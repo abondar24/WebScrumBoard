@@ -26,6 +26,20 @@
                 msg: 'Work With your projects in agile manner'
             }
         },
+      beforeMount(){
+          if (this.authenticated){
+            this.$router.push({path: '/user/' + this.getId});
+          }
+      },
+      computed: {
+        authenticated(){
+          return this.$store.getters.getAuth;
+        },
+        getId() {
+          return this.$store.getters.getUserId;
+        }
+      }
+
     }
 </script>
 
