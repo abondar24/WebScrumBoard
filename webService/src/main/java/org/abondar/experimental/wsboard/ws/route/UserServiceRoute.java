@@ -11,11 +11,15 @@ import org.abondar.experimental.wsboard.datamodel.user.User;
 import org.abondar.experimental.wsboard.ws.service.AuthService;
 import org.apache.camel.LoggingLevel;
 import org.apache.camel.builder.RouteBuilder;
+import org.apache.cxf.jaxrs.ext.multipart.Attachment;
+import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
 import org.apache.cxf.message.MessageContentsList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import javax.ws.rs.core.Response;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.List;
 
 import static org.abondar.experimental.wsboard.ws.route.RouteConstantUtil.EMAIL_TYPE_HEADER;
@@ -94,12 +98,14 @@ public class UserServiceRoute extends RouteBuilder {
                 .log(LoggingLevel.DEBUG, LOG_HEADERS)
                 .transform()
                 .body((bdy, hdrs) -> {
-                    MessageContentsList formData = (MessageContentsList) bdy;
+                    MultipartBody mBody = (MultipartBody) bdy;
+                    var id = (long) hdrs.get("id");
+
 
                     try {
 
-                        User user = dao.updateUser((long) formData.get(0), null, null,
-                                null, null, (byte[]) formData.get(1));
+                        User user = dao.updateUser(id, null, null,
+                                null, null, readImage(mBody.getAllAttachments().get(0)));
 
 
                         return Response.ok(user).build();
@@ -108,6 +114,8 @@ public class UserServiceRoute extends RouteBuilder {
                         return Response.status(Response.Status.FOUND).entity(ex.getLocalizedMessage()).build();
                     } catch (DataCreationException ex) {
                         return Response.status(Response.Status.PARTIAL_CONTENT).entity(ex.getLocalizedMessage()).build();
+                    } catch (IOException ex){
+                        return Response.status(Response.Status.BAD_REQUEST).entity(ex.getLocalizedMessage()).build();
                     }
                 });
 
@@ -121,8 +129,8 @@ public class UserServiceRoute extends RouteBuilder {
                         User user = dao.updateLogin((String) formData.get(0), (long) formData.get(1));
                         hdrs.put(EMAIL_TYPE_HEADER, "updateLogin");
                         hdrs.put("To", user.getEmail());
-                        hdrs.put("firstName",user.getFirstName());
-                        hdrs.put("login",user.getLogin());
+                        hdrs.put("firstName", user.getFirstName());
+                        hdrs.put("login", user.getLogin());
 
                         return Response.ok(user).build();
 
@@ -153,8 +161,8 @@ public class UserServiceRoute extends RouteBuilder {
 
                         hdrs.put(EMAIL_TYPE_HEADER, "updatePassword");
                         hdrs.put("To", user.getEmail());
-                        hdrs.put("firstName",user.getFirstName());
-                        hdrs.put("login",user.getLogin());
+                        hdrs.put("firstName", user.getFirstName());
+                        hdrs.put("login", user.getLogin());
 
 
                         return Response.ok(user).build();
@@ -266,7 +274,7 @@ public class UserServiceRoute extends RouteBuilder {
                         hdrs.put("emailType", "resetPassword");
                         hdrs.put("code", codeDao.insertCode(user.getId()));
                         hdrs.put("To", user.getEmail());
-                        hdrs.put("login",user.getLogin());
+                        hdrs.put("login", user.getLogin());
 
                         return Response.ok().build();
                     } catch (DataExistenceException ex) {
@@ -303,4 +311,16 @@ public class UserServiceRoute extends RouteBuilder {
 
     }
 
+    private byte[] readImage(Attachment attachment) throws IOException {
+        var dataHandler = attachment.getDataHandler();
+        var is = dataHandler.getInputStream();
+        var bos = new ByteArrayOutputStream();
+        final byte[] buffer = new byte[4096];
+
+        for (int read = is.read(buffer); read > 0; read = is.read(buffer)) {
+            bos.write(buffer, 0, read);
+        }
+
+        return  bos.toByteArray();
+    }
 }

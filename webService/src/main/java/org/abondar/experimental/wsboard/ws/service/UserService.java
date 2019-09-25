@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.abondar.experimental.wsboard.datamodel.user.User;
+import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
 
 import javax.annotation.security.PermitAll;
 import javax.ws.rs.Consumes;
@@ -71,20 +72,21 @@ public interface UserService {
                         @FormParam("roles") @ApiParam(required = true) String roles);
 
     @POST
-    @Consumes(MediaType.APPLICATION_OCTET_STREAM)
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/update_avatar")
     @ApiOperation(
             value = "Update avatar",
             notes = "Update user avatar",
-            consumes = "application/octet-stream",
+            consumes = "multipart/mixed",
             produces = "application/json")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "User avatar updated", response = User.class),
+            @ApiResponse(code = 400, message = "Image corrupted"),
             @ApiResponse(code = 404, message = "User with id not exists"),
             @ApiResponse(code = 500, message = "Avatar is empty")
     })
-    Response updateAvatar(@QueryParam("id") @ApiParam(required = true) long id, byte[] avatar);
+    Response updateAvatar(@QueryParam("id") @ApiParam(required = true) long id, MultipartBody avatar);
 
     @POST
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)

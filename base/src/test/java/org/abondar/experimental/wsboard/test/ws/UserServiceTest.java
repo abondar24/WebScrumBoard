@@ -11,6 +11,8 @@ import org.apache.cxf.endpoint.Server;
 import org.apache.cxf.jaxrs.JAXRSBindingFactory;
 import org.apache.cxf.jaxrs.JAXRSServerFactoryBean;
 import org.apache.cxf.jaxrs.client.WebClient;
+import org.apache.cxf.jaxrs.ext.multipart.Attachment;
+import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,6 +22,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MediaType;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -216,10 +219,14 @@ public class UserServiceTest {
         var avatar = "avatar".getBytes();
 
         client.path("/user/update_avatar").query("id", usr.getId())
-                .type(MediaType.APPLICATION_OCTET_STREAM)
+                .type(MediaType.MULTIPART_FORM_DATA)
                 .accept(MediaType.APPLICATION_JSON);
 
-        var resp = client.post(avatar);
+
+        var attrs = new ArrayList<Attachment>();
+        attrs.add(new Attachment("file",avatar));
+        var body = new MultipartBody(attrs);
+        var resp = client.post(body);
         assertEquals(200, resp.getStatus());
 
         usr = resp.readEntity(User.class);
@@ -235,7 +242,7 @@ public class UserServiceTest {
         var avatar = "avatar".getBytes();
 
         client.path("/user/update_avatar").query("id", "1024")
-                .type(MediaType.APPLICATION_OCTET_STREAM)
+                .type(MediaType.MULTIPART_FORM_DATA)
                 .accept(MediaType.APPLICATION_JSON);
 
         var resp = client.post(avatar);
@@ -254,7 +261,7 @@ public class UserServiceTest {
         var avatar = "".getBytes();
 
         client.path("/user/update_avatar").query("id", usr.getId())
-                .type(MediaType.APPLICATION_OCTET_STREAM)
+                .type(MediaType.MULTIPART_FORM_DATA)
                 .accept(MediaType.APPLICATION_JSON);
 
         var resp = client.post(avatar);

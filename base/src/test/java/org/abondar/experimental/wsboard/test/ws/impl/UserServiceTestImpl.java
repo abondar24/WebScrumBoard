@@ -10,6 +10,8 @@ import org.abondar.experimental.wsboard.datamodel.SecurityCode;
 import org.abondar.experimental.wsboard.datamodel.user.User;
 import org.abondar.experimental.wsboard.ws.service.AuthService;
 import org.abondar.experimental.wsboard.ws.service.UserService;
+import org.apache.cxf.jaxrs.ext.multipart.Attachment;
+import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -17,6 +19,8 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -102,14 +106,32 @@ public class UserServiceTestImpl implements UserService {
     }
 
     @Override
-    public Response updateAvatar(long id, byte[] avatar) {
+    public Response updateAvatar(long id, MultipartBody avatar) {
         if (testUser.getId() != id) {
             return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.USER_NOT_EXISTS).build();
         }
 
-        testUser.setAvatar(avatar);
+        try {
+            testUser.setAvatar(readImage(avatar.getAllAttachments().get(0)));
+
+        } catch (IOException ex){
+            return Response.status(Response.Status.BAD_REQUEST).entity(ex.getLocalizedMessage()).build();
+        }
 
         return Response.ok(testUser).build();
+    }
+
+    private byte[] readImage(Attachment attachment) throws IOException {
+        var dataHandler = attachment.getDataHandler();
+        var is = dataHandler.getInputStream();
+        var bos = new ByteArrayOutputStream();
+        final byte[] buffer = new byte[4096];
+
+        for (int read = is.read(buffer); read > 0; read = is.read(buffer)) {
+            bos.write(buffer, 0, read);
+        }
+
+        return  bos.toByteArray();
     }
 
     @Override
