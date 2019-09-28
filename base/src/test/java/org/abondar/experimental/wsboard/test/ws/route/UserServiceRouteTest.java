@@ -42,8 +42,8 @@ public class UserServiceRouteTest {
 
     @Test
     public void createUserRouteTest() throws Exception {
-        Object[] values = new Object[]{login, password, email, firstName, lastName, userRoles};
-        MessageContentsList testList = new MessageContentsList(values);
+        var values = new Object[]{login, password, email, firstName, lastName, userRoles};
+        var testList = new MessageContentsList(values);
 
         producerTemplate.sendBodyAndHeaders("direct:createUser", testList,
                 Map.of("emailType", "createUser"));
@@ -59,8 +59,8 @@ public class UserServiceRouteTest {
 
     @Test
     public void updateUserRouteTest() throws Exception {
-        Object[] values = new Object[]{userId, firstName, lastName, email, userRoles};
-        MessageContentsList testList = new MessageContentsList(values);
+        var values = new Object[]{userId, firstName, lastName, email, userRoles};
+        var testList = new MessageContentsList(values);
 
         producerTemplate.sendBodyAndHeaders("direct:updateUser", testList, Map.of());
 
@@ -72,25 +72,11 @@ public class UserServiceRouteTest {
         mockEndpoint.reset();
     }
 
-    @Test
-    public void updateAvatarRouteTest() throws Exception {
-        Object[] values = new Object[]{userId, new byte[24]};
-        MessageContentsList testList = new MessageContentsList(values);
-
-        producerTemplate.sendBodyAndHeaders("direct:updateAvatar", testList, Map.of());
-
-        mockEndpoint.assertIsSatisfied();
-        mockEndpoint.expectedBodiesReceived();
-        mockEndpoint.expectedMessageCount(1);
-
-
-        mockEndpoint.reset();
-    }
 
     @Test
     public void updateLoginRouteTest() throws Exception {
-        Object[] values = new Object[]{login, userId};
-        MessageContentsList testList = new MessageContentsList(values);
+        var values = new Object[]{login, userId};
+        var testList = new MessageContentsList(values);
         producerTemplate.sendBodyAndHeaders("direct:updateLogin", testList,
                 Map.of("emailType", "updateLogin"));
         mockEndpoint.assertIsSatisfied();
@@ -102,8 +88,8 @@ public class UserServiceRouteTest {
 
     @Test
     public void updatePasswordRouteTest() throws Exception {
-        Object[] values = new Object[]{password, "newPass", userId};
-        MessageContentsList testList = new MessageContentsList(values);
+        var values = new Object[]{password, "newPass", userId};
+        var testList = new MessageContentsList(values);
         producerTemplate.sendBodyAndHeaders("direct:updatePassword", testList,
                 Map.of("emailType", "updatePassword"));
         mockEndpoint.assertIsSatisfied();
@@ -115,8 +101,8 @@ public class UserServiceRouteTest {
 
     @Test
     public void deleteUserRouteTest() throws Exception {
-        Object[] values = new Object[]{userId};
-        MessageContentsList testList = new MessageContentsList(values);
+        var values = new Object[]{userId};
+        var testList = new MessageContentsList(values);
         producerTemplate.sendBodyAndHeaders("direct:deleteUser", testList,
                 Map.of("emailType", "deleteUser"));
         mockEndpoint.assertIsSatisfied();
@@ -128,8 +114,8 @@ public class UserServiceRouteTest {
 
     @Test
     public void loginRouteTest() throws Exception {
-        Object[] values = new Object[]{login, password};
-        MessageContentsList testList = new MessageContentsList(values);
+        var values = new Object[]{login, password};
+        var testList = new MessageContentsList(values);
 
         producerTemplate.sendBodyAndHeaders("direct:loginUser", testList, Map.of());
 
@@ -143,8 +129,8 @@ public class UserServiceRouteTest {
 
     @Test
     public void logoutRouteTest() throws Exception {
-        Object[] values = new Object[]{userId};
-        MessageContentsList testList = new MessageContentsList(values);
+        var values = new Object[]{userId};
+        var testList = new MessageContentsList(values);
 
         producerTemplate.sendBodyAndHeaders("direct:logoutUser", testList, Map.of());
 
@@ -159,8 +145,8 @@ public class UserServiceRouteTest {
 
     @Test
     public void findUserByLoginTest() throws Exception {
-        Object[] values = new Object[]{login};
-        MessageContentsList testList = new MessageContentsList(values);
+        var values = new Object[]{login};
+        var testList = new MessageContentsList(values);
 
         producerTemplate.sendBodyAndHeaders("direct:findUserByLogin", testList, Map.of());
 
@@ -174,8 +160,8 @@ public class UserServiceRouteTest {
 
     @Test
     public void findUsersByIdsTest() throws Exception {
-        Object[] values = new Object[]{List.of(1L,2L,3L)};
-        MessageContentsList testList = new MessageContentsList(values);
+        var values = new Object[]{List.of(1L,2L,3L)};
+        var testList = new MessageContentsList(values);
 
         producerTemplate.sendBodyAndHeaders("direct:findUsersByIds", testList, Map.of());
 
@@ -190,8 +176,8 @@ public class UserServiceRouteTest {
 
     @Test
     public void resetPasswordRouteTest() throws Exception {
-        Object[] values = new Object[]{userId};
-        MessageContentsList testList = new MessageContentsList(values);
+        var values = new Object[]{userId};
+        var testList = new MessageContentsList(values);
         producerTemplate.sendBodyAndHeaders("direct:resetPassword", testList,
                 Map.of("emailType", "resetPassword"));
         mockEndpoint.assertIsSatisfied();
@@ -203,8 +189,8 @@ public class UserServiceRouteTest {
 
     @Test
     public void enterCodedRouteTest() throws Exception {
-        Object[] values = new Object[]{userId, 24L};
-        MessageContentsList testList = new MessageContentsList(values);
+        var values = new Object[]{userId, 24L};
+        var testList = new MessageContentsList(values);
         producerTemplate.sendBodyAndHeaders("direct:enterCode", testList,
                 Map.of());
         mockEndpoint.assertIsSatisfied();

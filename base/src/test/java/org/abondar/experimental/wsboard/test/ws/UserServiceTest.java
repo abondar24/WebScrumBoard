@@ -245,7 +245,10 @@ public class UserServiceTest {
                 .type(MediaType.MULTIPART_FORM_DATA)
                 .accept(MediaType.APPLICATION_JSON);
 
-        var resp = client.post(avatar);
+        var attrs = new ArrayList<Attachment>();
+        attrs.add(new Attachment("file",avatar));
+        var body = new MultipartBody(attrs);
+        var resp = client.post(body);
         assertEquals(404, resp.getStatus());
 
         var msg = resp.readEntity(String.class);
