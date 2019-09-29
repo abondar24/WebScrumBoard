@@ -23,7 +23,8 @@
                                 doNotResize="gif"
                                 :autoRotate="true"
                                 outputFormat="verbose"
-                                @input="setImage">
+                                @input="setImage"
+                                @onComplete="uploadAvatar">
                             <label for="fileInput" slot="upload-label">
                                 <figure>
                                     <path
@@ -62,6 +63,7 @@
             }
         },
         beforeMount() {
+
             if (this.getUser.avatar == null) {
                 this.image = require('@/assets/emptyAvatar.png');
             } else {
@@ -71,17 +73,17 @@
         },
         methods: {
             setImage(output) {
-                this.$store.dispatch('updateAvatar', output).then(() => {
+                    this.image = output.dataUrl;
+            },
+            uploadAvatar(){
+                this.$store.dispatch('updateAvatar', this.image).then(() => {
                     this.errorMessage = this.getError;
                     if (this.errorMessage.length) {
                         this.errorOccurred = true;
                         this.image = require('@/assets/emptyAvatar.png');
-                    } else {
-                        this.image = output;
-
                     }
                 });
-            },
+            }
         },
         computed: {
             getUser() {

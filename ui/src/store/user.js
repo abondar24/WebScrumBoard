@@ -138,7 +138,7 @@ export default {
         updateAvatar({commit,getters},avatar){
              const config =  {
                  headers: {
-                     'Content-Type': `multipart/form-data; boundary=${avatar._boundary}`
+                     'Content-Type': `multipart/form-data;`
                  },
                  params: {
                      id: getters.getUserId
@@ -146,7 +146,7 @@ export default {
              };
 
              const body = new FormData();
-             body.append('file',avatar.dataUrl);
+             body.append('file',avatar);
 
              return getters.authenticatedAxios.post(userUrl + '/update_avatar',body,config).then(
                  (response) => {
