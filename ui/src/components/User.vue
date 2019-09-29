@@ -18,11 +18,12 @@
                                 :preview="false"
                                 :debug="1"
                                 :quality="0.7"
+                                max-width="32"
+                                max-height="32"
                                 doNotResize="gif"
                                 :autoRotate="true"
                                 outputFormat="verbose"
-                                @input="setImage"
-                                @onComplete="saveToServer">
+                                @input="setImage">
                             <label for="fileInput" slot="upload-label">
                                 <figure>
                                     <path
@@ -70,25 +71,25 @@
         },
         methods: {
             setImage(output) {
-                this.image = output;
-                console.log(this.image);
-            },
-            saveToServer() {
-                console.log(this.image);
-                this.$store.dispatch('updateAvatar', this.image).then(() => {
+                this.$store.dispatch('updateAvatar', output).then(() => {
                     this.errorMessage = this.getError;
                     if (this.errorMessage.length) {
                         this.errorOccurred = true;
                         this.image = require('@/assets/emptyAvatar.png');
+                    } else {
+                        this.image = output;
+
                     }
                 });
-            }
-
+            },
         },
         computed: {
             getUser() {
                 return this.$store.getters.getUser;
-            }
+            },
+            getError() {
+                return this.$store.getters.getErrorMsg;
+            },
         }
     }
 </script>

@@ -138,18 +138,20 @@ export default {
         updateAvatar({commit,getters},avatar){
              const config =  {
                  headers: {
-                     'Content-Type': 'multipart/form-data'
+                     'Content-Type': `multipart/form-data; boundary=${avatar._boundary}`
                  },
                  params: {
                      id: getters.getUserId
                  },
-                 body: avatar
              };
 
-             return getters.authenticatedAxios.post(userUrl + '/update_avatar', config).then(
+             const body = new FormData();
+             body.append('file',avatar.dataUrl);
+
+             return getters.authenticatedAxios.post(userUrl + '/update_avatar',body,config).then(
                  (response) => {
                      commit('setErrorMessage', '');
-                     commit('setAvatar',avatar);
+                     commit('setAvatar',avatar.dataUrl);
                  },
                  (error) => {
                      commit('setErrorMessage', error.response.data);
