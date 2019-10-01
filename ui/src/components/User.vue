@@ -96,7 +96,7 @@
     }
 </script>
 
-<style scoped>
+<style>
     #fileInput {
         display: none;
     }

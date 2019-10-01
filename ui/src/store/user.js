@@ -151,7 +151,7 @@ export default {
              return getters.authenticatedAxios.post(userUrl + '/update_avatar',body,config).then(
                  (response) => {
                      commit('setErrorMessage', '');
-                     commit('setAvatar',avatar.dataUrl);
+                     commit('setAvatar',avatar);
                  },
                  (error) => {
                      commit('setErrorMessage', error.response.data);
