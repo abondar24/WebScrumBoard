@@ -60,6 +60,7 @@
                         </b-form-input>
                     </b-form-group>
 
+<!--TODO: validate first and last name-->
                     <b-form-group
                             id="fname"
                             label="First Name"
@@ -113,6 +114,7 @@
                             hide-footer
                             no-close-on-backdrop
                             no-close-on-esc>
+<!--                        TODO:move all things inside modal to a separate component-->
                         <b-alert
                                 :show="codeErrorOccurred"
                                 dismissible
@@ -208,6 +210,7 @@
                 this.codeErrorOccurred = false;
             }
         },
+        //TODO: validate first and last name
         computed: {
             loginValidation() {
                 return this.user.login.length > 4
