@@ -139,7 +139,7 @@ public class UserDaoTest {
         var usr = createUser();
         var id = usr.getId();
         usr = userDao.updateUser(usr.getId(), "name1", "name2",
-                "email1@email.com", UserRole.DEVELOPER.name() + ";", new byte[1024]);
+                "email1@email.com", UserRole.DEVELOPER.name() + ";", "data;base64");
 
         assertEquals(id, usr.getId());
 

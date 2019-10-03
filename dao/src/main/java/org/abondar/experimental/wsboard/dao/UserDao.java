@@ -170,7 +170,7 @@ public class UserDao extends BaseDao {
      */
     public User updateUser(Long id, String firstName,
                            String lastName, String email,
-                           String roles, byte[] avatar)
+                           String roles, String avatar)
             throws DataExistenceException, DataCreationException {
 
         var usr = findUserById(id);
@@ -280,7 +280,6 @@ public class UserDao extends BaseDao {
 
         return usr;
     }
-
     /**
      * Get users by ids
      * @param ids - user ids

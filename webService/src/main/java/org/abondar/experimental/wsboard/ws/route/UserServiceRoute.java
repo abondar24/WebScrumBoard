@@ -311,7 +311,7 @@ public class UserServiceRoute extends RouteBuilder {
 
     }
 
-    private byte[] readImage(Attachment attachment) throws IOException {
+    private String readImage(Attachment attachment) throws IOException {
         var dataHandler = attachment.getDataHandler();
         var is = dataHandler.getInputStream();
         var bos = new ByteArrayOutputStream();
@@ -321,6 +321,6 @@ public class UserServiceRoute extends RouteBuilder {
             bos.write(buffer, 0, read);
         }
 
-        return  bos.toByteArray();
+        return  new String(bos.toByteArray());
     }
 }

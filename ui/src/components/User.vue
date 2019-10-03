@@ -73,9 +73,9 @@
         },
         methods: {
             setImage(output) {
-                    this.image = output.dataUrl;
+                this.image = output.dataUrl;
             },
-            uploadAvatar(){
+            uploadAvatar() {
                 this.$store.dispatch('updateAvatar', this.image).then(() => {
                     this.errorMessage = this.getError;
                     if (this.errorMessage.length) {

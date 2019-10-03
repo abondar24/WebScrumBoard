@@ -1,0 +1,1 @@
+ALTER TABLE wsuser ALTER COLUMN avatar TYPE TEXT;

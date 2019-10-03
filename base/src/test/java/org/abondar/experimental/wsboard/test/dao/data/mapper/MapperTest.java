@@ -108,7 +108,7 @@ public class MapperTest {
     @Test
     public void updateAvatarTest() {
         var user = createUser();
-        var img = new byte[1024];
+        var img = "data/:base64,";
 
         user.setAvatar(img);
         mapper.updateUser(user);
@@ -143,12 +143,11 @@ public class MapperTest {
     public void getUsersByIdsTest() {
         var user = createUser();
         var user1 = createUser();
-        var res = mapper.getUsersByIds(List.of(user.getId(),user1.getId()));
+        var res = mapper.getUsersByIds(List.of(user.getId(), user1.getId()));
 
-        assertEquals(2,res.size());
+        assertEquals(2, res.size());
         cleanData();
     }
-
 
 
     @Test
@@ -184,15 +183,15 @@ public class MapperTest {
     }
 
     @Test
-    public void getUserProjectTest(){
+    public void getUserProjectTest() {
         var user = createUser();
         var project = createProject();
         var project1 = createProject();
-        createContributor(user.getId(),project.getId(),true);
-        createContributor(user.getId(),project1.getId(),true);
+        createContributor(user.getId(), project.getId(), true);
+        createContributor(user.getId(), project1.getId(), true);
 
         var res = mapper.getUserProjects(user.getId());
-        assertEquals(2,res.size());
+        assertEquals(2, res.size());
 
         cleanData();
     }
@@ -303,16 +302,16 @@ public class MapperTest {
         var project = createProject();
         createContributor(user.getId(), project.getId(), true);
 
-        var res = mapper.getContributorsByUserId(user.getId(),0,1);
+        var res = mapper.getContributorsByUserId(user.getId(), 0, 1);
 
-        assertEquals(1,res.size());
+        assertEquals(1, res.size());
         assertEquals(user.getId(), res.get(0).getUserId());
 
         cleanData();
     }
 
     @Test
-    public void deactivateUserContributorsTest(){
+    public void deactivateUserContributorsTest() {
         var user = createUser();
         var project = createProject();
         var ctr = createContributor(user.getId(), project.getId(), false);
@@ -323,7 +322,7 @@ public class MapperTest {
     }
 
     @Test
-    public void deactivateProjectContributorsTest(){
+    public void deactivateProjectContributorsTest() {
         var user = createUser();
         var project = createProject();
         var ctr = createContributor(user.getId(), project.getId(), false);
@@ -422,7 +421,7 @@ public class MapperTest {
         createSprint(prId);
         createSprint(prId);
 
-        var sprints = mapper.getSprints(prId,0, 3);
+        var sprints = mapper.getSprints(prId, 0, 3);
         assertEquals(3, sprints.size());
 
         cleanData();
@@ -550,7 +549,7 @@ public class MapperTest {
     }
 
     private Sprint createSprint(long projectId) {
-        var sprint = new Sprint("test", new Date(), new Date(),projectId);
+        var sprint = new Sprint("test", new Date(), new Date(), projectId);
         mapper.insertSprint(sprint);
         return sprint;
     }
