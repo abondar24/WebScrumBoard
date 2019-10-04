@@ -50,17 +50,17 @@
                             </b-button-group>
                             <b-modal
                                     id="editUser"
+                                    ref="userEdit"
                                     hide-header
-                                    hide-footer
-                                    v-on:close="hideEdit">
-                                <EditUserForm />
+                                    hide-footer>
+                                <EditUserForm @exit="hideEdit"></EditUserForm>
                             </b-modal>
                             <b-modal
                                     id="editCreds"
+                                    ref="credsEdit"
                                     hide-header
-                                    hide-footer
-                                    @close="hideCreds">
-                                <EditCredentialsForm/>
+                                    hide-footer>
+                                <EditCredentialsForm  @exit="hideCreds"></EditCredentialsForm>
                             </b-modal>
 
                         </div>
@@ -104,7 +104,7 @@
                 roles: [],
                 email: '',
                 tasks: [
-                    { project: '', task_name: '', task_description: '',task_state:''},
+                    { task_name: '', task_description: '',task_state:''},
 
                 ],
                 currentPage:1,
@@ -144,10 +144,10 @@
 
             },
             hideEdit(){
-                    this.$refs['editUser'].hide();
+                this.$refs['userEdit'].hide();
             },
             hideCreds(){
-                this.$refs['editCreds'].hide();
+                this.$refs['credsEdit'].hide();
             }
         },
         computed: {

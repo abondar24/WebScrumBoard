@@ -80,6 +80,7 @@
 <script>
     export default {
         name: "EditUserForm",
+        props: ['exit'],
         data() {
             return {
                 errorMessage: '',
@@ -100,7 +101,7 @@
 
             },
             cancel(){
-                this.$emit('close');
+                this.$emit('exit');
             },
             deleteUser(){
 

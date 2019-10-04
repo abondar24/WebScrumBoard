@@ -44,6 +44,7 @@
 <script>
     export default {
         name: "EditCredentialsForm",
+        props: ['exit'],
         data() {
             return {
                 errorMessage: '',
@@ -57,7 +58,7 @@
 
             },
             cancel(){
-                this.$emit('close');
+                this.$emit('exit');
             },
             updateLogin(){
 
