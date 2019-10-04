@@ -113,7 +113,7 @@
             }
         },
         beforeMount() {
-
+//TODO: implement reactive update of userdata
             if (this.getUser.avatar == null) {
                 this.image = require('@/assets/emptyAvatar.png');
             } else {

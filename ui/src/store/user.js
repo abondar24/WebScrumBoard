@@ -2,7 +2,7 @@ import Axios from "axios";
 
 const userUrl = process.env.VUE_APP_API_ENDPOINT + "/user";
 
-const config = {
+const formConfig = {
     headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
     }
@@ -65,7 +65,7 @@ export default {
             form.append('lastName', user.lastName);
             form.append('roles', user.roles);
 
-            return Axios.post(userUrl + '/create', form, config)
+            return Axios.post(userUrl + '/create', form, formConfig)
                 .then(
                     (response) => {
                         commit('setUser', response.data);
@@ -127,7 +127,7 @@ export default {
             form.append('newPassword', passwords.newPassword);
             form.append('id', getters.getUserId);
 
-            return Axios.post(userUrl + '/update_password', form,config).then(
+            return Axios.post(userUrl + '/update_password', form,formConfig).then(
                 (response) => {
                     commit('setErrorMessage', '');
                 },
@@ -156,6 +156,38 @@ export default {
                  (error) => {
                      commit('setErrorMessage', error.response.data);
                  });
-        }
+        },
+        updateLogin({commit,getters},login){
+            const form = new URLSearchParams();
+            form.append('login', login);
+            form.append('id',getters.getUserId);
+
+            return getters.authenticatedAxios.post(userUrl + '/update_login',form,formConfig).then(
+                (response) => {
+                    commit('setErrorMessage', '');
+                    commit('setUser',response.data);
+                },
+                (error) => {
+                    commit('setErrorMessage', error.response.data);
+                });
+        },
+        updateUser({commit,getters},updUser){
+            const form = new URLSearchParams();
+            form.append('id',getters.getUserId);
+            form.append('firstName', updUser.firstName);
+            form.append('lastName', updUser.lastName);
+            form.append('email', updUser.email);
+            form.append('roles', updUser.roles);
+
+
+            return getters.authenticatedAxios.post(userUrl + '/update',form,formConfig).then(
+                (response) => {
+                    commit('setErrorMessage', '');
+                    commit('setUser',response.data);
+                },
+                (error) => {
+                    commit('setErrorMessage', error.response.data);
+                });
+        },
     }
 }

@@ -14,9 +14,7 @@
                     label-for="fnameInput">
                 <b-form-input
                         id="fnameInput"
-                        v-model="firstName"
-                        required
-                        :state="firstNameValidation"
+                        v-model="updUser.firstName"
                         placeholder="Enter first name">
                 </b-form-input>
             </b-form-group>
@@ -27,9 +25,7 @@
                     label-for="lnameInput">
                 <b-form-input
                         id="lnameInput"
-                        v-model="lastName"
-                        required
-                        :state="lastNameValidation"
+                        v-model="updUser.lastName"
                         placeholder="Enter first name">
                 </b-form-input>
             </b-form-group>
@@ -38,13 +34,11 @@
             <b-form-group
                     id="email"
                     label="Email address"
-                    label-for="emailInput"
-                    description="We'll never share your email with anyone else.">
+                    label-for="emailInput">
                 <b-form-input
                         id="emailInput"
-                        v-model="email"
+                        v-model="updUser.email"
                         type="email"
-                        required
                         placeholder="Enter email">
                 </b-form-input>
             </b-form-group>
@@ -58,13 +52,10 @@
                         v-model="selectedRoles"
                         aria-describedby="password-help-block"
                         :options="roles" multiple
-                        :select-size="3"
-                        :state="roleValidation"></b-form-select>
-                <b-form-text id="password-help-block">
-                    Select at least one role
-                </b-form-text>
+                        :select-size="3"></b-form-select>
             </b-form-group>
 
+<!--            TODO:user delete modal and rest call-->
             <b-alert :show="true" variant="danger">
                 <h2>DANGER ZONE !</h2>
                 <b-button v-on:click="deleteUser">Delete User</b-button>
@@ -85,20 +76,44 @@
             return {
                 errorMessage: '',
                 errorOccurred: false,
-                firstName:'',
-                lastName:'',
-                email:'',
+                updUser: {
+                    firstName: '',
+                    lastName: '',
+                    email: '',
+                    roles: ''
+                },
                 roles: [
                     {value: 'DEVELOPER', text: 'Developer'},
                     {value: 'QA', text: 'QA'},
                     {value: 'DEV_OPS', text: 'DevOps'}
                 ],
                 selectedRoles: [],
+                dataUpdated: false
             }
         },
         methods:{
             submit(){
+                if (this.selectedRoles.length!==0){
+                    this.updUser.roles = this.selectedRoles.join(";");
+                }
 
+                this.$store.dispatch('updateUser', this.updUser).then(() => {
+                    this.errorMessage = this.getError;
+
+                    if (this.errorMessage.length) {
+                        this.errorOccurred = true;
+
+                    } else {
+                        this.updUser = {
+                            email: '',
+                            firstName: '',
+                            lastName: '',
+                            roles: ''
+                        };
+                        this.$emit('exit');
+                    }
+                });
+                this.errorOccurred = false;
             },
             cancel(){
                 this.$emit('exit');
@@ -108,14 +123,8 @@
             }
         },
         computed:{
-            roleValidation() {
-                return this.selectedRoles.length > 0
-            },
-            firstNameValidation() {
-                return this.firstName.length > 0
-            },
-            lastNameValidation() {
-                return this.firstName.length > 0
+            getError() {
+                return this.$store.getters.getErrorMsg;
             },
         }
     }
