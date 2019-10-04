@@ -60,7 +60,6 @@
                         </b-form-input>
                     </b-form-group>
 
-<!--TODO: validate first and last name-->
                     <b-form-group
                             id="fname"
                             label="First Name"
@@ -69,7 +68,8 @@
                                 id="fnameInput"
                                 v-model="user.firstName"
                                 required
-                                placeholder="Enter first name">
+                                placeholder="Enter first name"
+                                :state="firstNameValidation">
                         </b-form-input>
                     </b-form-group>
 
@@ -81,7 +81,8 @@
                                 id="lnameInput"
                                 v-model="user.lastName"
                                 required
-                                placeholder="Enter last name">
+                                placeholder="Enter last name"
+                                :state="lastNameValidation">
                         </b-form-input>
                     </b-form-group>
 
@@ -114,22 +115,8 @@
                             hide-footer
                             no-close-on-backdrop
                             no-close-on-esc>
-<!--                        TODO:move all things inside modal to a separate component-->
-                        <b-alert
-                                :show="codeErrorOccurred"
-                                dismissible
-                                variant="danger">
-                            {{codeError}}
-                        </b-alert>
-                        <b-input-group size="md" prepend="Code">
-                            <b-form-input v-model="code" :state="codeValidation">
-                            </b-form-input>
-                            <b-form-invalid-feedback :state="codeValidation">
-                                Code is empty
-                            </b-form-invalid-feedback>
-                        </b-input-group>
-                        <b-button class="mt-3" variant="success" block @click="verifyCode">Verify</b-button>
-                    </b-modal>
+                            <SecurityCodeComponent></SecurityCodeComponent>
+                                           </b-modal>
                 </b-form>
             </b-card>
         </b-col>
@@ -139,8 +126,10 @@
 </template>
 
 <script>
+    import SecurityCodeComponent from "./SecurityCodeComponent";
     export default {
         name: "Register",
+        components: {SecurityCodeComponent},
         data() {
             return {
                 user: {
@@ -158,11 +147,8 @@
                 ],
                 selectedRoles: [],
                 errorOccurred: false,
-                codeErrorOccurred: false,
                 showVerify: false,
                 errorMessage: '',
-                codeError: '',
-                code: ''
             }
 
         },
@@ -195,23 +181,14 @@
             reset() {
                 this.$router.push("/");
             },
-            verifyCode() {
-                this.$store.dispatch('verifyCode', this.code).then(() => {
-                    this.codeError = this.getError;
-                    if (this.codeError.length) {
-                        this.codeErrorOccurred = true;
-                    } else {
-                        this.$refs['codeModal'].hide();
-                        this.$router.push("/login");
-                    }
-                });
-
-                this.code = '';
-                this.codeErrorOccurred = false;
-            }
         },
-        //TODO: validate first and last name
         computed: {
+            firstNameValidation(){
+                return this.user.firstName.length>0
+            },
+            lastNameValidation(){
+                return this.user.lastName.length>0
+            },
             loginValidation() {
                 return this.user.login.length > 4
             },
@@ -220,9 +197,6 @@
             },
             roleValidation() {
                 return this.selectedRoles.length > 0
-            },
-            codeValidation() {
-                return this.code.length > 0 && this.code.match(/^[0-9]+$/) != null;
             },
             getError(){
                 return this.$store.getters.getErrorMsg;
