@@ -51,14 +51,14 @@
                             <b-modal
                                     id="editUser"
                                     ref="userEdit"
-                                    hide-header
+                                    title="Edit user data"
                                     hide-footer>
                                 <EditUserForm @exit="hideEdit"></EditUserForm>
                             </b-modal>
                             <b-modal
                                     id="editCreds"
                                     ref="credsEdit"
-                                    hide-header
+                                    title="Edit user credentials"
                                     hide-footer>
                                 <EditCredentialsForm  @exit="hideCreds"></EditCredentialsForm>
                             </b-modal>

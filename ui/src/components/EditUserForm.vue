@@ -55,10 +55,18 @@
                         :select-size="3"></b-form-select>
             </b-form-group>
 
-<!--            TODO:user delete modal and rest call-->
             <b-alert :show="true" variant="danger">
                 <h2>DANGER ZONE !</h2>
-                <b-button v-on:click="deleteUser">Delete User</b-button>
+                <b-button size="bg" v-b-modal.userDelete>Delete User</b-button>
+
+                <b-modal id="userDelete"
+                         ref="userDelete"
+                         title="User deletion"
+                         @ok="performDelete()"
+                         ok-title="Delete"
+                         ok-variant="danger">
+                    Are you sure you want to be deleted?
+                </b-modal>
             </b-alert>
 
             <b-button type="submit" variant="primary" id="editButton">Edit</b-button>
@@ -91,9 +99,9 @@
                 dataUpdated: false
             }
         },
-        methods:{
-            submit(){
-                if (this.selectedRoles.length!==0){
+        methods: {
+            submit() {
+                if (this.selectedRoles.length !== 0) {
                     this.updUser.roles = this.selectedRoles.join(";");
                 }
 
@@ -115,14 +123,23 @@
                 });
                 this.errorOccurred = false;
             },
-            cancel(){
+            cancel() {
                 this.$emit('exit');
             },
-            deleteUser(){
+            performDelete() {
+                this.$store.dispatch('deleteUser').then(() => {
+                    this.errorMessage = this.getError;
 
+                    if (this.errorMessage.length) {
+                        this.errorOccurred = true;
+                    } else {
+                        this.$router.push('/');
+                    }
+                });
+                this.errorOccurred = false;
             }
         },
-        computed:{
+        computed: {
             getError() {
                 return this.$store.getters.getErrorMsg;
             },

@@ -111,7 +111,7 @@
                     <b-modal
                             ref="codeModal"
                             v-model="showVerify"
-                            hide-header
+                            title="Enter security code"
                             hide-footer
                             no-close-on-backdrop
                             no-close-on-esc>

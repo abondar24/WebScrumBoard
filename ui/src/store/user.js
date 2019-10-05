@@ -189,5 +189,19 @@ export default {
                     commit('setErrorMessage', error.response.data);
                 });
         },
+        deleteUser({commit,dispatch,getters}){
+            return getters.authenticatedAxios.get(userUrl + '/delete',{
+                params: {
+                    id: getters.getUserId,
+                }
+            }).then(
+                (response) => {
+                    commit('setErrorMessage', '');
+                    return dispatch('logOutUser') ;
+                },
+                (error) => {
+                    commit('setErrorMessage', error.response.data);
+                });
+        }
     }
 }

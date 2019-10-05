@@ -10,7 +10,7 @@
                 :show="dataUpdated"
                 dismissible
                 variant="success">
-            Your data has been updated
+            Your credentials have been updated
         </b-alert>
         <b-form>
 
