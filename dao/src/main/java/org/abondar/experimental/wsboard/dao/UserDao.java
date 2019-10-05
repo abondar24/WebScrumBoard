@@ -274,6 +274,10 @@ public class UserDao extends BaseDao {
             throw new DataExistenceException(LogMessageUtil.USER_NOT_EXISTS);
         }
 
+        if (usr.getFirstName().equals("deleted")){
+            throw new DataExistenceException(LogMessageUtil.USER_NOT_EXISTS);
+        }
+
         var msg = String.format(LogMessageUtil.LOG_FORMAT, "User ", usr.getId());
         logger.info(msg);
 
@@ -296,6 +300,11 @@ public class UserDao extends BaseDao {
      * @throws DataExistenceException - user not found
      */
     public User findUserByLogin(String login) throws DataExistenceException {
+
+        if (login.equals("deleted")){
+            throw new DataExistenceException(LogMessageUtil.USER_NOT_EXISTS);
+        }
+
         var usr = mapper.getUserByLogin(login);
         if (usr == null) {
             logger.error(LogMessageUtil.USER_NOT_EXISTS);
