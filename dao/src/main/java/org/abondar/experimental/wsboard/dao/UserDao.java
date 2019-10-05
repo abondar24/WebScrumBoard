@@ -243,17 +243,16 @@ public class UserDao extends BaseDao {
             }
 
             mapper.deactivateUserContributors(usr.getId());
-
-            usr.setDeleted();
-
-            mapper.updateUser(usr);
-
-            var msg = String.format(LogMessageUtil.LOG_FORMAT + "%s", "User ", usr.getId(), " marked as deleted");
-            logger.info(msg);
-            transactionManager.commit(txStatus);
-
-
         }
+
+        usr.setDeleted();
+
+        mapper.updateUser(usr);
+
+        var msg = String.format(LogMessageUtil.LOG_FORMAT + "%s", "User ", usr.getId(), " marked as deleted");
+        logger.info(msg);
+        transactionManager.commit(txStatus);
+
         return usr;
     }
 

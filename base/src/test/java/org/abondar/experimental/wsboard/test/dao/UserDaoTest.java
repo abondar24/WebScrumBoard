@@ -263,6 +263,20 @@ public class UserDaoTest {
     }
 
     @Test
+    public void deleteUserNoContributorsTest() throws Exception {
+        var delUser = userDao.createUser("usr1", "pwd", "ss",
+                "fname", "lname", UserRole.DEVELOPER.name() + ";");
+
+        delUser = userDao.deleteUser(delUser.getId());
+
+        assertEquals("deleted", delUser.getLogin());
+
+        mapper.deleteContributors();
+        mapper.deleteUsers();
+        mapper.deleteProjects();
+    }
+
+    @Test
     public void deleteUserIsOwnerTest() throws Exception {
         var usr = createUser();
 
