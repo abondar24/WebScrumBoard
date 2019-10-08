@@ -113,7 +113,6 @@
             }
         },
         beforeMount() {
-//TODO: implement reactive update of userdata
             if (this.getUser.avatar == null) {
                 this.image = require('@/assets/emptyAvatar.png');
             } else {
@@ -126,6 +125,20 @@
             this.roles = this.getUser.roles.split(';').filter(function (role) {
                 return role !== '';
             });
+        },
+        created() {
+            this.$store.watch(
+                (state,getters) => getters.getUser,
+                (newVal,oldVal) =>{
+                    console.log(newVal)
+                    this.firstName = newVal.firstName;
+                    this.lastName = newVal.lastName;
+                    this.email = newVal.email;
+                    this.roles = newVal.roles.split(';').filter(function (role) {
+                        return role !== '';
+                    });
+                }
+            );
         },
         methods: {
             setImage(output) {
