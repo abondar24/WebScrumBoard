@@ -44,7 +44,7 @@
                                     {{ role }}
                                 </li>
                             </ul>
-                            <b-button-group>
+                            <b-button-group v-if="isEditable">
                                 <b-button variant="info" v-b-modal.editUser size="sm">Edit User</b-button>
                                 <b-button variant="warning" v-b-modal.editCreds size="sm">Edit credentials</b-button>
                             </b-button-group>
@@ -109,22 +109,28 @@
                 ],
                 currentPage:1,
                 perPage: 10,
+                isEditable: true,
 
             }
         },
         beforeMount() {
-            if (this.getUser.avatar == null) {
-                this.image = require('@/assets/emptyAvatar.png');
+            this.image = require('@/assets/emptyAvatar.png');
+
+            if (this.$route.params.id!=this.getUser.id){
+                this.isEditable = false;
+                this.$store.dispatch('getUserByIds',[this.$route.params.id]).then((resp) => {
+                    this.errorMessage = this.getError;
+                    if (this.errorMessage.length) {
+                        this.errorOccurred = true;
+                    }
+
+                    this.fillUserData(this.getViewUser);
+
+                });
             } else {
-                this.image = this.getUser.avatar;
+               this.fillUserData(this.getUser);
             }
 
-            this.firstName = this.getUser.firstName;
-            this.lastName = this.getUser.lastName;
-            this.email = this.getUser.email;
-            this.roles = this.getUser.roles.split(';').filter(function (role) {
-                return role !== '';
-            });
         },
         created() {
             this.$store.watch(
@@ -141,6 +147,18 @@
             );
         },
         methods: {
+            fillUserData(user){
+                if (user.avatar !== null) {
+                    this.image = user.avatar;
+                }
+
+                this.firstName = user.firstName;
+                this.lastName = user.lastName;
+                this.email = user.email;
+                this.roles = user.roles.split(';').filter(function (role) {
+                    return role !== '';
+                });
+            },
             setImage(output) {
                 this.image = output.dataUrl;
             },
@@ -166,6 +184,9 @@
         computed: {
             getUser() {
                 return this.$store.getters.getUser;
+            },
+            getViewUser(){
+               return this.$store.getters.getViewUser;
             },
             getError() {
                 return this.$store.getters.getErrorMsg;

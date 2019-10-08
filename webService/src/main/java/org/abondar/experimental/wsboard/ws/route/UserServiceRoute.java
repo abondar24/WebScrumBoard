@@ -255,7 +255,7 @@ public class UserServiceRoute extends RouteBuilder {
                     MessageContentsList formData = (MessageContentsList) bdy;
                     var usrs = dao.findUsersByIds((List<Long>) formData.get(0));
                     if (usrs.isEmpty()) {
-                        return Response.status(Response.Status.NO_CONTENT);
+                        return Response.status(Response.Status.NO_CONTENT).build();
                     }
 
                     return Response.ok(usrs).build();

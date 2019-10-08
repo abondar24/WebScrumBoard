@@ -1,5 +1,5 @@
 import Axios from "axios";
-
+import qs from "qs"
 const userUrl = process.env.VUE_APP_API_ENDPOINT + "/user";
 
 const formConfig = {
@@ -20,10 +20,23 @@ export default {
             roles: '',
             avatar: null
         },
+        viewUser: {
+            id: 0,
+            login: '',
+            password: '',
+            email: '',
+            firstName: '',
+            lastName: '',
+            roles: '',
+            avatar: null
+        }
     },
     mutations: {
         setUser(state, user) {
             state.user = user;
+        },
+        setViewUser(state, viewUser) {
+            state.viewUser = viewUser;
         },
         setAvatar(state,avatar){
             state.user.avatar = avatar;
@@ -53,6 +66,9 @@ export default {
         },
         getUser: state =>{
             return state.user;
+        },
+        getViewUser: state=>{
+             return state.viewUser;
         }
     },
     actions: {
@@ -103,6 +119,23 @@ export default {
                 (response) => {
                     commit('setErrorMessage', '');
                     commit('setUser', response.data);
+                },
+                (error) => {
+                    commit('setErrorMessage', error.response.data);
+                });
+        },
+        getUserByIds({commit,getters}, ids){
+            return getters.authenticatedAxios.get(userUrl + '/find_by_ids',{
+                params:{
+                    id:ids
+                },
+                paramsSerializer: function (params) {
+                    return qs.stringify(params,{arrayFormat:'repeat'})
+                }
+            }).then(
+                (response) => {
+                    commit('setErrorMessage', '');
+                    commit('setViewUser',response.data[0])
                 },
                 (error) => {
                     commit('setErrorMessage', error.response.data);
