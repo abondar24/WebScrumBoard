@@ -6,6 +6,7 @@ import Register from "../components/Register";
 import User from "../components/User";
 import PasswordReset from "../components/PasswordReset";
 import store from "../store/store"
+import UserProjects from "../components/UserProjects";
 
 Vue.use(Router);
 
@@ -25,6 +26,7 @@ export default new Router({
             }
         },
         {path: '/reset', name: 'PasswordReset', component: PasswordReset},
+        {path: '/projects', name: 'UserProjects', component: UserProjects},
         {path: '*', redirect: '/'}
     ]
 });

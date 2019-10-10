@@ -18,16 +18,12 @@
                 this.$router.push({path: '/user/' + this.getUser});
             },
             routeToProject(){
-                this.$router.push({path: '/project/' + this.getProject});
+                this.$router.push({path: '/projects'});
             }
         },
         computed:{
             getUser() {
                 return this.$store.getters.getUserId;
-            },
-            getProject(){
-                //TODO:
-                return 'get project id'
             }
         }
     }
