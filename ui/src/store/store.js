@@ -1,7 +1,9 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import UserModule from "./user";
-import AuthModule from "./auth"
+import AuthModule from "./auth";
+import ProjectModule from "./project";
+import ContributorModule from "./contributor"
 import createPersistedState from 'vuex-persistedstate';
 import Cookies from 'js-cookie';
 
@@ -18,7 +20,8 @@ export default new Vuex.Store({
             removeItem: key => Cookies.remove(key)
         }
     })],
-    modules: {user: UserModule, auth: AuthModule},
+    modules: {user: UserModule, auth: AuthModule,
+        project: ProjectModule, contributor:ContributorModule},
     state: {
         errorMessage: ''
     },

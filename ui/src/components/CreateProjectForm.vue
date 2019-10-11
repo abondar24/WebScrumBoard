@@ -3,7 +3,7 @@
         <b-alert
                 :show="errorOccurred"
                 dismissible
-                variant="warning">
+                variant="danger">
             {{errorMessage}}
         </b-alert>
         <b-form @submit.prevent="create">
@@ -17,12 +17,11 @@
                 </b-form-input>
             </b-form-group >
             <b-form-group id="date" label="Start date" label-for="dateInput">
-                <datepicker v-model="project.startDate"></datepicker>
+                <datepicker v-model="project.startDate" :format="dateFormat"></datepicker>
 
             </b-form-group>
 
-                <b-button type="submit" variant="primary" id="regButton"
-                          @click="create">
+                <b-button type="submit" variant="primary" id="regButton">
                     Create
                 </b-button>
                 <b-button variant="danger" id="cancelButton" @click="cancel">Cancel</b-button>
@@ -47,12 +46,42 @@
                 project: {
                     name: '',
                     startDate: null
-                }
+                },
+                dateFormat:'dd/MM/yyyy'
             }
         },
         methods: {
             create() {
-               console.log(this.project.startDate)
+                this.project.startDate = this.convertDate(this.project.startDate);
+
+                this.$store.dispatch('createProject', this.project).then(() => {
+                    this.errorMessage = this.getError;
+                    if (this.errorMessage.length) {
+                        this.errorOccurred = true;
+                    } else {
+                        this.$emit('exit');
+                    }
+                });
+
+                this.errorOccurred = false;
+                this.errorMessage = '';
+            },
+            convertDate(rawDate){
+                let date = new Date(rawDate);
+
+                let dd = date.getDate();
+                let mm = date.getMonth()+1;
+                let yyyy = date.getFullYear();
+
+                if(dd<10) {
+                    dd='0'+dd;
+                }
+
+                if(mm<10) {
+                    mm='0'+mm;
+                }
+
+                return dd+'/'+mm+'/'+yyyy;
             },
             cancel() {
                 this.$emit('exit');

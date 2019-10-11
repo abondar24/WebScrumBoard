@@ -124,7 +124,7 @@ export default {
                     commit('setErrorMessage', error.response.data);
                 });
         },
-        getUserByIds({commit,getters}, ids){
+        getUsersByIds({commit,getters}, ids){
             return getters.authenticatedAxios.get(userUrl + '/find_by_ids',{
                 params:{
                     id:ids

@@ -118,14 +118,13 @@
 
             if (this.$route.params.id!=this.getUser.id){
                 this.isEditable = false;
-                this.$store.dispatch('getUserByIds',[this.$route.params.id]).then((resp) => {
+                this.$store.dispatch('getUsersByIds',[this.$route.params.id]).then(() => {
                     this.errorMessage = this.getError;
                     if (this.errorMessage.length) {
                         this.errorOccurred = true;
+                    } else {
+                        this.fillUserData(this.getViewUser);
                     }
-
-                    this.fillUserData(this.getViewUser);
-
                 });
             } else {
                this.fillUserData(this.getUser);
