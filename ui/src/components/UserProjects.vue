@@ -1,15 +1,13 @@
 <template>
     <div id="root">
         <NavbarCommon/>
-        <b-container>
             <b-alert
                     :show="errorOccurred"
                     dismissible
                     variant="danger">
                 {{errorMessage}}
             </b-alert>
-            <b-row id="buttonRow">
-                <b-button v-b-toggle.projects>
+                <b-button v-b-toggle.projects id="projectButton">
                     User projects
                 </b-button>
                 <b-button id="createProject" variant="success" v-b-modal.createProject>
@@ -23,21 +21,14 @@
                     <CreateProjectForm @exit="hideCreate"></CreateProjectForm>
                 </b-modal>
 
-            </b-row>
-            <b-row>
                 <b-collapse id="projects" class="mt-2">
                        <b-card>
                            <div v-for="(project, index) in projects">
                            <b-button variant="link">{{ project.name }}</b-button>
                            </div>
                         </b-card>
-
-
                 </b-collapse>
-            </b-row>
 
-
-        </b-container>
     </div>
 </template>
 
@@ -90,11 +81,12 @@
 </script>
 
 <style scoped>
-    #buttonRow {
+    #projectButton {
         margin-top: 30px;
     }
 
     #createProject {
         margin-left: 10px;
+        margin-top: 30px;
     }
 </style>
