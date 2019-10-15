@@ -7,6 +7,7 @@ import User from "../components/User";
 import PasswordReset from "../components/PasswordReset";
 import store from "../store/store"
 import UserProjects from "../components/UserProjects";
+import Project from "../components/Project";
 
 Vue.use(Router);
 
@@ -15,8 +16,16 @@ export default new Router({
         {path: '/', name: 'Hello', component: Hello},
         {path: '/login', name: 'Login', component: Login},
         {path: '/register', name: 'Register', component: Register},
-        {
-            path: '/user/:id', name: 'User', component: User,
+        {path: '/user/:id', name: 'User', component: User,
+            beforeEnter(to, from, next) {
+                if (store.state.auth.authenticated) {
+                    next();
+                } else {
+                    next('/');
+                }
+            }
+        },
+        {path: '/project/:id', name: 'Project', component: Project,
             beforeEnter(to, from, next) {
                 if (store.state.auth.authenticated) {
                     next();
@@ -26,7 +35,16 @@ export default new Router({
             }
         },
         {path: '/reset', name: 'PasswordReset', component: PasswordReset},
-        {path: '/projects', name: 'UserProjects', component: UserProjects},
+        {
+            path: '/projects', name: 'UserProjects', component: UserProjects,
+            beforeEnter(to, from, next) {
+                if (store.state.auth.authenticated) {
+                    next();
+                } else {
+                    next('/');
+                }
+            }
+        },
         {path: '*', redirect: '/'}
     ]
 });

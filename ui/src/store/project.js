@@ -94,7 +94,7 @@ export default {
                     commit('setErrorMessage', error.response.data);
                 });
         },
-        find({commit, getters}, id) {
+        findProject({commit, getters}, id) {
             return getters.authenticatedAxios.get(projectUrl + '/find', {
                 params: {
                     id: id
