@@ -10,8 +10,8 @@ export default {
         project: {
             id: 0,
             name: '',
-            startDate: '',
-            endDate: '',
+            startDate: null,
+            endDate: null,
             repository: '',
             description: '',
             active: false
@@ -102,6 +102,7 @@ export default {
             }).then(
                 (response) => {
                     commit('setErrorMessage', '');
+                    console.log(response.data.startDate)
                     commit('setProject', response.data);
                 },
                 (error) => {
