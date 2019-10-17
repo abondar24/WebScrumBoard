@@ -24,6 +24,17 @@ export default {
         },
         setUserProjects(state, projects) {
             state.userProjects = projects;
+        },
+        cleanProject(state) {
+            state.project = {
+                id: 0,
+                name: '',
+                startDate: null,
+                endDate: null,
+                repository: '',
+                description: '',
+                active: false
+            }
         }
     },
     getters: {
@@ -38,7 +49,7 @@ export default {
         }
     },
     actions: {
-        createProject({commit, getters,dispatch}, projectData) {
+        createProject({commit, getters, dispatch}, projectData) {
             const form = new URLSearchParams();
             form.append('name', projectData.name);
             form.append('startDate', projectData.startDate);
@@ -47,7 +58,7 @@ export default {
                 (response) => {
                     commit('setErrorMessage', '');
 
-                    if (response.code===206){
+                    if (response.code === 206) {
                         commit('setErrorMessage', response.data);
                         return;
                     }
@@ -69,7 +80,7 @@ export default {
             form.append('repo', projectData.repository);
             form.append('isActive', projectData.isActive);
             form.append('endDate', projectData.endDate);
-            form.append('descriptio', projectData.description);
+            form.append('description', projectData.description);
 
             return getters.authenticatedAxios.post(projectUrl + '/update', form, formConfig).then(
                 (response) => {
@@ -88,7 +99,7 @@ export default {
             }).then(
                 (response) => {
                     commit('setErrorMessage', '');
-
+                    commit('cleanProject','');
                 },
                 (error) => {
                     commit('setErrorMessage', error.response.data);
@@ -102,7 +113,6 @@ export default {
             }).then(
                 (response) => {
                     commit('setErrorMessage', '');
-                    console.log(response.data.startDate)
                     commit('setProject', response.data);
                 },
                 (error) => {

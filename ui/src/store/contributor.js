@@ -7,22 +7,25 @@ const formConfig = {
 
 export default {
     state: {
-        contributor: {
+        projectOwner: {
             id: 0,
-            userId: 0,
-            projectId: 0,
-            owner: false,
-            active: false
+            login: '',
+            password: '',
+            email: '',
+            firstName: '',
+            lastName: '',
+            roles: '',
+            avatar: null
         },
     },
     mutations: {
-        setContributor(state, contributor) {
-            state.contributor = contributor;
+        setProjectOwner(state, owner) {
+            state.projectOwner = owner;
         },
     },
     getters: {
-        getContributor: state => {
-            return state.contributor;
+        getProjectOwner: state => {
+            return state.projectOwner;
         },
     },
     actions: {
@@ -44,7 +47,7 @@ export default {
                     commit('setErrorMessage', error.response.data);
                 });
         },
-        findProjectOwner({commit,getters}, projectId) {
+        findProjectOwner({commit, getters}, projectId) {
 
             return getters.authenticatedAxios.get(contributorUrl + '/find_project_owner', {
                 params: {
@@ -57,7 +60,7 @@ export default {
                     if (response.code === 204) {
                         commit('setErrorMessage', response.data);
                     } else {
-                        commit('setContributor', response.data);
+                        commit('setProjectOwner', response.data);
                     }
 
                 },

@@ -19,15 +19,37 @@
                    <b-row>
                        <h2>Started on: {{project.startDate}}</h2>
                        <h2 v-if="!project.active">Finished on: {{project.endDate}}</h2>
-                       <h3 v-if="project.repository!==null && project.repository.length">{{project.repository}}</h3>
+                       <a v-if="project.repository!==null && project.repository.length" href="{{project.repository}}"></a>
                    </b-row>
                </b-col>
                 <b-col>
+                    <b-row>
+                       <h2>Owner: {{ownerName}}</h2>
+                    </b-row>
+                    <b-row v-if="isEditable">
+                        <b-button v-b-modal.editProject>Edit project</b-button>
+                        <b-button id="deleteProject"  v-b-modal.delPrj variant="danger">Delete project</b-button>
 
+                        <b-modal
+                                id="delPrj"
+                                title="Delete project"
+                                ok-variant="danger"
+                                ok-title="yes"
+                                @ok="delProject"
+                                cancel-title="no">
+                            Are you sure you want to delete project?
+                        </b-modal>
+                        <b-modal id="editProject"
+                                 ref="prjEdit"
+                                 hide-footer
+                        title="Edit project">
+                            <EditProjectForm @exit="hideEdit"></EditProjectForm>
+                        </b-modal>
+                    </b-row>
                 </b-col>
             </b-row>
             <b-row>
-
+               <p>{{project.description}}</p>
             </b-row>
 
         </b-container>
@@ -36,10 +58,11 @@
 
 <script>
     import NavbarCommon from "./NavbarCommon";
+    import EditProjectForm from "./EditProjectForm";
 
     export default {
         name: "Project",
-        components: {NavbarCommon},
+        components: {EditProjectForm, NavbarCommon},
         data(){
             return {
                 project:{
@@ -97,11 +120,11 @@
                     }
 
                 });
-
-                if (this.getUser===this.getContributor.userId &&this.getContributor.owner) {
+                if (this.getUser.id===this.getOwner.id) {
                     this.isEditable = true;
-                    this.ownerName=this.getUser.firstName +' ' + this.getUser.lastName;
                 }
+
+                this.ownerName=this.getOwner.firstName +' ' + this.getOwner.lastName;
             },
              setDate(){
 
@@ -134,6 +157,19 @@
                 }
 
                 return dd+'/'+mm+'/'+yyyy;
+            },
+            delProject(){
+                this.$store.dispatch('deleteProject',this.project.id).then(() => {
+                    this.errorMessage = this.getError;
+                    if (this.errorMessage.length) {
+                        this.errorOccurred = true;
+                    } else {
+                        this.$router.push('/projects')
+                    }
+                });
+            },
+            hideEdit(){
+                this.$refs['prjEdit'].hide();
             }
         },
         computed: {
@@ -146,9 +182,12 @@
             getUser() {
                 return this.$store.getters.getUser;
             },
-            getContributor(){
-                return this.$store.getters.getContributor;
-            }
+            getOwner(){
+                return this.$store.getters.getProjectOwner;
+            },
+            getViewUser() {
+                return this.$store.getters.getUser;
+            },
         }
     }
 </script>
@@ -157,7 +196,7 @@
  #topRow {
      margin-top: 30px;
  }
-    #activeImg {
+    #activeImg,#deleteProject {
         margin-left: 10px;
     }
 </style>
