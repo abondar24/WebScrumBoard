@@ -7,6 +7,7 @@ import org.abondar.experimental.wsboard.dao.exception.DataExistenceException;
 import org.abondar.experimental.wsboard.datamodel.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.transaction.TransactionException;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.jta.JtaTransactionManager;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
@@ -95,10 +96,14 @@ public class ProjectDao extends BaseDao {
             prj.setDescription(description);
         }
 
+        TransactionStatus txStatus =
+                transactionManager.getTransaction(new DefaultTransactionDefinition());
+        try {
         if (isActive != null) {
             if (isActive && !prj.isActive()) {
                 throw new DataCreationException(LogMessageUtil.PROJECT_CANNOT_BE_REACTIVATED);
             } else if (!isActive) {
+                mapper.deactivateProjectContributors(prj.getId());
                 if (endDate != null && !prj.getStartDate().after(endDate)) {
                     prj.setEndDate(endDate);
                 } else {
@@ -111,6 +116,10 @@ public class ProjectDao extends BaseDao {
         }
 
         mapper.updateProject(prj);
+        } catch (TransactionException ex){
+            transactionManager.rollback(txStatus);
+            throw  new DataExistenceException(ex.getMessage());
+        }
         logger.info("Project successfully updated");
 
         return prj;
@@ -130,7 +139,9 @@ public class ProjectDao extends BaseDao {
         try {
             findProjectById(id);
 
-            mapper.deactivateProjectContributors(id);
+            mapper.deleteProjectTasks(id);
+            mapper.deleteProjectSprints(id);
+            mapper.deleteProjectContributors(id);
             mapper.deleteProject(id);
 
             var msg = String.format(LogMessageUtil.LOG_FORMAT + " %s", "Project ", id, " successfully updated");
@@ -138,11 +149,10 @@ public class ProjectDao extends BaseDao {
 
             transactionManager.commit(txStatus);
             return id;
-        } catch (DataExistenceException ex){
+        } catch (DataExistenceException | TransactionException ex){
             transactionManager.rollback(txStatus);
             throw  new DataExistenceException(ex.getMessage());
         }
-
 
     }
 

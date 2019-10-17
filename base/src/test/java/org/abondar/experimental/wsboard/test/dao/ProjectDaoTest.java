@@ -8,6 +8,8 @@ import org.abondar.experimental.wsboard.dao.data.DataMapper;
 import org.abondar.experimental.wsboard.dao.exception.DataCreationException;
 import org.abondar.experimental.wsboard.dao.exception.DataExistenceException;
 import org.abondar.experimental.wsboard.datamodel.Project;
+import org.abondar.experimental.wsboard.datamodel.Sprint;
+import org.abondar.experimental.wsboard.datamodel.task.Task;
 import org.abondar.experimental.wsboard.datamodel.user.User;
 import org.abondar.experimental.wsboard.datamodel.user.UserRole;
 import org.junit.jupiter.api.Test;
@@ -21,7 +23,9 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.util.Calendar;
 import java.util.Date;
 
+import static junit.framework.TestCase.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -202,6 +206,48 @@ public class ProjectDaoTest {
     @Test
     public void findUserProjectsNotFoundTest() {
            assertThrows(DataExistenceException.class,()-> dao.findUserProjects(7));
+    }
+
+
+
+    @Test
+    public void deactivateContributorsByProjectTest() throws Exception {
+        var usr = createUser();
+        var prj = createProject();
+        var ctr = contributorDao.createContributor(usr.getId(),prj.getId(),false);
+
+        dao.updateProject(prj.getId(), "newTest", "github.com/aaaa/aaa.git", false, new Date(),null);
+
+        var res = mapper.getContributorById(ctr.getId());
+        assertFalse(res.isActive());
+
+        mapper.deleteContributors();
+        mapper.deleteUsers();
+        mapper.deleteProjects();
+
+    }
+
+
+    @Test
+    public void deleteAllByProjectTest() throws Exception{
+        var usr = createUser();
+        var prj = createProject();
+        var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
+
+        var task = new Task(contr.getId(), new Date(), true, "name", "descr");
+        mapper.insertTask(task);
+
+        var sprint = new Sprint("test", new Date(), new Date(),prj.getId());
+        mapper.insertSprint(sprint);
+
+        dao.deleteProject(prj.getId());
+
+        assertNull(mapper.getTaskById(task.getId()));
+        assertNull(mapper.getSprintById(sprint.getId()));
+        assertNull(mapper.getContributorById(contr.getId()));
+        assertNull(mapper.getProjectById(prj.getId()));
+
+        mapper.deleteUsers();
     }
 
 
