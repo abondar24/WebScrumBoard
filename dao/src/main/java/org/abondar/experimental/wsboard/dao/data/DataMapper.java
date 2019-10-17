@@ -86,7 +86,15 @@ public interface DataMapper {
 
     void deactivateUserContributors(@Param("userId") long userId);
 
+    void activateProjectContributors(@Param("projectId") long projectId);
+
     void deactivateProjectContributors(@Param("projectId") long projectId);
+
+    void deleteProjectTasks(@Param("projectId") long projectId);
+
+    void deleteProjectSprints(@Param("projectId") long projectId);
+
+    void deleteProjectContributors(@Param("projectId") long projectId);
 
     void deleteTask(@Param("id") long id);
 

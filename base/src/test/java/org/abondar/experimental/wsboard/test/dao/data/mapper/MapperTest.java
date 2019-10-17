@@ -333,6 +333,19 @@ public class MapperTest {
     }
 
     @Test
+    public void activateProjectContributorsTest() {
+        var user = createUser();
+        var project = createProject();
+        var ctr = createContributor(user.getId(), project.getId(), false);
+
+        mapper.deactivateProjectContributors(project.getId());
+        mapper.activateProjectContributors(project.getId());
+
+        var res = mapper.getContributorById(ctr.getId());
+        assertTrue(res.isActive());
+    }
+
+    @Test
     public void getTaskByIdTest() {
         var user = createUser();
         var project = createProject();
@@ -520,6 +533,47 @@ public class MapperTest {
         cleanData();
     }
 
+    @Test
+    public void deleteProjectTasks(){
+        var user = createUser();
+        var project = createProject();
+        var contributor = createContributor(user.getId(), project.getId(), false);
+        var task = createTask(contributor.getId());
+
+        mapper.deleteProjectTasks(project.getId());
+
+        var res = mapper.getTaskById(task.getId());
+        assertNull(res);
+
+        cleanData();
+    }
+
+    @Test
+    public void deleteProjectSprints(){
+        var project = createProject();
+        var sprint = createSprint(project.getId());
+
+        mapper.deleteProjectSprints(project.getId());
+
+        var res = mapper.getSprintById(sprint.getId());
+        assertNull(res);
+
+        cleanData();
+    }
+
+    @Test
+    public void deleteProjectContributors(){
+        var user = createUser();
+        var project = createProject();
+        var contributor = createContributor(user.getId(), project.getId(), false);
+
+        mapper.deleteProjectContributors(project.getId());
+
+        var res = mapper.getContributorById(contributor.getId());
+        assertNull(res);
+
+        cleanData();
+    }
 
     private User createUser() {
         var roles = UserRole.DEVELOPER + ":" + UserRole.QA;

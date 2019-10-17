@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.abondar.experimental.wsboard.datamodel.Contributor;
+import org.abondar.experimental.wsboard.datamodel.user.User;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
@@ -74,9 +75,10 @@ public interface ContributorService {
             notes = "Find a user who is a project owner",
             produces = "application/json")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Project owner", response = Contributor.class),
+            @ApiResponse(code = 200, message = "Project owner", response = User.class),
             @ApiResponse(code = 204, message = "Project has no owner"),
             @ApiResponse(code = 404, message = "Project not found")})
+    @Produces(MediaType.APPLICATION_JSON)
     Response findProjectOwner(@QueryParam("projectId") @ApiParam(required = true) long projectId);
 
 

@@ -201,6 +201,12 @@
         WHERE project_id = #{projectId}
     </update>
 
+    <update id="activateProjectContributors">
+        UPDATE contributor
+        SET is_active = true
+        WHERE project_id = #{projectId}
+    </update>
+
     <select id="getUserByLogin" resultMap="userMap" useCache="true">
         SELECT * FROM wsuser WHERE login=#{login}
     </select>
@@ -331,9 +337,18 @@
         DELETE FROM contributor
     </delete>
 
+    <delete id="deleteProjectContributors">
+        DELETE FROM contributor WHERE project_id=#{projectId}
+    </delete>
 
     <delete id="deleteTasks">
         DELETE FROM task
+    </delete>
+
+    <delete id="deleteProjectTasks">
+        DELETE FROM task ts
+        USING contributor ctr
+        WHERE ts.contributor_id=ctr.id AND ctr.project_id=#{projectId}
     </delete>
 
     <delete id="deleteTask">
@@ -342,6 +357,10 @@
 
     <delete id="deleteSprints">
         DELETE FROM sprint
+    </delete>
+
+    <delete id="deleteProjectSprints">
+        DELETE FROM sprint WHERE project_id=#{projectId}
     </delete>
 
     <delete id="deleteSprint">
