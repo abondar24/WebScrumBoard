@@ -7,30 +7,33 @@
                 variant="danger">
             {{errorMessage}}
         </b-alert>
-        <b-button v-b-toggle.projects id="projectButton">
-            User projects
-        </b-button>
-        <b-button id="createProject" variant="success" v-b-modal.createProject>
-            Create project
-        </b-button>
-        <b-modal
-                id="createProject"
-                ref="projectCreate"
-                title="Create project"
-                hide-footer>
-            <CreateProjectForm @exit="hideCreate"></CreateProjectForm>
-        </b-modal>
+        <b-container>
+            <b-row>
+                <b-button id="createProject" variant="success" v-b-modal.createProject>
+                    Create project
+                </b-button>
+                <b-modal
+                        id="createProject"
+                        ref="projectCreate"
+                        title="Create project"
+                        hide-footer>
+                    <CreateProjectForm @exit="hideCreate"></CreateProjectForm>
+                </b-modal>
 
-        <b-collapse id="projects" class="mt-2">
-            <b-card>
-                <div v-for="(project, index) in projects">
-                    <router-link :to="{ name: 'Project', params: { id: project.id}} ">
-                        <b-button variant="link">{{ project.name }}</b-button>
-                    </router-link>
+            </b-row>
+            <b-row>
+                <b-table stacked
+                         hover
+                         responsive
+                         :items="projects"
+                         :fields="fields"
+                         @row-clicked="routeToProject($event)">
+                    <template v-slot:table-caption>User related projects.</template>
+                </b-table>
+            </b-row>
 
-                </div>
-            </b-card>
-        </b-collapse>
+
+        </b-container>
 
     </div>
 </template>
@@ -47,10 +50,13 @@
                 errorMessage: '',
                 errorOccurred: false,
                 projects: [],
-
+                fields: [
+                    {key:'name',label:''}
+                ],
             }
         },
         beforeMount() {
+            this.projects = [];
             this.getUserProjects();
         },
         methods: {
@@ -67,6 +73,9 @@
                         this.projects = this.getProjects;
                     }
                 });
+            },
+            routeToProject(project){
+              this.$router.push({path: '/project/' + project.id});
             }
         },
         computed: {
@@ -84,8 +93,9 @@
 </script>
 
 <style scoped>
-    #projectButton {
-        margin-top: 30px;
+    #tableRow {
+        margin-top: 10px;
+        margin-left: 20px;
     }
 
     #createProject {
