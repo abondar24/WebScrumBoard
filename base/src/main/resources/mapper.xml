@@ -201,12 +201,6 @@
         WHERE project_id = #{projectId}
     </update>
 
-    <update id="activateProjectContributors">
-        UPDATE contributor
-        SET is_active = true
-        WHERE project_id = #{projectId}
-    </update>
-
     <select id="getUserByLogin" resultMap="userMap" useCache="true">
         SELECT * FROM wsuser WHERE login=#{login}
     </select>

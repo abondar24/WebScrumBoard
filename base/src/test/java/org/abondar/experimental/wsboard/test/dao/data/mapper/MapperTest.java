@@ -332,18 +332,6 @@ public class MapperTest {
         assertFalse(res.isActive());
     }
 
-    @Test
-    public void activateProjectContributorsTest() {
-        var user = createUser();
-        var project = createProject();
-        var ctr = createContributor(user.getId(), project.getId(), false);
-
-        mapper.deactivateProjectContributors(project.getId());
-        mapper.activateProjectContributors(project.getId());
-
-        var res = mapper.getContributorById(ctr.getId());
-        assertTrue(res.isActive());
-    }
 
     @Test
     public void getTaskByIdTest() {
