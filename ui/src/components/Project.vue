@@ -19,7 +19,7 @@
                    <b-row>
                        <h2>Started on: {{project.startDate}}</h2>
                        <h2 v-if="!project.active">Finished on: {{project.endDate}}</h2>
-                       <a v-if="project.repository!==null && project.repository.length" href="{{project.repository}}"></a>
+                       <a href="{{project.repository}}"></a>
                    </b-row>
                </b-col>
                 <b-col>

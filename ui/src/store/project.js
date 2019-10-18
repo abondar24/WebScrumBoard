@@ -79,7 +79,10 @@ export default {
             form.append('name', projectData.name);
             form.append('repo', projectData.repository);
             form.append('isActive', projectData.isActive);
-            form.append('endDate', projectData.endDate);
+
+            if (projectData.endDate!==null){
+                form.append('endDate', projectData.endDate);
+            }
             form.append('description', projectData.description);
 
             return getters.authenticatedAxios.post(projectUrl + '/update', form, formConfig).then(

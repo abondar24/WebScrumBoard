@@ -124,6 +124,9 @@
             getProject(){
                 return this.$store.getters.getProject;
             },
+            getError() {
+                return this.$store.getters.getErrorMsg;
+            },
         },
     }
 </script>

@@ -13,7 +13,6 @@
     </cache>
 
 
-
     <resultMap id="userMap" type="User">
         <id column="id" property="id"/>
         <result column="login" property="login"/>
@@ -115,7 +114,7 @@
     </insert>
 
     <insert id="insertSprint" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
-        INSERT INTO sprint (name, start_date, end_date,project_id)
+        INSERT INTO sprint (name, start_date, end_date, project_id)
         VALUES (#{sprint.name},
                 #{sprint.startDate},
                 #{sprint.endDate},
@@ -145,10 +144,11 @@
 
     <update id="updateProject">
         UPDATE project
-        SET name       = #{project.name},
-            start_date = #{project.startDate},
-            end_date   = #{project.endDate},
-            repository = #{project.repository},
+        SET name        = #{project.name},
+            start_date  = #{project.startDate},
+            end_date    = #{project.endDate},
+            repository  = #{project.repository},
+            description = #{project.description},
             is_active  = #{project.isActive}
         WHERE id = #{project.id}
     </update>
@@ -170,7 +170,7 @@
         WHERE id = #{sprint.id}
     </update>
 
-    <update id="updateTask" useGeneratedKeys="true" keyColumn="id" >
+    <update id="updateTask" useGeneratedKeys="true" keyColumn="id">
         UPDATE task
         SET contributor_id   = #{task.contributorId},
             dev_ops_enabled  = #{task.devOpsEnabled},
@@ -202,171 +202,225 @@
     </update>
 
     <select id="getUserByLogin" resultMap="userMap" useCache="true">
-        SELECT * FROM wsuser WHERE login=#{login}
+        SELECT *
+        FROM wsuser
+        WHERE login = #{login}
     </select>
 
     <select id="getUserById" resultMap="userMap">
-        SELECT * FROM wsuser WHERE id=#{id}
+        SELECT *
+        FROM wsuser
+        WHERE id = #{id}
     </select>
 
     <select id="getUsersByIds" resultMap="userMap">
         SELECT * FROM wsuser WHERE id IN
         <foreach item='id' index='index' collection='idList' open='(' separator=',' close=')'>
-              #{id}
-       </foreach>
+            #{id}
+        </foreach>
     </select>
 
     <select id="getProjectById" resultMap="projectMap">
-        SELECT * FROM project WHERE id=#{id}
+        SELECT *
+        FROM project
+        WHERE id = #{id}
     </select>
 
     <select id="getProjectByName" resultMap="projectMap">
-        SELECT *  FROM project  WHERE name=#{name}
+        SELECT *
+        FROM project
+        WHERE name = #{name}
     </select>
 
     <select id="getUserProjects" resultMap="projectMap" useCache="true">
-        SELECT *  FROM project prj
-        JOIN contributor ctr ON ctr.project_id = prj.id
+        SELECT *
+        FROM project prj
+                 JOIN contributor ctr ON ctr.project_id = prj.id
         WHERE ctr.user_id = #{userId}
     </select>
 
 
     <select id="getProjectOwner" resultMap="userMap">
-        SELECT * FROM  wsuser usr
-        JOIN contributor ctr ON ctr.user_id = usr.id
-        JOIN project prj on ctr.project_id = prj.id
-        WHERE prj.id=#{projectId} and ctr.is_owner=true
+        SELECT *
+        FROM wsuser usr
+                 JOIN contributor ctr ON ctr.user_id = usr.id
+                 JOIN project prj on ctr.project_id = prj.id
+        WHERE prj.id = #{projectId}
+          and ctr.is_owner = true
     </select>
 
     <select id="getContributorById" resultMap="contributorMap">
-        SELECT * FROM contributor WHERE id=#{id}
+        SELECT *
+        FROM contributor
+        WHERE id = #{id}
     </select>
 
     <select id="getContributorsByUserId" resultMap="contributorMap" useCache="true">
-        SELECT * FROM contributor  WHERE user_id=#{userId}
+        SELECT *
+        FROM contributor
+        WHERE user_id = #{userId}
     </select>
 
     <select id="getContributorsForProject" resultMap="userMap" useCache="true">
-        SELECT * FROM wsuser usr
-        JOIN contributor ctr ON ctr.user_id = usr.id
-        JOIN project prj on ctr.project_id = prj.id
-        WHERE prj.id=#{projectId} and ctr.is_active=true
-        OFFSET #{offset}
+        SELECT *
+        FROM wsuser usr
+                 JOIN contributor ctr ON ctr.user_id = usr.id
+                 JOIN project prj on ctr.project_id = prj.id
+        WHERE prj.id = #{projectId}
+          and ctr.is_active = true
+            OFFSET #{offset}
         LIMIT #{limit}
     </select>
 
     <select id="getTaskById" resultMap="taskMap">
-        SELECT * FROM task WHERE id=#{id}
+        SELECT *
+        FROM task
+        WHERE id = #{id}
     </select>
 
     <select id="getTasksForProject" resultMap="taskMap" useCache="true">
-        SELECT * FROM task ts
-        JOIN contributor ctr ON ctr.id = ts.contributor_id
-        WHERE ctr.project_id=#{projectId}
-        OFFSET #{offset}
+        SELECT *
+        FROM task ts
+                 JOIN contributor ctr ON ctr.id = ts.contributor_id
+        WHERE ctr.project_id = #{projectId}
+            OFFSET #{offset}
         LIMIT #{limit}
     </select>
 
     <select id="getTasksForContributor" resultMap="taskMap" useCache="true">
-        SELECT * FROM task ts
-        JOIN contributor ctr ON ctr.id = ts.contributor_id
-        WHERE ctr.id=#{contributorId}
-        OFFSET #{offset}
+        SELECT *
+        FROM task ts
+                 JOIN contributor ctr ON ctr.id = ts.contributor_id
+        WHERE ctr.id = #{contributorId}
+            OFFSET #{offset}
         LIMIT #{limit}
     </select>
 
     <select id="getTasksForUser" resultMap="taskMap" useCache="true">
-        SELECT * FROM task ts
-        JOIN contributor ctr ON ctr.id = ts.contributor_id
-        JOIN wsuser usr on ctr.user_id = usr.id
-        WHERE usr.id=#{userId}
-        OFFSET #{offset}
+        SELECT *
+        FROM task ts
+                 JOIN contributor ctr ON ctr.id = ts.contributor_id
+                 JOIN wsuser usr on ctr.user_id = usr.id
+        WHERE usr.id = #{userId}
+            OFFSET #{offset}
         LIMIT #{limit}
     </select>
 
     <select id="getTasksForSprint" resultMap="taskMap" useCache="true">
-        SELECT * FROM task WHERE sprint_id=#{sprintId}
-        OFFSET #{offset}
+        SELECT *
+        FROM task
+        WHERE sprint_id = #{sprintId}
+            OFFSET #{offset}
         LIMIT #{limit}
     </select>
 
     <select id="getSprintById" resultMap="sprintMap">
-        SELECT * FROM sprint WHERE id=#{id}
+        SELECT *
+        FROM sprint
+        WHERE id = #{id}
     </select>
 
     <select id="getSprintByName" resultMap="sprintMap">
-        SELECT * FROM sprint WHERE name=#{name}
+        SELECT *
+        FROM sprint
+        WHERE name = #{name}
     </select>
 
     <select id="getSprints" resultMap="sprintMap" useCache="true">
-        SELECT * FROM sprint
+        SELECT *
+        FROM sprint
         WHERE project_id = #{projectId}
-        OFFSET #{offset}
+            OFFSET #{offset}
         LIMIT #{limit}
     </select>
 
 
     <select id="getCodeByUserId" resultMap="securityCodeMap">
-        SELECT * FROM security_code WHERE user_id=#{id}
+        SELECT *
+        FROM security_code
+        WHERE user_id = #{id}
     </select>
 
     <select id="checkCodeExists" resultType="Integer">
-        SELECT 1 FROM security_code WHERE code=#{code} LIMIT 1
+        SELECT 1
+        FROM security_code
+        WHERE code = #{code}
+        LIMIT 1
     </select>
 
 
     <delete id="deleteUsers">
-        DELETE FROM wsuser
+        DELETE
+        FROM wsuser
     </delete>
 
     <delete id="deleteProjects">
-        DELETE FROM project
+        DELETE
+        FROM project
     </delete>
 
     <delete id="deleteProject">
-        DELETE FROM project WHERE id=#{id}
+        DELETE
+        FROM project
+        WHERE id = #{id}
     </delete>
 
     <delete id="deleteContributors">
-        DELETE FROM contributor
+        DELETE
+        FROM contributor
     </delete>
 
     <delete id="deleteProjectContributors">
-        DELETE FROM contributor WHERE project_id=#{projectId}
+        DELETE
+        FROM contributor
+        WHERE project_id = #{projectId}
     </delete>
 
     <delete id="deleteTasks">
-        DELETE FROM task
+        DELETE
+        FROM task
     </delete>
 
     <delete id="deleteProjectTasks">
-        DELETE FROM task ts
-        USING contributor ctr
-        WHERE ts.contributor_id=ctr.id AND ctr.project_id=#{projectId}
+        DELETE
+        FROM task ts
+            USING contributor ctr
+        WHERE ts.contributor_id = ctr.id
+          AND ctr.project_id = #{projectId}
     </delete>
 
     <delete id="deleteTask">
-        DELETE FROM task WHERE id=#{id}
+        DELETE
+        FROM task
+        WHERE id = #{id}
     </delete>
 
     <delete id="deleteSprints">
-        DELETE FROM sprint
+        DELETE
+        FROM sprint
     </delete>
 
     <delete id="deleteProjectSprints">
-        DELETE FROM sprint WHERE project_id=#{projectId}
+        DELETE
+        FROM sprint
+        WHERE project_id = #{projectId}
     </delete>
 
     <delete id="deleteSprint">
-        DELETE FROM sprint WHERE id=#{id}
+        DELETE
+        FROM sprint
+        WHERE id = #{id}
     </delete>
 
     <delete id="deleteCodes">
-        DELETE FROM security_code
+        DELETE
+        FROM security_code
     </delete>
 
     <delete id="deleteCode">
-        DELETE FROM security_code WHERE id=#{id}
+        DELETE
+        FROM security_code
+        WHERE id = #{id}
     </delete>
 
 

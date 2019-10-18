@@ -89,7 +89,7 @@ public class ProjectDao extends BaseDao {
         }
 
         if (repo != null && !repo.isBlank()) {
-            prj.setName(name);
+            prj.setRepository(repo);
         }
 
         if (description != null && !description.isBlank()) {
