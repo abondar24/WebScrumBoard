@@ -95,8 +95,8 @@ public class ContributorDao extends BaseDao {
         if (isOwner != null) {
             if (isOwner) {
                 if (ctr.isOwner()) {
-                    logger.error(LogMessageUtil.PROJECT_HAS_OWNER);
-                    throw new DataCreationException(LogMessageUtil.PROJECT_HAS_OWNER);
+                    logger.error(LogMessageUtil.CONTRIBUTOR_IS_ALREADY_OWNER);
+                    throw new DataCreationException(LogMessageUtil.CONTRIBUTOR_IS_ALREADY_OWNER);
 
                 }
 
@@ -230,8 +230,8 @@ public class ContributorDao extends BaseDao {
     private void checkUserIsOwner(long projectId, long userId) throws DataCreationException {
         var owner = mapper.getProjectOwner(projectId);
         if (owner != null && owner.getId() == userId) {
-            logger.error(LogMessageUtil.PROJECT_HAS_OWNER);
-            throw new DataCreationException(LogMessageUtil.PROJECT_HAS_OWNER);
+            logger.error(LogMessageUtil.CONTRIBUTOR_IS_ALREADY_OWNER);
+            throw new DataCreationException(LogMessageUtil.CONTRIBUTOR_IS_ALREADY_OWNER);
         }
     }
 }

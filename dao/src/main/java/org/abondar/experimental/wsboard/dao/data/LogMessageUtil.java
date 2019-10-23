@@ -20,7 +20,7 @@ public class LogMessageUtil {
     public static final String PROJECT_HAS_NO_OWNER = "Project has no owner";
     public static final String PARSE_DATE_FAILED = "Date string is incorrect";
     public static final String PROJECT_NOT_ACTIVE = "Current project is not active";
-    public static final String PROJECT_HAS_OWNER = "Project already has an owner";
+    public static final String CONTRIBUTOR_IS_ALREADY_OWNER = "This contributor is already an owner";
     public static final String CONTRIBUTOR_NOT_EXISTS = "Contributor not found";
     public static final String CONTRIBUTOR_NOT_ACTIVE = "Contributor is not active";
     public static final String CONTRIBUTOR_CANNOT_BE_DEACTIVATED = "Contributor can't be deactivated as is project owner ";

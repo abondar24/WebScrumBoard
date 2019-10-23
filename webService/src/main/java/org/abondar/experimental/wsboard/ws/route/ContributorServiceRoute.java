@@ -70,7 +70,7 @@ public class ContributorServiceRoute extends RouteBuilder {
                         return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
                     } catch (DataCreationException ex) {
                         switch (ex.getMessage()) {
-                            case LogMessageUtil.PROJECT_HAS_OWNER:
+                            case LogMessageUtil.CONTRIBUTOR_IS_ALREADY_OWNER:
                                 return Response.status(Response.Status.FOUND).entity(ex.getLocalizedMessage()).build();
                             case LogMessageUtil.PROJECT_HAS_NO_OWNER:
                                 return Response.status(Response.Status.CONFLICT).entity(ex.getLocalizedMessage()).build();

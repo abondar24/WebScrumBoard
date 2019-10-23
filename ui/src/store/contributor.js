@@ -17,16 +17,23 @@ export default {
             roles: '',
             avatar: null
         },
+        projectContributors: []
     },
     mutations: {
         setProjectOwner(state, owner) {
             state.projectOwner = owner;
         },
+        setContributors(state, contrs) {
+            state.projectContributors = contrs;
+        }
     },
     getters: {
         getProjectOwner: state => {
             return state.projectOwner;
         },
+        getProjectContributors: state => {
+            return state.projectContributors;
+        }
     },
     actions: {
         createContributor({commit, getters}, ctrData) {
@@ -68,5 +75,25 @@ export default {
                     commit('setErrorMessage', error.response.data);
                 });
         },
+        findProjectContributors({commit, getters}, queryParams){
+            return getters.authenticatedAxios.get(contributorUrl + '/find_project_contributors', {
+                params: {
+                    projectId: queryParams.projectId,
+                    offset: queryParams.offset,
+                    limit: queryParams.limit
+                }
+            }).then(
+                (response) => {
+                    commit('setErrorMessage', '');
+
+                    if (response.code !== 204) {
+                        commit('setContributors', response.data);
+                    }
+
+                },
+                (error) => {
+                    commit('setErrorMessage', error.response.data);
+                });
+        }
     }
 }

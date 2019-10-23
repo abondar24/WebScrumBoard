@@ -89,7 +89,7 @@ public interface ContributorService {
             notes = "Find a list of project contributors",
             produces = "application/json")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Project contributors", response = Contributor.class),
+            @ApiResponse(code = 200, message = "Project contributors", response = User.class),
             @ApiResponse(code = 204, message = "No contributors found"),
             @ApiResponse(code = 404, message = "Project not found")
     })

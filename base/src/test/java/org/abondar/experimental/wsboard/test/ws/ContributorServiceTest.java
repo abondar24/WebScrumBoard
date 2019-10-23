@@ -152,7 +152,7 @@ public class ContributorServiceTest {
         assertEquals(409, resp.getStatus());
 
         var msg = resp.readEntity(String.class);
-        assertEquals(LogMessageUtil.PROJECT_HAS_OWNER, msg);
+        assertEquals(LogMessageUtil.CONTRIBUTOR_IS_ALREADY_OWNER, msg);
 
         deleteContributor();
 
@@ -202,7 +202,7 @@ public class ContributorServiceTest {
         assertEquals(302, resp.getStatus());
 
         var msg = resp.readEntity(String.class);
-        assertEquals(LogMessageUtil.PROJECT_HAS_OWNER, msg);
+        assertEquals(LogMessageUtil.CONTRIBUTOR_IS_ALREADY_OWNER, msg);
 
     }
 

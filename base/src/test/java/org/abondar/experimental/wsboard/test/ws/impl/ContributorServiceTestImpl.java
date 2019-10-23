@@ -50,7 +50,7 @@ public class ContributorServiceTestImpl implements ContributorService {
 
         if (isOwner) {
             if (testContributor != null && testContributor.isOwner())
-            return Response.status(Response.Status.CONFLICT).entity(LogMessageUtil.PROJECT_HAS_OWNER).build();
+            return Response.status(Response.Status.CONFLICT).entity(LogMessageUtil.CONTRIBUTOR_IS_ALREADY_OWNER).build();
 
         }
 
@@ -71,7 +71,7 @@ public class ContributorServiceTestImpl implements ContributorService {
 
             if (isOwner) {
                 if (testContributor.isOwner()) {
-                    return Response.status(Response.Status.FOUND).entity(LogMessageUtil.PROJECT_HAS_OWNER).build();
+                    return Response.status(Response.Status.FOUND).entity(LogMessageUtil.CONTRIBUTOR_IS_ALREADY_OWNER).build();
                 }
 
                 if (!testContributor.isActive()) {

@@ -55,7 +55,27 @@
                 </b-col>
             </b-row>
             <b-row>
-               <p>{{project.description}}</p>
+                <p>{{project.description}}</p>
+            </b-row>
+            <b-row>
+                <b-table
+                        id="ctrTable"
+                        stacked
+                        hover
+                        responsive
+                        :items="ctrItems"
+                        :fields="fields"
+                        :per-page="perPage"
+                        @row-clicked="routeToUser($event)"
+                        :current-page="currentPage">
+                    <template v-slot:table-caption>Project contributors</template>
+                </b-table>
+                <b-pagination
+                        v-model="currentPage"
+                        :total-rows="totalRows"
+                        v-on:click="loadNext"
+                        :per-page="perPage"
+                        aria-controls="ctrTable"/>
             </b-row>
 
         </b-container>
@@ -86,11 +106,19 @@
                 image: null,
                 ownerName: '',
                 imgProps: {width: 20, height: 20, class: 'm1'},
+                ctrItems: [],
+                currentPage: 1,
+                perPage: 10,
+                totalRows: 0,
+                fields: [
+                    {key: 'ctr_name', label: ''}
+                ],
             }
         },
         beforeMount() {
             this.findProject();
             this.findOwner();
+            this.findContributors(0);
             this.setDate();
             this.setImage();
         },
@@ -122,15 +150,38 @@
                     this.errorMessage = this.getError;
                     if (this.errorMessage.length) {
                         this.errorOccurred = true;
+                    } else {
+                        if (this.getUser.id === this.getOwner.id) {
+                            this.isEditable = true;
+                        }
+                        this.ownerName = this.getOwner.firstName + ' ' + this.getOwner.lastName;
                     }
 
-                    if (this.getUser.id === this.getOwner.id) {
-                        this.isEditable = true;
-                    }
-
-                    this.ownerName = this.getOwner.firstName + ' ' + this.getOwner.lastName;
                 });
 
+            },
+            findContributors(offset) {
+                this.$store.dispatch('findProjectContributors', {
+                    projectId: this.$route.params.id,
+                    offset: offset,
+                    limit: this.perPage
+                }).then(() => {
+                    this.errorMessage = this.getError;
+                    if (this.errorMessage.length) {
+                        this.errorOccurred = true;
+                    } else {
+
+                        this.totalRows = this.getContributors.length;
+                        for (let i = 0; i < this.getContributors.length; i++){
+                            this.ctrItems.push({
+                                id: this.getContributors[i].id,
+                                ctr_name: this.getContributors[i].firstName +
+                                    ' ' + this.getContributors[i].lastName
+                            });
+                        }
+
+                    }
+                });
             },
             setDate() {
 
@@ -176,6 +227,12 @@
             },
             hideEdit() {
                 this.$refs['prjEdit'].hide();
+            },
+            loadNext() {
+                this.findContributors(this.currentPage);
+            },
+            routeToUser(user) {
+                this.$router.push({path: '/user/' + user.id});
             }
         },
         computed: {
@@ -194,6 +251,9 @@
             getViewUser() {
                 return this.$store.getters.getUser;
             },
+            getContributors() {
+                return this.$store.getters.getProjectContributors;
+            }
         }
     }
 </script>
