@@ -11,24 +11,30 @@
                 {{errorMessage}}
             </b-alert>
             <b-row id="topRow">
-               <b-col>
-                   <b-row>
-                       <h1>{{project.name}}</h1>
-                       <b-img id="activeImg" :src="image"  v-bind="imgProps" alt="Project status"></b-img>
-                   </b-row>
-                   <b-row>
-                       <h2>Started on: {{project.startDate}}</h2>
-                       <h2 v-if="!project.active">Finished on: {{project.endDate}}</h2>
-                       <a href="{{project.repository}}"></a>
-                   </b-row>
-               </b-col>
                 <b-col>
                     <b-row>
-                       <h2>Owner: {{ownerName}}</h2>
+                        <h1>{{project.name}}</h1>
+                        <b-img id="activeImg" :src="image" v-bind="imgProps" alt="Project status"></b-img>
+                    </b-row>
+                    <b-row>
+                        <p>Started on: {{project.startDate}}</p>
+                    </b-row>
+                    <b-row>
+                        <p v-if="!project.active">Finished on: {{project.endDate}}</p>
+                    </b-row>
+                    <b-row>
+                        <b-link v-bind:href="project.repository">
+                            Project repository
+                        </b-link>
+                    </b-row>
+                </b-col>
+                <b-col>
+                    <b-row>
+                        <h2>Owner: {{ownerName}}</h2>
                     </b-row>
                     <b-row v-if="isEditable">
-                        <b-button v-b-modal.editProject>Edit project</b-button>
-                        <b-button id="deleteProject"  v-b-modal.delPrj variant="danger">Delete project</b-button>
+                        <b-button v-if="project.active" v-b-modal.editProject>Edit project</b-button>
+                        <b-button id="deleteProject" v-b-modal.delPrj variant="danger">Delete project</b-button>
 
                         <b-modal
                                 id="delPrj"
@@ -42,7 +48,7 @@
                         <b-modal id="editProject"
                                  ref="prjEdit"
                                  hide-footer
-                        title="Edit project">
+                                 title="Edit project">
                             <EditProjectForm @exit="hideEdit"></EditProjectForm>
                         </b-modal>
                     </b-row>
@@ -63,9 +69,9 @@
     export default {
         name: "Project",
         components: {EditProjectForm, NavbarCommon},
-        data(){
+        data() {
             return {
-                project:{
+                project: {
                     id: 0,
                     name: '',
                     startDate: null,
@@ -77,23 +83,21 @@
                 isEditable: false,
                 errorMessage: '',
                 errorOccurred: false,
-                image:null,
-                ownerName:'',
+                image: null,
+                ownerName: '',
                 imgProps: {width: 20, height: 20, class: 'm1'},
             }
         },
         beforeMount() {
             this.findProject();
             this.findOwner();
-            this.project=this.getProject;
             this.setDate();
             this.setImage();
-
         },
         created() {
             this.$store.watch(
-                (state,getters) => getters.getProject,
-                (newVal,oldVal) =>{
+                (state, getters) => getters.getProject,
+                (newVal, oldVal) => {
                     this.project = newVal;
                     this.setDate();
                     this.setImage();
@@ -101,65 +105,67 @@
             );
 
 
-
         },
         methods: {
-            findProject(){
-                this.$store.dispatch('findProject',this.$route.params.id).then(() => {
+            findProject() {
+                this.$store.dispatch('findProject', this.$route.params.id).then(() => {
                     this.errorMessage = this.getError;
                     if (this.errorMessage.length) {
                         this.errorOccurred = true;
                     }
                 });
+
+                this.project = this.getProject;
             },
-            findOwner(){
-                this.$store.dispatch('findProjectOwner',this.$route.params.id).then(() => {
+            findOwner() {
+                this.$store.dispatch('findProjectOwner', this.$route.params.id).then(() => {
                     this.errorMessage = this.getError;
                     if (this.errorMessage.length) {
                         this.errorOccurred = true;
                     }
 
+                    if (this.getUser.id === this.getOwner.id) {
+                        this.isEditable = true;
+                    }
+
+                    this.ownerName = this.getOwner.firstName + ' ' + this.getOwner.lastName;
                 });
-                if (this.getUser.id===this.getOwner.id) {
-                    this.isEditable = true;
+
+            },
+            setDate() {
+
+                this.project.startDate = this.formatDate(new Date(this.project.startDate));
+                if (this.project.endDate !== 0) {
+                    this.project.endDate = this.formatDate(new Date(this.getProject.endDate));
                 }
 
-                this.ownerName=this.getOwner.firstName +' ' + this.getOwner.lastName;
             },
-             setDate(){
-
-                 this.project.startDate = this.formatDate(new Date(this.project.startDate));
-                 if (this.project.endDate!==0){
-                     this.project.endDate = this.formatDate(new Date(this.getProject.endDate));
-                 }
-
-             },
-             setImage(){
-                 if (this.project.active){
-                     this.image = require('@/assets/active.png');
-                 } else {
-                     this.image = require('@/assets/inactive.png');
-                 }
-             },
-            formatDate(rawDate){
+            setImage() {
+                if (this.project.active) {
+                    this.image = require('@/assets/active.png');
+                } else {
+                    this.image = require('@/assets/inactive.png');
+                }
+            },
+            formatDate(rawDate) {
                 let date = new Date(rawDate);
 
                 let dd = date.getDate();
-                let mm = date.getMonth()+1;
+                let mm = date.getMonth() + 1;
                 let yyyy = date.getFullYear();
 
-                if(dd<10) {
-                    dd='0'+dd;
+                if (dd < 10) {
+                    dd = '0' + dd;
                 }
 
-                if(mm<10) {
-                    mm='0'+mm;
+                if (mm < 10) {
+                    mm = '0' + mm;
                 }
 
-                return dd+'/'+mm+'/'+yyyy;
+                return dd + '/' + mm + '/' + yyyy;
             },
-            delProject(){
-                this.$store.dispatch('deleteProject',this.project.id).then(() => {
+            delProject() {
+                this.$store.dispatch('deleteProject', this.project.id).then(() => {
                     this.errorMessage = this.getError;
                     if (this.errorMessage.length) {
                         this.errorOccurred = true;
@@ -168,7 +174,7 @@
                     }
                 });
             },
-            hideEdit(){
+            hideEdit() {
                 this.$refs['prjEdit'].hide();
             }
         },
@@ -176,13 +182,13 @@
             getError() {
                 return this.$store.getters.getErrorMsg;
             },
-            getProject(){
+            getProject() {
                 return this.$store.getters.getProject;
             },
             getUser() {
                 return this.$store.getters.getUser;
             },
-            getOwner(){
+            getOwner() {
                 return this.$store.getters.getProjectOwner;
             },
             getViewUser() {
@@ -193,10 +199,11 @@
 </script>
 
 <style scoped>
- #topRow {
-     margin-top: 30px;
- }
-    #activeImg,#deleteProject {
+    #topRow {
+        margin-top: 30px;
+    }
+
+    #activeImg, #deleteProject {
         margin-left: 10px;
     }
 </style>
