@@ -87,7 +87,10 @@
         },
         methods:{
             findLogin(){
-                  this.$store.dispatch('getUserByLogin',this.login).then(()=>{
+                  this.$store.dispatch('getUserByLogin',{
+                      login:this.login,
+                      isView:false
+                  }).then(()=>{
                       this.errorMessage = this.getError;
                       if (this.errorMessage.length) {
                           this.errorOccurred = true;
@@ -141,7 +144,7 @@
                 return this.code.length > 0 && this.code.match(/^[0-9]+$/) != null;
             },
             loginValidation() {
-                return this.login.length > 0
+                return this.login.length > 0 && this.login!=='deleted'
             },
             passwordValidation() {
                 return this.password.length > 4 && this.password.match(/^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]+$/) != null

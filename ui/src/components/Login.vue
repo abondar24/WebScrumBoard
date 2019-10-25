@@ -92,7 +92,7 @@
         },
         computed: {
             loginValidation() {
-                return this.credentials.login.length > 0
+                return this.credentials.login.length > 0 && this.credentials.login!=='deleted'
             },
             passwordValidation() {
                 return this.credentials.password.length > 0

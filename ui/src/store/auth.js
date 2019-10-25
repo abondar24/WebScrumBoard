@@ -50,7 +50,10 @@ export default {
                 (response) => {
                     commit('setErrorMessage', '');
                     commit('setAuthenticated', response.headers[authorization]);
-                    return dispatch('getUserByLogin',credentials.login) ;
+                    return dispatch('getUserByLogin',{
+                        login:credentials.login,
+                        isView:false
+                    }) ;
                 },
                 (error) => {
                     if (error.response.status === 500) {

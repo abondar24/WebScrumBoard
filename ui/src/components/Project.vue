@@ -34,8 +34,9 @@
                     </b-row>
                     <b-row v-if="isEditable">
                         <b-button v-if="project.active" v-b-modal.editProject>Edit project</b-button>
-                        <b-button id="deleteProject" v-b-modal.delPrj variant="danger">Delete project</b-button>
+                        <b-button id="addCtr" v-b-modal.addContributor variant="success" v-if="project.active">Add Contributor</b-button>
 
+                        <b-button id="deleteProject" v-b-modal.delPrj variant="danger">Delete project</b-button>
                         <b-modal
                                 id="delPrj"
                                 title="Delete project"
@@ -50,6 +51,13 @@
                                  hide-footer
                                  title="Edit project">
                             <EditProjectForm @exit="hideEdit"></EditProjectForm>
+                        </b-modal>
+                        <b-modal
+                          id="addContributor"
+                          title="Add contributor"
+                          ref="ctrAdd"
+                          hide-footer>
+                            <AddContributorForm @exit="hideCtr"></AddContributorForm>
                         </b-modal>
                     </b-row>
                 </b-col>
@@ -85,10 +93,11 @@
 <script>
     import NavbarCommon from "./NavbarCommon";
     import EditProjectForm from "./EditProjectForm";
+    import AddContributorForm from "./AddContributorForm";
 
     export default {
         name: "Project",
-        components: {EditProjectForm, NavbarCommon},
+        components: {AddContributorForm, EditProjectForm, NavbarCommon},
         data() {
             return {
                 project: {
@@ -228,6 +237,9 @@
             hideEdit() {
                 this.$refs['prjEdit'].hide();
             },
+            hideCtr() {
+                this.$refs['ctrAdd'].hide();
+            },
             loadNext() {
                 this.findContributors(this.currentPage);
             },
@@ -263,7 +275,7 @@
         margin-top: 30px;
     }
 
-    #activeImg, #deleteProject {
+    #activeImg, #deleteProject, #addCtr {
         margin-left: 10px;
     }
 </style>

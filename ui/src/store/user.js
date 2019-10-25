@@ -110,15 +110,20 @@ export default {
                         commit('setErrorMessage', error.response.data);
                     });
         },
-        getUserByLogin({commit, getters}, login) {
+        getUserByLogin({commit, getters}, params) {
             return Axios.get(userUrl + '/find', {
                 params: {
-                    login: login
+                    login: params.login
                 }
             }).then(
                 (response) => {
                     commit('setErrorMessage', '');
-                    commit('setUser', response.data);
+                    if (params.isView){
+                        commit('setViewUser',response.data);
+                    } else {
+                        commit('setUser', response.data);
+                    }
+
                 },
                 (error) => {
                     commit('setErrorMessage', error.response.data);
