@@ -22,11 +22,12 @@
 
             </b-row>
             <b-row>
-                <b-table stacked
+                <b-table
                          hover
                          responsive
                          :items="projects"
                          :fields="fields"
+                         caption-top
                          @row-clicked="routeToProject($event)">
                     <template v-slot:table-caption>User related projects.</template>
                 </b-table>

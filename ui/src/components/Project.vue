@@ -68,12 +68,12 @@
             <b-row>
                 <b-table
                         id="ctrTable"
-                        stacked
                         hover
                         responsive
                         :items="ctrItems"
                         :fields="fields"
                         :per-page="perPage"
+                        caption-top
                         @row-clicked="routeToUser($event)"
                         :current-page="currentPage">
                     <template v-slot:table-caption>Project contributors</template>
@@ -239,6 +239,11 @@
             },
             hideCtr() {
                 this.$refs['ctrAdd'].hide();
+                this.ctrItems.push({
+                        id: this.getViewUser.id,
+                        ctr_name: this.getViewUser.firstName +
+                            ' ' + this.getViewUser.lastName
+                })
             },
             loadNext() {
                 this.findContributors(this.currentPage);
@@ -261,7 +266,7 @@
                 return this.$store.getters.getProjectOwner;
             },
             getViewUser() {
-                return this.$store.getters.getUser;
+                return this.$store.getters.getViewUser;
             },
             getContributors() {
                 return this.$store.getters.getProjectContributors;
