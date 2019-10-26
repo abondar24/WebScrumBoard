@@ -61,9 +61,17 @@ public class ContributorServiceTestImpl implements ContributorService {
     }
 
     @Override
-    public Response updateContributor(long contributorId, Boolean isOwner, Boolean isActive) {
+    public Response updateContributor(long userId,long projectId, Boolean isOwner, Boolean isActive) {
 
-        if (testContributor.getId() != contributorId) {
+        if (testProject.getId() != projectId) {
+            return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.PROJECT_NOT_EXISTS).build();
+        }
+
+        if (testUser.getId() != userId) {
+            return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.USER_NOT_EXISTS).build();
+        }
+
+        if (testContributor==null) {
             return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.CONTRIBUTOR_NOT_EXISTS).build();
         }
 

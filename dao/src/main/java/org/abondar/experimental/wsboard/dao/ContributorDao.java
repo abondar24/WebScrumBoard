@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 
 
-
 /**
  * Data access object for contributor
  *
@@ -34,9 +33,9 @@ public class ContributorDao extends BaseDao {
      * @param userId    - user id
      * @param projectId - project id to be assigned to
      * @param isOwner   - is contributor a project owner?
-     * @throws DataExistenceException - user or project does not exist
-     * @throws DataCreationException - project not active or has owner
      * @return contributor POJO
+     * @throws DataExistenceException - user or project does not exist
+     * @throws DataCreationException  - project not active or has owner
      */
     public Contributor createContributor(long userId, long projectId, boolean isOwner)
             throws DataExistenceException, DataCreationException {
@@ -73,20 +72,29 @@ public class ContributorDao extends BaseDao {
     /**
      * Update an existing contributor
      *
-     * @param contributorId - contributor id
-     * @param isOwner       - is contributor a project owner?
-     * @param isActive      - is contributor currently working on a project?
-     * @throws DataExistenceException - contributor does not exist
-     * @throws DataCreationException - project has owner or doesn't have it at all
+     * @param userId    - user id
+     * @param projectId - project id
+     * @param isOwner   - is contributor a project owner?
+     * @param isActive  - is contributor currently working on a project?
      * @return contributor POJO
+     * @throws DataExistenceException - contributor,user or project does not exist
+     * @throws DataCreationException  - project has owner or doesn't have it at all
      */
-    public Contributor updateContributor(long contributorId, Boolean isOwner, Boolean isActive)
-    throws DataExistenceException,DataCreationException{
+    public Contributor updateContributor(long userId, long projectId, Boolean isOwner, Boolean isActive)
+            throws DataExistenceException, DataCreationException {
+
+        if (mapper.getUserById(userId)==null){
+            throw new DataExistenceException(LogMessageUtil.USER_NOT_EXISTS);
+        }
+
+        if (mapper.getProjectById(projectId)==null){
+            throw new DataExistenceException(LogMessageUtil.PROJECT_NOT_EXISTS);
+        }
 
         var msg = "";
-        var ctr = mapper.getContributorById(contributorId);
+        var ctr = mapper.getContributorByUserAndProject(userId, projectId);
         if (ctr == null) {
-            msg = String.format(LogMessageUtil.LOG_FORMAT, LogMessageUtil.CONTRIBUTOR_NOT_EXISTS, contributorId);
+            msg = String.format("%s with user id: %d", LogMessageUtil.CONTRIBUTOR_NOT_EXISTS, userId);
             logger.error(msg);
             throw new DataExistenceException(LogMessageUtil.CONTRIBUTOR_NOT_EXISTS);
 
@@ -141,11 +149,11 @@ public class ContributorDao extends BaseDao {
      * Find a contributor who is a project owner
      *
      * @param projectId - project id
-     * @throws DataExistenceException - project does not exist
-     * @throws DataCreationException - project has no owner
      * @return user POJO
+     * @throws DataExistenceException - project does not exist
+     * @throws DataCreationException  - project has no owner
      */
-    public User findProjectOwner(long projectId) throws DataExistenceException,DataCreationException {
+    public User findProjectOwner(long projectId) throws DataExistenceException, DataCreationException {
 
         findProjectById(projectId);
 
@@ -164,10 +172,10 @@ public class ContributorDao extends BaseDao {
      * @param projectId - project id
      * @param offset    - beginning of the list
      * @param limit     - end of the list
-     * @throws DataExistenceException - project does not exist
      * @return user POJO list
+     * @throws DataExistenceException - project does not exist
      */
-    public List<User>findProjectContributors(long projectId, int offset, int limit) throws DataExistenceException {
+    public List<User> findProjectContributors(long projectId, int offset, int limit) throws DataExistenceException {
 
 
         var msg = "";
@@ -183,20 +191,21 @@ public class ContributorDao extends BaseDao {
 
     /**
      * Returns list of all contributors assigned to selected user
+     *
      * @param userId - user id
-     * @param offset    - beginning of the list
-     * @param limit     - end of the list
+     * @param offset - beginning of the list
+     * @param limit  - end of the list
      * @return contributors list
      * @throws DataExistenceException - selected user doesn't exist
      */
     public List<Contributor> findContributorsByUserId(long userId, int offset, int limit)
             throws DataExistenceException {
 
-        if (mapper.getUserById(userId)==null){
-            throw  new DataExistenceException(LogMessageUtil.USER_NOT_EXISTS);
+        if (mapper.getUserById(userId) == null) {
+            throw new DataExistenceException(LogMessageUtil.USER_NOT_EXISTS);
         }
 
-        return mapper.getContributorsByUserId(userId,offset,limit);
+        return mapper.getContributorsByUserId(userId, offset, limit);
     }
 
 

@@ -92,7 +92,7 @@ public class TaskDaoTest {
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
         userDao.deleteUser(contr.getUserId());
 
-        contributorDao.updateContributor(contr.getId(), null, false);
+        contributorDao.updateContributor(usr.getId(),prj.getId(), null, false);
 
         assertThrows(DataExistenceException.class, () ->
                 dao.createTask(contr.getId(), new Date(), true, "name", "descr"));

@@ -170,7 +170,8 @@ public class ContributorServiceTest {
 
         var form = new Form();
 
-        form.param("ctrId", String.valueOf(ctr.getId()));
+        form.param("usrId", String.valueOf(userId));
+        form.param("prjId",String.valueOf(projectId));
         form.param("isActive", "true");
         form.param("isOwner", "true");
 
@@ -183,6 +184,78 @@ public class ContributorServiceTest {
 
     }
 
+    @Test
+    public void updateContributorNoUserTest() {
+        var userId = createUser();
+        var projectId = createProject();
+        var ctr = createContributor(userId, projectId, "false");
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+        client.path("/contributor/update").accept(MediaType.APPLICATION_JSON);
+
+        var form = new Form();
+
+        form.param("usrId", "100");
+        form.param("prjId",String.valueOf(projectId));
+        form.param("isActive", "true");
+        form.param("isOwner", "true");
+
+        var resp = client.post(form);
+        assertEquals(404, resp.getStatus());
+
+        var msg = resp.readEntity(String.class);
+        assertEquals(LogMessageUtil.USER_NOT_EXISTS, msg);
+
+    }
+
+
+    @Test
+    public void updateContributorNoProjectTest() {
+        var userId = createUser();
+        var projectId = createProject();
+        var ctr = createContributor(userId, projectId, "false");
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+        client.path("/contributor/update").accept(MediaType.APPLICATION_JSON);
+
+        var form = new Form();
+
+        form.param("usrId", String.valueOf(userId));
+        form.param("prjId","100");
+        form.param("isActive", "true");
+        form.param("isOwner", "true");
+
+        var resp = client.post(form);
+        assertEquals(404, resp.getStatus());
+
+        var msg = resp.readEntity(String.class);
+        assertEquals(LogMessageUtil.PROJECT_NOT_EXISTS, msg);
+
+    }
+
+    @Test
+    public void updateContributorNoCtrTest() {
+        var userId = createUser();
+        var projectId = createProject();
+        deleteContributor();
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+        client.path("/contributor/update").accept(MediaType.APPLICATION_JSON);
+
+        var form = new Form();
+
+        form.param("usrId", String.valueOf(userId));
+        form.param("prjId",String.valueOf(projectId));
+        form.param("isActive", "true");
+        form.param("isOwner", "true");
+
+        var resp = client.post(form);
+        assertEquals(404, resp.getStatus());
+
+        var msg = resp.readEntity(String.class);
+        assertEquals(LogMessageUtil.CONTRIBUTOR_NOT_EXISTS, msg);
+
+    }
 
     @Test
     public void updateContributorOwnerFoundTest() {
@@ -195,7 +268,8 @@ public class ContributorServiceTest {
 
         var form = new Form();
 
-        form.param("ctrId", String.valueOf(ctr.getId()));
+        form.param("usrId", String.valueOf(userId));
+        form.param("prjId",String.valueOf(projectId));
         form.param("isOwner", "true");
 
         var resp = client.post(form);
@@ -218,7 +292,8 @@ public class ContributorServiceTest {
 
         var form = new Form();
 
-        form.param("ctrId", String.valueOf(ctr.getId()));
+        form.param("usrId", String.valueOf(userId));
+        form.param("prjId",String.valueOf(projectId));
         form.param("isOwner", "false");
 
         var resp = client.post(form);
@@ -235,14 +310,15 @@ public class ContributorServiceTest {
         var userId = createUser();
         var projectId = createProject();
         var ctr = createContributor(userId, projectId, "false");
-        deactivateContributor(ctr.getId());
+        deactivateContributor(userId,projectId);
 
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
         client.path("/contributor/update").accept(MediaType.APPLICATION_JSON);
 
         var form = new Form();
 
-        form.param("ctrId", String.valueOf(ctr.getId()));
+        form.param("usrId", String.valueOf(userId));
+        form.param("prjId",String.valueOf(projectId));
         form.param("isOwner", "true");
 
         var resp = client.post(form);
@@ -265,7 +341,8 @@ public class ContributorServiceTest {
 
         var form = new Form();
 
-        form.param("ctrId", String.valueOf(ctr.getId()));
+        form.param("usrId", String.valueOf(userId));
+        form.param("prjId",String.valueOf(projectId));
         form.param("isActive", "false");
 
         var resp = client.post(form);
@@ -538,13 +615,14 @@ public class ContributorServiceTest {
     }
 
 
-    private void deactivateContributor(long ctrId) {
+    private void deactivateContributor(long userId,long projectId) {
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
         client.path("/contributor/update").accept(MediaType.APPLICATION_JSON);
 
         var form = new Form();
 
-        form.param("ctrId", String.valueOf(ctrId));
+        form.param("usrId", String.valueOf(userId));
+        form.param("prjId",String.valueOf(projectId));
         form.param("isActive", "false");
 
         client.post(form);

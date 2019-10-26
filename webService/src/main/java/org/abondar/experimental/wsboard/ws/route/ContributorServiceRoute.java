@@ -63,8 +63,8 @@ public class ContributorServiceRoute extends RouteBuilder {
 
                     try {
 
-                        var ctr = contributorDao.updateContributor((long) formData.get(0), (boolean) formData.get(1),
-                                (boolean) formData.get(2));
+                        var ctr = contributorDao.updateContributor((long) formData.get(0),(long) formData.get(1), (boolean) formData.get(2),
+                                (boolean) formData.get(3));
                         return Response.ok(ctr).build();
                     } catch (DataExistenceException ex) {
                         return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();

@@ -105,10 +105,29 @@ public class ContributorDaoTest {
 
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
         var id = contr.getId();
-        contr = contributorDao.updateContributor(contr.getId(), true, true);
+        contr = contributorDao.updateContributor(usr.getId(),prj.getId(), true, true);
 
         assertEquals(id, contr.getId());
 
+        cleanData();
+    }
+
+    @Test
+    public void updateContributorNoUserTest() throws Exception {
+        var prj = createProject(true);
+
+
+        assertThrows(DataExistenceException.class,
+                () -> contributorDao.updateContributor(100,prj.getId(), true, null));
+        cleanData();
+    }
+
+    @Test
+    public void updateContributorNoProjectTest() throws Exception {
+        var usr = createUser();
+
+        assertThrows(DataExistenceException.class,
+                () -> contributorDao.updateContributor(usr.getId(),100, true, null));
         cleanData();
     }
 
@@ -119,10 +138,10 @@ public class ContributorDaoTest {
         var prj = createProject(true);
 
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
-        var id = contr.getId();
-        contributorDao.updateContributor(contr.getId(), null, false);
+        contributorDao.updateContributor(usr.getId(),prj.getId(), null, false);
 
-        assertThrows(DataCreationException.class, () -> contributorDao.updateContributor(id, true, null));
+        assertThrows(DataCreationException.class,
+                () -> contributorDao.updateContributor(usr.getId(),prj.getId(), true, null));
 
 
         cleanData();
@@ -136,7 +155,8 @@ public class ContributorDaoTest {
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), true);
         var id = contr.getId();
 
-        assertThrows(DataCreationException.class, () -> contributorDao.updateContributor(id, null, false));
+        assertThrows(DataCreationException.class,
+                () -> contributorDao.updateContributor(usr.getId(), prj.getId(),null, false));
 
 
         cleanData();
@@ -146,7 +166,7 @@ public class ContributorDaoTest {
     @Test
     public void updateContributorAsOwnerContributorNotExistsTest() {
         assertThrows(DataExistenceException.class, () ->
-                contributorDao.updateContributor(100, false, true));
+                contributorDao.updateContributor(100,100, false, true));
 
         cleanData();
     }
@@ -159,7 +179,7 @@ public class ContributorDaoTest {
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), true);
 
         assertThrows(DataCreationException.class, () ->
-                contributorDao.updateContributor(contr.getId(), true, true));
+                contributorDao.updateContributor(usr.getId(), prj.getId(),true, true));
 
 
         cleanData();
@@ -173,7 +193,7 @@ public class ContributorDaoTest {
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
 
         assertThrows(DataCreationException.class, () ->
-                contributorDao.updateContributor(contr.getId(), false, true));
+                contributorDao.updateContributor(usr.getId(),prj.getId(), false, true));
 
 
         cleanData();
@@ -187,7 +207,7 @@ public class ContributorDaoTest {
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
         var id = contr.getId();
 
-        contr = contributorDao.updateContributor(id, null, null);
+        contr = contributorDao.updateContributor(usr.getId(),prj.getId(), null, null);
 
         assertEquals(id, contr.getId());
 

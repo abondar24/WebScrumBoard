@@ -57,14 +57,15 @@ public interface ContributorService {
             consumes = "application/x-www-urlformencoded",
             produces = "application/json")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Contributor created", response = Contributor.class),
-            @ApiResponse(code = 404, message = "Contributor not found"),
+            @ApiResponse(code = 200, message = "Contributor updated", response = Contributor.class),
+            @ApiResponse(code = 404, message = "Contributor,Project,User not found"),
             @ApiResponse(code = 302, message = "Project has owner"),
             @ApiResponse(code = 403, message = "Contributor can't be deactivated"),
             @ApiResponse(code = 409, message = "Project has no owner"),
             @ApiResponse(code = 410, message = "Contributor not active and can't be an owner"),
     })
-    Response updateContributor(@FormParam("ctrId") @ApiParam(required = true) long contributorId,
+    Response updateContributor(@FormParam("usrId") @ApiParam(required = true) long userId,
+                               @FormParam("prjId") @ApiParam(required = true) long projectId,
                                @FormParam("isOwner") @ApiParam Boolean isOwner,
                                @FormParam("isActive") @ApiParam Boolean isActive);
 

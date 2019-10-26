@@ -46,7 +46,7 @@ public class ContributorServiceRouteTest {
 
     @Test
     public void updateContributorRouteTest() throws Exception {
-        Object[] values = new Object[]{someId, someState, someState};
+        Object[] values = new Object[]{someId,someId, someState, someState};
         MessageContentsList testList = new MessageContentsList(values);
         producerTemplate.sendBodyAndHeaders("direct:updateContributor", testList,
                 Map.of());
