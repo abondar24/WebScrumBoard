@@ -25,6 +25,9 @@
             <b-button type="submit" variant="primary" id="addButton">
                 Add
             </b-button>
+            <b-button  variant="danger" id="cancelButton" @click="cancel">
+                Cancel
+            </b-button>
         </b-form>
     </b-container>
 </template>
@@ -100,5 +103,7 @@
 </script>
 
 <style scoped>
-
+   #cancelButton{
+       margin-left: 10px;
+   }
 </style>

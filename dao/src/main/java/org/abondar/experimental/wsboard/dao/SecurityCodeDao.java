@@ -22,6 +22,7 @@ public class SecurityCodeDao extends BaseDao {
         super(mapper);
     }
 
+    //TODO: rewrite code generation
     public long insertCode(long userId) throws DataExistenceException {
         checkUser(userId);
 
