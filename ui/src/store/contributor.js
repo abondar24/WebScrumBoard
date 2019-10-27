@@ -54,6 +54,25 @@ export default {
                     commit('setErrorMessage', error.response.data);
                 });
         },
+        updateContributor({commit, getters}, ctrData) {
+            const form = new URLSearchParams();
+            form.append('usrId', ctrData.userId);
+            form.append('prjId', ctrData.projectId);
+            form.append('isOwner', ctrData.owner);
+            form.append('isActive', ctrData.active);
+
+            return getters.authenticatedAxios.post(contributorUrl + '/update', form, formConfig).then(
+                (response) => {
+                    commit('setErrorMessage', '');
+
+                    if (response.code === 302) {
+                        commit('setErrorMessage', response.data);
+                    }
+                },
+                (error) => {
+                    commit('setErrorMessage', error.response.data);
+                });
+        },
         findProjectOwner({commit, getters}, projectId) {
 
             return getters.authenticatedAxios.get(contributorUrl + '/find_project_owner', {

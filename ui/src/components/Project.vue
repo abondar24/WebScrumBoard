@@ -10,6 +10,12 @@
                     variant="danger">
                 {{errorMessage}}
             </b-alert>
+            <b-alert
+                    :show="ownerChanged"
+                    dismissible
+                    variant="warning">
+                Project Owner has been changed
+            </b-alert>
             <b-row id="topRow">
                 <b-col>
                     <b-row>
@@ -34,7 +40,9 @@
                     </b-row>
                     <b-row v-if="isEditable">
                         <b-button v-if="project.active" v-b-modal.editProject>Edit project</b-button>
-                        <b-button id="addCtr" v-b-modal.addContributor variant="success" v-if="project.active">Add Contributor</b-button>
+                        <b-button id="addCtr" v-b-modal.addContributor variant="success" v-if="project.active">Add
+                            Contributor
+                        </b-button>
 
                         <b-button id="deleteProject" v-b-modal.delPrj variant="danger">Delete project</b-button>
                         <b-modal
@@ -53,10 +61,10 @@
                             <EditProjectForm @exit="hideEdit"></EditProjectForm>
                         </b-modal>
                         <b-modal
-                          id="addContributor"
-                          title="Add contributor"
-                          ref="ctrAdd"
-                          hide-footer>
+                                id="addContributor"
+                                title="Add contributor"
+                                ref="ctrAdd"
+                                hide-footer>
                             <AddContributorForm @exit="hideCtr"></AddContributorForm>
                         </b-modal>
                     </b-row>
@@ -74,9 +82,21 @@
                         :fields="fields"
                         :per-page="perPage"
                         caption-top
-                        @row-clicked="routeToUser($event)"
                         :current-page="currentPage">
                     <template v-slot:table-caption>Project contributors</template>
+                    <template v-slot:cell(ctr_name)="data">
+                        <router-link :to="{ name: 'User', params: { id: data.item.id }}">
+                            {{data.item.ctr_name}}
+                        </router-link>
+                    </template>
+                    <template v-slot:cell(ctr_actions)="data">
+                        <b-button-group v-if="isEditable">
+                            <b-button variant="warning" @click="makeAsOwner(data.item)">Make as owner</b-button>
+                            <b-button variant="danger" @click="deleteContributor(data.item)">Delete</b-button>
+                            <b-button variant="success" >View tasks</b-button>
+                        </b-button-group>
+                    </template>
+
                 </b-table>
                 <b-pagination
                         v-model="currentPage"
@@ -117,11 +137,14 @@
                 imgProps: {width: 20, height: 20, class: 'm1'},
                 ctrItems: [],
                 currentPage: 1,
+                //TODO: fix paginator
                 perPage: 10,
                 totalRows: 0,
                 fields: [
-                    {key: 'ctr_name', label: ''}
+                    {key: 'ctr_name', label: ''},
+                    {key: 'ctr_actions', label: ''},
                 ],
+                ownerChanged: false,
             }
         },
         beforeMount() {
@@ -138,6 +161,11 @@
                     this.project = newVal;
                     this.setDate();
                     this.setImage();
+                }
+            );
+            this.$store.watch(
+                (state, getters) => this.findOwner(),
+                (newVal, oldVal) => {
                 }
             );
 
@@ -181,7 +209,7 @@
                     } else {
 
                         this.totalRows = this.getContributors.length;
-                        for (let i = 0; i < this.getContributors.length; i++){
+                        for (let i = 0; i < this.getContributors.length; i++) {
                             this.ctrItems.push({
                                 id: this.getContributors[i].id,
                                 ctr_name: this.getContributors[i].firstName +
@@ -240,17 +268,43 @@
             hideCtr() {
                 this.$refs['ctrAdd'].hide();
                 this.ctrItems.push({
-                        id: this.getViewUser.id,
-                        ctr_name: this.getViewUser.firstName +
-                            ' ' + this.getViewUser.lastName
+                    id: this.getViewUser.id,
+                    ctr_name: this.getViewUser.firstName +
+                        ' ' + this.getViewUser.lastName
                 })
             },
             loadNext() {
                 this.findContributors(this.currentPage);
             },
-            routeToUser(user) {
-                this.$router.push({path: '/user/' + user.id});
-            }
+            makeAsOwner(ctrData){
+                this.$store.dispatch('updateContributor', {
+                    userId: ctrData.id,
+                    projectId: this.getProject.id,
+                    owner:true,
+                    active:true
+                }).then(() => {
+                    this.errorMessage = this.getError;
+                    if (this.errorMessage.length) {
+                        this.errorOccurred = true;
+                    } else {
+                        this.ownerChanged = true;
+                    }
+                });
+            },
+            deleteContributor(ctrData){
+                this.$store.dispatch('updateContributor', {
+                    userId: ctrData.id,
+                    projectId: this.getProject.id,
+                    active:false
+                }).then(() => {
+                    this.errorMessage = this.getError;
+                    if (this.errorMessage.length) {
+                        this.errorOccurred = true;
+                    } else {
+
+                    }
+                });
+            },
         },
         computed: {
             getError() {
