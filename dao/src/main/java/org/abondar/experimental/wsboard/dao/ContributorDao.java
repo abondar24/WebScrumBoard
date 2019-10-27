@@ -101,6 +101,7 @@ public class ContributorDao extends BaseDao {
         }
 
         if (isOwner != null) {
+            var ownr = mapper.getProjectOwner(ctr.getProjectId());
             if (isOwner) {
                 if (ctr.isOwner()) {
                     logger.error(LogMessageUtil.CONTRIBUTOR_IS_ALREADY_OWNER);
@@ -113,11 +114,18 @@ public class ContributorDao extends BaseDao {
                     logger.error(msg);
                     throw new DataCreationException(LogMessageUtil.CONTRIBUTOR_NOT_ACTIVE);
                 }
+
+                if (ownr!=null){
+                    var oldOwner = mapper.getContributorByUserAndProject(ownr.getId(),projectId);
+                    oldOwner.setOwner(false);
+                    mapper.updateContributor(oldOwner);
+                }
+
             }
 
 
             if (!isOwner) {
-                var ownr = mapper.getProjectOwner(ctr.getProjectId());
+
                 if (ownr == null || ownr.getId() == ctr.getUserId()) {
                     logger.error(LogMessageUtil.PROJECT_HAS_NO_OWNER);
                     throw new DataCreationException(LogMessageUtil.PROJECT_HAS_NO_OWNER);

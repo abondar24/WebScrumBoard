@@ -21,6 +21,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -111,6 +112,31 @@ public class ContributorDaoTest {
 
         cleanData();
     }
+
+    @Test
+    public void updateContributorChangeOwnerTest() throws Exception {
+        var usr = createUser();
+        var prj = createProject(true);
+
+        var ctr = contributorDao.createContributor(usr.getId(), prj.getId(), true);
+
+        var usr1 = userDao.createUser("ctr1", "ctr1","ctr1", "ctr1", "ctr1",
+                UserRole.DEVELOPER.name()+";");
+        var contr1 = contributorDao.createContributor(usr1.getId(), prj.getId(), false);
+
+        contr1=contributorDao.updateContributor(usr1.getId(),prj.getId(), true, true);
+        var res = contributorDao.findProjectOwner(prj.getId());
+
+        var oldOwner = mapper.getContributorById(ctr.getId());
+
+        assertEquals(contr1.getUserId(),res.getId());
+        assertTrue(contr1.isOwner());
+        assertFalse(oldOwner.isOwner());
+
+
+        cleanData();
+    }
+
 
     @Test
     public void updateContributorNoUserTest() throws Exception {
