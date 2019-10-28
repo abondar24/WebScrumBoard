@@ -131,6 +131,23 @@ public class SprintServiceRoute extends RouteBuilder {
 
                 });
 
+        from("direct:countSprints").routeId("countSprints")
+                .log(LoggingLevel.DEBUG,LOG_HEADERS)
+                .transform()
+                .body((bdy, hdrs) -> {
+
+                    MessageContentsList queryData = (MessageContentsList) bdy;
+                    try {
+                        var tasks = sprintDao.countSprints((long) queryData.get(0));
+
+                        return Response.ok(tasks).build();
+                    } catch (DataExistenceException ex) {
+                        return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
+                    }
+
+
+                });
+
         from("direct:deleteSprint").routeId("deleteSprint")
                 .log(LoggingLevel.DEBUG,LOG_HEADERS)
                 .transform()

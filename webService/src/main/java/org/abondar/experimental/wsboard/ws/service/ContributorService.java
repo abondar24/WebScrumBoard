@@ -100,6 +100,18 @@ public interface ContributorService {
 
 
     @GET
+    @Path("/count_project_contributors")
+    @ApiOperation(
+            value = "Count Project Contributors",
+            notes = "Counts number of project contributors",
+            produces = "application/json")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Project contributors counted", response = User.class),
+            @ApiResponse(code = 404, message = "Project not found")
+    })
+    Response countProjectContributors(@QueryParam("projectId") @ApiParam(required = true) long projectId);
+
+    @GET
     @Path("/find_contributors_by_user")
     @ApiOperation(
             value = "Find User Contributors",

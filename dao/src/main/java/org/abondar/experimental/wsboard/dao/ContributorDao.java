@@ -198,6 +198,23 @@ public class ContributorDao extends BaseDao {
     }
 
     /**
+     * Counts the number of contributors per project
+     * @param projectId - project to be counted
+     * @return number of project contributors
+     * @throws DataExistenceException - project not found
+     */
+    public Integer countProjectContributors(Long projectId) throws DataExistenceException{
+        findProjectById(projectId);
+
+        var res =  mapper.countProjectContributors(projectId);
+        var msg = String.format(LogMessageUtil.LOG_COUNT_FORMAT, "Counted contributors for project ", projectId,res);
+        logger.info(msg);
+
+        return res;
+
+    }
+
+    /**
      * Returns list of all contributors assigned to selected user
      *
      * @param userId - user id

@@ -153,6 +153,12 @@ public class ContributorServiceTestImpl implements ContributorService {
     }
 
     @Override
+    public Response countProjectContributors(long projectId) {
+
+        return Response.ok(7).build();
+    }
+
+    @Override
     public Response findContributorsByUserId(long userId, int offset, int limit) {
         if (testUser.getId()!=userId){
             return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.USER_NOT_EXISTS).build();

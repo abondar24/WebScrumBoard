@@ -188,6 +188,23 @@ public class TaskServiceRoute extends RouteBuilder {
 
                 });
 
+        from("direct:countContributorTasks").routeId("countContributorTasks")
+                .log(LoggingLevel.DEBUG,LOG_HEADERS)
+                .transform()
+                .body((bdy, hdrs) -> {
+
+                    MessageContentsList queryData = (MessageContentsList) bdy;
+                    try {
+                        var tasks = taskDao.countContributorTasks((long) queryData.get(0));
+
+                        return Response.ok(tasks).build();
+                    } catch (DataExistenceException ex) {
+                        return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
+                    }
+
+
+                });
+
         from("direct:getTasksForUser").routeId("getTasksForUser")
                 .log(LoggingLevel.DEBUG,LOG_HEADERS)
                 .transform()
@@ -205,6 +222,23 @@ public class TaskServiceRoute extends RouteBuilder {
                     } catch (DataExistenceException ex) {
                         return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
                     }
+
+                });
+
+        from("direct:countUserTasks").routeId("countUserTasks")
+                .log(LoggingLevel.DEBUG,LOG_HEADERS)
+                .transform()
+                .body((bdy, hdrs) -> {
+
+                    MessageContentsList queryData = (MessageContentsList) bdy;
+                    try {
+                        var tasks  = taskDao.countUserTasks((long) queryData.get(0));
+
+                        return Response.ok(tasks).build();
+                    } catch (DataExistenceException ex) {
+                        return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
+                    }
+
 
                 });
 

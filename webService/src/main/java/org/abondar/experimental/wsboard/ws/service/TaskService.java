@@ -164,6 +164,20 @@ public interface TaskService {
                                     @QueryParam("offset") @ApiParam(required = true) int offset,
                                     @QueryParam("limit") @ApiParam(required = true) int limit);
 
+
+    @GET
+    @Path("/count_contributor_tasks")
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(
+            value = "Count contributor tasks",
+            notes = "Count number of tasks assigned to a contributor",
+            produces = "application/json")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Tasks counted", response = Task.class),
+            @ApiResponse(code = 404, message = "Contributor not found")
+    })
+    Response countContributorTasks(@QueryParam("contributorId") @ApiParam(required = true) long ctrId);
+
     @GET
     @Path("/find_user_tasks")
     @Produces(MediaType.APPLICATION_JSON)
@@ -179,6 +193,22 @@ public interface TaskService {
     Response getTasksForUser(@QueryParam("usrId") @ApiParam(required = true) long usrId,
                              @QueryParam("offset") @ApiParam(required = true) int offset,
                              @QueryParam("limit") @ApiParam(required = true) int limit);
+
+
+    @GET
+    @Path("/count_user_tasks")
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(
+            value = "Count user tasks",
+            notes = "Count number of tasks assigned to a user",
+            produces = "application/json")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Tasks counted", response = Task.class),
+            @ApiResponse(code = 404, message = "Contributor not found")
+    })
+    Response countUserTasks(@QueryParam("userId") @ApiParam(required = true) long ctrId);
+
+
 
     @GET
     @Path("/find_sprint_tasks")

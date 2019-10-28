@@ -142,6 +142,11 @@ public class SprintServiceTestImpl implements SprintService {
     }
 
     @Override
+    public Response countSprints(long projectId) {
+        return Response.ok(7).build();
+    }
+
+    @Override
     public Response deleteSprint(long sprintId) {
         if (testSprint.getId() != sprintId) {
             return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.SPRINT_NOT_EXISTS).build();

@@ -66,6 +66,8 @@ public interface DataMapper {
 
     List<Contributor> getContributorsByUserId(@Param("userId") long userId, @Param("offset") int offset, @Param("limit") int limit);
 
+    Integer countProjectContributors(@Param("projectId") long projectId);
+
     Task getTaskById(@Param("id") long id);
 
     SecurityCode getCodeByUserId(@Param("id") long id);
@@ -80,11 +82,17 @@ public interface DataMapper {
 
     List<Task> getTasksForSprint(@Param("sprintId") long sprintId, @Param("offset") int offset, @Param("limit") int limit);
 
+    Integer countUserTasks(@Param("userId") long userId);
+
+    Integer countContributorTasks(@Param("ctrId") long ctrId);
+
     Sprint getSprintByName(@Param("name") String name);
 
     Sprint getSprintById(@Param("id")long id);
 
     List<Sprint> getSprints(@Param("projectId")long projectId, @Param("offset") int offset, @Param("limit") int limit);
+
+    Integer countSprints(@Param("prjId") long prjId);
 
     void deactivateUserContributors(@Param("userId") long userId);
 

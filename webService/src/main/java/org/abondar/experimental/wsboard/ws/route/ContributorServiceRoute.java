@@ -124,6 +124,23 @@ public class ContributorServiceRoute extends RouteBuilder {
 
                 });
 
+        from("direct:countProjectContributors").routeId("countProjectContributors")
+                .log(LoggingLevel.DEBUG,LOG_HEADERS)
+                .transform()
+                .body((bdy, hdrs) -> {
+
+                    MessageContentsList queryData = (MessageContentsList) bdy;
+                    try {
+                        var contributors = contributorDao.countProjectContributors((long) queryData.get(0));
+
+                        return Response.ok(contributors).build();
+                    } catch (DataExistenceException ex) {
+                        return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
+                    }
+
+
+                });
+
 
         from("direct:findContributorsByUserId").routeId("findContributorsByUserId")
                 .log(LoggingLevel.DEBUG,LOG_HEADERS)

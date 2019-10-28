@@ -158,6 +158,23 @@ public class SprintDaoTest {
     }
 
     @Test
+    public void countSprintsTest() throws Exception {
+        var prj = createProject();
+        var sp = sprintDao.createSprint("test", new Date(), new Date(),prj);
+
+        var res = sprintDao.countSprints(prj);
+
+        assertEquals(Integer.valueOf(1), res);
+
+        cleanData();
+    }
+
+    @Test
+    public void countSprintsProjectNotTest()  {
+               assertThrows(DataExistenceException.class, ()->{sprintDao.countSprints(100L);});
+    }
+
+    @Test
     public void getSprintsProjectNotFoundTest() throws Exception {
         var prj = createProject();
         sprintDao.createSprint("test", new Date(), new Date(),prj);

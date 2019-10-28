@@ -331,6 +331,30 @@ public class TaskDao extends BaseDao {
         return tasks;
     }
 
+
+    /**
+     * Counts the number of tasks for user
+     * @param usrId - user to be counted
+     * @return number of user tasks
+     * @throws DataExistenceException - user not found
+     */
+    public Integer countUserTasks(Long usrId) throws DataExistenceException{
+
+        var usr = mapper.getUserById(usrId);
+        if (usr == null) {
+            var msg = String.format(LogMessageUtil.LOG_FORMAT, LogMessageUtil.USER_NOT_EXISTS, usrId);
+            logger.info(msg);
+            throw new DataExistenceException(LogMessageUtil.USER_NOT_EXISTS);
+        }
+
+        var res = mapper.countUserTasks(usrId);
+        var msg = String.format(LogMessageUtil.LOG_COUNT_FORMAT, "Counted tasks for user ", usrId,res);
+        logger.info(msg);
+
+        return res;
+
+    }
+
     /**
      * Get the list of tasks for sprint with offset and limit
      *
@@ -350,6 +374,25 @@ public class TaskDao extends BaseDao {
         logger.info(msg);
 
         return tasks;
+    }
+
+
+    /**
+     * Counts the number of tasks for contributor
+     * @param ctrId - sprint to be counted
+     * @return number of sprint tasks
+     * @throws DataExistenceException - sprint not found
+     */
+    public Integer countContributorTasks(Long ctrId) throws DataExistenceException{
+
+        checkContributor(ctrId);
+
+        var res = mapper.countContributorTasks(ctrId);
+        var msg = String.format(LogMessageUtil.LOG_COUNT_FORMAT, "Counted tasks for contributor ", ctrId,res);
+        logger.info(msg);
+
+        return res;
+
     }
 
 

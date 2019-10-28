@@ -746,6 +746,36 @@ public class TaskServiceTest {
     }
 
     @Test
+    public void countUserTasksTest() {
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+        client.path("/task/count_user_tasks")
+                .accept(MediaType.APPLICATION_JSON)
+                .query("userId", 7);
+
+        var res = client.get();
+        assertEquals(200, res.getStatus());
+
+        var count = res.readEntity(Integer.class);
+        assertEquals(Integer.valueOf(7), count);
+
+    }
+
+    @Test
+    public void countContributorTasksTest() {
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+        client.path("/task/count_contributor_tasks")
+                .accept(MediaType.APPLICATION_JSON)
+                .query("contributorId", 7);
+
+        var res = client.get();
+        assertEquals(200, res.getStatus());
+
+        var count = res.readEntity(Integer.class);
+        assertEquals(Integer.valueOf(7), count);
+
+    }
+
+    @Test
     public void findTaskForSprintTest() {
         createProject();
         createUser();

@@ -308,6 +308,19 @@ public class MapperTest {
         cleanData();
     }
 
+
+    @Test
+    public void countProjectContributorsTest(){
+        var user = createUser();
+        var project = createProject();
+        createContributor(user.getId(), project.getId(), true);
+
+        var res = mapper.countProjectContributors(project.getId());
+        assertEquals(Integer.valueOf(1), res);
+
+        cleanData();
+    }
+
     @Test
     public void getContributorsByUserId() {
         var user = createUser();
@@ -397,6 +410,34 @@ public class MapperTest {
         var res = mapper.getTasksForUser(user.getId(), 0, 1);
         assertEquals(1, res.size());
         assertEquals(task.getId(), res.get(0).getId());
+
+        cleanData();
+    }
+
+    @Test
+    public void countUserTasksTest() {
+        var user = createUser();
+        var project = createProject();
+        var contributor = createContributor(user.getId(), project.getId(), false);
+        createTask(contributor.getId());
+
+        var res = mapper.countUserTasks(user.getId());
+
+        assertEquals(Integer.valueOf(1),res);
+
+        cleanData();
+    }
+
+    @Test
+    public void countContributorTasksTest() {
+        var user = createUser();
+        var project = createProject();
+        var contributor = createContributor(user.getId(), project.getId(), false);
+        createTask(contributor.getId());
+
+        var res = mapper.countContributorTasks(contributor.getId());
+
+        assertEquals(Integer.valueOf(1),res);
 
         cleanData();
     }
@@ -492,6 +533,18 @@ public class MapperTest {
         var res = mapper.getTasksForSprint(sprint.getId(), 0, 1);
         assertEquals(1, res.size());
         assertEquals(task.getId(), res.get(0).getId());
+
+        cleanData();
+    }
+
+    @Test
+    public void countSprintsTest() {
+        var prId = createProject().getId();
+        createSprint(prId);
+
+        var res = mapper.countSprints(prId);
+
+        assertEquals(Integer.valueOf(1),res);
 
         cleanData();
     }

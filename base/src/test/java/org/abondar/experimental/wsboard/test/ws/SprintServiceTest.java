@@ -350,6 +350,22 @@ public class SprintServiceTest {
 
     }
 
+
+    @Test
+    public void countSprintsTasksTest() {
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+        client.path("/sprint/count")
+                .accept(MediaType.APPLICATION_JSON)
+                .query("projectId", 7);
+
+        var res = client.get();
+        assertEquals(200, res.getStatus());
+
+        var count = res.readEntity(Integer.class);
+        assertEquals(Integer.valueOf(7), count);
+
+    }
+
     @Test
     public void deleteSprintTest() {
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));

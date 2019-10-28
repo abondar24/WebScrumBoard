@@ -209,6 +209,11 @@ public class TaskServiceTestImpl implements TaskService {
     }
 
     @Override
+    public Response countContributorTasks(long ctrId) {
+        return Response.ok(7).build();
+    }
+
+    @Override
     public Response getTasksForUser(long usrId, int offset, int limit) {
 
         if (testUser.getId() != usrId) {
@@ -229,6 +234,11 @@ public class TaskServiceTestImpl implements TaskService {
         }
 
         return Response.ok(tasks).build();
+    }
+
+    @Override
+    public Response countUserTasks(long ctrId) {
+        return Response.ok(7).build();
     }
 
     @Override

@@ -432,6 +432,21 @@ public class ContributorServiceTest {
     }
 
     @Test
+    public void countContributorsTest() {
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+        client.path("/contributor/count_project_contributors")
+                .accept(MediaType.APPLICATION_JSON)
+                .query("projectId", 7);
+
+        var res = client.get();
+        assertEquals(200, res.getStatus());
+
+        var count = res.readEntity(Integer.class);
+        assertEquals(Integer.valueOf(7), count);
+
+    }
+
+    @Test
     public void findContributorsProjectNotFoundTest() {
         var userId = createUser();
         var projectId = createProject();

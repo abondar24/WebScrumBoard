@@ -279,6 +279,11 @@
         LIMIT #{limit}
     </select>
 
+    <select id="countProjectContributors" resultType="integer" useCache="true">
+       SELECT count(id) FROM contributor
+       WHERE project_id = #{projectId}
+    </select>
+
     <select id="getTaskById" resultMap="taskMap">
         SELECT *
         FROM task
@@ -320,6 +325,23 @@
             OFFSET #{offset}
         LIMIT #{limit}
     </select>
+
+    <select id="countUserTasks" resultType="integer" useCache="true">
+        SELECT count(ts.id) FROM task ts
+        JOIN contributor ctr on ts.contributor_id = ctr.id
+        WHERE ctr.user_id = #{userId};
+    </select>
+
+    <select id="countContributorTasks" resultType="integer" useCache="true">
+        SELECT count(id) FROM task
+        WHERE contributor_id = #{ctrId} ;
+    </select>
+
+    <select id="countSprints" resultType="integer" useCache="true">
+        SELECT count(id) FROM sprint
+        WHERE project_id = #{prjId};
+    </select>
+
 
     <select id="getSprintById" resultMap="sprintMap">
         SELECT *

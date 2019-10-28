@@ -443,6 +443,27 @@ public class TaskDaoTest {
     }
 
     @Test
+    public void countContributorTasks() throws Exception {
+        var usr = createUser("");
+        var prj = createProject(true);
+        var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
+        var task = dao.createTask(contr.getId(), new Date(), true, "name", "descr");
+
+        var res = dao.countContributorTasks(contr.getId());
+
+        assertEquals(Integer.valueOf(1), res);
+
+        cleanData();
+    }
+
+    @Test
+    public void countContributorNotFoundTasks() {
+
+        assertThrows(DataExistenceException.class,()-> dao.countContributorTasks(100L));
+   }
+
+
+    @Test
     public void getTasksForUserTest() throws Exception {
         var usr = createUser("");
         var prj = createProject(true);
@@ -455,6 +476,26 @@ public class TaskDaoTest {
         assertEquals(task.getId(), res.get(0).getId());
 
         cleanData();
+    }
+
+    @Test
+    public void countUserTasks() throws Exception {
+        var usr = createUser("");
+        var prj = createProject(true);
+        var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
+        var task = dao.createTask(contr.getId(), new Date(), true, "name", "descr");
+
+        var res = dao.countUserTasks(usr.getId());
+
+        assertEquals(Integer.valueOf(1), res);
+
+        cleanData();
+    }
+
+    @Test
+    public void countUserNotFoundTasks() {
+
+        assertThrows(DataExistenceException.class,()-> dao.countUserTasks(100L));
     }
 
     @Test

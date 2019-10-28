@@ -81,6 +81,18 @@ public class ContributorServiceRouteTest {
     }
 
     @Test
+    public void countProjectContributorsRouteTest() throws Exception {
+        Object[] values = new Object[]{someId};
+        MessageContentsList testList = new MessageContentsList(values);
+        producerTemplate.sendBodyAndHeaders("direct:countProjectContributors", testList,
+                Map.of());
+        mockEndpoint.assertIsSatisfied();
+        mockEndpoint.expectedBodiesReceived();
+        mockEndpoint.expectedMessageCount(1);
+        mockEndpoint.reset();
+    }
+
+    @Test
     public void findContributorsByUserId() throws Exception {
         Object[] values = new Object[]{someId, somePagination, somePagination+1};
         MessageContentsList testList = new MessageContentsList(values);

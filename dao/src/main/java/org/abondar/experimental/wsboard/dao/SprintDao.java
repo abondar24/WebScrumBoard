@@ -170,6 +170,29 @@ public class SprintDao extends BaseDao {
     }
 
     /**
+     * Counts the number of sprints for project
+     * @param prjId - project to be counted
+     * @return number of sprint tasks
+     * @throws DataExistenceException - user not found
+     */
+    public Integer countSprints(Long prjId) throws DataExistenceException{
+
+        String msg;
+        if (mapper.getProjectById(prjId)==null) {
+            msg = String.format(LogMessageUtil.LOG_FORMAT,LogMessageUtil.PROJECT_NOT_EXISTS,prjId);
+            logger.error(msg);
+            throw new DataExistenceException(LogMessageUtil.PROJECT_NOT_EXISTS);
+        }
+
+        var res = mapper.countSprints(prjId);
+        msg = String.format(LogMessageUtil.LOG_COUNT_FORMAT, "Counted tasks for user ", prjId,res);
+        logger.info(msg);
+
+        return res;
+
+    }
+
+    /**
      * Delete a sprint
      *
      * @param sprintId - sprint id

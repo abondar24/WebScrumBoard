@@ -97,6 +97,20 @@ public interface SprintService {
             @QueryParam("offset") @ApiParam(required = true) int offset,
             @QueryParam("limit") @ApiParam(required = true) int limit);
 
+
+    @GET
+    @Path("/count")
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(
+            value = "Count sprints",
+            notes = "Count sprints for project",
+            produces = "application/json")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "List of existing sprints", response = Sprint.class),
+            @ApiResponse(code = 404, message = "Project not found")
+    })
+    Response countSprints(@QueryParam("projectId") @ApiParam(required = true) long projectId);
+
     @GET
     @Path("/delete")
     @ApiOperation(

@@ -79,6 +79,18 @@ public class SprintServiceRouteTest {
     }
 
     @Test
+    public void countSprintsRouteTest() throws Exception {
+        Object[] values = new Object[]{someId};
+        MessageContentsList testList = new MessageContentsList(values);
+        producerTemplate.sendBodyAndHeaders("direct:countSprints", testList,
+                Map.of());
+        mockEndpoint.assertIsSatisfied();
+        mockEndpoint.expectedBodiesReceived();
+        mockEndpoint.expectedMessageCount(1);
+        mockEndpoint.reset();
+    }
+
+    @Test
     public void deleteSprintRouteTest() throws Exception {
         Object[] values = new Object[]{someId};
         MessageContentsList testList = new MessageContentsList(values);

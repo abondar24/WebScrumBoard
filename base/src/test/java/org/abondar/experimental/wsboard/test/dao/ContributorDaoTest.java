@@ -270,6 +270,25 @@ public class ContributorDaoTest {
     }
 
     @Test
+    public void countContributorsForProjectTest() throws Exception {
+        var usr = createUser();
+        var prj = createProject(true);
+
+        contributorDao.createContributor(usr.getId(), prj.getId(), true);
+
+        var res = contributorDao.countProjectContributors(prj.getId());
+        assertEquals(Integer.valueOf(1),res);
+
+        cleanData();
+    }
+
+    @Test
+    public void countContributorsForProjectNotFoundTest(){
+
+      assertThrows(DataExistenceException.class,()-> contributorDao.countProjectContributors(100L));
+    }
+
+    @Test
     public void findContributorsByUserIdTest() throws Exception {
         var usr = createUser();
         var prj = createProject(true);
