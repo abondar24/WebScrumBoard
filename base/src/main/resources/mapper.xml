@@ -149,7 +149,7 @@
             end_date    = #{project.endDate},
             repository  = #{project.repository},
             description = #{project.description},
-            is_active  = #{project.isActive}
+            is_active   = #{project.isActive}
         WHERE id = #{project.id}
     </update>
 
@@ -258,7 +258,8 @@
     <select id="getContributorByUserAndProject" resultMap="contributorMap">
         SELECT *
         FROM contributor
-        WHERE user_id = #{userId} AND project_id = #{projectId}
+        WHERE user_id = #{userId}
+          AND project_id = #{projectId}
     </select>
 
 
@@ -272,16 +273,18 @@
         SELECT *
         FROM wsuser usr
                  JOIN contributor ctr ON ctr.user_id = usr.id
-                 JOIN project prj on ctr.project_id = prj.id
-        WHERE prj.id = #{projectId}
+        WHERE ctr.project_id = #{projectId}
           and ctr.is_active = true
+        ORDER BY ctr.id
             OFFSET #{offset}
         LIMIT #{limit}
     </select>
 
     <select id="countProjectContributors" resultType="integer" useCache="true">
-       SELECT count(id) FROM contributor
-       WHERE project_id = #{projectId}
+        SELECT count(id)
+        FROM contributor
+        WHERE project_id = #{projectId}
+          and is_active = true
     </select>
 
     <select id="getTaskById" resultMap="taskMap">
@@ -295,6 +298,7 @@
         FROM task ts
                  JOIN contributor ctr ON ctr.id = ts.contributor_id
         WHERE ctr.project_id = #{projectId}
+        ORDER BY ts.id
             OFFSET #{offset}
         LIMIT #{limit}
     </select>
@@ -304,6 +308,7 @@
         FROM task ts
                  JOIN contributor ctr ON ctr.id = ts.contributor_id
         WHERE ctr.id = #{contributorId}
+        ORDER BY ts.id
             OFFSET #{offset}
         LIMIT #{limit}
     </select>
@@ -314,6 +319,7 @@
                  JOIN contributor ctr ON ctr.id = ts.contributor_id
                  JOIN wsuser usr on ctr.user_id = usr.id
         WHERE usr.id = #{userId}
+        ORDER BY ts.id
             OFFSET #{offset}
         LIMIT #{limit}
     </select>
@@ -322,23 +328,27 @@
         SELECT *
         FROM task
         WHERE sprint_id = #{sprintId}
+        ORDER BY id
             OFFSET #{offset}
         LIMIT #{limit}
     </select>
 
     <select id="countUserTasks" resultType="integer" useCache="true">
-        SELECT count(ts.id) FROM task ts
-        JOIN contributor ctr on ts.contributor_id = ctr.id
+        SELECT count(ts.id)
+        FROM task ts
+                 JOIN contributor ctr on ts.contributor_id = ctr.id
         WHERE ctr.user_id = #{userId};
     </select>
 
     <select id="countContributorTasks" resultType="integer" useCache="true">
-        SELECT count(id) FROM task
-        WHERE contributor_id = #{ctrId} ;
+        SELECT count(id)
+        FROM task
+        WHERE contributor_id = #{ctrId};
     </select>
 
     <select id="countSprints" resultType="integer" useCache="true">
-        SELECT count(id) FROM sprint
+        SELECT count(id)
+        FROM sprint
         WHERE project_id = #{prjId};
     </select>
 
