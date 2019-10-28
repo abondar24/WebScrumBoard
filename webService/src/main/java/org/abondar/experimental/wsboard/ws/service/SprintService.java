@@ -106,7 +106,7 @@ public interface SprintService {
             notes = "Count sprints for project",
             produces = "application/json")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "List of existing sprints", response = Sprint.class),
+            @ApiResponse(code = 200, message = "List of existing sprints", response = Integer.class),
             @ApiResponse(code = 404, message = "Project not found")
     })
     Response countSprints(@QueryParam("projectId") @ApiParam(required = true) long projectId);

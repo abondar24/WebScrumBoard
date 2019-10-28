@@ -173,7 +173,7 @@ public interface TaskService {
             notes = "Count number of tasks assigned to a contributor",
             produces = "application/json")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Tasks counted", response = Task.class),
+            @ApiResponse(code = 200, message = "Tasks counted", response = Integer.class),
             @ApiResponse(code = 404, message = "Contributor not found")
     })
     Response countContributorTasks(@QueryParam("contributorId") @ApiParam(required = true) long ctrId);
@@ -203,7 +203,7 @@ public interface TaskService {
             notes = "Count number of tasks assigned to a user",
             produces = "application/json")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Tasks counted", response = Task.class),
+            @ApiResponse(code = 200, message = "Tasks counted", response = Integer.class),
             @ApiResponse(code = 404, message = "Contributor not found")
     })
     Response countUserTasks(@QueryParam("userId") @ApiParam(required = true) long ctrId);

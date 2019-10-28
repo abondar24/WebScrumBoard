@@ -106,7 +106,7 @@ public interface ContributorService {
             notes = "Counts number of project contributors",
             produces = "application/json")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Project contributors counted", response = User.class),
+            @ApiResponse(code = 200, message = "Project contributors counted", response = Integer.class),
             @ApiResponse(code = 404, message = "Project not found")
     })
     Response countProjectContributors(@QueryParam("projectId") @ApiParam(required = true) long projectId);

@@ -101,7 +101,7 @@
                 <b-pagination
                         v-model="currentPage"
                         :total-rows="totalRows"
-                        v-on:click="loadNext"
+                        @input="loadNext(currentPage-1)"
                         :per-page="perPage"
                         aria-controls="ctrTable"/>
             </b-row>
@@ -137,7 +137,6 @@
                 imgProps: {width: 20, height: 20, class: 'm1'},
                 ctrItems: [],
                 currentPage: 1,
-                //TODO: fix paginator
                 perPage: 10,
                 totalRows: 0,
                 fields: [
@@ -150,7 +149,12 @@
         beforeMount() {
             this.findProject();
             this.findOwner();
-            this.findContributors(0);
+            this.countContributors();
+            console.log(this.totalRows)
+            if (this.totalRows>0){
+                this.findContributors(0);
+            }
+
             this.setDate();
             this.setImage();
         },
@@ -208,7 +212,6 @@
                         this.errorOccurred = true;
                     } else {
 
-                        this.totalRows = this.getContributors.length;
                         for (let i = 0; i < this.getContributors.length; i++) {
                             this.ctrItems.push({
                                 id: this.getContributors[i].id,
@@ -219,6 +222,16 @@
 
                     }
                 });
+            },
+            countContributors(){
+                this.$store.dispatch('countProjectContributors', this.$route.params.id).then(() => {
+                    this.errorMessage = this.getError;
+                    if (this.errorMessage.length) {
+                        this.errorOccurred = true;
+                    }
+                });
+
+                this.totalRows=this.getCount;
             },
             setDate() {
 
@@ -273,8 +286,9 @@
                         ' ' + this.getViewUser.lastName
                 })
             },
-            loadNext() {
-                this.findContributors(this.currentPage);
+            loadNext(index) {
+                console.log(index)
+                this.findContributors(index);
             },
             makeAsOwner(ctrData){
                 this.$store.dispatch('updateContributor', {
@@ -291,6 +305,8 @@
                     }
                 });
             },
+
+            //TODO: delete ctr from table
             deleteContributor(ctrData){
                 this.$store.dispatch('updateContributor', {
                     userId: ctrData.id,
@@ -324,6 +340,9 @@
             },
             getContributors() {
                 return this.$store.getters.getProjectContributors;
+            },
+            getCount(){
+                return this.$store.getters.getContributorCount;
             }
         }
     }

@@ -17,7 +17,8 @@ export default {
             roles: '',
             avatar: null
         },
-        projectContributors: []
+        projectContributors: [],
+        ctrCount:0
     },
     mutations: {
         setProjectOwner(state, owner) {
@@ -25,6 +26,9 @@ export default {
         },
         setContributors(state, contrs) {
             state.projectContributors = contrs;
+        },
+        setContributorCount(state,count){
+            state.ctrCount = count;
         }
     },
     getters: {
@@ -33,6 +37,9 @@ export default {
         },
         getProjectContributors: state => {
             return state.projectContributors;
+        },
+        getContributorCount: state=>{
+            return state.ctrCount;
         }
     },
     actions: {
@@ -113,6 +120,20 @@ export default {
                 (error) => {
                     commit('setErrorMessage', error.response.data);
                 });
-        }
+        },
+        countProjectContributors({commit, getters},prjId){
+            return getters.authenticatedAxios.get(contributorUrl + '/count_project_contributors', {
+                params: {
+                    projectId: prjId
+                }
+            }).then(
+                (response) => {
+                    commit('setErrorMessage', '');
+                    commit('setContributorCount',response.data);
+                },
+                (error) => {
+                    commit('setErrorMessage', error.response.data);
+                });
+        },
     }
 }
