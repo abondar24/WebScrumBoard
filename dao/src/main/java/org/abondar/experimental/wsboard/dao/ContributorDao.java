@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.Optional;
 
 
 /**
@@ -152,6 +153,22 @@ public class ContributorDao extends BaseDao {
         return ctr;
     }
 
+     public Optional<Long> findContributorByUserAndProject(long userId, long projectId) throws DataExistenceException{
+         if (mapper.getUserById(userId)==null){
+             throw new DataExistenceException(LogMessageUtil.USER_NOT_EXISTS);
+         }
+
+         if (mapper.getProjectById(projectId)==null){
+             throw new DataExistenceException(LogMessageUtil.PROJECT_NOT_EXISTS);
+         }
+
+         var ctrId = mapper.getContributorByUserAndProject(userId,projectId).getId();
+
+         var msg = String.format(LogMessageUtil.LOG_FORMAT, "Contributor found ", ctrId);
+         logger.info(msg);
+
+         return Optional.of(ctrId);
+     }
 
     /**
      * Find a contributor who is a project owner

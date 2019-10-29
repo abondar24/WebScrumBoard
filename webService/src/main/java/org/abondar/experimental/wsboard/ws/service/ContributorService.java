@@ -125,4 +125,17 @@ public interface ContributorService {
     Response findContributorsByUserId(@QueryParam("userId") @ApiParam(required = true) long userId,
                                       @QueryParam("offset") @ApiParam(required = true) int offset,
                                       @QueryParam("limit") @ApiParam(required = true) int limit);
+
+    @GET
+    @Path("/find_contributor")
+    @ApiOperation(
+            value = "Find Contributor",
+            notes = "Find a single contributor by userId and projectId",
+            produces = "application/json")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "P contributors", response = Long.class),
+            @ApiResponse(code = 404, message = "User or Project not found")
+    })
+    Response findProjectContributor(@QueryParam("userId") @ApiParam(required = true) long userId,
+                             @QueryParam("projectId") @ApiParam(required = true) long projectId);
 }

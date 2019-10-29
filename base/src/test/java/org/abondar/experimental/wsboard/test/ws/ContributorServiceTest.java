@@ -565,6 +565,63 @@ public class ContributorServiceTest {
 
     }
 
+    @Test
+    public void findProjectContributorTest() {
+        var userId = createUser();
+        var projectId = createProject();
+        var ctr = createContributor(userId, projectId, "false");
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+        client.path("/contributor/find_contributor")
+                .accept(MediaType.APPLICATION_JSON)
+                .query("userId", userId)
+                .query("projectId", projectId);
+
+        var res = client.get();
+        assertEquals(200, res.getStatus());
+
+        var ctrId = res.readEntity(Long.class);
+        assertEquals(Long.valueOf(ctr.getId()),ctrId);
+    }
+
+    @Test
+    public void findProjectContributorUserNotFoundTest() {
+        var userId = createUser();
+        var projectId = createProject();
+        var ctr = createContributor(userId, projectId, "false");
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+        client.path("/contributor/find_contributor")
+                .accept(MediaType.APPLICATION_JSON)
+                .query("userId",7)
+                .query("projectId", projectId);
+
+        var res = client.get();
+        assertEquals(404, res.getStatus());
+
+        var msg = res.readEntity(String.class);
+        assertEquals(LogMessageUtil.USER_NOT_EXISTS, msg);
+    }
+
+    @Test
+    public void findProjectContributorProjectNotFoundTest() {
+        var userId = createUser();
+        var projectId = createProject();
+        var ctr = createContributor(userId, projectId, "false");
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+        client.path("/contributor/find_contributor")
+                .accept(MediaType.APPLICATION_JSON)
+                .query("userId",userId)
+                .query("projectId", 100);
+
+        var res = client.get();
+        assertEquals(404, res.getStatus());
+
+        var msg = res.readEntity(String.class);
+        assertEquals(LogMessageUtil.PROJECT_NOT_EXISTS, msg);
+    }
+
     private Contributor createContributor(long userId, long projectId, String isOwner) {
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
         client.path("/contributor/create").accept(MediaType.APPLICATION_JSON);

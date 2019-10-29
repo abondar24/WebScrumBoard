@@ -309,6 +309,36 @@ public class ContributorDaoTest {
 
     }
 
+    @Test
+    public void findContributorByUserAndProjectTest() throws Exception{
+        var usr = createUser();
+        var prj = createProject(true);
+        var ctr = contributorDao.createContributor(usr.getId(), prj.getId(), true);
+
+        var res = contributorDao.findContributorByUserAndProject(usr.getId(),prj.getId());
+        assertEquals(Long.valueOf(ctr.getId()),res.get());
+
+        cleanData();
+    }
+
+
+    @Test
+    public void findContributorByUserNotFoundAndProjectTest() throws Exception  {
+        var usr = createUser();
+
+        assertThrows(DataExistenceException.class,
+                ()->contributorDao.findContributorByUserAndProject(usr.getId(), 7));
+
+        cleanData();
+    }
+
+    @Test
+    public void findContributorByUserAndProjectNotFoundTest()  {
+        assertThrows(DataExistenceException.class,
+                ()->contributorDao.findContributorByUserAndProject(7, 7));
+
+    }
+
     private User createUser() throws Exception {
         var login = "login";
         var email = "email@email.com";
