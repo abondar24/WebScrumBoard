@@ -4,6 +4,7 @@ import UserModule from "./user";
 import AuthModule from "./auth";
 import ProjectModule from "./project";
 import ContributorModule from "./contributor"
+import TaskModule from "./task"
 import createPersistedState from 'vuex-persistedstate';
 import Cookies from 'js-cookie';
 
@@ -21,7 +22,7 @@ export default new Vuex.Store({
         }
     })],
     modules: {user: UserModule, auth: AuthModule,
-        project: ProjectModule, contributor:ContributorModule},
+        project: ProjectModule, contributor:ContributorModule,task: TaskModule},
     state: {
         errorMessage: ''
     },

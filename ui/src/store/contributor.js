@@ -18,7 +18,8 @@ export default {
             avatar: null
         },
         projectContributors: [],
-        ctrCount:0
+        ctrCount: 0,
+        selectedCtrId: 0,
     },
     mutations: {
         setProjectOwner(state, owner) {
@@ -27,8 +28,11 @@ export default {
         setContributors(state, contrs) {
             state.projectContributors = contrs;
         },
-        setContributorCount(state,count){
+        setContributorCount(state, count) {
             state.ctrCount = count;
+        },
+        setSelectedContributorId(state, id) {
+            state.selectedCtrId = id;
         }
     },
     getters: {
@@ -38,8 +42,11 @@ export default {
         getProjectContributors: state => {
             return state.projectContributors;
         },
-        getContributorCount: state=>{
+        getContributorCount: state => {
             return state.ctrCount;
+        },
+        getSelectedContributorId: state => {
+            return state.selectedCtrId;
         }
     },
     actions: {
@@ -101,7 +108,7 @@ export default {
                     commit('setErrorMessage', error.response.data);
                 });
         },
-        findProjectContributors({commit, getters}, queryParams){
+        findProjectContributors({commit, getters}, queryParams) {
             return getters.authenticatedAxios.get(contributorUrl + '/find_project_contributors', {
                 params: {
                     projectId: queryParams.projectId,
@@ -121,7 +128,7 @@ export default {
                     commit('setErrorMessage', error.response.data);
                 });
         },
-        countProjectContributors({commit, getters},prjId){
+        countProjectContributors({commit, getters}, prjId) {
             return getters.authenticatedAxios.get(contributorUrl + '/count_project_contributors', {
                 params: {
                     projectId: prjId
@@ -130,6 +137,21 @@ export default {
                 (response) => {
                     commit('setErrorMessage', '');
                     commit('setContributorCount',response.data);
+                },
+                (error) => {
+                    commit('setErrorMessage', error.response.data);
+                });
+        },
+        findContributor({commit, getters}, queryParams) {
+            return getters.authenticatedAxios.get(contributorUrl + '/find_contributor', {
+                params: {
+                    userId: queryParams.userId,
+                    projectId: queryParams.projectId
+                }
+            }).then(
+                (response) => {
+                    commit('setErrorMessage', '');
+                    commit('setSelectedContributorId', response.data);
                 },
                 (error) => {
                     commit('setErrorMessage', error.response.data);
