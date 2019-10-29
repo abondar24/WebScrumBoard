@@ -41,6 +41,7 @@ public class ContributorDao extends BaseDao {
     public Contributor createContributor(long userId, long projectId, boolean isOwner)
             throws DataExistenceException, DataCreationException {
 
+        //TODO: reactivate contributor if previously it has been created
         var msg = "";
         if (mapper.getUserById(userId) == null) {
             msg = String.format(LogMessageUtil.LOG_FORMAT, LogMessageUtil.USER_NOT_EXISTS, userId);

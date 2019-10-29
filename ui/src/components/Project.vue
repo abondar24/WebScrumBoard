@@ -98,7 +98,7 @@
                                 <b-button variant="warning" @click="makeAsOwner(data.item)">Make as owner</b-button>
                                 <b-button variant="danger" @click="deleteContributor(data.item)">Delete</b-button>
                             </div>
-                            <b-button variant="success" >View tasks</b-button>
+                            <b-button variant="success" @click="showTasks(data.item)">View tasks</b-button>
                         </b-button-group>
                     </template>
 
@@ -110,6 +110,10 @@
                         :per-page="perPage"
                         aria-controls="ctrTable"/>
             </b-row>
+            <b-row v-if="tasksToShow">
+                <ContributorTasks @exit="hideTasks" :user="selectedCtr"></ContributorTasks>
+
+            </b-row>
 
         </b-container>
     </div>
@@ -119,10 +123,11 @@
     import NavbarCommon from "./NavbarCommon";
     import EditProjectForm from "./EditProjectForm";
     import AddContributorForm from "./AddContributorForm";
+    import ContributorTasks from "./ContributorTasks";
 
     export default {
         name: "Project",
-        components: {AddContributorForm, EditProjectForm, NavbarCommon},
+        components: {ContributorTasks, AddContributorForm, EditProjectForm, NavbarCommon},
         data() {
             return {
                 project: {
@@ -149,6 +154,8 @@
                     {key: 'ctr_actions', label: ''},
                 ],
                 ownerChanged: false,
+                tasksToShow:false,
+                selectedCtr:{}
             }
         },
         beforeMount() {
@@ -171,12 +178,6 @@
                     this.setImage();
                 }
             );
-            this.$store.watch(
-                (state, getters) => this.findOwner(),
-                (newVal, oldVal) => {
-                }
-            );
-
 
         },
         methods: {
@@ -290,8 +291,15 @@
                         ' ' + this.getViewUser.lastName
                 })
             },
+            showTasks(user) {
+               this.tasksToShow=true;
+               this.selectedCtr=user;
+            },
+            hideTasks() {
+                this.tasksToShow=false;
+                this.selectedCtr={};
+            },
             loadNext(index) {
-                console.log(index)
                 this.findContributors(index);
             },
             makeAsOwner(ctrData){
