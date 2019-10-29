@@ -38,35 +38,38 @@
                     <b-row>
                         <h2>Owner: {{ownerName}}</h2>
                     </b-row>
-                    <b-row v-if="isEditable">
-                        <b-button v-if="project.active" v-b-modal.editProject>Edit project</b-button>
-                        <b-button id="addCtr" v-b-modal.addContributor variant="success" v-if="project.active">Add
-                            Contributor
-                        </b-button>
+                    <b-row>
+                        <div v-if="isEditable">
+                            <b-button v-if="project.active" v-b-modal.editProject>Edit project</b-button>
+                            <b-button id="addCtr" v-b-modal.addContributor variant="success" v-if="project.active">Add
+                                Contributor
+                            </b-button>
 
-                        <b-button id="deleteProject" v-b-modal.delPrj variant="danger">Delete project</b-button>
-                        <b-modal
-                                id="delPrj"
-                                title="Delete project"
-                                ok-variant="danger"
-                                ok-title="yes"
-                                @ok="delProject"
-                                cancel-title="no">
-                            Are you sure you want to delete project?
-                        </b-modal>
-                        <b-modal id="editProject"
-                                 ref="prjEdit"
-                                 hide-footer
-                                 title="Edit project">
-                            <EditProjectForm @exit="hideEdit"></EditProjectForm>
-                        </b-modal>
-                        <b-modal
-                                id="addContributor"
-                                title="Add contributor"
-                                ref="ctrAdd"
-                                hide-footer>
-                            <AddContributorForm @exit="hideCtr"></AddContributorForm>
-                        </b-modal>
+                            <b-button id="deleteProject" v-b-modal.delPrj variant="danger">Delete project</b-button>
+                            <b-modal
+                                    id="delPrj"
+                                    title="Delete project"
+                                    ok-variant="danger"
+                                    ok-title="yes"
+                                    @ok="delProject"
+                                    cancel-title="no">
+                                Are you sure you want to delete project?
+                            </b-modal>
+                            <b-modal id="editProject"
+                                     ref="prjEdit"
+                                     hide-footer
+                                     title="Edit project">
+                                <EditProjectForm @exit="hideEdit"></EditProjectForm>
+                            </b-modal>
+                            <b-modal
+                                    id="addContributor"
+                                    title="Add contributor"
+                                    ref="ctrAdd"
+                                    hide-footer>
+                                <AddContributorForm @exit="hideCtr"></AddContributorForm>
+                            </b-modal>
+                        </div>
+
                     </b-row>
                 </b-col>
             </b-row>
@@ -90,9 +93,11 @@
                         </router-link>
                     </template>
                     <template v-slot:cell(ctr_actions)="data">
-                        <b-button-group v-if="isEditable">
-                            <b-button variant="warning" @click="makeAsOwner(data.item)">Make as owner</b-button>
-                            <b-button variant="danger" @click="deleteContributor(data.item)">Delete</b-button>
+                        <b-button-group>
+                            <div v-if="isEditable">
+                                <b-button variant="warning" @click="makeAsOwner(data.item)">Make as owner</b-button>
+                                <b-button variant="danger" @click="deleteContributor(data.item)">Delete</b-button>
+                            </div>
                             <b-button variant="success" >View tasks</b-button>
                         </b-button-group>
                     </template>
@@ -150,7 +155,6 @@
             this.findProject();
             this.findOwner();
             this.countContributors();
-            console.log(this.totalRows)
             if (this.totalRows>0){
                 this.findContributors(0);
             }
@@ -306,7 +310,6 @@
                 });
             },
 
-            //TODO: delete ctr from table
             deleteContributor(ctrData){
                 this.$store.dispatch('updateContributor', {
                     userId: ctrData.id,
@@ -317,6 +320,15 @@
                     if (this.errorMessage.length) {
                         this.errorOccurred = true;
                     } else {
+                       let filteredContributors = this.getContributors.filter(function(value, index, arr){
+                           return value.userId !==ctrData.id;
+                       });
+
+                       this.$store.commit('setContributors',filteredContributors);
+
+                       this.ctrItems = this.ctrItems.filter(function(value, index, arr){
+                           return value.id !==ctrData.id;
+                       });
 
                     }
                 });
