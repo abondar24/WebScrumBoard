@@ -31,6 +31,7 @@ export default {
             });
         },
         getAuth: state=>{
+
             return state.authenticated;
         }
     },
@@ -78,6 +79,7 @@ export default {
                     commit('setErrorMessage', error.response.data);
                     commit('clearAuthenticated');
                     commit('clearUser');
+
                 });
 
         }

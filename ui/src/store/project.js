@@ -8,13 +8,7 @@ const formConfig = {
 export default {
     state: {
         project: {
-            id: 0,
-            name: '',
-            startDate: null,
-            endDate: null,
-            repository: '',
-            description: '',
-            active: false
+
         },
         userProjects: []
     },
@@ -27,13 +21,7 @@ export default {
         },
         cleanProject(state) {
             state.project = {
-                id: 0,
-                name: '',
-                startDate: null,
-                endDate: null,
-                repository: '',
-                description: '',
-                active: false
+
             }
         }
     },

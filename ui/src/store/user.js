@@ -11,24 +11,10 @@ const formConfig = {
 export default {
     state: {
         user: {
-            id: 0,
-            login: '',
-            password: '',
-            email: '',
-            firstName: '',
-            lastName: '',
-            roles: '',
-            avatar: null
+
         },
         viewUser: {
-            id: 0,
-            login: '',
-            password: '',
-            email: '',
-            firstName: '',
-            lastName: '',
-            roles: '',
-            avatar: null
+
         }
     },
     mutations: {
@@ -43,14 +29,7 @@ export default {
         },
         clearUser(state) {
             state.user = {
-                id: 0,
-                login: '',
-                password: '',
-                email: '',
-                firstName: '',
-                lastName: '',
-                roles: '',
-                avatar: null
+
             };
         }
     },
