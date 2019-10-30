@@ -7,7 +7,14 @@ const formConfig = {
 export default {
     state: {
         projectOwner: {
-
+            id: 0,
+            login: '',
+            password: '',
+            email: '',
+            firstName: '',
+            lastName: '',
+            roles: '',
+            avatar: null
         },
         projectContributors: [],
         ctrCount: 0,
