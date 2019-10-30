@@ -4,7 +4,6 @@ const formConfig = {
         'Content-Type': 'application/x-www-form-urlencoded'
     }
 };
-
 export default {
     state: {
         projectOwner: {
