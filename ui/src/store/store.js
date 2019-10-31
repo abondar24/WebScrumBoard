@@ -5,22 +5,31 @@ import AuthModule from "./auth";
 import ProjectModule from "./project";
 import ContributorModule from "./contributor"
 import TaskModule from "./task"
-import createPersistedState from 'vuex-persistedstate';
-import Cookies from 'js-cookie';
+import Cookies from 'js-cookie'
+import VuexPersistence from 'vuex-persist'
 
 Vue.config.devtools = true;
 Vue.use(Vuex);
 
+const vuexCookie = new VuexPersistence({
+    key:'wsc',
+    restoreState: (key, storage) => Cookies.getJSON(key),
+    saveState: (key, state, storage) =>
+        Cookies.set(key, state, {
+            expires: 3
+        }),
+    modules: ['user'],
+});
+
+const vuexLocal = new VuexPersistence({
+    key:'wsc',
+    storage: window.localStorage
+});
+
+
 export default new Vuex.Store({
     strict: false,
-    plugins: [createPersistedState({
-        key: 'wsc',
-        storage: {
-            getItem: key => Cookies.get(key),
-            setItem: (key, value) => Cookies.set(key, value, {expires: 6000, secure: false}),
-            removeItem: key => Cookies.remove(key)
-        }
-    })],
+    plugins: [vuexCookie.plugin,vuexLocal.plugin],
     modules: {user: UserModule, auth: AuthModule,
         project: ProjectModule, contributor:ContributorModule,task: TaskModule},
     state: {
