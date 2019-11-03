@@ -59,7 +59,7 @@ export default {
                 (response) => {
                     commit('setErrorMessage', '');
 
-                    if (response.code === 301) {
+                    if (response.code === 301 || response.code === 302) {
                         commit('setErrorMessage', response.data);
                     }
                 },

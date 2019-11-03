@@ -40,6 +40,7 @@ public interface ContributorService {
             @ApiResponse(code = 200, message = "Contributor created", response = Contributor.class),
             @ApiResponse(code = 404, message = "User or project not found"),
             @ApiResponse(code = 301, message = "Project is not active"),
+            @ApiResponse(code = 302, message = "Contributor for project already exists for such user"),
             @ApiResponse(code = 409, message = "Project has owner(if isOwner param is set to true)"),
 
     })
@@ -133,7 +134,7 @@ public interface ContributorService {
             notes = "Find a single contributor by userId and projectId",
             produces = "application/json")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "P contributors", response = Long.class),
+            @ApiResponse(code = 200, message = "Project contributors", response = Long.class),
             @ApiResponse(code = 404, message = "User or Project not found")
     })
     Response findProjectContributor(@QueryParam("userId") @ApiParam(required = true) long userId,

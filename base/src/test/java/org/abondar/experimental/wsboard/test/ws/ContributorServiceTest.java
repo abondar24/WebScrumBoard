@@ -134,6 +134,29 @@ public class ContributorServiceTest {
     }
 
     @Test
+    public void createContributorAlreadyExistsTest() {
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+        client.path("/contributor/create").accept(MediaType.APPLICATION_JSON);
+
+        var userId = createUser();
+        var projectId = createProject();
+        createContributor(userId, projectId, "false");
+
+        var form = new Form();
+
+        form.param("userId", String.valueOf(userId));
+        form.param("projectId", String.valueOf(projectId));
+        form.param("isOwner", "false");
+
+        var resp = client.post(form);
+        assertEquals(302, resp.getStatus());
+
+        var msg = resp.readEntity(String.class);
+        assertEquals(LogMessageUtil.CONTRIBUTOR_EXISTS, msg);
+
+    }
+
+    @Test
     public void createContributorProjectHasOwnerTest() {
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
         client.path("/contributor/create").accept(MediaType.APPLICATION_JSON);

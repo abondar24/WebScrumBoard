@@ -43,7 +43,12 @@ public class ContributorServiceRoute extends RouteBuilder {
                                 (boolean) formData.get(2));
                         return Response.ok(ctr).build();
                     } catch (DataExistenceException ex) {
-                        return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
+                        if(ex.getMessage().equals(LogMessageUtil.CONTRIBUTOR_EXISTS)){
+                            return Response.status(Response.Status.FOUND).entity(ex.getLocalizedMessage()).build();
+                        } else {
+                            return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
+                        }
+
                     } catch (DataCreationException ex) {
                         if (ex.getMessage().equals(LogMessageUtil.PROJECT_NOT_ACTIVE)) {
                             return Response.status(Response.Status.MOVED_PERMANENTLY).entity(ex.getLocalizedMessage()).build();
