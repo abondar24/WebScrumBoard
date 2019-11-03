@@ -31,7 +31,7 @@ export default new Vuex.Store({
     strict: false,
     plugins: [vuexCookie.plugin,vuexLocal.plugin],
     modules: {user: UserModule, auth: AuthModule,
-        project: ProjectModule, contributor:ContributorModule,task: TaskModule},
+        project: ProjectModule, contributor: ContributorModule,task: TaskModule},
     state: {
         errorMessage: ''
     },

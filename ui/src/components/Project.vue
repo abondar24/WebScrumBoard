@@ -29,7 +29,8 @@
                         <p v-if="!project.active">Finished on: {{project.endDate}}</p>
                     </b-row>
                     <b-row>
-                        <b-link v-bind:href="project.repository">
+                        <b-link v-bind:href="project.repository"
+                                v-if="project.repository!==null && project.repository.length">
                             Project repository
                         </b-link>
                     </b-row>
@@ -162,9 +163,8 @@
             this.findProject();
             this.findOwner();
             this.countContributors();
-            if (this.totalRows>0){
-                this.findContributors(0);
-            }
+            console.log(this.totalRows);
+            this.findContributors(0);
 
             this.setDate();
             this.setImage();

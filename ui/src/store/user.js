@@ -51,12 +51,6 @@ export default {
          getUserId: state => {
              return state.user.id;
          },
-        getUserLogin: state => {
-            return state.user.login;
-        },
-        getUserPassword: state => {
-            return state.user.password;
-        },
         getUser: state =>{
             return state.user;
         },
