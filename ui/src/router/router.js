@@ -8,6 +8,7 @@ import PasswordReset from "../components/PasswordReset";
 import store from "../store/store"
 import UserProjects from "../components/UserProjects";
 import Project from "../components/Project";
+import ProjectBoard from "../components/ProjectBoard";
 
 Vue.use(Router);
 
@@ -26,6 +27,15 @@ export default new Router({
             }
         },
         {path: '/project/:id', name: 'Project', component: Project,
+            beforeEnter(to, from, next) {
+                if (store.state.auth.authenticated) {
+                    next();
+                } else {
+                    next('/');
+                }
+            }
+        },
+        {path: '/project/:id/board', name: 'ProjectBoard', component: ProjectBoard,
             beforeEnter(to, from, next) {
                 if (store.state.auth.authenticated) {
                     next();

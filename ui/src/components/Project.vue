@@ -40,8 +40,12 @@
                         <h2>Owner: {{ownerName}}</h2>
                     </b-row>
                     <b-row>
+                        <router-link :to="{ name: 'ProjectBoard', params: { id: this.getProject.id }}">
+                            <b-button variant="primary">View board</b-button>
+                        </router-link>
+
                         <div v-if="isEditable">
-                            <b-button v-if="project.active" v-b-modal.editProject>Edit project</b-button>
+                            <b-button id="editPrj" v-if="project.active" v-b-modal.editProject>Edit project</b-button>
                             <b-button id="addCtr" v-b-modal.addContributor variant="success" v-if="project.active">Add
                                 Contributor
                             </b-button>
@@ -155,8 +159,8 @@
                     {key: 'ctr_actions', label: ''},
                 ],
                 ownerChanged: false,
-                tasksToShow:false,
-                selectedCtr:{}
+                tasksToShow: false,
+                selectedCtr: {}
             }
         },
         beforeMount() {
@@ -227,7 +231,7 @@
                     }
                 });
             },
-            countContributors(){
+            countContributors() {
                 this.$store.dispatch('countProjectContributors', this.$route.params.id).then(() => {
                     this.errorMessage = this.getError;
                     if (this.errorMessage.length) {
@@ -235,7 +239,7 @@
                     }
                 });
 
-                this.totalRows=this.getCount;
+                this.totalRows = this.getCount;
             },
             setDate() {
 
@@ -291,22 +295,22 @@
                 })
             },
             showTasks(user) {
-               this.tasksToShow=true;
-               this.selectedCtr=user;
+                this.tasksToShow = true;
+                this.selectedCtr = user;
             },
             hideTasks() {
-                this.tasksToShow=false;
-                this.selectedCtr={};
+                this.tasksToShow = false;
+                this.selectedCtr = {};
             },
             loadNext(index) {
                 this.findContributors(index);
             },
-            makeAsOwner(ctrData){
+            makeAsOwner(ctrData) {
                 this.$store.dispatch('updateContributor', {
                     userId: ctrData.id,
                     projectId: this.getProject.id,
-                    owner:true,
-                    active:true
+                    owner: true,
+                    active: true
                 }).then(() => {
                     this.errorMessage = this.getError;
                     if (this.errorMessage.length) {
@@ -317,25 +321,25 @@
                 });
             },
 
-            deleteContributor(ctrData){
+            deleteContributor(ctrData) {
                 this.$store.dispatch('updateContributor', {
                     userId: ctrData.id,
                     projectId: this.getProject.id,
-                    active:false
+                    active: false
                 }).then(() => {
                     this.errorMessage = this.getError;
                     if (this.errorMessage.length) {
                         this.errorOccurred = true;
                     } else {
-                       let filteredContributors = this.getContributors.filter(function(value, index, arr){
-                           return value.userId !==ctrData.id;
-                       });
+                        let filteredContributors = this.getContributors.filter(function (value, index, arr) {
+                            return value.userId !== ctrData.id;
+                        });
 
-                       this.$store.commit('setContributors',filteredContributors);
+                        this.$store.commit('setContributors', filteredContributors);
 
-                       this.ctrItems = this.ctrItems.filter(function(value, index, arr){
-                           return value.id !==ctrData.id;
-                       });
+                        this.ctrItems = this.ctrItems.filter(function (value, index, arr) {
+                            return value.id !== ctrData.id;
+                        });
 
                     }
                 });
@@ -360,7 +364,7 @@
             getContributors() {
                 return this.$store.getters.getProjectContributors;
             },
-            getCount(){
+            getCount() {
                 return this.$store.getters.getContributorCount;
             }
         }
@@ -372,7 +376,7 @@
         margin-top: 30px;
     }
 
-    #activeImg, #deleteProject, #addCtr {
+    #activeImg, #deleteProject, #addCtr, #editPrj {
         margin-left: 10px;
     }
 </style>
