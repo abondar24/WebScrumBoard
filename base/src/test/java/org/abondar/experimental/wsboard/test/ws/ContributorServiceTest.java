@@ -46,6 +46,7 @@ public class ContributorServiceTest {
 
     @Test
     public void createContributorTest() {
+        deleteContributor();
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
         client.path("/contributor/create").accept(MediaType.APPLICATION_JSON);
 
@@ -68,6 +69,7 @@ public class ContributorServiceTest {
 
     @Test
     public void createContributorUserNotFoundTest() {
+        deleteContributor();
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
         client.path("/contributor/create").accept(MediaType.APPLICATION_JSON);
 
@@ -90,6 +92,7 @@ public class ContributorServiceTest {
 
     @Test
     public void createContributorProjectNotFoundTest() {
+        deleteContributor();
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
         client.path("/contributor/create").accept(MediaType.APPLICATION_JSON);
 
@@ -112,6 +115,7 @@ public class ContributorServiceTest {
 
     @Test
     public void createContributorProjectNotActiveTest() {
+        deleteContributor();
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
         client.path("/contributor/create").accept(MediaType.APPLICATION_JSON);
 
@@ -135,6 +139,7 @@ public class ContributorServiceTest {
 
     @Test
     public void createContributorAlreadyExistsTest() {
+        deleteContributor();
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
         client.path("/contributor/create").accept(MediaType.APPLICATION_JSON);
 
@@ -158,6 +163,7 @@ public class ContributorServiceTest {
 
     @Test
     public void createContributorProjectHasOwnerTest() {
+        deleteContributor();
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
         client.path("/contributor/create").accept(MediaType.APPLICATION_JSON);
 
@@ -184,6 +190,7 @@ public class ContributorServiceTest {
 
     @Test
     public void updateContributorTest() {
+        deleteContributor();
         var userId = createUser();
         var projectId = createProject();
         var ctr = createContributor(userId, projectId, "false");
@@ -209,6 +216,7 @@ public class ContributorServiceTest {
 
     @Test
     public void updateContributorNoUserTest() {
+        deleteContributor();
         var userId = createUser();
         var projectId = createProject();
         var ctr = createContributor(userId, projectId, "false");
@@ -234,6 +242,7 @@ public class ContributorServiceTest {
 
     @Test
     public void updateContributorNoProjectTest() {
+        deleteContributor();
         var userId = createUser();
         var projectId = createProject();
         var ctr = createContributor(userId, projectId, "false");
@@ -282,9 +291,10 @@ public class ContributorServiceTest {
 
     @Test
     public void updateContributorOwnerFoundTest() {
+        deleteContributor();
         var userId = createUser();
         var projectId = createProject();
-        var ctr = createContributor(userId, projectId, "true");
+        createContributor(userId, projectId, "true");
 
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
         client.path("/contributor/update").accept(MediaType.APPLICATION_JSON);
@@ -306,9 +316,10 @@ public class ContributorServiceTest {
 
     @Test
     public void updateContributorNoOwnerTest() {
+        deleteContributor();
         var userId = createUser();
         var projectId = createProject();
-        var ctr = createContributor(userId, projectId, "false");
+        createContributor(userId, projectId, "false");
 
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
         client.path("/contributor/update").accept(MediaType.APPLICATION_JSON);
@@ -330,6 +341,7 @@ public class ContributorServiceTest {
 
     @Test
     public void updateNotActiveContributorAsOwnerTest() {
+        deleteContributor();
         var userId = createUser();
         var projectId = createProject();
         var ctr = createContributor(userId, projectId, "false");
@@ -398,6 +410,7 @@ public class ContributorServiceTest {
 
     @Test
     public void findProjectOwnerProjectNotFoundTest() {
+        deleteContributor();
         var userId = createUser();
         var projectId = createProject();
         createContributor(userId, projectId, "false");
@@ -416,6 +429,7 @@ public class ContributorServiceTest {
 
     @Test
     public void findProjectOwnerProjectHasNoOwnerTest() {
+        deleteContributor();
         var userId = createUser();
         var projectId = createProject();
         createContributor(userId, projectId, "false");
@@ -471,6 +485,7 @@ public class ContributorServiceTest {
 
     @Test
     public void findContributorsProjectNotFoundTest() {
+        deleteContributor();
         var userId = createUser();
         var projectId = createProject();
         createContributor(userId, projectId, "false");
@@ -492,6 +507,7 @@ public class ContributorServiceTest {
 
     @Test
     public void findContributorsNegativeOffsetTest() {
+        deleteContributor();
         var userId = createUser();
         var projectId = createProject();
         createContributor(userId, projectId, "false");
@@ -513,6 +529,7 @@ public class ContributorServiceTest {
 
     @Test
     public void findContributorsEmptyResTest() {
+        deleteContributor();
         var userId = createUser();
         var projectId = createProject();
         createContributor(userId, projectId, "false");
@@ -531,6 +548,7 @@ public class ContributorServiceTest {
 
     @Test
     public void findContributorsByUserIdTest() {
+        deleteContributor();
         var userId = createUser();
         var projectId = createProject();
         var ctr = createContributor(userId, projectId, "false");
@@ -552,9 +570,10 @@ public class ContributorServiceTest {
 
     @Test
     public void findContributorsByUserNotFoundTest() {
+        deleteContributor();
         var userId = createUser();
         var projectId = createProject();
-        var ctr = createContributor(userId, projectId, "false");
+        createContributor(userId, projectId, "false");
 
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
         client.path("/contributor/find_contributors_by_user")
@@ -572,9 +591,10 @@ public class ContributorServiceTest {
 
     @Test
     public void findContributorsByUserEmptyTest() {
+        deleteContributor();
         var userId = createUser();
         var projectId = createProject();
-        var ctr = createContributor(userId, projectId, "false");
+        createContributor(userId, projectId, "false");
 
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
         client.path("/contributor/find_contributors_by_user")
@@ -590,6 +610,7 @@ public class ContributorServiceTest {
 
     @Test
     public void findProjectContributorTest() {
+        deleteContributor();
         var userId = createUser();
         var projectId = createProject();
         var ctr = createContributor(userId, projectId, "false");
