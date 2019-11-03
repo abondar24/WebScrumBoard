@@ -41,7 +41,6 @@ public class ContributorDao extends BaseDao {
     public Contributor createContributor(long userId, long projectId, boolean isOwner)
             throws DataExistenceException, DataCreationException {
 
-        //TODO: reactivate contributor if previously it has been created
         var msg = "";
         if (mapper.getUserById(userId) == null) {
             msg = String.format(LogMessageUtil.LOG_FORMAT, LogMessageUtil.USER_NOT_EXISTS, userId);
@@ -63,12 +62,28 @@ public class ContributorDao extends BaseDao {
         }
 
 
-        var ctr = new Contributor(userId, projectId, isOwner);
-        mapper.insertContributor(ctr);
-        msg = String.format(LogMessageUtil.LOG_FORMAT, "Contributor created ", ctr.getId());
-        logger.info(msg);
+        var existingCtr = mapper.getContributorByUserAndProject(userId,projectId);
+        if (existingCtr!=null){
+            if (existingCtr.isActive()){
+                throw new DataExistenceException(String.format(LogMessageUtil.CONTRIBUTOR_EXISTS,projectId,userId));
+            } else {
+                existingCtr.setActive(true);
+                if (isOwner){
+                    existingCtr.setOwner(true);
+                }
 
-        return ctr;
+                mapper.updateContributor(existingCtr);
+                return existingCtr;
+            }
+        } else {
+            var ctr = new Contributor(userId, projectId, isOwner);
+            mapper.insertContributor(ctr);
+            msg = String.format(LogMessageUtil.LOG_FORMAT, "Contributor created ", ctr.getId());
+            logger.info(msg);
+
+            return ctr;
+        }
+
     }
 
     /**

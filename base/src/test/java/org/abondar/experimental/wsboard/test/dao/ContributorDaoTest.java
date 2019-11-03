@@ -60,6 +60,54 @@ public class ContributorDaoTest {
         cleanData();
     }
 
+    @Test
+    public void createContributorAlreadyExistsTest() throws Exception{
+        var usr = createUser();
+        var prj = createProject(true);
+
+        contributorDao.createContributor(usr.getId(), prj.getId(), false);
+
+        assertThrows(DataExistenceException.class,()-> contributorDao.createContributor(usr.getId(), prj.getId(), false));
+
+        cleanData();
+    }
+
+    @Test
+    public void createContributorReactivateTest() throws Exception{
+        var usr = createUser();
+        var prj = createProject(true);
+
+        var ctr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
+        var ctrId=ctr.getId();
+        ctr = contributorDao.updateContributor(usr.getId(),prj.getId(),null,false);
+
+        ctr = contributorDao.createContributor(usr.getId(),prj.getId(),false);
+
+        assertEquals(ctrId,ctr.getId());
+        assertTrue(ctr.isActive());
+        assertFalse(ctr.isOwner());
+
+        cleanData();
+    }
+
+    @Test
+    public void createContributorReactivateIsOwnerTest() throws Exception{
+        var usr = createUser();
+        var prj = createProject(true);
+
+        var ctr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
+        var ctrId=ctr.getId();
+        ctr = contributorDao.updateContributor(usr.getId(),prj.getId(),null,false);
+
+        ctr = contributorDao.createContributor(usr.getId(),prj.getId(),true);
+
+        assertEquals(ctrId,ctr.getId());
+        assertTrue(ctr.isActive());
+        assertTrue(ctr.isOwner());
+
+        cleanData();
+    }
+
 
     @Test
     public void createContributorNotOwnerTest() throws Exception {

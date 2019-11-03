@@ -46,6 +46,7 @@ public class LogMessageUtil {
     public static final String JWT_TOKEN_NOT_SET = "No JWT token is set";
     public static final String SESSION_EXPIRED = "Session expired. Please re-login";
     public static final String WRONG_PASSWORD = "Password is wrong";
+    public static final String CONTRIBUTOR_EXISTS = "Contributor for selected project %d exists with user %d";
 
     private LogMessageUtil() {
     }
