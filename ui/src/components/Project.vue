@@ -163,7 +163,6 @@
             this.findProject();
             this.findOwner();
             this.countContributors();
-            console.log(this.totalRows);
             this.findContributors(0);
 
             this.setDate();

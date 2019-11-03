@@ -57,7 +57,7 @@
         },
         beforeMount() {
             this.findContributorId();
-            this.countTasks();
+
             if (this.totalRows > 0) {
                 this.findTasks(0);
             } else {
@@ -69,11 +69,13 @@
             findContributorId() {
                 this.$store.dispatch('findContributor', {
                     userId: this.user.id,
-                    projectId: this.getProject.id
+                    projectId: this.getProjectId
                 }).then(() => {
                     this.errorMessage = this.getError;
                     if (this.errorMessage.length) {
                         this.errorOccurred = true;
+                    } else {
+                        this.countTasks();
                     }
                 });
 
@@ -123,8 +125,8 @@
             getContributorId() {
                 return this.$store.getters.getSelectedContributorId;
             },
-            getProject() {
-                return this.$store.getters.getProject;
+            getProjectId() {
+                return this.$store.getters.getProjectId;
             },
             getTasks() {
                 return this.$store.getters.getContributorTasks;
