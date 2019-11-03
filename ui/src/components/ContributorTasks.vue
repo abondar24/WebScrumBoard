@@ -36,6 +36,7 @@
 </template>
 
 <script>
+    //TODO: check tasks table after adding tasks
     export default {
         name: "ContributorTasks",
         props: ['exit', 'user'],
@@ -132,7 +133,7 @@
                 return this.$store.getters.getContributorTasks;
             },
             getTasksCount(){
-                return this.$store.getters.getUserTasksNum;
+                return this.$store.getters.getContributorTasksNum;
             }
         }
     }

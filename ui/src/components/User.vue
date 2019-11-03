@@ -67,16 +67,23 @@
                     </b-card>
                 </b-col>
                 <b-col>
-                    <b-table striped hover
-                             :items="tasks"
-                             :per-page="perPage"
-                             :current-page="currentPage"/>
-                    <b-pagination
-                            v-model="currentPage"
-                            :total-rows="rows"
-                            v-on:click="loadNext"
-                            :per-page="perPage"
-                            aria-controls="my-table"/>
+                    <div v-if="noTasks">
+                        User currently has no assigned tasks
+                    </div>
+                    <div v-if="!noTasks">
+                        <b-table striped hover
+                                 :items="tasks"
+                                 :fields="fields"
+                                 :per-page="perPage"
+                                 :current-page="currentPage"/>
+                        <b-pagination
+                                v-model="currentPage"
+                                :total-rows="totalRows"
+                                v-on:click="loadNext(currentPage-1)"
+                                :per-page="perPage"
+                                aria-controls="my-table"/>
+                    </div>
+
                 </b-col>
             </b-row>
 
@@ -92,7 +99,7 @@
 
     export default {
         //TODO: fix avatar resize
-        //TODO: fill tasks table
+        //TODO: check tasks table after adding tasks
         name: "User",
         components: {EditCredentialsForm, EditUserForm, NavbarCommon},
         data() {
@@ -105,13 +112,18 @@
                 lastName: '',
                 roles: [],
                 email: '',
-                tasks: [
-                    { task_name: '', task_description: '',task_state:''},
-
+                tasks: [],
+                fields: [
+                    {key: 'taskName', label: 'Task Name'},
+                    {key: 'taskState', label: 'Task State'},
+                    {key: 'storyPoints', label: 'Story Points'},
                 ],
                 currentPage:1,
                 perPage: 10,
                 isEditable: true,
+                totalRows:0,
+                noTasks:false,
+                userId:0
 
             }
         },
@@ -126,12 +138,15 @@
                         this.errorOccurred = true;
                     } else {
                         this.fillUserData(this.getViewUser);
+                        this.userId=this.getViewUser.id;
                     }
                 });
             } else {
                this.fillUserData(this.getUser);
+               this.userId=this.getUser.id;
             }
 
+            this.fillUserTasks();
         },
         created() {
             this.$store.watch(
@@ -160,6 +175,44 @@
                     return role !== '';
                 });
             },
+            fillUserTasks(){
+              this.findTotalTasks(this.userId);
+                if (this.totalRows > 0) {
+                    this.findTasks(0);
+                } else {
+                    this.noTasks = true;
+                }
+            },
+            findTotalTasks(){
+                this.$store.dispatch('countUserTasks', this.userId).then(() => {
+                    this.errorMessage = this.getError;
+                    if (this.errorMessage.length) {
+                        this.errorOccurred = true;
+                    }
+                });
+                this.totalRows=this.getTasksCount;
+            },
+            findTasks(offset) {
+                this.$store.dispatch('findUserTasks', {
+                    contributorId: this.userId,
+                    offset: offset,
+                    limit: this.perPage
+                }).then(() => {
+                    this.errorMessage = this.getError;
+                    if (this.errorMessage.length) {
+                        this.errorOccurred = true;
+                    } else {
+                        for (let i = 0; i < this.getTasks.length; i++) {
+                            this.tasks.push({
+                                name: this.getTasks[i].name,
+                                state: this.getTasks[i].taskState,
+                                storyPoints: this.getTasks[i].storyPoints
+                            });
+                        }
+
+                    }
+                });
+            },
             setImage(output) {
                 this.image = output.dataUrl;
             },
@@ -172,8 +225,8 @@
                     }
                 });
             },
-            loadNext(){
-
+            loadNext(index){
+                this.findTasks(index);
             },
             hideEdit(){
                 this.$refs['userEdit'].hide();
@@ -192,9 +245,12 @@
             getError() {
                 return this.$store.getters.getErrorMsg;
             },
-            rows() {
-                return this.tasks.length
-            }
+            getTasksCount(){
+                return this.$store.getters.getUserTasksNum;
+            },
+            getTasks() {
+                return this.$store.getters.getUserTasks;
+            },
         }
     }
 </script>
