@@ -8,6 +8,7 @@ import io.swagger.annotations.ApiResponses;
 import org.abondar.experimental.wsboard.datamodel.Sprint;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -111,8 +112,7 @@ public interface SprintService {
     })
     Response countSprints(@QueryParam("projectId") @ApiParam(required = true) long projectId);
 
-    //TODO: change to delete
-    @GET
+    @DELETE
     @Path("/delete")
     @ApiOperation(
             value = "Delete",

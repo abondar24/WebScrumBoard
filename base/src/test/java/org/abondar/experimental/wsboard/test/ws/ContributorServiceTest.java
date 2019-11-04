@@ -727,7 +727,7 @@ public class ContributorServiceTest {
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
 
-        client.path("/contributor/delete_contributor").accept(MediaType.APPLICATION_JSON).get();
+        client.path("/contributor/delete_contributor").accept(MediaType.APPLICATION_JSON).delete();
     }
 
 

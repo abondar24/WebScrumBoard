@@ -89,7 +89,7 @@ export default {
                 });
         },
         deleteProject({commit, getters}, id) {
-            return getters.authenticatedAxios.get(projectUrl + '/delete', {
+            return getters.authenticatedAxios.delete(projectUrl + '/delete', {
                 params: {
                     id: id
                 }

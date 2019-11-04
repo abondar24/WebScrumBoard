@@ -511,7 +511,7 @@ public class TaskServiceTest {
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
         client.path("/task/delete").accept(MediaType.APPLICATION_JSON).query("id", taskId);
 
-        var resp = client.get();
+        var resp = client.delete();
         assertEquals(200, resp.getStatus());
 
     }
@@ -526,7 +526,7 @@ public class TaskServiceTest {
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
         client.path("/task/delete").accept(MediaType.APPLICATION_JSON).query("id", 8);
 
-        var resp = client.get();
+        var resp = client.delete();
         assertEquals(404, resp.getStatus());
 
         var msg = resp.readEntity(String.class);

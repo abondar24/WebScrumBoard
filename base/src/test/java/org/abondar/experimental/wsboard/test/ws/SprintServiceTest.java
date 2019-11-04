@@ -374,7 +374,7 @@ public class SprintServiceTest {
 
         client.path("/sprint/delete").query("id", sp.getId());
 
-        var res = client.get();
+        var res = client.delete();
         assertEquals(200, res.getStatus());
 
     }
@@ -387,7 +387,7 @@ public class SprintServiceTest {
 
         client.path("/sprint/delete").query("id", 7);
 
-        var res = client.get();
+        var res = client.delete();
         assertEquals(404, res.getStatus());
 
         var found = res.readEntity(String.class);

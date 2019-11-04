@@ -489,7 +489,7 @@ public class UserServiceTest {
 
         client.path("/user/delete").query("id", usr.getId()).accept(MediaType.APPLICATION_JSON);
 
-        var resp = client.get();
+        var resp = client.delete();
         assertEquals(200, resp.getStatus());
 
         usr = resp.readEntity(User.class);

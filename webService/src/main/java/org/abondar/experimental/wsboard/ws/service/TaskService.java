@@ -8,6 +8,7 @@ import io.swagger.annotations.ApiResponses;
 import org.abondar.experimental.wsboard.datamodel.task.Task;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -106,8 +107,8 @@ public interface TaskService {
     Response updateTaskState(@FormParam("id") @ApiParam(required = true) long taskId,
                              @FormParam("state") @ApiParam String state);
 
-    //TODO: change to delete
-    @GET
+
+    @DELETE
     @Path("/delete")
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(

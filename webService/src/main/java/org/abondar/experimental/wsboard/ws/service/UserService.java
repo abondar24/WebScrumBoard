@@ -10,6 +10,7 @@ import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
 
 import javax.annotation.security.PermitAll;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -124,8 +125,8 @@ public interface UserService {
                             @FormParam("newPassword") @ApiParam(required = true) String newPassword,
                             @FormParam("id") @ApiParam(required = true) long id);
 
-    //TODO: change to delete
-    @GET
+
+    @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/delete")
     @ApiOperation(

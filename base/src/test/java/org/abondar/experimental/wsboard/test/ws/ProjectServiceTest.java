@@ -248,7 +248,7 @@ public class ProjectServiceTest {
 
         client.path("/project/delete").query("id", prj.getId()).accept(MediaType.APPLICATION_JSON);
 
-        var res = client.get();
+        var res = client.delete();
         assertEquals(200, res.getStatus());
     }
 
@@ -259,7 +259,7 @@ public class ProjectServiceTest {
 
         client.path("/project/delete").query("id", "1000").accept(MediaType.APPLICATION_JSON);
 
-        var res = client.get();
+        var res = client.delete();
         assertEquals(404, res.getStatus());
 
         var msg = res.readEntity(String.class);

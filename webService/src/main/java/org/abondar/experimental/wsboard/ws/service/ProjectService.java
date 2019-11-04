@@ -8,6 +8,7 @@ import io.swagger.annotations.ApiResponses;
 import org.abondar.experimental.wsboard.datamodel.Project;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -67,8 +68,7 @@ public interface ProjectService {
                            @FormParam("endDate") @ApiParam String endDate,
                            @FormParam("description") @ApiParam String description);
 
-    //TODO: change to delete
-    @GET
+    @DELETE
     @Path("/delete")
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(

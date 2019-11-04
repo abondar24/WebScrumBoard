@@ -215,7 +215,7 @@ export default {
                 });
         },
         deleteUser({commit,dispatch,getters}){
-            return getters.authenticatedAxios.get(userUrl + '/delete',{
+            return getters.authenticatedAxios.delete(userUrl + '/delete',{
                 params: {
                     id: getters.getUserId,
                 }
