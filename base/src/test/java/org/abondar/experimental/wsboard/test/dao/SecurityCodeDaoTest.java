@@ -2,8 +2,6 @@ package org.abondar.experimental.wsboard.test.dao;
 
 import org.abondar.experimental.wsboard.dao.SecurityCodeDao;
 import org.abondar.experimental.wsboard.dao.exception.DataExistenceException;
-import org.abondar.experimental.wsboard.datamodel.user.User;
-import org.abondar.experimental.wsboard.datamodel.user.UserRole;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -77,16 +75,6 @@ public class SecurityCodeDaoTest extends BaseDaoTest {
     }
 
 
-    private User createUser() throws Exception {
-        var login = "login";
-        var email = "email@email.com";
-        var password = "pwd";
-        var firstName = "fname";
-        var lastName = "lname";
-        var roles = UserRole.DEVELOPER.name() + ";" + UserRole.DEV_OPS.name();
-
-        return userDao.createUser(login, password, email, firstName, lastName, roles);
-    }
 
 
 }

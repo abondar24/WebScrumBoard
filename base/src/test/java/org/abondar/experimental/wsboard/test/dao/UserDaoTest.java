@@ -4,12 +4,9 @@ import org.abondar.experimental.wsboard.dao.exception.DataCreationException;
 import org.abondar.experimental.wsboard.dao.exception.DataExistenceException;
 import org.abondar.experimental.wsboard.dao.exception.InvalidHashException;
 import org.abondar.experimental.wsboard.dao.password.PasswordUtil;
-import org.abondar.experimental.wsboard.datamodel.Project;
-import org.abondar.experimental.wsboard.datamodel.user.User;
 import org.abondar.experimental.wsboard.datamodel.user.UserRole;
 import org.junit.jupiter.api.Test;
 
-import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -21,11 +18,11 @@ public class UserDaoTest extends BaseDaoTest {
 
     @Test
     public void createUserTest() throws Exception {
+        cleanData();
         var usr = createUser();
 
         assertTrue(usr.getId() > 0);
 
-        mapper.deleteUsers();
     }
 
 
@@ -47,11 +44,28 @@ public class UserDaoTest extends BaseDaoTest {
         var password = "pwd";
         var firstName = "fname";
         var lastName = "lname";
-        String roles = "";
+        var roles = "";
 
 
         assertThrows(DataCreationException.class, () ->
                 userDao.createUser(login, password, email, firstName, lastName, roles));
+
+    }
+
+    @Test
+    public void createUserNonEnglishTest() throws Exception {
+        cleanData();
+        var login = "login";
+        var email = "email@email.com";
+        var password = "pwd";
+        var firstName = "Иван";
+        var lastName = "Иванов";
+        var roles = UserRole.DEVELOPER.name();
+
+        var usr = userDao.createUser(login,email,password,firstName,lastName,roles);
+
+
+        assertTrue(usr.getId() > 0);
 
     }
 
@@ -285,20 +299,6 @@ public class UserDaoTest extends BaseDaoTest {
 
     }
 
-    private User createUser() throws Exception {
-        var login = "login";
-        var email = "email@email.com";
-        var password = "pwd";
-        var firstName = "fname";
-        var lastName = "lname";
-        var roles = UserRole.DEVELOPER.name();
 
-        return userDao.createUser(login, password, email, firstName, lastName, roles);
-    }
-
-    private Project createProject() throws Exception {
-        var project = projectDao.createProject("test", new Date());
-        return projectDao.updateProject(project.getId(), null, null, true, null, null);
-    }
 
 }

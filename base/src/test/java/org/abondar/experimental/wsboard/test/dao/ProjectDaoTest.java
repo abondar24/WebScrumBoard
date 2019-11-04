@@ -2,11 +2,8 @@ package org.abondar.experimental.wsboard.test.dao;
 
 import org.abondar.experimental.wsboard.dao.exception.DataCreationException;
 import org.abondar.experimental.wsboard.dao.exception.DataExistenceException;
-import org.abondar.experimental.wsboard.datamodel.Project;
 import org.abondar.experimental.wsboard.datamodel.Sprint;
 import org.abondar.experimental.wsboard.datamodel.task.Task;
-import org.abondar.experimental.wsboard.datamodel.user.User;
-import org.abondar.experimental.wsboard.datamodel.user.UserRole;
 import org.junit.jupiter.api.Test;
 
 import java.util.Calendar;
@@ -227,23 +224,7 @@ public class ProjectDaoTest extends BaseDaoTest {
     }
 
 
-    private Project createProject() throws Exception {
-        var name = "test";
-        var startDate = new Date();
 
-        return projectDao.createProject(name, startDate);
-    }
-
-    private User createUser() throws Exception {
-        var login = "login";
-        var email = "email@email.com";
-        var password = "pwd";
-        var firstName = "fname";
-        var lastName = "lname";
-        var roles = UserRole.DEVELOPER.name() + ";" + UserRole.DEV_OPS.name();
-
-        return userDao.createUser(login, password, email, firstName, lastName, roles);
-    }
 
 
 }

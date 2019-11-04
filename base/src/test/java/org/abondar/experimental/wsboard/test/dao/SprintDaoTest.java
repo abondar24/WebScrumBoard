@@ -26,7 +26,7 @@ public class SprintDaoTest extends BaseDaoTest {
     @Test
     public void createSprintTest() throws Exception {
         cleanData();
-        var res = sprintDao.createSprint("test", new Date(), new Date(), createProject());
+        var res = sprintDao.createSprint("test", new Date(), new Date(), createProject().getId());
 
         assertNotNull(res);
 
@@ -37,7 +37,7 @@ public class SprintDaoTest extends BaseDaoTest {
     public void createSprintWrongEndDateTest() {
         cleanData();
         assertThrows(DataCreationException.class, () -> sprintDao.createSprint("test", new Date(),
-                yesterday(), createProject()));
+                yesterday(), createProject().getId()));
 
     }
 
@@ -47,9 +47,10 @@ public class SprintDaoTest extends BaseDaoTest {
 
         cleanData();
         String name = "test";
-        sprintDao.createSprint(name, new Date(), new Date(), createProject());
+        sprintDao.createSprint(name, new Date(), new Date(), createProject().getId());
 
-        assertThrows(DataExistenceException.class, () -> sprintDao.createSprint(name, new Date(), new Date(), createProject()));
+        assertThrows(DataExistenceException.class, () ->
+                sprintDao.createSprint(name, new Date(), new Date(), createProject().getId()));
 
     }
 
@@ -57,9 +58,10 @@ public class SprintDaoTest extends BaseDaoTest {
     public void createSprintProjectNotExistsTest() throws Exception {
         cleanData();
         String name = "test";
-        sprintDao.createSprint(name, new Date(), new Date(), createProject());
+        sprintDao.createSprint(name, new Date(), new Date(), createProject().getId());
 
-        assertThrows(DataExistenceException.class, () -> sprintDao.createSprint(name, new Date(), new Date(), 7));
+        assertThrows(DataExistenceException.class, () ->
+                sprintDao.createSprint(name, new Date(), new Date(), 7));
 
         cleanData();
     }
@@ -67,7 +69,8 @@ public class SprintDaoTest extends BaseDaoTest {
     @Test
     public void createSprintBlankDataTest() {
         cleanData();
-        assertThrows(DataCreationException.class, () -> sprintDao.createSprint(null, new Date(), new Date(), createProject()));
+        assertThrows(DataCreationException.class, () ->
+                sprintDao.createSprint(null, new Date(), new Date(), createProject().getId()));
 
     }
 
@@ -76,7 +79,7 @@ public class SprintDaoTest extends BaseDaoTest {
     public void updateSprintTest() throws Exception {
         cleanData();
 
-        var sp = sprintDao.createSprint("test", new Date(), new Date(), createProject());
+        var sp = sprintDao.createSprint("test", new Date(), new Date(), createProject().getId());
         var id = sp.getId();
         var startDate = new Date();
         var endDate = new Date();
@@ -99,7 +102,7 @@ public class SprintDaoTest extends BaseDaoTest {
     @Test
     public void updateSprintNameExistsTest() throws Exception {
         cleanData();
-        var sp = sprintDao.createSprint("test", new Date(), new Date(), createProject());
+        var sp = sprintDao.createSprint("test", new Date(), new Date(), createProject().getId());
 
         assertThrows(DataExistenceException.class, () ->
                 sprintDao.updateSprint(sp.getId(), sp.getName(),
@@ -110,7 +113,7 @@ public class SprintDaoTest extends BaseDaoTest {
     @Test
     public void updateSprintWrongEndDateTest() throws Exception {
         cleanData();
-        var sp = sprintDao.createSprint("test", new Date(), new Date(), createProject());
+        var sp = sprintDao.createSprint("test", new Date(), new Date(), createProject().getId());
 
         assertThrows(DataCreationException.class, () ->
                 sprintDao.updateSprint(sp.getId(), null,
@@ -122,7 +125,7 @@ public class SprintDaoTest extends BaseDaoTest {
     @Test
     public void getSprintByIdTest() throws Exception {
         cleanData();
-        var sp = sprintDao.createSprint("test", new Date(), new Date(), createProject());
+        var sp = sprintDao.createSprint("test", new Date(), new Date(), createProject().getId());
 
         var res = sprintDao.getSprintById(sp.getId());
 
@@ -136,9 +139,9 @@ public class SprintDaoTest extends BaseDaoTest {
         cleanData();
 
         var prj = createProject();
-        var sp = sprintDao.createSprint("test", new Date(), new Date(), prj);
+        var sp = sprintDao.createSprint("test", new Date(), new Date(), prj.getId());
 
-        var res = sprintDao.getSprints(prj, 0, 1);
+        var res = sprintDao.getSprints(prj.getId(), 0, 1);
 
         assertEquals(1, res.size());
         assertEquals(sp.getName(), res.get(0).getName());
@@ -150,9 +153,9 @@ public class SprintDaoTest extends BaseDaoTest {
         cleanData();
 
         var prj = createProject();
-        sprintDao.createSprint("test", new Date(), new Date(), prj);
+        sprintDao.createSprint("test", new Date(), new Date(), prj.getId());
 
-        var res = sprintDao.countSprints(prj);
+        var res = sprintDao.countSprints(prj.getId());
 
         assertEquals(Integer.valueOf(1), res);
 
@@ -171,7 +174,7 @@ public class SprintDaoTest extends BaseDaoTest {
         cleanData();
 
         var prj = createProject();
-        sprintDao.createSprint("test", new Date(), new Date(), prj);
+        sprintDao.createSprint("test", new Date(), new Date(), prj.getId());
 
         assertThrows(DataExistenceException.class, () -> sprintDao.getSprints(7, 0, 1));
 
@@ -181,7 +184,7 @@ public class SprintDaoTest extends BaseDaoTest {
     @Test
     public void deleteSprintTest() throws Exception {
         cleanData();
-        var sp = sprintDao.createSprint("test", new Date(), new Date(), createProject());
+        var sp = sprintDao.createSprint("test", new Date(), new Date(), createProject().getId());
 
         sprintDao.deleteSprint(sp.getId());
 
@@ -195,11 +198,5 @@ public class SprintDaoTest extends BaseDaoTest {
         return cal.getTime();
     }
 
-    private long createProject() throws Exception {
-        var name = "test";
-        var startDate = new Date();
-
-        return projectDao.createProject(name, startDate).getId();
-    }
 
 }

@@ -4,9 +4,7 @@ import org.abondar.experimental.wsboard.dao.SprintDao;
 import org.abondar.experimental.wsboard.dao.TaskDao;
 import org.abondar.experimental.wsboard.dao.exception.DataCreationException;
 import org.abondar.experimental.wsboard.dao.exception.DataExistenceException;
-import org.abondar.experimental.wsboard.datamodel.Project;
 import org.abondar.experimental.wsboard.datamodel.task.TaskState;
-import org.abondar.experimental.wsboard.datamodel.user.User;
 import org.abondar.experimental.wsboard.datamodel.user.UserRole;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -529,30 +527,7 @@ public class TaskDaoTest  extends BaseDaoTest{
     }
 
 
-    private User createUser(String login) throws Exception {
-        if (login.isBlank()){
-            login = "login";
-        }
-        var email = "email@email.com";
-        var password = "pwd";
-        var firstName = "fname";
-        var lastName = "lname";
-        var roles = UserRole.DEVELOPER.name() + ";" + UserRole.DEV_OPS.name();
 
-        return userDao.createUser(login, password, email, firstName, lastName, roles);
-    }
-
-    private Project createProject(boolean isActive) throws Exception {
-        var name = "test";
-        var startDate = new Date();
-
-        var prj = projectDao.createProject(name, startDate);
-        if (isActive) {
-            prj = projectDao.updateProject(prj.getId(), null, null, true, null,null);
-        }
-
-        return prj;
-    }
 
 
 }
