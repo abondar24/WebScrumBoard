@@ -24,7 +24,7 @@
                                 placeholder="Enter login">
                         </b-form-input>
                         <b-form-invalid-feedback :state="loginValidation">
-                            Your login must be have more than 5 characters.
+                            Your login must be have more than 5 only-english characters.
                         </b-form-invalid-feedback>
                     </b-form-group>
 
@@ -39,7 +39,7 @@
                                 placeholder="Enter password">
                         </b-form-input>
                         <b-form-text id="password-help-block">
-                            Your password must be 5-20 characters long, contain letters and numbers.
+                            Your password must be 5-20 characters long, contain english letters and numbers.
                         </b-form-text>
                         <b-form-invalid-feedback :state="passwordValidation">
                             Password is too short and contains only letters or numbers
@@ -189,8 +189,9 @@
             lastNameValidation(){
                 return this.user.lastName.length>0
             },
+
             loginValidation() {
-                return this.user.login.length > 4
+                return this.user.login.length > 4 && this.user.login.match(/^[a-zA-Z]+$/) != null
             },
             passwordValidation() {
                 return this.user.password.length > 4 && this.user.password.match(/^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]+$/) != null
