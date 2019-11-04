@@ -37,46 +37,43 @@ public class MapperTest {
 
     @Test
     public void insertUserTest() {
+        cleanData();
         var user = createUser();
         assertTrue(user.getId() > 0);
-
-        cleanData();
     }
 
     @Test
     public void insertProjectTest() {
+        cleanData();
         var project = createProject();
         assertTrue(project.getId() > 0);
-
-        cleanData();
     }
 
 
     @Test
     public void insertUpdateContributorTest() {
+        cleanData();
         var user = createUser();
         var project = createProject();
 
         var contributor = createContributor(user.getId(), project.getId(), false);
         assertTrue(contributor.getId() > 0);
-
-        cleanData();
     }
 
     @Test
     public void insertUpdateTaskTest() {
+        cleanData();
         var user = createUser();
         var project = createProject();
         var contributor = createContributor(user.getId(), project.getId(), false);
         var task = createTask(contributor.getId());
 
         assertTrue(task.getId() > 0);
-
-        cleanData();
     }
 
     @Test
     public void updateUserTest() {
+        cleanData();
         var user = createUser();
 
         var newLogin = "login1";
@@ -86,12 +83,11 @@ public class MapperTest {
         user = mapper.getUserById(user.getId());
 
         assertEquals(newLogin, user.getLogin());
-
-        cleanData();
     }
 
     @Test
     public void updateProjectTest() {
+        cleanData();
         var project = createProject();
         var newName = "name1";
         project.setName(newName);
@@ -102,7 +98,6 @@ public class MapperTest {
 
         assertEquals(newName, project.getName());
 
-        cleanData();
     }
 
     @Test
@@ -122,56 +117,56 @@ public class MapperTest {
 
     @Test
     public void getUserByLoginTest() {
+        cleanData();
         var user = createUser();
         var res = mapper.getUserByLogin(user.getLogin());
 
         assertEquals(user.getId(), res.getId());
-        cleanData();
     }
 
 
     @Test
     public void getUserByIdTest() {
+        cleanData();
         var user = createUser();
         var res = mapper.getUserById(user.getId());
 
         assertEquals(user.getId(), res.getId());
-        cleanData();
     }
 
     @Test
     public void getUsersByIdsTest() {
+        cleanData();
         var user = createUser();
         var user1 = createUser();
         var res = mapper.getUsersByIds(List.of(user.getId(), user1.getId()));
 
         assertEquals(2, res.size());
-        cleanData();
     }
 
 
     @Test
     public void getProjectByIdTest() {
+        cleanData();
         var project = createProject();
 
         var res = mapper.getProjectById(project.getId());
         assertEquals(project.getId(), res.getId());
-
-        cleanData();
     }
 
     @Test
     public void getProjectByNameTest() {
+        cleanData();
         var project = createProject();
 
         var res = mapper.getProjectByName(project.getName());
         assertEquals(project.getId(), res.getId());
 
-        cleanData();
     }
 
     @Test
     public void getProjectOwnerTest() {
+        cleanData();
         var user = createUser();
         var project = createProject();
         createContributor(user.getId(), project.getId(), true);
@@ -179,11 +174,11 @@ public class MapperTest {
         var res = mapper.getProjectOwner(project.getId());
         assertEquals(user.getId(), res.getId());
 
-        cleanData();
     }
 
     @Test
     public void getUserProjectTest() {
+        cleanData();
         var user = createUser();
         var project = createProject();
         var project1 = createProject();
@@ -193,11 +188,12 @@ public class MapperTest {
         var res = mapper.getUserProjects(user.getId());
         assertEquals(2, res.size());
 
-        cleanData();
     }
 
     @Test
     public void getContributorByIdTest() {
+
+        cleanData();
         var user = createUser();
         var project = createProject();
         var ctr = createContributor(user.getId(), project.getId(), true);
@@ -205,23 +201,22 @@ public class MapperTest {
 
         var res = mapper.getContributorById(ctr.getId());
         assertEquals(ctr.getId(), res.getId());
-
-        cleanData();
     }
 
     @Test
     public void insertContributorTest() {
+        cleanData();
         var user = createUser();
         var project = createProject();
         var ctr = createContributor(user.getId(), project.getId(), true);
 
         assertTrue(ctr.getId() > 0);
 
-        cleanData();
     }
 
     @Test
     public void insertCodeTest() {
+        cleanData();
         var user = createUser();
 
         var code = new SecurityCode(123345, user.getId());
@@ -229,11 +224,11 @@ public class MapperTest {
 
         assertTrue(code.getId() > 0);
 
-        cleanData();
     }
 
     @Test
     public void deleteCodeTest() {
+        cleanData();
         var user = createUser();
 
         var code = new SecurityCode(123345, user.getId());
@@ -244,11 +239,11 @@ public class MapperTest {
 
         assertNull(code);
 
-        cleanData();
     }
 
     @Test
     public void checkCodeExistsTest() {
+        cleanData();
         var user = createUser();
 
         var code = new SecurityCode(123345, user.getId());
@@ -258,12 +253,12 @@ public class MapperTest {
 
         assertEquals(Integer.valueOf(1), exists);
 
-        cleanData();
     }
 
 
     @Test
     public void updateContributorTest() {
+        cleanData();
         var user = createUser();
         var project = createProject();
         var ctr = createContributor(user.getId(), project.getId(), true);
@@ -274,24 +269,23 @@ public class MapperTest {
         var res = mapper.getContributorById(ctr.getId());
 
         assertFalse(res.isActive());
-
-        cleanData();
     }
 
     @Test
-    public void getContributorByUserAndProjectTest(){
+    public void getContributorByUserAndProjectTest() {
+        cleanData();
         var user = createUser();
         var project = createProject();
         var ctr = createContributor(user.getId(), project.getId(), true);
 
-        var res = mapper.getContributorByUserAndProject(user.getId(),project.getId());
-        assertEquals(ctr.getId(),res.getId());
+        var res = mapper.getContributorByUserAndProject(user.getId(), project.getId());
+        assertEquals(ctr.getId(), res.getId());
 
-        cleanData();
     }
 
     @Test
     public void getContributorsForProjectTest() {
+        cleanData();
         var user = createUser();
         var project = createProject();
         createContributor(user.getId(), project.getId(), true);
@@ -305,12 +299,12 @@ public class MapperTest {
         assertEquals(1, res.size());
         assertEquals(user.getId(), res.get(0).getId());
 
-        cleanData();
     }
 
 
     @Test
-    public void countProjectContributorsTest(){
+    public void countProjectContributorsTest() {
+        cleanData();
         var user = createUser();
         var project = createProject();
         createContributor(user.getId(), project.getId(), true);
@@ -318,11 +312,11 @@ public class MapperTest {
         var res = mapper.countProjectContributors(project.getId());
         assertEquals(Integer.valueOf(1), res);
 
-        cleanData();
     }
 
     @Test
     public void getContributorsByUserId() {
+        cleanData();
         var user = createUser();
         var project = createProject();
         createContributor(user.getId(), project.getId(), true);
@@ -332,11 +326,11 @@ public class MapperTest {
         assertEquals(1, res.size());
         assertEquals(user.getId(), res.get(0).getUserId());
 
-        cleanData();
     }
 
     @Test
     public void deactivateUserContributorsTest() {
+        cleanData();
         var user = createUser();
         var project = createProject();
         var ctr = createContributor(user.getId(), project.getId(), false);
@@ -348,6 +342,7 @@ public class MapperTest {
 
     @Test
     public void deactivateProjectContributorsTest() {
+        cleanData();
         var user = createUser();
         var project = createProject();
         var ctr = createContributor(user.getId(), project.getId(), false);
@@ -360,6 +355,7 @@ public class MapperTest {
 
     @Test
     public void getTaskByIdTest() {
+        cleanData();
         var user = createUser();
         var project = createProject();
         var contributor = createContributor(user.getId(), project.getId(), false);
@@ -367,12 +363,11 @@ public class MapperTest {
 
         var res = mapper.getTaskById(task.getId());
         assertEquals(task.getId(), res.getId());
-
-        cleanData();
     }
 
     @Test
     public void getTasksForProjectTest() {
+        cleanData();
         var user = createUser();
         var project = createProject();
         var contributor = createContributor(user.getId(), project.getId(), false);
@@ -382,12 +377,12 @@ public class MapperTest {
         assertEquals(1, res.size());
         assertEquals(task.getId(), res.get(0).getId());
 
-        cleanData();
     }
 
 
     @Test
     public void getTasksForContributorTest() {
+        cleanData();
         var user = createUser();
         var project = createProject();
         var contributor = createContributor(user.getId(), project.getId(), false);
@@ -397,11 +392,11 @@ public class MapperTest {
         assertEquals(1, res.size());
         assertEquals(task.getId(), res.get(0).getId());
 
-        cleanData();
     }
 
     @Test
     public void getTasksForUserTest() {
+        cleanData();
         var user = createUser();
         var project = createProject();
         var contributor = createContributor(user.getId(), project.getId(), false);
@@ -411,11 +406,11 @@ public class MapperTest {
         assertEquals(1, res.size());
         assertEquals(task.getId(), res.get(0).getId());
 
-        cleanData();
     }
 
     @Test
     public void countUserTasksTest() {
+        cleanData();
         var user = createUser();
         var project = createProject();
         var contributor = createContributor(user.getId(), project.getId(), false);
@@ -423,13 +418,13 @@ public class MapperTest {
 
         var res = mapper.countUserTasks(user.getId());
 
-        assertEquals(Integer.valueOf(1),res);
+        assertEquals(Integer.valueOf(1), res);
 
-        cleanData();
     }
 
     @Test
     public void countContributorTasksTest() {
+        cleanData();
         var user = createUser();
         var project = createProject();
         var contributor = createContributor(user.getId(), project.getId(), false);
@@ -437,39 +432,37 @@ public class MapperTest {
 
         var res = mapper.countContributorTasks(contributor.getId());
 
-        assertEquals(Integer.valueOf(1),res);
+        assertEquals(Integer.valueOf(1), res);
 
-        cleanData();
     }
 
     @Test
     public void insertSprintTest() {
+        cleanData();
         var sprint = createSprint(createProject().getId());
         assertTrue(sprint.getId() > 0);
-
-        cleanData();
     }
 
     @Test
     public void getSprintByIdTest() {
+        cleanData();
         var sprint = createSprint(createProject().getId());
         var res = mapper.getSprintById(sprint.getId());
         assertEquals(sprint.getName(), res.getName());
-
-        cleanData();
     }
 
     @Test
     public void getSprintByNameTest() {
+        cleanData();
         var sprint = createSprint(createProject().getId());
         var res = mapper.getSprintByName(sprint.getName());
         assertEquals(sprint.getName(), res.getName());
 
-        cleanData();
     }
 
     @Test
     public void getSprintsTest() {
+        cleanData();
         var prId = createProject().getId();
         createSprint(prId);
         createSprint(prId);
@@ -478,11 +471,11 @@ public class MapperTest {
         var sprints = mapper.getSprints(prId, 0, 3);
         assertEquals(3, sprints.size());
 
-        cleanData();
     }
 
     @Test
     public void updateTaskTest() {
+        cleanData();
         var user = createUser();
         var project = createProject();
         var contributor = createContributor(user.getId(), project.getId(), false);
@@ -497,12 +490,12 @@ public class MapperTest {
 
         assertEquals(storyPoints, res.getStoryPoints());
 
-        cleanData();
     }
 
 
     @Test
     public void updateTaskSprintTest() {
+        cleanData();
         var user = createUser();
         var project = createProject();
         var contributor = createContributor(user.getId(), project.getId(), false);
@@ -515,11 +508,11 @@ public class MapperTest {
         var res = mapper.getTaskById(task.getId());
         assertEquals(task.getSprintId(), res.getSprintId());
 
-        cleanData();
     }
 
     @Test
     public void getTasksForSprintTest() {
+        cleanData();
         var user = createUser();
         var project = createProject();
         var contributor = createContributor(user.getId(), project.getId(), false);
@@ -534,23 +527,23 @@ public class MapperTest {
         assertEquals(1, res.size());
         assertEquals(task.getId(), res.get(0).getId());
 
-        cleanData();
     }
 
     @Test
     public void countSprintsTest() {
+        cleanData();
         var prId = createProject().getId();
         createSprint(prId);
 
         var res = mapper.countSprints(prId);
 
-        assertEquals(Integer.valueOf(1),res);
+        assertEquals(Integer.valueOf(1), res);
 
-        cleanData();
     }
 
     @Test
     public void deleteProjectTest() {
+        cleanData();
         var project = createProject();
 
         mapper.deleteProject(project.getId());
@@ -561,6 +554,7 @@ public class MapperTest {
 
     @Test
     public void deleteTaskTest() {
+        cleanData();
         var user = createUser();
         var project = createProject();
         var contributor = createContributor(user.getId(), project.getId(), false);
@@ -571,11 +565,11 @@ public class MapperTest {
         var res = mapper.getTaskById(task.getId());
         assertNull(res);
 
-        cleanData();
     }
 
     @Test
     public void deleteSprintTest() {
+        cleanData();
         var sprint = createSprint(createProject().getId());
 
         mapper.deleteSprint(sprint.getId());
@@ -583,11 +577,11 @@ public class MapperTest {
         var res = mapper.getSprintById(sprint.getId());
         assertNull(res);
 
-        cleanData();
     }
 
     @Test
-    public void deleteProjectTasks(){
+    public void deleteProjectTasks() {
+        cleanData();
         var user = createUser();
         var project = createProject();
         var contributor = createContributor(user.getId(), project.getId(), false);
@@ -598,11 +592,11 @@ public class MapperTest {
         var res = mapper.getTaskById(task.getId());
         assertNull(res);
 
-        cleanData();
     }
 
     @Test
-    public void deleteProjectSprints(){
+    public void deleteProjectSprints() {
+        cleanData();
         var project = createProject();
         var sprint = createSprint(project.getId());
 
@@ -611,11 +605,11 @@ public class MapperTest {
         var res = mapper.getSprintById(sprint.getId());
         assertNull(res);
 
-        cleanData();
     }
 
     @Test
-    public void deleteProjectContributors(){
+    public void deleteProjectContributors() {
+        cleanData();
         var user = createUser();
         var project = createProject();
         var contributor = createContributor(user.getId(), project.getId(), false);
@@ -625,7 +619,6 @@ public class MapperTest {
         var res = mapper.getContributorById(contributor.getId());
         assertNull(res);
 
-        cleanData();
     }
 
     private User createUser() {

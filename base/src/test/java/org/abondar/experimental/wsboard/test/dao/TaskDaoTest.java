@@ -1,12 +1,7 @@
 package org.abondar.experimental.wsboard.test.dao;
 
-import org.abondar.experimental.wsboard.base.WebScrumBoardApplication;
-import org.abondar.experimental.wsboard.dao.ContributorDao;
-import org.abondar.experimental.wsboard.dao.ProjectDao;
 import org.abondar.experimental.wsboard.dao.SprintDao;
 import org.abondar.experimental.wsboard.dao.TaskDao;
-import org.abondar.experimental.wsboard.dao.UserDao;
-import org.abondar.experimental.wsboard.dao.data.DataMapper;
 import org.abondar.experimental.wsboard.dao.exception.DataCreationException;
 import org.abondar.experimental.wsboard.dao.exception.DataExistenceException;
 import org.abondar.experimental.wsboard.datamodel.Project;
@@ -15,12 +10,8 @@ import org.abondar.experimental.wsboard.datamodel.user.User;
 import org.abondar.experimental.wsboard.datamodel.user.UserRole;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Date;
 
@@ -29,30 +20,13 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SpringBootTest(classes = WebScrumBoardApplication.class)
-@ExtendWith(SpringExtension.class)
-@ActiveProfiles("test")
-public class TaskDaoTest {
 
+public class TaskDaoTest  extends BaseDaoTest{
 
-    @Autowired
-    private DataMapper mapper;
 
     @Autowired
     @Qualifier("taskDao")
     private TaskDao dao;
-
-    @Autowired
-    @Qualifier("userDao")
-    private UserDao userDao;
-
-    @Autowired
-    @Qualifier("projectDao")
-    private ProjectDao projectDao;
-
-    @Autowired
-    @Qualifier("contributorDao")
-    private ContributorDao contributorDao;
 
     @Autowired
     @Qualifier("sprintDao")
@@ -61,6 +35,8 @@ public class TaskDaoTest {
 
     @Test
     public void createTaskTest() throws Exception {
+        cleanData();
+
         var usr = createUser("");
         var prj = createProject(true);
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
@@ -69,12 +45,12 @@ public class TaskDaoTest {
 
         assertTrue(task.getId()>0);
 
-        cleanData();
     }
 
 
     @Test
     public void createTaskNoContributorTest() {
+        cleanData();
         assertThrows(DataExistenceException.class, () ->
                 dao.createTask(100, new Date(), false, "name", "descr"));
 
@@ -83,6 +59,8 @@ public class TaskDaoTest {
 
     @Test
     public void createTaskInactiveContributorTest() throws Exception {
+        cleanData();
+
         var usr = createUser("");
         var prj = createProject(true);
 
@@ -96,13 +74,15 @@ public class TaskDaoTest {
 
         assertThrows(DataExistenceException.class, () ->
                 dao.createTask(contr.getId(), new Date(), true, "name", "descr"));
-        cleanData();
+
     }
 
 
 
     @Test
     public void updateTaskContributorTest() throws Exception {
+        cleanData();
+
         var usr = createUser("");
         var prj = createProject(true);
 
@@ -121,18 +101,21 @@ public class TaskDaoTest {
         assertEquals(id, task.getId());
         assertEquals(contr1.getId(), res.getContributorId());
 
-        cleanData();
     }
 
 
     @Test
     public void updateTaskNotExistsTest() {
+        cleanData();
+
         assertThrows(DataExistenceException.class, () ->
                 dao.updateTask(100, 100L, null, null, null, null));
     }
 
     @Test
     public void updateTaskContributorNotExistsTest() throws Exception {
+        cleanData();
+
         var usr = createUser("");
         var prj = createProject(true);
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
@@ -141,13 +124,13 @@ public class TaskDaoTest {
         assertThrows(DataExistenceException.class, () ->
                 dao.updateTask(task.getId(), 100L, null, null, null, null));
 
-
-        cleanData();
     }
 
 
     @Test
     public void updateTaskStoryPointsTest() throws Exception {
+        cleanData();
+
         var usr = createUser("");
         var prj = createProject(true);
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
@@ -159,11 +142,12 @@ public class TaskDaoTest {
 
         assertEquals(storyPoints, res.getStoryPoints());
 
-        cleanData();
     }
 
     @Test
     public void updateTaskNameTest() throws Exception {
+        cleanData();
+
         var usr = createUser("");
         var prj = createProject(true);
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
@@ -175,11 +159,12 @@ public class TaskDaoTest {
 
         assertEquals(storyPoints, res.getStoryPoints());
 
-        cleanData();
     }
 
     @Test
     public void updateTaskDescriptionTest() throws Exception {
+        cleanData();
+
         var usr = createUser("");
         var prj = createProject(true);
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
@@ -191,12 +176,13 @@ public class TaskDaoTest {
 
         assertEquals(storyPoints, res.getStoryPoints());
 
-        cleanData();
     }
 
 
     @Test
     public void updateTaskSprintTest() throws Exception {
+        cleanData();
+
         var usr = createUser("");
         var prj = createProject(true);
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
@@ -207,12 +193,13 @@ public class TaskDaoTest {
 
         assertEquals(sprint.getId(), res.getSprintId());
 
-        cleanData();
     }
 
 
     @Test
     public void updateTaskStateTest() throws Exception {
+        cleanData();
+
         var usr = createUser("");
         var prj = createProject(true);
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
@@ -223,12 +210,13 @@ public class TaskDaoTest {
         assertEquals(TaskState.IN_DEVELOPMENT, res.getTaskState());
         assertEquals(TaskState.CREATED, res.getPrevState());
 
-        cleanData();
     }
 
 
     @Test
     public void updateTaskStateUnknownTest() throws Exception {
+        cleanData();
+
         var usr = createUser("");
         var prj = createProject(true);
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
@@ -237,11 +225,12 @@ public class TaskDaoTest {
         assertThrows(DataExistenceException.class, () ->
                 dao.updateTaskState(task.getId(), "test"));
 
-        cleanData();
     }
 
     @Test
     public void updateTaskStateNotExistsTest() {
+        cleanData();
+
         assertThrows(DataExistenceException.class, () ->
                 dao.updateTaskState(100, TaskState.IN_DEPLOYMENT.name()));
 
@@ -249,6 +238,8 @@ public class TaskDaoTest {
 
     @Test
     public void updateTaskStateAlreadyCompletedTest() throws Exception {
+        cleanData();
+
         var usr = createUser("");
         usr = userDao.updateUser(usr.getId(),null,null,null,
                 UserRole.DEVELOPER.name() + ";" + UserRole.DEV_OPS.name() + ";" + UserRole.QA.name(), null);
@@ -262,11 +253,12 @@ public class TaskDaoTest {
         assertThrows(DataCreationException.class, () ->
                 dao.updateTaskState(task.getId(), TaskState.IN_DEVELOPMENT.name()));
 
-        cleanData();
     }
 
     @Test
     public void updateTaskStateAlreadyCreatedTest() throws Exception {
+        cleanData();
+
         var usr = createUser("");
         var prj = createProject(true);
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
@@ -275,12 +267,12 @@ public class TaskDaoTest {
         assertThrows(DataCreationException.class, () ->
                 dao.updateTaskState(task.getId(), TaskState.CREATED.name()));
 
-
-        cleanData();
     }
 
     @Test
     public void updateTaskStatePausedTest() throws Exception {
+        cleanData();
+
         var usr = createUser("");
         var prj = createProject(true);
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
@@ -290,12 +282,13 @@ public class TaskDaoTest {
         assertThrows(DataCreationException.class, () ->
                 dao.updateTaskState(task.getId(), TaskState.IN_DEVELOPMENT.name()));
 
-        cleanData();
     }
 
 
     @Test
     public void updateTaskStateNoDevOpsTest() throws Exception {
+        cleanData();
+
         var usr = createUser("");
         var prj = createProject(true);
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
@@ -304,11 +297,12 @@ public class TaskDaoTest {
         assertThrows(DataCreationException.class, () ->
                 dao.updateTaskState(task.getId(), TaskState.IN_DEPLOYMENT.name()));
 
-        cleanData();
     }
 
     @Test
     public void updateTaskStateNoMovesTest() throws Exception {
+        cleanData();
+
         var usr = createUser("");
         var prj = createProject(true);
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
@@ -317,11 +311,12 @@ public class TaskDaoTest {
         assertThrows(DataCreationException.class, () ->
                 dao.updateTaskState(task.getId(), TaskState.IN_CODE_REVIEW.name()));
 
-        cleanData();
     }
 
     @Test
     public void updateTaskStateRoleUpdateNeededTest() throws Exception {
+        cleanData();
+
         var usr = createUser("");
         var prj = createProject(true);
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
@@ -332,11 +327,12 @@ public class TaskDaoTest {
         assertThrows(DataCreationException.class, () ->
                 dao.updateTaskState(task.getId(), TaskState.IN_TEST.name()));
 
-        cleanData();
     }
 
     @Test
     public void updateTaskStateCompletedEndDateTest() throws Exception {
+        cleanData();
+
         var usr = createUser("");
         usr = userDao.updateUser(usr.getId(),null,null,null,
                 UserRole.DEVELOPER.name() + ";" + UserRole.DEV_OPS.name() + ";" + UserRole.QA.name(), null);
@@ -354,11 +350,12 @@ public class TaskDaoTest {
         assertEquals(TaskState.COMPLETED, res.getTaskState());
         assertNotNull(res.getEndDate());
 
-        cleanData();
     }
 
     @Test
     public void deleteTaskTest() throws Exception {
+        cleanData();
+
         var usr = createUser("");
         var prj = createProject(true);
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
@@ -368,12 +365,13 @@ public class TaskDaoTest {
 
         Assertions.assertTrue(res);
 
-        cleanData();
     }
 
 
     @Test
     public void deleteTaskNoExistsTest() {
+        cleanData();
+
         var res = dao.deleteTask(100);
 
         Assertions.assertFalse(res);
@@ -381,6 +379,8 @@ public class TaskDaoTest {
 
     @Test
     public void deleteTaskSprintTest() throws Exception {
+        cleanData();
+
         var usr = createUser("");
         var prj = createProject(true);
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
@@ -394,12 +394,13 @@ public class TaskDaoTest {
 
         Assertions.assertTrue(res);
 
-        cleanData();
     }
 
 
     @Test
     public void getTaskByIdTest() throws Exception {
+        cleanData();
+
         var usr = createUser("");
         var prj = createProject(true);
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
@@ -409,11 +410,12 @@ public class TaskDaoTest {
 
         assertEquals(task.getId(), res.getId());
 
-        cleanData();
     }
 
     @Test
     public void getTasksForProjectTest() throws Exception {
+        cleanData();
+
         var usr = createUser("");
         var prj = createProject(true);
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
@@ -424,11 +426,12 @@ public class TaskDaoTest {
         assertEquals(1, res.size());
         assertEquals(task.getId(), res.get(0).getId());
 
-        cleanData();
     }
 
     @Test
     public void getTasksForContributorTest() throws Exception {
+        cleanData();
+
         var usr = createUser("");
         var prj = createProject(true);
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
@@ -439,25 +442,27 @@ public class TaskDaoTest {
         assertEquals(1, res.size());
         assertEquals(task.getId(), res.get(0).getId());
 
-        cleanData();
+
     }
 
     @Test
     public void countContributorTasks() throws Exception {
+        cleanData();
+
         var usr = createUser("");
         var prj = createProject(true);
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
-        var task = dao.createTask(contr.getId(), new Date(), true, "name", "descr");
+        dao.createTask(contr.getId(), new Date(), true, "name", "descr");
 
         var res = dao.countContributorTasks(contr.getId());
 
         assertEquals(Integer.valueOf(1), res);
 
-        cleanData();
     }
 
     @Test
     public void countContributorNotFoundTasks() {
+        cleanData();
 
         assertThrows(DataExistenceException.class,()-> dao.countContributorTasks(100L));
    }
@@ -465,6 +470,8 @@ public class TaskDaoTest {
 
     @Test
     public void getTasksForUserTest() throws Exception {
+        cleanData();
+
         var usr = createUser("");
         var prj = createProject(true);
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
@@ -475,31 +482,35 @@ public class TaskDaoTest {
         assertEquals(1, res.size());
         assertEquals(task.getId(), res.get(0).getId());
 
-        cleanData();
     }
 
     @Test
     public void countUserTasks() throws Exception {
+        cleanData();
+
         var usr = createUser("");
         var prj = createProject(true);
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
-        var task = dao.createTask(contr.getId(), new Date(), true, "name", "descr");
+        dao.createTask(contr.getId(), new Date(), true, "name", "descr");
 
         var res = dao.countUserTasks(usr.getId());
 
         assertEquals(Integer.valueOf(1), res);
 
-        cleanData();
     }
 
     @Test
     public void countUserNotFoundTasks() {
+        cleanData();
+
 
         assertThrows(DataExistenceException.class,()-> dao.countUserTasks(100L));
     }
 
     @Test
     public void getTasksForSprintTest() throws Exception {
+        cleanData();
+
         var usr = createUser("");
         var prj = createProject(true);
         var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
@@ -515,7 +526,6 @@ public class TaskDaoTest {
         assertEquals(1, res.size());
         assertEquals(task.getId(), res.get(0).getId());
 
-        cleanData();
     }
 
 
@@ -544,11 +554,5 @@ public class TaskDaoTest {
         return prj;
     }
 
-    private void cleanData() {
-        mapper.deleteTasks();
-        mapper.deleteSprints();
-        mapper.deleteContributors();
-        mapper.deleteUsers();
-        mapper.deleteProjects();
-    }
+
 }

@@ -1,53 +1,39 @@
 package org.abondar.experimental.wsboard.test.dao;
 
-import org.abondar.experimental.wsboard.base.WebScrumBoardApplication;
 import org.abondar.experimental.wsboard.dao.SecurityCodeDao;
-import org.abondar.experimental.wsboard.dao.UserDao;
-import org.abondar.experimental.wsboard.dao.data.DataMapper;
 import org.abondar.experimental.wsboard.dao.exception.DataExistenceException;
 import org.abondar.experimental.wsboard.datamodel.user.User;
 import org.abondar.experimental.wsboard.datamodel.user.UserRole;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SpringBootTest(classes = WebScrumBoardApplication.class)
-@ExtendWith(SpringExtension.class)
-@ActiveProfiles("test")
-public class SecurityDaoTest {
 
+public class SecurityCodeDaoTest extends BaseDaoTest {
     @Autowired
     @Qualifier("codeDao")
     private SecurityCodeDao codeDao;
 
-    @Autowired
-    @Qualifier("userDao")
-    private UserDao userDao;
-
-    @Autowired
-    private DataMapper mapper;
 
 
     @Test
     public void insertCodeTest() throws Exception {
+        cleanData();
+
         var usr = createUser();
         var code = codeDao.insertCode(usr.getId());
 
         assertTrue(code > 0);
 
-        cleanData();
     }
 
     @Test
     public void insertCodeUserNotFoundTest() {
+        cleanData();
         assertThrows(DataExistenceException.class, () -> codeDao.insertCode(7));
 
     }
@@ -55,6 +41,7 @@ public class SecurityDaoTest {
 
     @Test
     public void enterCodeTest() throws Exception {
+        cleanData();
         var usr = createUser();
         var code = codeDao.insertCode(usr.getId());
 
@@ -62,29 +49,31 @@ public class SecurityDaoTest {
         var sc = mapper.getCodeByUserId(usr.getId());
         assertNull(sc);
 
-        cleanData();
     }
 
     @Test
     public void enterCodeUserNotFoundTest() {
+        cleanData();
         assertThrows(DataExistenceException.class, () -> codeDao.enterCode(7, 123));
     }
 
     @Test
     public void enterCodeNotFoundTest() throws Exception {
+        cleanData();
+
         var usr = createUser();
 
         assertThrows(DataExistenceException.class, () -> codeDao.enterCode(usr.getId(), 123));
-        cleanData();
+
     }
 
     @Test
     public void enterCodeNotMatchesTest() throws Exception {
+        cleanData();
         var usr = createUser();
         codeDao.insertCode(usr.getId());
 
         assertThrows(DataExistenceException.class, () -> codeDao.enterCode(usr.getId(), 123));
-        cleanData();
     }
 
 
@@ -99,8 +88,5 @@ public class SecurityDaoTest {
         return userDao.createUser(login, password, email, firstName, lastName, roles);
     }
 
-    private void cleanData() {
-        mapper.deleteCodes();
-        mapper.deleteUsers();
-    }
+
 }

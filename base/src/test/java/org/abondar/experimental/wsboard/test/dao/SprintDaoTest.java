@@ -1,19 +1,12 @@
 package org.abondar.experimental.wsboard.test.dao;
 
 
-import org.abondar.experimental.wsboard.base.WebScrumBoardApplication;
-import org.abondar.experimental.wsboard.dao.ProjectDao;
 import org.abondar.experimental.wsboard.dao.SprintDao;
-import org.abondar.experimental.wsboard.dao.data.DataMapper;
 import org.abondar.experimental.wsboard.dao.exception.DataCreationException;
 import org.abondar.experimental.wsboard.dao.exception.DataExistenceException;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -23,73 +16,67 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
-@SpringBootTest(classes = WebScrumBoardApplication.class)
-@ExtendWith(SpringExtension.class)
-@ActiveProfiles("test")
-public class SprintDaoTest {
-
-    @Autowired
-    private DataMapper mapper;
+public class SprintDaoTest extends BaseDaoTest {
 
 
     @Autowired
     @Qualifier("sprintDao")
     private SprintDao sprintDao;
 
-    @Autowired
-    @Qualifier("projectDao")
-    private ProjectDao projectDao;
-
-
     @Test
     public void createSprintTest() throws Exception {
-        var res = sprintDao.createSprint("test", new Date(), new Date(),createProject());
+        cleanData();
+        var res = sprintDao.createSprint("test", new Date(), new Date(), createProject());
 
         assertNotNull(res);
 
-        cleanData();
+
     }
 
     @Test
     public void createSprintWrongEndDateTest() {
-        assertThrows(DataCreationException.class, () -> sprintDao.createSprint("test", new Date(),
-                yesterday(),createProject()));
-
         cleanData();
+        assertThrows(DataCreationException.class, () -> sprintDao.createSprint("test", new Date(),
+                yesterday(), createProject()));
+
     }
 
 
     @Test
     public void createSprintAlreadyExistsTest() throws Exception {
-        String name = "test";
-        sprintDao.createSprint(name, new Date(), new Date(),createProject());
-
-        assertThrows(DataExistenceException.class, () -> sprintDao.createSprint(name, new Date(), new Date(),createProject()));
 
         cleanData();
+        String name = "test";
+        sprintDao.createSprint(name, new Date(), new Date(), createProject());
+
+        assertThrows(DataExistenceException.class, () -> sprintDao.createSprint(name, new Date(), new Date(), createProject()));
+
     }
 
     @Test
     public void createSprintProjectNotExistsTest() throws Exception {
+        cleanData();
         String name = "test";
-        sprintDao.createSprint(name, new Date(), new Date(),createProject());
+        sprintDao.createSprint(name, new Date(), new Date(), createProject());
 
-        assertThrows(DataExistenceException.class, () -> sprintDao.createSprint(name, new Date(), new Date(),7));
+        assertThrows(DataExistenceException.class, () -> sprintDao.createSprint(name, new Date(), new Date(), 7));
 
         cleanData();
     }
 
     @Test
     public void createSprintBlankDataTest() {
-        assertThrows(DataCreationException.class, () -> sprintDao.createSprint(null, new Date(), new Date(),createProject()));
         cleanData();
-    }
+        assertThrows(DataCreationException.class, () -> sprintDao.createSprint(null, new Date(), new Date(), createProject()));
 
+    }
 
 
     @Test
     public void updateSprintTest() throws Exception {
-        var sp = sprintDao.createSprint("test", new Date(), new Date(),createProject());
+        cleanData();
+
+        var sp = sprintDao.createSprint("test", new Date(), new Date(), createProject());
         var id = sp.getId();
         var startDate = new Date();
         var endDate = new Date();
@@ -99,101 +86,106 @@ public class SprintDaoTest {
         assertEquals(startDate, res.getStartDate());
         assertEquals(endDate, res.getEndDate());
 
-        cleanData();
     }
 
 
     @Test
     public void updateSprintNotFoundTest() {
+        cleanData();
         assertThrows(DataExistenceException.class, () ->
                 sprintDao.updateSprint(100, null, null, null));
     }
 
     @Test
     public void updateSprintNameExistsTest() throws Exception {
-        var sp = sprintDao.createSprint("test", new Date(), new Date(),createProject());
+        cleanData();
+        var sp = sprintDao.createSprint("test", new Date(), new Date(), createProject());
 
         assertThrows(DataExistenceException.class, () ->
                 sprintDao.updateSprint(sp.getId(), sp.getName(),
                         null, null));
 
-        cleanData();
     }
 
     @Test
     public void updateSprintWrongEndDateTest() throws Exception {
-        var sp = sprintDao.createSprint("test", new Date(), new Date(),createProject());
+        cleanData();
+        var sp = sprintDao.createSprint("test", new Date(), new Date(), createProject());
 
         assertThrows(DataCreationException.class, () ->
                 sprintDao.updateSprint(sp.getId(), null,
                         new Date(), yesterday()));
 
-        cleanData();
     }
 
 
     @Test
     public void getSprintByIdTest() throws Exception {
-        var sp = sprintDao.createSprint("test", new Date(), new Date(),createProject());
+        cleanData();
+        var sp = sprintDao.createSprint("test", new Date(), new Date(), createProject());
 
         var res = sprintDao.getSprintById(sp.getId());
 
         assertEquals(sp.getName(), res.getName());
 
-        cleanData();
     }
 
 
     @Test
     public void getSprintsTest() throws Exception {
-        var prj = createProject();
-        var sp = sprintDao.createSprint("test", new Date(), new Date(),prj);
+        cleanData();
 
-        var res = sprintDao.getSprints(prj,0, 1);
+        var prj = createProject();
+        var sp = sprintDao.createSprint("test", new Date(), new Date(), prj);
+
+        var res = sprintDao.getSprints(prj, 0, 1);
 
         assertEquals(1, res.size());
         assertEquals(sp.getName(), res.get(0).getName());
 
-        cleanData();
     }
 
     @Test
     public void countSprintsTest() throws Exception {
+        cleanData();
+
         var prj = createProject();
-        var sp = sprintDao.createSprint("test", new Date(), new Date(),prj);
+        sprintDao.createSprint("test", new Date(), new Date(), prj);
 
         var res = sprintDao.countSprints(prj);
 
         assertEquals(Integer.valueOf(1), res);
 
-        cleanData();
     }
 
     @Test
-    public void countSprintsProjectNotTest()  {
-               assertThrows(DataExistenceException.class, ()->{sprintDao.countSprints(100L);});
+    public void countSprintsProjectNotTest() {
+        cleanData();
+        assertThrows(DataExistenceException.class, () -> {
+            sprintDao.countSprints(100L);
+        });
     }
 
     @Test
     public void getSprintsProjectNotFoundTest() throws Exception {
-        var prj = createProject();
-        sprintDao.createSprint("test", new Date(), new Date(),prj);
-
-        assertThrows(DataExistenceException.class,()-> sprintDao.getSprints(7,0, 1));
-
         cleanData();
+
+        var prj = createProject();
+        sprintDao.createSprint("test", new Date(), new Date(), prj);
+
+        assertThrows(DataExistenceException.class, () -> sprintDao.getSprints(7, 0, 1));
+
     }
 
 
     @Test
     public void deleteSprintTest() throws Exception {
-        var sp = sprintDao.createSprint("test", new Date(), new Date(),createProject());
+        cleanData();
+        var sp = sprintDao.createSprint("test", new Date(), new Date(), createProject());
 
         sprintDao.deleteSprint(sp.getId());
 
         assertThrows(DataExistenceException.class, () -> sprintDao.getSprintById(sp.getId()));
-
-        cleanData();
 
     }
 
@@ -210,8 +202,4 @@ public class SprintDaoTest {
         return projectDao.createProject(name, startDate).getId();
     }
 
-    private void cleanData(){
-        mapper.deleteSprints();
-        mapper.deleteProjects();
-    }
 }
