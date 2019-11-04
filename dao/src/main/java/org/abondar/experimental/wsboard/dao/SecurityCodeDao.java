@@ -17,7 +17,6 @@ public class SecurityCodeDao extends BaseDao {
     private static Logger logger = LoggerFactory.getLogger(SecurityCodeDao.class);
 
 
-
     public SecurityCodeDao(DataMapper mapper) {
         super(mapper);
     }
@@ -27,23 +26,14 @@ public class SecurityCodeDao extends BaseDao {
         checkUser(userId);
 
         var foundCode = mapper.getCodeByUserId(userId);
-        if (foundCode!=null){
+        if (foundCode != null) {
             mapper.deleteCode(foundCode.getId());
         }
 
         long code;
 
-        while (true) {
-            code = generateCode();
+        code = generateCode();
 
-            var codeExists = mapper.checkCodeExists(code);
-            if (codeExists == null) {
-                break;
-            } else {
-                logger.info(LogMessageUtil.CODE_ALREADY_EXISTS);
-            }
-
-        }
 
         var sc = new SecurityCode(code, userId);
         mapper.insertCode(sc);
@@ -74,14 +64,14 @@ public class SecurityCodeDao extends BaseDao {
 
         int num = 0;
         try {
-            Random rand = SecureRandom.getInstance("SHA1PRNG");;
+            Random rand = SecureRandom.getInstance("SHA1PRNG");
             num = rand.nextInt(9000000) + 1000000;
 
-        } catch (NoSuchAlgorithmException ex){
+        } catch (NoSuchAlgorithmException ex) {
             logger.debug(ex.getMessage());
         }
 
-        return (long) num;
+        return num;
     }
 
 
