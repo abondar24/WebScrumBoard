@@ -74,7 +74,7 @@ public class SecurityCodeDao extends BaseDao {
 
         int num = 0;
         try {
-            Random rand = SecureRandom.getInstanceStrong();
+            Random rand = SecureRandom.getInstance("SHA1PRNG");;
             num = rand.nextInt(9000000) + 1000000;
 
         } catch (NoSuchAlgorithmException ex){

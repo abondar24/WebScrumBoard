@@ -67,7 +67,7 @@ public interface ProjectService {
                            @FormParam("endDate") @ApiParam String endDate,
                            @FormParam("description") @ApiParam String description);
 
-
+    //TODO: change to delete
     @GET
     @Path("/delete")
     @Produces(MediaType.APPLICATION_JSON)

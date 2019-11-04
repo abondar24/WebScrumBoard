@@ -111,6 +111,7 @@ public interface SprintService {
     })
     Response countSprints(@QueryParam("projectId") @ApiParam(required = true) long projectId);
 
+    //TODO: change to delete
     @GET
     @Path("/delete")
     @ApiOperation(

@@ -106,6 +106,7 @@ public interface TaskService {
     Response updateTaskState(@FormParam("id") @ApiParam(required = true) long taskId,
                              @FormParam("state") @ApiParam String state);
 
+    //TODO: change to delete
     @GET
     @Path("/delete")
     @Produces(MediaType.APPLICATION_JSON)

@@ -124,6 +124,7 @@ public interface UserService {
                             @FormParam("newPassword") @ApiParam(required = true) String newPassword,
                             @FormParam("id") @ApiParam(required = true) long id);
 
+    //TODO: change to delete
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/delete")
