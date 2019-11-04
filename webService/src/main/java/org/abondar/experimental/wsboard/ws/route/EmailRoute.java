@@ -33,10 +33,11 @@ public class EmailRoute extends RouteBuilder {
         })
                 .choice()
                 .when(header(EMAIL_TYPE_HEADER).isEqualTo("createUser"))
-                //TODO: language table
+                //TODO: language list
+                //TODO: user-language table
                 //TODO: language mapper stuff
                 //TODO: language dao
-                //TODO: get language rest method
+                //TODO: get language rest methods(get by user id,set lang)
                 //TODO: encoding for non-english names
                 //TODO: I18N based templates
                 .to("velocity:/velocity/createUser.html?encoding=UTF-8")
