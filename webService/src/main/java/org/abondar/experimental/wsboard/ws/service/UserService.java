@@ -197,11 +197,13 @@ public interface UserService {
     Response findUsersByIds(@QueryParam("id") @ApiParam(required = true)List<Long>ids);
 
 
+    //TODO:make as put request
     @GET
     @Path("/reset_pwd")
     @ApiOperation(
             value = "Reset password",
-            notes = "Reset user password to value 'reset'",
+            notes = "Reset user password to value 'reset'. " +
+                    "Set Accepted-Language header to values de,fr,es,ru to get error message in selected language",
             produces = "application/json")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Password reset"),

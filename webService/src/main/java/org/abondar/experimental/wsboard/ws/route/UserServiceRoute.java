@@ -16,11 +16,13 @@ import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
 import org.apache.cxf.message.MessageContentsList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.MessageSource;
 
 import javax.ws.rs.core.Response;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 
 import static org.abondar.experimental.wsboard.ws.route.RouteConstantUtil.EMAIL_TYPE_HEADER;
 import static org.abondar.experimental.wsboard.ws.route.RouteConstantUtil.LOG_HEADERS;
@@ -36,11 +38,16 @@ public class UserServiceRoute extends RouteBuilder {
     @Autowired
     @Qualifier("userDao")
     private UserDao dao;
+
     @Autowired
     @Qualifier("codeDao")
     private SecurityCodeDao codeDao;
+
     @Autowired
     private AuthService authService;
+
+    @Autowired
+    private MessageSource messageSource;
 
     @Override
     public void configure() throws Exception {
@@ -278,7 +285,15 @@ public class UserServiceRoute extends RouteBuilder {
 
                         return Response.ok().build();
                     } catch (DataExistenceException ex) {
-                        return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
+                        if (hdrs.get("Accepted-language")==null){
+                            return Response.status(Response.Status.NOT_FOUND)
+                                    .entity(ex.getLocalizedMessage()).build();
+                        } else {
+                            Locale locale = new Locale.Builder().setLanguage((String) hdrs.get("Accepted-language")).build();
+                            return Response.status(Response.Status.NOT_FOUND)
+                                    .entity( messageSource.getMessage("user.not_exists",null,locale)).build();
+                        }
+
                     } catch (CannotPerformOperationException ex) {
                         return Response.status(Response.Status.SERVICE_UNAVAILABLE).entity(LogMessageUtil.HASH_NOT_CREATED).build();
                     }

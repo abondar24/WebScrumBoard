@@ -10,6 +10,7 @@ import org.apache.camel.builder.RouteBuilder;
 import org.apache.cxf.message.MessageContentsList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.MessageSource;
 
 import javax.ws.rs.core.Response;
 
@@ -26,6 +27,9 @@ public class ContributorServiceRoute extends RouteBuilder {
     @Autowired
     @Qualifier("contributorDao")
     private ContributorDao contributorDao;
+
+    @Autowired
+    private MessageSource messageSource;
 
 
     @Override
