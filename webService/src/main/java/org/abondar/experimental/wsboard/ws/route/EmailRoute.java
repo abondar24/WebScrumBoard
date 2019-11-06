@@ -4,7 +4,7 @@ import org.apache.camel.LoggingLevel;
 import org.apache.camel.builder.RouteBuilder;
 import org.springframework.beans.factory.annotation.Value;
 
-import static org.abondar.experimental.wsboard.ws.route.RouteConstantUtil.EMAIL_TYPE_HEADER;
+import static org.abondar.experimental.wsboard.ws.util.RouteConstantUtil.EMAIL_TYPE_HEADER;
 
 /**
  * Route sending email based on header

@@ -9,6 +9,7 @@ import org.abondar.experimental.wsboard.dao.exception.DataExistenceException;
 import org.abondar.experimental.wsboard.dao.exception.InvalidHashException;
 import org.abondar.experimental.wsboard.datamodel.user.User;
 import org.abondar.experimental.wsboard.ws.service.AuthService;
+import org.abondar.experimental.wsboard.ws.util.I18nKeyUtil;
 import org.apache.camel.LoggingLevel;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
@@ -24,9 +25,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
-import static org.abondar.experimental.wsboard.ws.route.RouteConstantUtil.EMAIL_TYPE_HEADER;
-import static org.abondar.experimental.wsboard.ws.route.RouteConstantUtil.LOG_HEADERS;
-import static org.abondar.experimental.wsboard.ws.route.RouteConstantUtil.SEND_EMAIL_ENDPOINT;
+import static org.abondar.experimental.wsboard.ws.util.RouteConstantUtil.EMAIL_TYPE_HEADER;
+import static org.abondar.experimental.wsboard.ws.util.RouteConstantUtil.LOG_HEADERS;
+import static org.abondar.experimental.wsboard.ws.util.RouteConstantUtil.SEND_EMAIL_ENDPOINT;
 
 /**
  * Route for user service events
@@ -121,7 +122,7 @@ public class UserServiceRoute extends RouteBuilder {
                         return Response.status(Response.Status.FOUND).entity(ex.getLocalizedMessage()).build();
                     } catch (DataCreationException ex) {
                         return Response.status(Response.Status.PARTIAL_CONTENT).entity(ex.getLocalizedMessage()).build();
-                    } catch (IOException ex){
+                    } catch (IOException ex) {
                         return Response.status(Response.Status.BAD_REQUEST).entity(ex.getLocalizedMessage()).build();
                     }
                 });
@@ -285,13 +286,13 @@ public class UserServiceRoute extends RouteBuilder {
 
                         return Response.ok().build();
                     } catch (DataExistenceException ex) {
-                        if (hdrs.get("Accepted-language")==null){
+                        String lang = (String) hdrs.get("Accepted-language");
+
+                        if (lang == null) {
                             return Response.status(Response.Status.NOT_FOUND)
                                     .entity(ex.getLocalizedMessage()).build();
                         } else {
-                            Locale locale = new Locale.Builder().setLanguage((String) hdrs.get("Accepted-language")).build();
-                            return Response.status(Response.Status.NOT_FOUND)
-                                    .entity( messageSource.getMessage("user.not_exists",null,locale)).build();
+                           return getLocalizedResponse(lang, I18nKeyUtil.USER_NOT_EXISTS,Response.Status.NOT_FOUND);
                         }
 
                     } catch (CannotPerformOperationException ex) {
@@ -336,6 +337,20 @@ public class UserServiceRoute extends RouteBuilder {
             bos.write(buffer, 0, read);
         }
 
-        return  new String(bos.toByteArray());
+        return new String(bos.toByteArray());
+    }
+
+    /**
+     * Returns localized response or default if language not found
+     * @param lang - language code
+     * @param key - message key
+     * @param status - HTTP status
+     * @return - Response status with localized message
+     */
+    private Response getLocalizedResponse(String lang,String key,Response.Status status){
+            Locale locale = new Locale.Builder().setLanguage(lang).build();
+            return Response.status(status)
+                    .entity(messageSource.getMessage(key, null, locale)).build();
+
     }
 }

@@ -65,7 +65,9 @@ public class ContributorDao extends BaseDao {
         var existingCtr = mapper.getContributorByUserAndProject(userId,projectId);
         if (existingCtr!=null){
             if (existingCtr.isActive()){
-                throw new DataExistenceException(String.format(LogMessageUtil.CONTRIBUTOR_EXISTS,projectId,userId));
+                msg = String.format(LogMessageUtil.CONTRIBUTOR_EXISTS_LOG,projectId,userId);
+                logger.error(msg);
+                throw new DataExistenceException(LogMessageUtil.CONTRIBUTOR_EXISTS_EX);
             } else {
                 existingCtr.setActive(true);
                 if (isOwner){

@@ -157,7 +157,7 @@ public class ContributorServiceTest {
         assertEquals(302, resp.getStatus());
 
         var msg = resp.readEntity(String.class);
-        assertEquals(LogMessageUtil.CONTRIBUTOR_EXISTS, msg);
+        assertEquals(LogMessageUtil.CONTRIBUTOR_EXISTS_LOG, msg);
 
     }
 

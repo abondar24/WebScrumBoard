@@ -9,13 +9,15 @@ import org.apache.camel.builder.RouteBuilder;
 import org.apache.cxf.message.MessageContentsList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.MessageSource;
 
 import javax.ws.rs.core.Response;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
-import static org.abondar.experimental.wsboard.ws.route.RouteConstantUtil.LOG_HEADERS;
+import static org.abondar.experimental.wsboard.ws.util.RouteConstantUtil.LOG_HEADERS;
 
 /**
  * Route for project service events
@@ -27,6 +29,9 @@ public class ProjectServiceRoute extends RouteBuilder {
     @Autowired
     @Qualifier("projectDao")
     private ProjectDao projectDao;
+
+    @Autowired
+    private MessageSource messageSource;
 
     @Override
     public void configure() throws Exception {
@@ -160,6 +165,19 @@ public class ProjectServiceRoute extends RouteBuilder {
 
     }
 
+    /**
+     * Returns localized response or default if language not found
+     * @param lang - language code
+     * @param key - message key
+     * @param status - HTTP status
+     * @return - Response status with localized message
+     */
+    private Response getLocalizedResponse(String lang,String key,Response.Status status){
+        Locale locale = new Locale.Builder().setLanguage(lang).build();
+        return Response.status(status)
+                .entity(messageSource.getMessage(key, null, locale)).build();
+
+    }
 
 }
 

@@ -55,7 +55,7 @@ public class ContributorServiceTestImpl implements ContributorService {
         }
 
         if (testContributor != null && testProject.getId()==projectId && testUser.getId()==userId){
-            return Response.status(Response.Status.FOUND).entity(LogMessageUtil.CONTRIBUTOR_EXISTS).build();
+            return Response.status(Response.Status.FOUND).entity(LogMessageUtil.CONTRIBUTOR_EXISTS_LOG).build();
         }
 
 

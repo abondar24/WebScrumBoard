@@ -1,4 +1,4 @@
-package org.abondar.experimental.wsboard.ws.route;
+package org.abondar.experimental.wsboard.ws.util;
 
 /**
  * Constant values commonly used in routes

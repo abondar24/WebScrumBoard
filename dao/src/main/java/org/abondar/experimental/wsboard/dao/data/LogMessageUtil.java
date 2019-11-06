@@ -29,7 +29,7 @@ public class LogMessageUtil {
     public static final String TASK_ALREADY_CREATED = "Task already created";
     public static final String TASK_WRONG_STATE_AFTER_PAUSE = "Task was paused in different state";
     public static final String TASK_STATE_UNKNOWN = "Task state not exists";
-    public static final String TASK_DEV_OPS_NOT_ENABLED = "Task doesn't require dev ops";
+    public static final String TASK_DEV_OPS_NOT_ENABLED = "Task doesn't require DEV_OPS state";
     public static final String TASK_CONTRIBUTOR_UPDATE = "Task contributor must be changed";
     public static final String TASK_MOVE_NOT_AVAILABLE = "Task can't be moved to selected state";
     public static final String SPRINT_EXISTS = "Sprint with such name exists";
@@ -45,7 +45,8 @@ public class LogMessageUtil {
     public static final String JWT_TOKEN_NOT_SET = "No JWT token is set";
     public static final String SESSION_EXPIRED = "Session expired. Please re-login";
     public static final String WRONG_PASSWORD = "Password is wrong";
-    public static final String CONTRIBUTOR_EXISTS = "Contributor for selected project %d exists with user %d";
+    public static final String CONTRIBUTOR_EXISTS_LOG = "Contributor for selected project %d exists for user %d";
+    public static final String CONTRIBUTOR_EXISTS_EX = "Contributor for selected project exists for this user";
 
     private LogMessageUtil() {
     }
