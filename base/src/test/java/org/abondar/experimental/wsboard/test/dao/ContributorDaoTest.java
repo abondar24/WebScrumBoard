@@ -5,6 +5,8 @@ import org.abondar.experimental.wsboard.dao.exception.DataExistenceException;
 import org.abondar.experimental.wsboard.datamodel.user.UserRole;
 import org.junit.jupiter.api.Test;
 
+import java.util.Date;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -99,6 +101,7 @@ public class ContributorDaoTest extends BaseDaoTest {
 
         var usr = createUser();
         var prj = createProject(false);
+        projectDao.updateProject(prj.getId(),"","",false,new Date(),"");
 
         assertThrows(DataCreationException.class, () ->
                 contributorDao.createContributor(usr.getId(), prj.getId(), false));
