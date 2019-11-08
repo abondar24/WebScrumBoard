@@ -52,7 +52,7 @@ export default {
                 (response) => {
                     commit('setErrorMessage', '');
 
-                    if (response.code === 206) {
+                    if (response.status === 206 || response.status === 302) {
                         commit('setErrorMessage', response.data);
                         return;
                     }

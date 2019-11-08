@@ -72,7 +72,7 @@ export default {
                     (response) => {
                         commit('setUser', response.data);
                         commit('setErrorMessage', '');
-                        if (response.status === 206) {
+                        if (response.status === 206 || response.status === 302) {
                             commit('setErrorMessage', response.data);
                         }
                     },

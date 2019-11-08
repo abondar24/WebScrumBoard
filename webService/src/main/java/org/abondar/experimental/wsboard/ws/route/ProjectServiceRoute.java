@@ -4,6 +4,7 @@ import org.abondar.experimental.wsboard.dao.ProjectDao;
 import org.abondar.experimental.wsboard.dao.data.LogMessageUtil;
 import org.abondar.experimental.wsboard.dao.exception.DataCreationException;
 import org.abondar.experimental.wsboard.dao.exception.DataExistenceException;
+import org.abondar.experimental.wsboard.ws.util.I18nKeyUtil;
 import org.apache.camel.LoggingLevel;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.cxf.message.MessageContentsList;
@@ -41,6 +42,7 @@ public class ProjectServiceRoute extends RouteBuilder {
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList formData = (MessageContentsList) bdy;
+                    String lang = (String) hdrs.get("Accepted-language");
 
                     try {
                         var prj = projectDao.createProject((String) formData.get(0),
@@ -48,9 +50,9 @@ public class ProjectServiceRoute extends RouteBuilder {
 
                         return Response.ok(prj).build();
                     } catch (DataExistenceException ex) {
-                        return Response.status(Response.Status.FOUND).entity(ex.getLocalizedMessage()).build();
+                        return getLocalizedResponse(lang, I18nKeyUtil.PROJECT_EXISTS,Response.Status.FOUND);
                     } catch (DataCreationException ex) {
-                        return Response.status(Response.Status.PARTIAL_CONTENT).entity(ex.getLocalizedMessage()).build();
+                        return getLocalizedResponse(lang, I18nKeyUtil.BLANK_DATA,Response.Status.PARTIAL_CONTENT);
                     }
                 });
 
@@ -59,8 +61,8 @@ public class ProjectServiceRoute extends RouteBuilder {
                 .log(LoggingLevel.DEBUG,LOG_HEADERS)
                 .transform()
                 .body((bdy, hdrs) -> {
-
                     MessageContentsList formData = (MessageContentsList) bdy;
+                    String lang = (String) hdrs.get("Accepted-language");
 
                     try {
                         Date endDt = null;
@@ -73,20 +75,22 @@ public class ProjectServiceRoute extends RouteBuilder {
                         return Response.ok(prj).build();
                     } catch (DataExistenceException ex) {
                         if (ex.getMessage().equals(LogMessageUtil.PROJECT_NOT_EXISTS)) {
-                            return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
+                            return getLocalizedResponse(lang, I18nKeyUtil.PROJECT_NOT_EXISTS,Response.Status.NOT_FOUND);
                         } else {
-                            return Response.status(Response.Status.FOUND).entity(ex.getLocalizedMessage()).build();
+                            return getLocalizedResponse(lang, I18nKeyUtil.PROJECT_EXISTS,Response.Status.FOUND);
                         }
 
                     } catch (DataCreationException ex) {
                         switch (ex.getMessage()) {
                             case LogMessageUtil.WRONG_END_DATE:
-                                return Response.status(Response.Status.RESET_CONTENT).entity(ex.getLocalizedMessage()).build();
+                                return getLocalizedResponse(lang,
+                                        I18nKeyUtil.WRONG_END_DATE,Response.Status.RESET_CONTENT);
                             case LogMessageUtil.PARSE_DATE_FAILED:
-                                return Response.status(Response.Status.PARTIAL_CONTENT).entity(ex.getLocalizedMessage()).build();
+                                return getLocalizedResponse(lang,
+                                        I18nKeyUtil.PARSE_DATE_FAILED,Response.Status.PARTIAL_CONTENT);
                             default:
-                                return Response.status(Response.Status.MOVED_PERMANENTLY).entity(ex.getLocalizedMessage()).build();
-
+                                return getLocalizedResponse(lang,
+                                        I18nKeyUtil.PROJECT_CANNOT_BE_REACTIVATED,Response.Status.MOVED_PERMANENTLY);
                         }
                     }
 
@@ -98,14 +102,14 @@ public class ProjectServiceRoute extends RouteBuilder {
                 .log(LoggingLevel.DEBUG,LOG_HEADERS)
                 .transform()
                 .body((bdy, hdrs) -> {
-
                     MessageContentsList queryData = (MessageContentsList) bdy;
+                    String lang = (String) hdrs.get("Accepted-language");
 
                     try {
                         projectDao.deleteProject((long) queryData.get(0));
                         return Response.ok().build();
                     } catch (DataExistenceException ex) {
-                        return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
+                        return getLocalizedResponse(lang, I18nKeyUtil.PROJECT_NOT_EXISTS,Response.Status.NOT_FOUND);
                     }
                 });
 
@@ -114,14 +118,14 @@ public class ProjectServiceRoute extends RouteBuilder {
                 .log(LoggingLevel.DEBUG,LOG_HEADERS)
                 .transform()
                 .body((bdy, hdrs) -> {
-
                     MessageContentsList queryData = (MessageContentsList) bdy;
+                    String lang = (String) hdrs.get("Accepted-language");
 
                     try {
                         var prj = projectDao.findProjectById((long) queryData.get(0));
                         return Response.ok(prj).build();
                     } catch (DataExistenceException ex) {
-                        return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
+                        return getLocalizedResponse(lang, I18nKeyUtil.PROJECT_NOT_EXISTS,Response.Status.NOT_FOUND);
                     }
                 });
 
@@ -129,8 +133,8 @@ public class ProjectServiceRoute extends RouteBuilder {
                 .log(LoggingLevel.DEBUG,LOG_HEADERS)
                 .transform()
                 .body((bdy, hdrs) -> {
-
                     MessageContentsList queryData = (MessageContentsList) bdy;
+                    String lang = (String) hdrs.get("Accepted-language");
 
                     try {
                         var prj = projectDao.findUserProjects((long) queryData.get(0));
@@ -141,7 +145,7 @@ public class ProjectServiceRoute extends RouteBuilder {
 
                         return Response.ok(prj).build();
                     } catch (DataExistenceException ex) {
-                        return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
+                        return getLocalizedResponse(lang, I18nKeyUtil.USER_NOT_EXISTS,Response.Status.NOT_FOUND);
                     }
                 });
 
