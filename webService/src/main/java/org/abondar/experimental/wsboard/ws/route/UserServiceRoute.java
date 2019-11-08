@@ -59,6 +59,7 @@ public class UserServiceRoute extends RouteBuilder {
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList formData = (MessageContentsList) bdy;
+                    String lang = (String) hdrs.get("Accepted-language");
 
                     try {
                         User user = dao.createUser((String) formData.get(0), (String) formData.get(1),
@@ -71,11 +72,12 @@ public class UserServiceRoute extends RouteBuilder {
                         return Response.ok(user).build();
 
                     } catch (CannotPerformOperationException ex) {
-                        return Response.status(Response.Status.SERVICE_UNAVAILABLE).entity(LogMessageUtil.HASH_NOT_CREATED).build();
+                        return getLocalizedResponse(lang, I18nKeyUtil.HASH_NOT_CREATED,
+                                Response.Status.SERVICE_UNAVAILABLE);
                     } catch (DataExistenceException ex) {
-                        return Response.status(Response.Status.FOUND).entity(ex.getLocalizedMessage()).build();
+                        return getLocalizedResponse(lang, I18nKeyUtil.USER_EXISTS, Response.Status.FOUND);
                     } catch (DataCreationException ex) {
-                        return Response.status(Response.Status.PARTIAL_CONTENT).entity(ex.getLocalizedMessage()).build();
+                        return getLocalizedResponse(lang, I18nKeyUtil.BLANK_DATA, Response.Status.PARTIAL_CONTENT);
                     }
                 })
 
@@ -87,6 +89,7 @@ public class UserServiceRoute extends RouteBuilder {
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList formData = (MessageContentsList) bdy;
+                    String lang = (String) hdrs.get("Accepted-language");
 
                     try {
                         User user = dao.updateUser((long) formData.get(0), (String) formData.get(1),
@@ -96,9 +99,9 @@ public class UserServiceRoute extends RouteBuilder {
                         return Response.ok(user).build();
 
                     } catch (DataExistenceException ex) {
-                        return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
+                        return getLocalizedResponse(lang, I18nKeyUtil.USER_NOT_EXISTS, Response.Status.NOT_FOUND);
                     } catch (DataCreationException ex) {
-                        return Response.status(Response.Status.NO_CONTENT).entity(ex.getLocalizedMessage()).build();
+                        return getLocalizedResponse(lang, I18nKeyUtil.USER_NO_ROLES, Response.Status.NO_CONTENT);
                     }
                 });
 
@@ -107,8 +110,9 @@ public class UserServiceRoute extends RouteBuilder {
                 .transform()
                 .body((bdy, hdrs) -> {
                     MultipartBody mBody = (MultipartBody) bdy;
-                    var id = (long) hdrs.get("id");
+                    String lang = (String) hdrs.get("Accepted-language");
 
+                    var id = (long) hdrs.get("id");
 
                     try {
 
@@ -119,11 +123,11 @@ public class UserServiceRoute extends RouteBuilder {
                         return Response.ok(user).build();
 
                     } catch (DataExistenceException ex) {
-                        return Response.status(Response.Status.FOUND).entity(ex.getLocalizedMessage()).build();
+                        return getLocalizedResponse(lang, I18nKeyUtil.USER_NOT_EXISTS, Response.Status.NOT_FOUND);
                     } catch (DataCreationException ex) {
-                        return Response.status(Response.Status.PARTIAL_CONTENT).entity(ex.getLocalizedMessage()).build();
+                        return getLocalizedResponse(lang, I18nKeyUtil.USER_NO_ROLES, Response.Status.NO_CONTENT);
                     } catch (IOException ex) {
-                        return Response.status(Response.Status.BAD_REQUEST).entity(ex.getLocalizedMessage()).build();
+                        return getLocalizedResponse(lang, I18nKeyUtil.USER_AVATAR_BAD, Response.Status.BAD_REQUEST);
                     }
                 });
 
@@ -133,6 +137,8 @@ public class UserServiceRoute extends RouteBuilder {
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList formData = (MessageContentsList) bdy;
+                    String lang = (String) hdrs.get("Accepted-language");
+
                     try {
                         User user = dao.updateLogin((String) formData.get(0), (long) formData.get(1));
                         hdrs.put(EMAIL_TYPE_HEADER, "updateLogin");
@@ -144,13 +150,13 @@ public class UserServiceRoute extends RouteBuilder {
 
                     } catch (DataExistenceException ex) {
                         if (ex.getMessage().equals(LogMessageUtil.USER_EXISTS)) {
-                            return Response.status(Response.Status.CREATED).entity(ex.getLocalizedMessage()).build();
+                            return getLocalizedResponse(lang, I18nKeyUtil.USER_EXISTS, Response.Status.FOUND);
                         } else {
-                            return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
+                            return getLocalizedResponse(lang, I18nKeyUtil.USER_NOT_EXISTS, Response.Status.NOT_FOUND);
                         }
 
                     } catch (DataCreationException ex) {
-                        return Response.status(Response.Status.NOT_IMPLEMENTED).entity(ex.getLocalizedMessage()).build();
+                        return getLocalizedResponse(lang, I18nKeyUtil.USER_EMTPY_LOGIN, Response.Status.NOT_IMPLEMENTED);
                     }
 
                 })
@@ -163,6 +169,8 @@ public class UserServiceRoute extends RouteBuilder {
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList formData = (MessageContentsList) bdy;
+                    String lang = (String) hdrs.get("Accepted-language");
+
                     try {
                         User user = dao.updatePassword((String) formData.get(0), (String) formData.get(1),
                                 (long) formData.get(2));
@@ -175,11 +183,13 @@ public class UserServiceRoute extends RouteBuilder {
 
                         return Response.ok(user).build();
                     } catch (InvalidHashException ex) {
-                        return Response.status(Response.Status.UNAUTHORIZED).entity(ex.getLocalizedMessage()).build();
+                        return getLocalizedResponse(lang, I18nKeyUtil.USER_UNAUTHORIZED, Response.Status.UNAUTHORIZED);
+
                     } catch (CannotPerformOperationException ex) {
-                        return Response.status(Response.Status.SERVICE_UNAVAILABLE).entity(LogMessageUtil.HASH_NOT_CREATED).build();
+                        return getLocalizedResponse(lang, I18nKeyUtil.HASH_NOT_CREATED,
+                                Response.Status.SERVICE_UNAVAILABLE);
                     } catch (DataExistenceException ex) {
-                        return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
+                        return getLocalizedResponse(lang, I18nKeyUtil.USER_NOT_EXISTS, Response.Status.NOT_FOUND);
                     }
                 })
                 .wireTap(SEND_EMAIL_ENDPOINT)
@@ -190,6 +200,7 @@ public class UserServiceRoute extends RouteBuilder {
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList queryData = (MessageContentsList) bdy;
+                    String lang = (String) hdrs.get("Accepted-language");
 
                     try {
                         User user = dao.deleteUser((long) queryData.get(0));
@@ -198,9 +209,10 @@ public class UserServiceRoute extends RouteBuilder {
 
                         return Response.ok(user).build();
                     } catch (DataExistenceException ex) {
-                        return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
+                        return getLocalizedResponse(lang, I18nKeyUtil.USER_NOT_EXISTS, Response.Status.NOT_FOUND);
                     } catch (DataCreationException ex) {
-                        return Response.status(Response.Status.NOT_IMPLEMENTED).entity(ex.getLocalizedMessage()).build();
+                        return getLocalizedResponse(lang,
+                                I18nKeyUtil.USER_IS_PROJECT_OWNER, Response.Status.NOT_IMPLEMENTED);
                     }
 
                 })
@@ -212,12 +224,14 @@ public class UserServiceRoute extends RouteBuilder {
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList formData = (MessageContentsList) bdy;
+                    String lang = (String) hdrs.get("Accepted-language");
+
                     try {
                         return Response.ok().header("Authorization",
                                 "JWT " + authService.authorizeUser((String) formData.get(0), (String) formData.get(1)))
                                 .build();
                     } catch (DataExistenceException ex) {
-                        return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
+                        return getLocalizedResponse(lang, I18nKeyUtil.USER_NOT_EXISTS, Response.Status.NOT_FOUND);
                     }
                 })
                 .removeHeader("password")
@@ -228,14 +242,15 @@ public class UserServiceRoute extends RouteBuilder {
                 .log(LoggingLevel.DEBUG, LOG_HEADERS)
                 .transform()
                 .body((bdy, hdrs) -> {
-
                     MessageContentsList formData = (MessageContentsList) bdy;
+                    String lang = (String) hdrs.get("Accepted-language");
+
                     try {
                         dao.findUserById((long) formData.get(0));
 
                         return Response.ok().cookie().build();
                     } catch (DataExistenceException ex) {
-                        return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
+                        return getLocalizedResponse(lang, I18nKeyUtil.USER_NOT_EXISTS, Response.Status.NOT_FOUND);
                     }
                 });
 
@@ -245,14 +260,15 @@ public class UserServiceRoute extends RouteBuilder {
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList formData = (MessageContentsList) bdy;
+                    String lang = (String) hdrs.get("Accepted-language");
+
                     try {
                         var usr = dao.findUserByLogin((String) formData.get(0));
 
                         return Response.ok(usr).build();
 
-
                     } catch (DataExistenceException ex) {
-                        return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
+                        return getLocalizedResponse(lang, I18nKeyUtil.USER_NOT_EXISTS, Response.Status.NOT_FOUND);
                     }
                 });
 
@@ -275,6 +291,8 @@ public class UserServiceRoute extends RouteBuilder {
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList formData = (MessageContentsList) bdy;
+                    String lang = (String) hdrs.get("Accepted-language");
+
                     try {
                         var user = dao.findUserById((long) formData.get(0));
                         dao.resetPassword(((long) formData.get(0)));
@@ -286,17 +304,10 @@ public class UserServiceRoute extends RouteBuilder {
 
                         return Response.ok().build();
                     } catch (DataExistenceException ex) {
-                        String lang = (String) hdrs.get("Accepted-language");
-
-                        if (lang == null) {
-                            return Response.status(Response.Status.NOT_FOUND)
-                                    .entity(ex.getLocalizedMessage()).build();
-                        } else {
-                           return getLocalizedResponse(lang, I18nKeyUtil.USER_NOT_EXISTS,Response.Status.NOT_FOUND);
-                        }
-
+                        return getLocalizedResponse(lang, I18nKeyUtil.USER_NOT_EXISTS, Response.Status.NOT_FOUND);
                     } catch (CannotPerformOperationException ex) {
-                        return Response.status(Response.Status.SERVICE_UNAVAILABLE).entity(LogMessageUtil.HASH_NOT_CREATED).build();
+                        return getLocalizedResponse(lang,
+                                I18nKeyUtil.HASH_NOT_CREATED, Response.Status.SERVICE_UNAVAILABLE);
                     }
 
 
@@ -310,14 +321,16 @@ public class UserServiceRoute extends RouteBuilder {
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList formData = (MessageContentsList) bdy;
+                    String lang = (String) hdrs.get("Accepted-language");
+
                     try {
                         codeDao.enterCode((long) formData.get(0), (long) formData.get(1));
                         return Response.ok().build();
                     } catch (DataExistenceException ex) {
                         if (ex.getMessage().equals(LogMessageUtil.CODE_NOT_EXISTS)) {
-                            return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
+                            return getLocalizedResponse(lang, I18nKeyUtil.CODE_NOT_EXISTS, Response.Status.NOT_FOUND);
                         } else {
-                            return Response.status(Response.Status.BAD_REQUEST).entity(ex.getLocalizedMessage()).build();
+                            return getLocalizedResponse(lang, I18nKeyUtil.CODE_NOT_MATCHES, Response.Status.BAD_REQUEST);
                         }
 
                     }
@@ -342,15 +355,16 @@ public class UserServiceRoute extends RouteBuilder {
 
     /**
      * Returns localized response or default if language not found
-     * @param lang - language code
-     * @param key - message key
+     *
+     * @param lang   - language code
+     * @param key    - message key
      * @param status - HTTP status
      * @return - Response status with localized message
      */
-    private Response getLocalizedResponse(String lang,String key,Response.Status status){
-            Locale locale = new Locale.Builder().setLanguage(lang).build();
-            return Response.status(status)
-                    .entity(messageSource.getMessage(key, null, locale)).build();
+    private Response getLocalizedResponse(String lang, String key, Response.Status status) {
+        Locale locale = new Locale.Builder().setLanguage(lang).build();
+        return Response.status(status)
+                .entity(messageSource.getMessage(key, null, locale)).build();
 
     }
 }

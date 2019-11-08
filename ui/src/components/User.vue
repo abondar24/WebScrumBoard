@@ -98,7 +98,6 @@
     import EditCredentialsForm from "./EditCredentialsForm";
 
     export default {
-        //TODO: fix avatar resize
         //TODO: check tasks table after adding tasks
         name: "User",
         components: {EditCredentialsForm, EditUserForm, NavbarCommon},

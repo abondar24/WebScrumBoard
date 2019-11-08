@@ -13,6 +13,7 @@ public class I18nKeyUtil {
     public static final String USER_NOT_EXISTS = "user.not_exists";
     public static final String USER_UNAUTHORIZED = "user.unauthorized";
     public static final String USER_IS_PROJECT_OWNER = "user.is_project_owner";
+    public static final String USER_AVATAR_BAD = "user.avatar_bad";
     public static final String PROJECT_EXISTS = "project.exists";
     public static final String PROJECT_NOT_EXISTS = "project.not_exists";
     public static final String WRONG_END_DATE = "wrong_end_date";
