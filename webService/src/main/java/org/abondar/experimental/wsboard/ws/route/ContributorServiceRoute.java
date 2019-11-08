@@ -5,6 +5,7 @@ import org.abondar.experimental.wsboard.dao.ContributorDao;
 import org.abondar.experimental.wsboard.dao.data.LogMessageUtil;
 import org.abondar.experimental.wsboard.dao.exception.DataCreationException;
 import org.abondar.experimental.wsboard.dao.exception.DataExistenceException;
+import org.abondar.experimental.wsboard.ws.util.I18nKeyUtil;
 import org.apache.camel.LoggingLevel;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.cxf.message.MessageContentsList;
@@ -40,8 +41,8 @@ public class ContributorServiceRoute extends RouteBuilder {
                 .log(LoggingLevel.DEBUG,LOG_HEADERS)
                 .transform()
                 .body((bdy, hdrs) -> {
-
                     MessageContentsList formData = (MessageContentsList) bdy;
+                    String lang = (String) hdrs.get("Accepted-language");
 
                     try {
                         var ctr = contributorDao.createContributor((long) formData.get(0), (long) formData.get(1),
@@ -49,16 +50,20 @@ public class ContributorServiceRoute extends RouteBuilder {
                         return Response.ok(ctr).build();
                     } catch (DataExistenceException ex) {
                         if(ex.getMessage().equals(LogMessageUtil.CONTRIBUTOR_EXISTS_LOG)){
-                            return Response.status(Response.Status.FOUND).entity(ex.getLocalizedMessage()).build();
+                            return getLocalizedResponse(lang, I18nKeyUtil.CONTRIBUTOR_EXISTS,Response.Status.NOT_FOUND);
+                        } else if (ex.getMessage().equals(LogMessageUtil.USER_NOT_EXISTS)){
+                            return getLocalizedResponse(lang, I18nKeyUtil.USER_NOT_EXISTS,Response.Status.NOT_FOUND);
                         } else {
-                            return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
+                            return getLocalizedResponse(lang, I18nKeyUtil.PROJECT_NOT_EXISTS,Response.Status.NOT_FOUND);
                         }
 
                     } catch (DataCreationException ex) {
                         if (ex.getMessage().equals(LogMessageUtil.PROJECT_NOT_ACTIVE)) {
-                            return Response.status(Response.Status.MOVED_PERMANENTLY).entity(ex.getLocalizedMessage()).build();
+                            return getLocalizedResponse(lang,
+                                    I18nKeyUtil.PROJECT_CANNOT_BE_REACTIVATED,Response.Status.MOVED_PERMANENTLY);
                         } else {
-                            return Response.status(Response.Status.CONFLICT).entity(ex.getLocalizedMessage()).build();
+                            return getLocalizedResponse(lang,
+                                    I18nKeyUtil.CONTRIBUTOR_IS_ALREADY_OWNER,Response.Status.CONFLICT);
                         }
                     }
 
@@ -68,8 +73,8 @@ public class ContributorServiceRoute extends RouteBuilder {
                 .log(LoggingLevel.DEBUG,LOG_HEADERS)
                 .transform()
                 .body((bdy, hdrs) -> {
-
                     MessageContentsList formData = (MessageContentsList) bdy;
+                    String lang = (String) hdrs.get("Accepted-language");
 
                     try {
 
@@ -77,17 +82,27 @@ public class ContributorServiceRoute extends RouteBuilder {
                                 (boolean) formData.get(3));
                         return Response.ok(ctr).build();
                     } catch (DataExistenceException ex) {
-                        return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
+                        if (ex.getMessage().equals(LogMessageUtil.USER_NOT_EXISTS)){
+                            return getLocalizedResponse(lang, I18nKeyUtil.USER_NOT_EXISTS,Response.Status.NOT_FOUND);
+                        } else if (ex.getMessage().equals(LogMessageUtil.PROJECT_NOT_EXISTS)){
+                            return getLocalizedResponse(lang, I18nKeyUtil.PROJECT_NOT_EXISTS,Response.Status.NOT_FOUND);
+                        } else {
+                            return getLocalizedResponse(lang, I18nKeyUtil.CONTRIBUTOR_NOT_EXISTS,Response.Status.NOT_FOUND);
+                        }
                     } catch (DataCreationException ex) {
                         switch (ex.getMessage()) {
                             case LogMessageUtil.CONTRIBUTOR_IS_ALREADY_OWNER:
-                                return Response.status(Response.Status.FOUND).entity(ex.getLocalizedMessage()).build();
+                                return getLocalizedResponse(lang,
+                                        I18nKeyUtil.CONTRIBUTOR_IS_ALREADY_OWNER,Response.Status.CONFLICT);
                             case LogMessageUtil.PROJECT_HAS_NO_OWNER:
-                                return Response.status(Response.Status.CONFLICT).entity(ex.getLocalizedMessage()).build();
+                                return getLocalizedResponse(lang,
+                                        I18nKeyUtil.PROJECT_HAS_NO_OWNER,Response.Status.CONFLICT);
                             case LogMessageUtil.CONTRIBUTOR_NOT_ACTIVE:
-                                return Response.status(Response.Status.GONE).entity(ex.getLocalizedMessage()).build();
+                                return getLocalizedResponse(lang,
+                                        I18nKeyUtil.CONTRIBUTOR_NOT_ACTIVE,Response.Status.GONE);
                             case LogMessageUtil.CONTRIBUTOR_CANNOT_BE_DEACTIVATED:
-                                return Response.status(Response.Status.FORBIDDEN).entity(ex.getLocalizedMessage()).build();
+                                return getLocalizedResponse(lang,
+                                        I18nKeyUtil.CONTRIBUTOR_CANNOT_BE_DEACTIVATED,Response.Status.FORBIDDEN);
                             default:
                                 return Response.status(Response.Status.FORBIDDEN).build();
                         }
@@ -99,15 +114,16 @@ public class ContributorServiceRoute extends RouteBuilder {
                 .log(LoggingLevel.DEBUG,LOG_HEADERS)
                 .transform()
                 .body((bdy, hdrs) -> {
-
                     MessageContentsList queryData = (MessageContentsList) bdy;
+                    String lang = (String) hdrs.get("Accepted-language");
+
                     try {
                         var owner = contributorDao.findProjectOwner((long) queryData.get(0));
                         return Response.ok(owner).build();
                     } catch (DataExistenceException ex) {
-                        return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
+                        return getLocalizedResponse(lang, I18nKeyUtil.PROJECT_NOT_EXISTS,Response.Status.NOT_FOUND);
                     } catch (DataCreationException ex) {
-                        return Response.status(Response.Status.NO_CONTENT).entity(ex.getLocalizedMessage()).build();
+                        return getLocalizedResponse(lang, I18nKeyUtil.PROJECT_HAS_NO_OWNER,Response.Status.NO_CONTENT);
                     }
 
 
@@ -117,8 +133,9 @@ public class ContributorServiceRoute extends RouteBuilder {
                 .log(LoggingLevel.DEBUG,LOG_HEADERS)
                 .transform()
                 .body((bdy, hdrs) -> {
-
                     MessageContentsList queryData = (MessageContentsList) bdy;
+                    String lang = (String) hdrs.get("Accepted-language");
+
                     try {
                         var contributors = contributorDao.findProjectContributors((long) queryData.get(0),
                                 (int) queryData.get(1), (int) queryData.get(2));
@@ -128,7 +145,7 @@ public class ContributorServiceRoute extends RouteBuilder {
 
                         return Response.ok(contributors).build();
                     } catch (DataExistenceException ex) {
-                        return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
+                        return getLocalizedResponse(lang, I18nKeyUtil.PROJECT_NOT_EXISTS,Response.Status.NOT_FOUND);
                     }
 
 
@@ -138,14 +155,15 @@ public class ContributorServiceRoute extends RouteBuilder {
                 .log(LoggingLevel.DEBUG,LOG_HEADERS)
                 .transform()
                 .body((bdy, hdrs) -> {
-
                     MessageContentsList queryData = (MessageContentsList) bdy;
+                    String lang = (String) hdrs.get("Accepted-language");
+
                     try {
                         var contributors = contributorDao.countProjectContributors((long) queryData.get(0));
 
                         return Response.ok(contributors).build();
                     } catch (DataExistenceException ex) {
-                        return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
+                        return getLocalizedResponse(lang, I18nKeyUtil.PROJECT_NOT_EXISTS,Response.Status.NOT_FOUND);
                     }
 
 
@@ -156,8 +174,9 @@ public class ContributorServiceRoute extends RouteBuilder {
                 .log(LoggingLevel.DEBUG,LOG_HEADERS)
                 .transform()
                 .body((bdy, hdrs) -> {
-
                     MessageContentsList queryData = (MessageContentsList) bdy;
+                    String lang = (String) hdrs.get("Accepted-language");
+
                     try {
                         var contributors = contributorDao.findContributorsByUserId((long) queryData.get(0),
                                 (int) queryData.get(1), (int) queryData.get(2));
@@ -167,7 +186,7 @@ public class ContributorServiceRoute extends RouteBuilder {
 
                         return Response.ok(contributors).build();
                     } catch (DataExistenceException ex) {
-                        return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
+                        return getLocalizedResponse(lang, I18nKeyUtil.USER_NOT_EXISTS,Response.Status.NOT_FOUND);
                     }
 
                 });
@@ -176,15 +195,20 @@ public class ContributorServiceRoute extends RouteBuilder {
                 .log(LoggingLevel.DEBUG,LOG_HEADERS)
                 .transform()
                 .body((bdy, hdrs) -> {
-
                     MessageContentsList queryData = (MessageContentsList) bdy;
+                    String lang = (String) hdrs.get("Accepted-language");
+
                     try {
                         var res = contributorDao.findContributorByUserAndProject((long) queryData.get(0),
                                 (long) queryData.get(1));
 
                         return Response.ok(res.orElse(0L)).build();
                     } catch (DataExistenceException ex) {
-                        return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
+                        if (ex.getMessage().equals(LogMessageUtil.USER_NOT_EXISTS)){
+                            return getLocalizedResponse(lang, I18nKeyUtil.USER_NOT_EXISTS,Response.Status.NOT_FOUND);
+                        } else {
+                            return getLocalizedResponse(lang, I18nKeyUtil.PROJECT_NOT_EXISTS,Response.Status.NOT_FOUND);
+                        }
                     }
 
 
