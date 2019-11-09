@@ -58,8 +58,8 @@ public interface SprintService {
             produces = "application/json")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Sprint updated", response = Sprint.class),
-            @ApiResponse(code = 204, message = "Form data is not complete or wrong"),
             @ApiResponse(code = 205, message = "Sprint end date is wrong"),
+            @ApiResponse(code = 206, message = "Form data is not complete or wrong"),
             @ApiResponse(code = 302, message = "Sprint with name already exists"),
             @ApiResponse(code = 404, message = "Sprint with id not exists")
     })

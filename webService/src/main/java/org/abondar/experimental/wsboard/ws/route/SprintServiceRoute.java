@@ -4,6 +4,7 @@ import org.abondar.experimental.wsboard.dao.SprintDao;
 import org.abondar.experimental.wsboard.dao.data.LogMessageUtil;
 import org.abondar.experimental.wsboard.dao.exception.DataCreationException;
 import org.abondar.experimental.wsboard.dao.exception.DataExistenceException;
+import org.abondar.experimental.wsboard.ws.util.I18nKeyUtil;
 import org.apache.camel.LoggingLevel;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.cxf.message.MessageContentsList;
@@ -40,8 +41,8 @@ public class SprintServiceRoute extends RouteBuilder {
                 .log(LoggingLevel.DEBUG,LOG_HEADERS)
                 .transform()
                 .body((bdy, hdrs) -> {
-
                     MessageContentsList formData = (MessageContentsList) bdy;
+                    String lang = (String) hdrs.get("Accepted-language");
 
                     try {
                         var startDt = convertDate((String) formData.get(1));
@@ -53,12 +54,12 @@ public class SprintServiceRoute extends RouteBuilder {
 
                     } catch (DataCreationException ex) {
                         if (ex.getMessage().equals(LogMessageUtil.WRONG_END_DATE)) {
-                            return Response.status(Response.Status.RESET_CONTENT).entity(ex.getLocalizedMessage()).build();
+                            return getLocalizedResponse(lang, I18nKeyUtil.WRONG_END_DATE,Response.Status.RESET_CONTENT);
                         } else {
-                            return Response.status(Response.Status.PARTIAL_CONTENT).entity(ex.getLocalizedMessage()).build();
+                            return getLocalizedResponse(lang, I18nKeyUtil.BLANK_DATA,Response.Status.PARTIAL_CONTENT);
                         }
                     } catch (DataExistenceException ex) {
-                        return Response.status(Response.Status.FOUND).entity(ex.getLocalizedMessage()).build();
+                        return getLocalizedResponse(lang, I18nKeyUtil.SPRINT_EXISTS,Response.Status.FOUND);
                     }
                 });
 
@@ -66,8 +67,8 @@ public class SprintServiceRoute extends RouteBuilder {
                 .log(LoggingLevel.DEBUG,LOG_HEADERS)
                 .transform()
                 .body((bdy, hdrs) -> {
-
                     MessageContentsList formData = (MessageContentsList) bdy;
+                    String lang = (String) hdrs.get("Accepted-language");
 
                     try {
                         Date startDt = null;
@@ -87,15 +88,15 @@ public class SprintServiceRoute extends RouteBuilder {
                         return Response.ok(sprint).build();
                     } catch (DataCreationException ex) {
                         if (ex.getMessage().equals(LogMessageUtil.WRONG_END_DATE)) {
-                            return Response.status(Response.Status.RESET_CONTENT).entity(ex.getLocalizedMessage()).build();
+                            return getLocalizedResponse(lang, I18nKeyUtil.WRONG_END_DATE,Response.Status.RESET_CONTENT);
                         } else {
-                            return Response.status(Response.Status.NO_CONTENT).entity(ex.getLocalizedMessage()).build();
+                            return getLocalizedResponse(lang, I18nKeyUtil.BLANK_DATA,Response.Status.PARTIAL_CONTENT);
                         }
                     } catch (DataExistenceException ex) {
                         if (ex.getMessage().equals(LogMessageUtil.SPRINT_NOT_EXISTS)) {
-                            return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
+                            return getLocalizedResponse(lang, I18nKeyUtil.SPRINT_NOT_EXISTS,Response.Status.NOT_FOUND);
                         } else {
-                            return Response.status(Response.Status.FOUND).entity(ex.getLocalizedMessage()).build();
+                            return getLocalizedResponse(lang, I18nKeyUtil.SPRINT_EXISTS,Response.Status.FOUND);
                         }
                     }
                 });
@@ -104,14 +105,14 @@ public class SprintServiceRoute extends RouteBuilder {
                 .log(LoggingLevel.DEBUG,LOG_HEADERS)
                 .transform()
                 .body((bdy, hdrs) -> {
-
                     MessageContentsList queryData = (MessageContentsList) bdy;
+                    String lang = (String) hdrs.get("Accepted-language");
 
                     try {
                         var sprint = sprintDao.getSprintById((long) queryData.get(0));
                         return Response.ok(sprint).build();
                     } catch (DataExistenceException ex) {
-                        return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
+                        return getLocalizedResponse(lang, I18nKeyUtil.SPRINT_NOT_EXISTS,Response.Status.NOT_FOUND);
                     }
                 });
 
@@ -119,8 +120,8 @@ public class SprintServiceRoute extends RouteBuilder {
                 .log(LoggingLevel.DEBUG,LOG_HEADERS)
                 .transform()
                 .body((bdy, hdrs) -> {
-
                     MessageContentsList queryData = (MessageContentsList) bdy;
+                    String lang = (String) hdrs.get("Accepted-language");
 
                     try{
                         var sprints = sprintDao.getSprints((long)queryData.get(0),(int) queryData.get(1), (int) queryData.get(2));
@@ -130,7 +131,7 @@ public class SprintServiceRoute extends RouteBuilder {
 
                         return Response.ok(sprints).build();
                     } catch (DataExistenceException ex){
-                        return Response.status(Response.Status.NOT_FOUND).entity(ex.getMessage()).build();
+                        return getLocalizedResponse(lang, I18nKeyUtil.PROJECT_NOT_EXISTS,Response.Status.NOT_FOUND);
                     }
 
                 });
@@ -139,14 +140,15 @@ public class SprintServiceRoute extends RouteBuilder {
                 .log(LoggingLevel.DEBUG,LOG_HEADERS)
                 .transform()
                 .body((bdy, hdrs) -> {
-
                     MessageContentsList queryData = (MessageContentsList) bdy;
+                    String lang = (String) hdrs.get("Accepted-language");
+
                     try {
                         var tasks = sprintDao.countSprints((long) queryData.get(0));
 
                         return Response.ok(tasks).build();
                     } catch (DataExistenceException ex) {
-                        return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
+                        return getLocalizedResponse(lang, I18nKeyUtil.PROJECT_NOT_EXISTS,Response.Status.NOT_FOUND);
                     }
 
 
@@ -157,12 +159,14 @@ public class SprintServiceRoute extends RouteBuilder {
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList queryData = (MessageContentsList) bdy;
+                    String lang = (String) hdrs.get("Accepted-language");
+
                     try {
                         sprintDao.deleteSprint((long) queryData.get(0));
                         return Response.ok().build();
 
                     } catch (DataExistenceException ex) {
-                        return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
+                        return getLocalizedResponse(lang, I18nKeyUtil.SPRINT_NOT_EXISTS,Response.Status.NOT_FOUND);
                     }
                 });
     }
