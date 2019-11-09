@@ -75,7 +75,13 @@ public class CxfConfig implements WebMvcConfigurer {
         extMappings.put("json", "application/json");
         factory.setExtensionMappings(extMappings);
         Map<Object, Object> langMappings = new HashMap<>();
-        langMappings.put("en", "en-gb");
+        langMappings.put("en", "en-us");
+        langMappings.put("ru", "ru-ru");
+        langMappings.put("de", "de-de");
+        langMappings.put("fr", "fr-fr");
+        langMappings.put("es", "es-es");
+
+
         factory.setLanguageMappings(langMappings);
         factory.setAddress("/wsboard");
 

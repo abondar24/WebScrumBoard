@@ -59,7 +59,7 @@ public class UserServiceRoute extends RouteBuilder {
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList formData = (MessageContentsList) bdy;
-                    String lang = (String) hdrs.get("Accepted-language");
+                    String lang = (String) hdrs.get("Accept-Language");
 
                     try {
                         User user = dao.createUser((String) formData.get(0), (String) formData.get(1),
@@ -89,7 +89,7 @@ public class UserServiceRoute extends RouteBuilder {
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList formData = (MessageContentsList) bdy;
-                    String lang = (String) hdrs.get("Accepted-language");
+                    String lang = (String) hdrs.get("Accept-Language");
 
                     try {
                         User user = dao.updateUser((long) formData.get(0), (String) formData.get(1),
@@ -110,7 +110,7 @@ public class UserServiceRoute extends RouteBuilder {
                 .transform()
                 .body((bdy, hdrs) -> {
                     MultipartBody mBody = (MultipartBody) bdy;
-                    String lang = (String) hdrs.get("Accepted-language");
+                    String lang = (String) hdrs.get("Accept-Language");
 
                     var id = (long) hdrs.get("id");
 
@@ -137,7 +137,7 @@ public class UserServiceRoute extends RouteBuilder {
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList formData = (MessageContentsList) bdy;
-                    String lang = (String) hdrs.get("Accepted-language");
+                    String lang = (String) hdrs.get("Accept-Language");
 
                     try {
                         User user = dao.updateLogin((String) formData.get(0), (long) formData.get(1));
@@ -169,7 +169,7 @@ public class UserServiceRoute extends RouteBuilder {
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList formData = (MessageContentsList) bdy;
-                    String lang = (String) hdrs.get("Accepted-language");
+                    String lang = (String) hdrs.get("Accept-Language");
 
                     try {
                         User user = dao.updatePassword((String) formData.get(0), (String) formData.get(1),
@@ -200,7 +200,7 @@ public class UserServiceRoute extends RouteBuilder {
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList queryData = (MessageContentsList) bdy;
-                    String lang = (String) hdrs.get("Accepted-language");
+                    String lang = (String) hdrs.get("Accept-Language");
 
                     try {
                         User user = dao.deleteUser((long) queryData.get(0));
@@ -224,7 +224,7 @@ public class UserServiceRoute extends RouteBuilder {
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList formData = (MessageContentsList) bdy;
-                    String lang = (String) hdrs.get("Accepted-language");
+                    String lang = (String) hdrs.get("Accept-Language");
 
                     try {
                         return Response.ok().header("Authorization",
@@ -243,7 +243,7 @@ public class UserServiceRoute extends RouteBuilder {
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList formData = (MessageContentsList) bdy;
-                    String lang = (String) hdrs.get("Accepted-language");
+                    String lang = (String) hdrs.get("Accept-Language");
 
                     try {
                         dao.findUserById((long) formData.get(0));
@@ -260,7 +260,7 @@ public class UserServiceRoute extends RouteBuilder {
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList formData = (MessageContentsList) bdy;
-                    String lang = (String) hdrs.get("Accepted-language");
+                    String lang = (String) hdrs.get("Accept-Language");
 
                     try {
                         var usr = dao.findUserByLogin((String) formData.get(0));
@@ -291,7 +291,7 @@ public class UserServiceRoute extends RouteBuilder {
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList formData = (MessageContentsList) bdy;
-                    String lang = (String) hdrs.get("Accepted-language");
+                    String lang = (String) hdrs.get("Accept-Language");
 
                     try {
                         var user = dao.findUserById((long) formData.get(0));
@@ -321,7 +321,7 @@ public class UserServiceRoute extends RouteBuilder {
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList formData = (MessageContentsList) bdy;
-                    String lang = (String) hdrs.get("Accepted-language");
+                    String lang = (String) hdrs.get("Accept-Language");
 
                     try {
                         codeDao.enterCode((long) formData.get(0), (long) formData.get(1));

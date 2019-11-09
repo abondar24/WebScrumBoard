@@ -42,7 +42,7 @@ public class ContributorServiceRoute extends RouteBuilder {
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList formData = (MessageContentsList) bdy;
-                    String lang = (String) hdrs.get("Accepted-language");
+                    String lang = (String) hdrs.get("Accept-Language");
 
                     try {
                         var ctr = contributorDao.createContributor((long) formData.get(0), (long) formData.get(1),
@@ -60,7 +60,7 @@ public class ContributorServiceRoute extends RouteBuilder {
                     } catch (DataCreationException ex) {
                         if (ex.getMessage().equals(LogMessageUtil.PROJECT_NOT_ACTIVE)) {
                             return getLocalizedResponse(lang,
-                                    I18nKeyUtil.PROJECT_CANNOT_BE_REACTIVATED,Response.Status.MOVED_PERMANENTLY);
+                                    I18nKeyUtil.PROJECT_NOT_ACTIVE,Response.Status.MOVED_PERMANENTLY);
                         } else {
                             return getLocalizedResponse(lang,
                                     I18nKeyUtil.CONTRIBUTOR_IS_ALREADY_OWNER,Response.Status.CONFLICT);
@@ -74,7 +74,7 @@ public class ContributorServiceRoute extends RouteBuilder {
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList formData = (MessageContentsList) bdy;
-                    String lang = (String) hdrs.get("Accepted-language");
+                    String lang = (String) hdrs.get("Accept-Language");
 
                     try {
 
@@ -115,7 +115,7 @@ public class ContributorServiceRoute extends RouteBuilder {
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList queryData = (MessageContentsList) bdy;
-                    String lang = (String) hdrs.get("Accepted-language");
+                    String lang = (String) hdrs.get("Accept-Language");
 
                     try {
                         var owner = contributorDao.findProjectOwner((long) queryData.get(0));
@@ -134,7 +134,7 @@ public class ContributorServiceRoute extends RouteBuilder {
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList queryData = (MessageContentsList) bdy;
-                    String lang = (String) hdrs.get("Accepted-language");
+                    String lang = (String) hdrs.get("Accept-Language");
 
                     try {
                         var contributors = contributorDao.findProjectContributors((long) queryData.get(0),
@@ -156,7 +156,7 @@ public class ContributorServiceRoute extends RouteBuilder {
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList queryData = (MessageContentsList) bdy;
-                    String lang = (String) hdrs.get("Accepted-language");
+                    String lang = (String) hdrs.get("Accept-Language");
 
                     try {
                         var contributors = contributorDao.countProjectContributors((long) queryData.get(0));
@@ -175,7 +175,7 @@ public class ContributorServiceRoute extends RouteBuilder {
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList queryData = (MessageContentsList) bdy;
-                    String lang = (String) hdrs.get("Accepted-language");
+                    String lang = (String) hdrs.get("Accept-Language");
 
                     try {
                         var contributors = contributorDao.findContributorsByUserId((long) queryData.get(0),
@@ -196,7 +196,7 @@ public class ContributorServiceRoute extends RouteBuilder {
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList queryData = (MessageContentsList) bdy;
-                    String lang = (String) hdrs.get("Accepted-language");
+                    String lang = (String) hdrs.get("Accept-Language");
 
                     try {
                         var res = contributorDao.findContributorByUserAndProject((long) queryData.get(0),

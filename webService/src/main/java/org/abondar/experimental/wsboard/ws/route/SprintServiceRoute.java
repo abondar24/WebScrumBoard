@@ -42,7 +42,7 @@ public class SprintServiceRoute extends RouteBuilder {
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList formData = (MessageContentsList) bdy;
-                    String lang = (String) hdrs.get("Accepted-language");
+                    String lang = (String) hdrs.get("Accept-Language");
 
                     try {
                         var startDt = convertDate((String) formData.get(1));
@@ -68,7 +68,7 @@ public class SprintServiceRoute extends RouteBuilder {
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList formData = (MessageContentsList) bdy;
-                    String lang = (String) hdrs.get("Accepted-language");
+                    String lang = (String) hdrs.get("Accept-Language");
 
                     try {
                         Date startDt = null;
@@ -106,7 +106,7 @@ public class SprintServiceRoute extends RouteBuilder {
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList queryData = (MessageContentsList) bdy;
-                    String lang = (String) hdrs.get("Accepted-language");
+                    String lang = (String) hdrs.get("Accept-Language");
 
                     try {
                         var sprint = sprintDao.getSprintById((long) queryData.get(0));
@@ -121,7 +121,7 @@ public class SprintServiceRoute extends RouteBuilder {
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList queryData = (MessageContentsList) bdy;
-                    String lang = (String) hdrs.get("Accepted-language");
+                    String lang = (String) hdrs.get("Accept-Language");
 
                     try{
                         var sprints = sprintDao.getSprints((long)queryData.get(0),(int) queryData.get(1), (int) queryData.get(2));
@@ -141,7 +141,7 @@ public class SprintServiceRoute extends RouteBuilder {
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList queryData = (MessageContentsList) bdy;
-                    String lang = (String) hdrs.get("Accepted-language");
+                    String lang = (String) hdrs.get("Accept-Language");
 
                     try {
                         var tasks = sprintDao.countSprints((long) queryData.get(0));
@@ -159,7 +159,7 @@ public class SprintServiceRoute extends RouteBuilder {
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList queryData = (MessageContentsList) bdy;
-                    String lang = (String) hdrs.get("Accepted-language");
+                    String lang = (String) hdrs.get("Accept-Language");
 
                     try {
                         sprintDao.deleteSprint((long) queryData.get(0));

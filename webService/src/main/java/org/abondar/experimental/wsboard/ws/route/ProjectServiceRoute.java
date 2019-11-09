@@ -42,7 +42,7 @@ public class ProjectServiceRoute extends RouteBuilder {
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList formData = (MessageContentsList) bdy;
-                    String lang = (String) hdrs.get("Accepted-language");
+                    String lang = (String) hdrs.get("Accept-Language");
 
                     try {
                         var prj = projectDao.createProject((String) formData.get(0),
@@ -62,7 +62,7 @@ public class ProjectServiceRoute extends RouteBuilder {
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList formData = (MessageContentsList) bdy;
-                    String lang = (String) hdrs.get("Accepted-language");
+                    String lang = (String) hdrs.get("Accept-Language");
 
                     try {
                         Date endDt = null;
@@ -103,7 +103,7 @@ public class ProjectServiceRoute extends RouteBuilder {
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList queryData = (MessageContentsList) bdy;
-                    String lang = (String) hdrs.get("Accepted-language");
+                    String lang = (String) hdrs.get("Accept-Language");
 
                     try {
                         projectDao.deleteProject((long) queryData.get(0));
@@ -119,7 +119,7 @@ public class ProjectServiceRoute extends RouteBuilder {
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList queryData = (MessageContentsList) bdy;
-                    String lang = (String) hdrs.get("Accepted-language");
+                    String lang = (String) hdrs.get("Accept-Language");
 
                     try {
                         var prj = projectDao.findProjectById((long) queryData.get(0));
@@ -134,7 +134,7 @@ public class ProjectServiceRoute extends RouteBuilder {
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList queryData = (MessageContentsList) bdy;
-                    String lang = (String) hdrs.get("Accepted-language");
+                    String lang = (String) hdrs.get("Accept-Language");
 
                     try {
                         var prj = projectDao.findUserProjects((long) queryData.get(0));

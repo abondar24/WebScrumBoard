@@ -41,7 +41,7 @@ public class TaskServiceRoute extends RouteBuilder {
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList formData = (MessageContentsList) bdy;
-                    String lang = (String) hdrs.get("Accepted-language");
+                    String lang = (String) hdrs.get("Accept-Language");
 
                     try {
                         Date stDate = convertDate((String) formData.get(1));
@@ -62,7 +62,7 @@ public class TaskServiceRoute extends RouteBuilder {
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList formData = (MessageContentsList) bdy;
-                    String lang = (String) hdrs.get("Accepted-language");
+                    String lang = (String) hdrs.get("Accept-Language");
 
                     try {
                         var task = taskDao.updateTask((long) formData.get(0), (Long) formData.get(1),
@@ -87,7 +87,7 @@ public class TaskServiceRoute extends RouteBuilder {
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList formData = (MessageContentsList) bdy;
-                    String lang = (String) hdrs.get("Accepted-language");
+                    String lang = (String) hdrs.get("Accept-Language");
 
                     try {
                         var task = taskDao.updateTaskSprint((long) formData.get(0), (long) formData.get(1));
@@ -108,7 +108,7 @@ public class TaskServiceRoute extends RouteBuilder {
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList formData = (MessageContentsList) bdy;
-                    String lang = (String) hdrs.get("Accepted-language");
+                    String lang = (String) hdrs.get("Accept-Language");
 
                     try {
                         var task = taskDao.updateTaskState((long) formData.get(0), (String) formData.get(1));
@@ -166,7 +166,7 @@ public class TaskServiceRoute extends RouteBuilder {
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList queryData = (MessageContentsList) bdy;
-                    String lang = (String) hdrs.get("Accepted-language");
+                    String lang = (String) hdrs.get("Accept-Language");
 
                     try {
                         var task = taskDao.getTaskById((long) queryData.get(0));
@@ -182,7 +182,7 @@ public class TaskServiceRoute extends RouteBuilder {
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList queryData = (MessageContentsList) bdy;
-                    String lang = (String) hdrs.get("Accepted-language");
+                    String lang = (String) hdrs.get("Accept-Language");
 
                     try {
                         var tasks = taskDao.getTasksForProject((long) queryData.get(0),
@@ -203,7 +203,7 @@ public class TaskServiceRoute extends RouteBuilder {
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList queryData = (MessageContentsList) bdy;
-                    String lang = (String) hdrs.get("Accepted-language");
+                    String lang = (String) hdrs.get("Accept-Language");
 
                     try {
                         var tasks = taskDao.getTasksForContributor((long) queryData.get(0),
@@ -224,7 +224,7 @@ public class TaskServiceRoute extends RouteBuilder {
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList queryData = (MessageContentsList) bdy;
-                    String lang = (String) hdrs.get("Accepted-language");
+                    String lang = (String) hdrs.get("Accept-Language");
 
                     try {
                         var tasks = taskDao.countContributorTasks((long) queryData.get(0));
@@ -242,7 +242,7 @@ public class TaskServiceRoute extends RouteBuilder {
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList queryData = (MessageContentsList) bdy;
-                    String lang = (String) hdrs.get("Accepted-language");
+                    String lang = (String) hdrs.get("Accept-Language");
 
                     try {
                         var tasks = taskDao.getTasksForUser((long) queryData.get(0),
@@ -263,7 +263,7 @@ public class TaskServiceRoute extends RouteBuilder {
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList queryData = (MessageContentsList) bdy;
-                    String lang = (String) hdrs.get("Accepted-language");
+                    String lang = (String) hdrs.get("Accept-Language");
 
                     try {
                         var tasks = taskDao.countUserTasks((long) queryData.get(0));
@@ -281,7 +281,7 @@ public class TaskServiceRoute extends RouteBuilder {
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList queryData = (MessageContentsList) bdy;
-                    String lang = (String) hdrs.get("Accepted-language");
+                    String lang = (String) hdrs.get("Accept-Language");
 
                     try {
                         var tasks = taskDao.getTasksForSprint((long) queryData.get(0),

@@ -5,6 +5,7 @@ import org.apache.cxf.jaxrs.utils.JAXRSUtils;
 import org.apache.cxf.rs.security.jose.common.JoseException;
 import org.apache.cxf.rs.security.jose.jaxrs.JwtAuthenticationFilter;
 import org.apache.cxf.rs.security.jose.jaxrs.JwtTokenSecurityContext;
+import org.apache.cxf.rs.security.jose.jwt.JwtException;
 import org.apache.cxf.rs.security.jose.jwt.JwtToken;
 import org.apache.cxf.security.SecurityContext;
 import org.slf4j.Logger;
@@ -33,12 +34,18 @@ public class TokenRenewalFilter extends JwtAuthenticationFilter {
 
         }
 
-        JwtToken token = super.getJwtToken(encodedJwtToken);
-        SecurityContext securityContext = configureSecurityContext(token);
+        try {
+            JwtToken token = super.getJwtToken(encodedJwtToken);
+            SecurityContext securityContext = configureSecurityContext(token);
 
-        if (securityContext != null) {
-            JAXRSUtils.getCurrentMessage().put(SecurityContext.class, securityContext);
+            if (securityContext != null) {
+                JAXRSUtils.getCurrentMessage().put(SecurityContext.class, securityContext);
+            }
+        } catch (JwtException ex){
+            logger.error(ex.getMessage());
+            throw new TokenExpiredException(ex.getMessage(),requestContext.getHeaderString("Accept-Language"));
         }
+
 
     }
 
