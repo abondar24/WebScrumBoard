@@ -190,7 +190,7 @@ public interface TaskService {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Tasks found", response = Task.class),
             @ApiResponse(code = 204, message = "No tasks not found"),
-            @ApiResponse(code = 404, message = "Contributor not found")
+            @ApiResponse(code = 404, message = "User not found")
     })
     Response getTasksForUser(@QueryParam("usrId") @ApiParam(required = true) long usrId,
                              @QueryParam("offset") @ApiParam(required = true) int offset,
@@ -206,7 +206,7 @@ public interface TaskService {
             produces = "application/json")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Tasks counted", response = Integer.class),
-            @ApiResponse(code = 404, message = "Contributor not found")
+            @ApiResponse(code = 404, message = "User not found")
     })
     Response countUserTasks(@QueryParam("userId") @ApiParam(required = true) long ctrId);
 

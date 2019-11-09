@@ -4,6 +4,7 @@ import org.abondar.experimental.wsboard.dao.TaskDao;
 import org.abondar.experimental.wsboard.dao.data.LogMessageUtil;
 import org.abondar.experimental.wsboard.dao.exception.DataCreationException;
 import org.abondar.experimental.wsboard.dao.exception.DataExistenceException;
+import org.abondar.experimental.wsboard.ws.util.I18nKeyUtil;
 import org.apache.camel.LoggingLevel;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.cxf.message.MessageContentsList;
@@ -36,10 +37,11 @@ public class TaskServiceRoute extends RouteBuilder {
     @Override
     public void configure() throws Exception {
         from("direct:createTask").routeId("createTask")
-                .log(LoggingLevel.DEBUG,LOG_HEADERS)
+                .log(LoggingLevel.DEBUG, LOG_HEADERS)
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList formData = (MessageContentsList) bdy;
+                    String lang = (String) hdrs.get("Accepted-language");
 
                     try {
                         Date stDate = convertDate((String) formData.get(1));
@@ -48,18 +50,19 @@ public class TaskServiceRoute extends RouteBuilder {
                         return Response.ok(task).build();
 
                     } catch (DataCreationException ex) {
-                        return Response.status(Response.Status.PARTIAL_CONTENT).entity(ex.getLocalizedMessage()).build();
+                        return getLocalizedResponse(lang, I18nKeyUtil.PARSE_DATE_FAILED, Response.Status.PARTIAL_CONTENT);
                     } catch (DataExistenceException ex) {
-                        return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
+                        return getLocalizedResponse(lang, I18nKeyUtil.CONTRIBUTOR_NOT_EXISTS, Response.Status.NOT_FOUND);
                     }
 
                 });
 
         from("direct:updateTask").routeId("updateTask")
-                .log(LoggingLevel.DEBUG,LOG_HEADERS)
+                .log(LoggingLevel.DEBUG, LOG_HEADERS)
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList formData = (MessageContentsList) bdy;
+                    String lang = (String) hdrs.get("Accepted-language");
 
                     try {
                         var task = taskDao.updateTask((long) formData.get(0), (Long) formData.get(1),
@@ -67,7 +70,12 @@ public class TaskServiceRoute extends RouteBuilder {
                                 (String) formData.get(4), (String) formData.get(5));
                         return Response.ok(task).build();
                     } catch (DataExistenceException ex) {
-                        return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
+                        if (ex.getMessage().equals(LogMessageUtil.TASK_NOT_EXISTS)) {
+                            return getLocalizedResponse(lang, I18nKeyUtil.TASK_NOT_EXISTS, Response.Status.NOT_FOUND);
+                        } else {
+                            return getLocalizedResponse(lang,
+                                    I18nKeyUtil.CONTRIBUTOR_NOT_EXISTS, Response.Status.NOT_FOUND);
+                        }
 
                     }
 
@@ -75,49 +83,64 @@ public class TaskServiceRoute extends RouteBuilder {
 
 
         from("direct:updateTaskSprint").routeId("updateTaskSprint")
-                .log(LoggingLevel.DEBUG,LOG_HEADERS)
+                .log(LoggingLevel.DEBUG, LOG_HEADERS)
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList formData = (MessageContentsList) bdy;
+                    String lang = (String) hdrs.get("Accepted-language");
 
                     try {
                         var task = taskDao.updateTaskSprint((long) formData.get(0), (long) formData.get(1));
                         return Response.ok(task).build();
                     } catch (DataExistenceException ex) {
-                        return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
+                        if (ex.getMessage().equals(LogMessageUtil.TASK_NOT_EXISTS)) {
+                            return getLocalizedResponse(lang, I18nKeyUtil.TASK_NOT_EXISTS, Response.Status.NOT_FOUND);
+                        } else {
+                            return getLocalizedResponse(lang,
+                                    I18nKeyUtil.SPRINT_NOT_EXISTS, Response.Status.NOT_FOUND);
+                        }
                     }
                 });
 
 
         from("direct:updateTaskState").routeId("updateTaskState")
-                .log(LoggingLevel.DEBUG,LOG_HEADERS)
+                .log(LoggingLevel.DEBUG, LOG_HEADERS)
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList formData = (MessageContentsList) bdy;
+                    String lang = (String) hdrs.get("Accepted-language");
 
                     try {
                         var task = taskDao.updateTaskState((long) formData.get(0), (String) formData.get(1));
                         return Response.ok(task).build();
                     } catch (DataExistenceException ex) {
                         if (ex.getMessage().equals(LogMessageUtil.TASK_NOT_EXISTS)) {
-                            return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
+                            return getLocalizedResponse(lang, I18nKeyUtil.TASK_NOT_EXISTS, Response.Status.NOT_FOUND);
                         } else {
-                            return Response.status(Response.Status.BAD_REQUEST).entity(ex.getLocalizedMessage()).build();
+                            return getLocalizedResponse(lang,
+                                    I18nKeyUtil.TASK_STATE_UNKNOWN, Response.Status.BAD_REQUEST);
+
                         }
                     } catch (DataCreationException ex) {
                         switch (ex.getMessage()) {
                             case LogMessageUtil.TASK_ALREADY_COMPLETED:
-                                return Response.status(Response.Status.FOUND).entity(ex.getLocalizedMessage()).build();
+                                return getLocalizedResponse(lang,
+                                        I18nKeyUtil.TASK_ALREADY_COMPLETED, Response.Status.FOUND);
                             case LogMessageUtil.TASK_ALREADY_CREATED:
-                                return Response.status(Response.Status.CREATED).entity(ex.getLocalizedMessage()).build();
+                                return getLocalizedResponse(lang,
+                                        I18nKeyUtil.TASK_ALREADY_CREATED, Response.Status.CREATED);
                             case LogMessageUtil.TASK_WRONG_STATE_AFTER_PAUSE:
-                                return Response.status(Response.Status.CONFLICT).entity(ex.getLocalizedMessage()).build();
+                                return getLocalizedResponse(lang,
+                                        I18nKeyUtil.TASK_WRONG_STATE_AFTER_PAUSE, Response.Status.CONFLICT);
                             case LogMessageUtil.TASK_DEV_OPS_NOT_ENABLED:
-                                return Response.status(Response.Status.NO_CONTENT).entity(ex.getLocalizedMessage()).build();
+                                return getLocalizedResponse(lang,
+                                        I18nKeyUtil.TASK_DEV_OPS_NOT_ENABLED, Response.Status.NO_CONTENT);
                             case LogMessageUtil.TASK_MOVE_NOT_AVAILABLE:
-                                return Response.status(Response.Status.NOT_IMPLEMENTED).entity(ex.getLocalizedMessage()).build();
+                                return getLocalizedResponse(lang,
+                                        I18nKeyUtil.TASK_MOVE_NOT_AVAILABLE, Response.Status.NOT_IMPLEMENTED);
                             case LogMessageUtil.TASK_CONTRIBUTOR_UPDATE:
-                                return Response.status(Response.Status.ACCEPTED).entity(ex.getLocalizedMessage()).build();
+                                return getLocalizedResponse(lang,
+                                        I18nKeyUtil.TASK_CONTRIBUTOR_UPDATE, Response.Status.ACCEPTED);
                             default:
                                 return Response.status(Response.Status.FORBIDDEN).build();
                         }
@@ -125,7 +148,7 @@ public class TaskServiceRoute extends RouteBuilder {
                 });
 
         from("direct:deleteTask").routeId("deleteTask")
-                .log(LoggingLevel.DEBUG,LOG_HEADERS)
+                .log(LoggingLevel.DEBUG, LOG_HEADERS)
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList queryData = (MessageContentsList) bdy;
@@ -139,25 +162,27 @@ public class TaskServiceRoute extends RouteBuilder {
 
 
         from("direct:getTaskById").routeId("getTaskById")
-                .log(LoggingLevel.DEBUG,LOG_HEADERS)
+                .log(LoggingLevel.DEBUG, LOG_HEADERS)
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList queryData = (MessageContentsList) bdy;
+                    String lang = (String) hdrs.get("Accepted-language");
 
                     try {
                         var task = taskDao.getTaskById((long) queryData.get(0));
                         return Response.ok(task).build();
                     } catch (DataExistenceException ex) {
-                        return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
+                        return getLocalizedResponse(lang, I18nKeyUtil.TASK_NOT_EXISTS, Response.Status.NOT_FOUND);
                     }
 
                 });
 
         from("direct:getTasksForProject").routeId("getTasksForProject")
-                .log(LoggingLevel.DEBUG,LOG_HEADERS)
+                .log(LoggingLevel.DEBUG, LOG_HEADERS)
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList queryData = (MessageContentsList) bdy;
+                    String lang = (String) hdrs.get("Accepted-language");
 
                     try {
                         var tasks = taskDao.getTasksForProject((long) queryData.get(0),
@@ -168,16 +193,17 @@ public class TaskServiceRoute extends RouteBuilder {
 
                         return Response.ok(tasks).build();
                     } catch (DataExistenceException ex) {
-                        return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
+                        return getLocalizedResponse(lang, I18nKeyUtil.PROJECT_NOT_EXISTS, Response.Status.NOT_FOUND);
                     }
 
                 });
 
         from("direct:getTasksForContributor").routeId("getTasksForContributor")
-                .log(LoggingLevel.DEBUG,LOG_HEADERS)
+                .log(LoggingLevel.DEBUG, LOG_HEADERS)
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList queryData = (MessageContentsList) bdy;
+                    String lang = (String) hdrs.get("Accepted-language");
 
                     try {
                         var tasks = taskDao.getTasksForContributor((long) queryData.get(0),
@@ -188,33 +214,35 @@ public class TaskServiceRoute extends RouteBuilder {
 
                         return Response.ok(tasks).build();
                     } catch (DataExistenceException ex) {
-                        return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
+                        return getLocalizedResponse(lang, I18nKeyUtil.CONTRIBUTOR_NOT_EXISTS, Response.Status.NOT_FOUND);
                     }
 
                 });
 
         from("direct:countContributorTasks").routeId("countContributorTasks")
-                .log(LoggingLevel.DEBUG,LOG_HEADERS)
+                .log(LoggingLevel.DEBUG, LOG_HEADERS)
                 .transform()
                 .body((bdy, hdrs) -> {
-
                     MessageContentsList queryData = (MessageContentsList) bdy;
+                    String lang = (String) hdrs.get("Accepted-language");
+
                     try {
                         var tasks = taskDao.countContributorTasks((long) queryData.get(0));
 
                         return Response.ok(tasks).build();
                     } catch (DataExistenceException ex) {
-                        return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
+                        return getLocalizedResponse(lang, I18nKeyUtil.CONTRIBUTOR_NOT_EXISTS, Response.Status.NOT_FOUND);
                     }
 
 
                 });
 
         from("direct:getTasksForUser").routeId("getTasksForUser")
-                .log(LoggingLevel.DEBUG,LOG_HEADERS)
+                .log(LoggingLevel.DEBUG, LOG_HEADERS)
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList queryData = (MessageContentsList) bdy;
+                    String lang = (String) hdrs.get("Accepted-language");
 
                     try {
                         var tasks = taskDao.getTasksForUser((long) queryData.get(0),
@@ -225,33 +253,35 @@ public class TaskServiceRoute extends RouteBuilder {
 
                         return Response.ok(tasks).build();
                     } catch (DataExistenceException ex) {
-                        return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
+                        return getLocalizedResponse(lang, I18nKeyUtil.USER_NOT_EXISTS, Response.Status.NOT_FOUND);
                     }
 
                 });
 
         from("direct:countUserTasks").routeId("countUserTasks")
-                .log(LoggingLevel.DEBUG,LOG_HEADERS)
+                .log(LoggingLevel.DEBUG, LOG_HEADERS)
                 .transform()
                 .body((bdy, hdrs) -> {
-
                     MessageContentsList queryData = (MessageContentsList) bdy;
+                    String lang = (String) hdrs.get("Accepted-language");
+
                     try {
-                        var tasks  = taskDao.countUserTasks((long) queryData.get(0));
+                        var tasks = taskDao.countUserTasks((long) queryData.get(0));
 
                         return Response.ok(tasks).build();
                     } catch (DataExistenceException ex) {
-                        return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
+                        return getLocalizedResponse(lang, I18nKeyUtil.USER_NOT_EXISTS, Response.Status.NOT_FOUND);
                     }
 
 
                 });
 
         from("direct:getTasksForSprint").routeId("getTasksForSprint")
-                .log(LoggingLevel.DEBUG,LOG_HEADERS)
+                .log(LoggingLevel.DEBUG, LOG_HEADERS)
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList queryData = (MessageContentsList) bdy;
+                    String lang = (String) hdrs.get("Accepted-language");
 
                     try {
                         var tasks = taskDao.getTasksForSprint((long) queryData.get(0),
@@ -262,7 +292,7 @@ public class TaskServiceRoute extends RouteBuilder {
 
                         return Response.ok(tasks).build();
                     } catch (DataExistenceException ex) {
-                        return Response.status(Response.Status.NOT_FOUND).entity(ex.getLocalizedMessage()).build();
+                        return getLocalizedResponse(lang, I18nKeyUtil.SPRINT_NOT_EXISTS, Response.Status.NOT_FOUND);
                     }
 
                 });
@@ -290,12 +320,13 @@ public class TaskServiceRoute extends RouteBuilder {
 
     /**
      * Returns localized response or default if language not found
-     * @param lang - language code
-     * @param key - message key
+     *
+     * @param lang   - language code
+     * @param key    - message key
      * @param status - HTTP status
      * @return - Response status with localized message
      */
-    private Response getLocalizedResponse(String lang,String key,Response.Status status){
+    private Response getLocalizedResponse(String lang, String key, Response.Status status) {
         Locale locale = new Locale.Builder().setLanguage(lang).build();
         return Response.status(status)
                 .entity(messageSource.getMessage(key, null, locale)).build();
