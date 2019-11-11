@@ -43,6 +43,23 @@ public class I18nKeyUtil {
     public static final String JWT_TOKEN_NOT_SET = "jwt.token_not_set";
     public static final String SESSION_EXPIRED = "session_expired";
 
+    public static final String USER_EMAIL_HEAD = "user.email.head";
+    public static final String USER_EMAIL_HEAD_DELETE = "user.email.head.delete";
+    public static final String USER_EMAIL_CREATED_BODY="user.email.created.body";
+    public static final String USER_EMAIL_CREATED_BODY1="user.email.created.body1";
+    public static final String USER_EMAIL_UPDATE_LOGIN_BODY="user.email.update.login.body";
+    public static final String USER_EMAIL_UPDATE_PASSWORD_BODY="user.email.update.password.body";
+    public static final String USER_EMAIL_RESET_PASSWORD_BODY="user.email.reset.password.body";
+    public static final String USER_EMAIL_RESET_PASSWORD_BODY1="user.email.reset.password.body1";
+    public static final String USER_EMAIL_DELETE_BODY="user.email.delete.body";
+    public static final String USER_EMAIL_DELETE_BODY1="user.email.delete.body1";
+
+
+
+    public static final String USER_EMAIL_THANKS="user.email.thanks";
+
+
+
 
     private I18nKeyUtil(){
 
