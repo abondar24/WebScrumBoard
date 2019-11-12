@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.Date;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -190,6 +191,25 @@ public class TaskDaoTest  extends BaseDaoTest{
         var res = dao.updateTaskSprint(task.getId(), sprint.getId());
 
         assertEquals(sprint.getId(), res.getSprintId());
+
+    }
+
+    @Test
+    public void updateTasksSprintTest() throws Exception {
+        cleanData();
+
+        var usr = createUser("");
+        var prj = createProject(true);
+        var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
+        var task = dao.createTask(contr.getId(), new Date(), true, "name", "descr");
+        sprintDao.createSprint("test", new Date(), new Date(),prj.getId());
+
+        var sprint1 = sprintDao.createSprint("test1", new Date(), new Date(),prj.getId());
+
+        dao.updateTasksSprint(List.of(task.getId()), sprint1.getId());
+
+        var res = dao.getTaskById(task.getId());
+        assertEquals(sprint1.getId(),res.getSprintId());
 
     }
 

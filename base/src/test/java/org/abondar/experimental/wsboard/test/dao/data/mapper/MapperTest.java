@@ -474,6 +474,22 @@ public class MapperTest {
     }
 
     @Test
+    public void getCurrentSprintTest(){
+        cleanData();
+        var prId = createProject().getId();
+        var sprint = createSprint(prId);
+
+        sprint.setCurrent(true);
+        mapper.updateSprint(sprint);
+
+        var res = mapper.getCurrentSprint(prId);
+
+        assertTrue(res.isCurrent());
+        assertEquals(sprint.getId(),res.getId());
+    }
+
+
+    @Test
     public void updateTaskTest() {
         cleanData();
         var user = createUser();
@@ -504,6 +520,23 @@ public class MapperTest {
 
         task.setSprintId(sprint.getId());
         mapper.updateTaskSprint(task.getId(), task.getSprintId());
+
+        var res = mapper.getTaskById(task.getId());
+        assertEquals(task.getSprintId(), res.getSprintId());
+
+    }
+
+    @Test
+    public void updateTasksSprintTest() {
+        cleanData();
+        var user = createUser();
+        var project = createProject();
+        var contributor = createContributor(user.getId(), project.getId(), false);
+        var task = createTask(contributor.getId());
+        var sprint = createSprint(project.getId());
+
+        task.setSprintId(sprint.getId());
+        mapper.updateTasksSprint(List.of(task.getId()), task.getSprintId());
 
         var res = mapper.getTaskById(task.getId());
         assertEquals(task.getSprintId(), res.getSprintId());

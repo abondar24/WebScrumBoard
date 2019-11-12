@@ -34,16 +34,14 @@ public class LogMessageUtil {
     public static final String TASK_MOVE_NOT_AVAILABLE = "Task can't be moved to selected state";
     public static final String SPRINT_EXISTS = "Sprint with such name exists";
     public static final String SPRINT_NOT_EXISTS = "Sprint not found";
+    public static final String SPRINT_ACTIVE_EXISTS = "Project already has an active sprint";
     public static final String BLANK_DATA = "Data for creation or updating is empty";
-    public static final String HASH_NOT_CREATED = "Password hash not created";
     public static final String VERIFICATION_FAILED = "Password verification failed!";
     public static final String NULL_PASS = "Supplied password is null!";
     public static final String LOG_FORMAT = "%s with id: %d";
     public static final String LOG_COUNT_FORMAT = "%s with id %d:  %d";
     public static final String CODE_NOT_EXISTS = "Security code does not exist";
     public static final String CODE_NOT_MATCHES = "Codes don't match";
-    public static final String JWT_TOKEN_NOT_SET = "No JWT token is set";
-    public static final String SESSION_EXPIRED = "Session expired. Please re-login";
     public static final String WRONG_PASSWORD = "Password is wrong";
     public static final String CONTRIBUTOR_EXISTS_LOG = "Contributor for selected project %d exists for user %d";
     public static final String CONTRIBUTOR_EXISTS_EX = "Contributor for selected project exists for this user";

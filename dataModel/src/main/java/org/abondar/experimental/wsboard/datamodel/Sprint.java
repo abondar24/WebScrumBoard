@@ -31,6 +31,9 @@ public class Sprint implements Serializable {
     @ApiModelProperty(value = "Sprint project id")
     private long projectId;
 
+    @ApiModelProperty(value = "Is sprint a current one ?")
+    private boolean isCurrent;
+
 
     public Sprint(){}
 
@@ -39,6 +42,7 @@ public class Sprint implements Serializable {
         this.startDate = startDate;
         this.endDate = endDate;
         this.projectId = projectId;
+        this.isCurrent = false;
     }
 
     public long getId() {
@@ -82,6 +86,15 @@ public class Sprint implements Serializable {
         this.projectId = projectId;
     }
 
+
+    public boolean isCurrent() {
+        return isCurrent;
+    }
+
+    public void setCurrent(boolean current) {
+        isCurrent = current;
+    }
+
     @Override
     public String toString() {
         return "Sprint{" +
@@ -90,6 +103,7 @@ public class Sprint implements Serializable {
                 ", startDate=" + startDate +
                 ", endDate=" + endDate +
                 ", projectId=" + projectId +
+                ", isCurrent=" + isCurrent +
                 '}';
     }
 }

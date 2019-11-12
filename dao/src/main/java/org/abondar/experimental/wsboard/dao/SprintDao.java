@@ -33,11 +33,11 @@ public class SprintDao extends BaseDao {
      * @param startDate - sprint start date
      * @param endDate   - sprint end date
      * @param projectId - project linked to sprint
-     * @throws DataExistenceException sprint with such name exists
-     * @throws DataCreationException sprint end date is before start date or blank data
      * @return sprint POJO
+     * @throws DataExistenceException sprint with such name exists
+     * @throws DataCreationException  sprint end date is before start date or blank data
      */
-    public Sprint createSprint(String name, Date startDate, Date endDate,long projectId) throws DataExistenceException, DataCreationException {
+    public Sprint createSprint(String name, Date startDate, Date endDate, long projectId) throws DataExistenceException, DataCreationException {
 
 
         var sprint = mapper.getSprintByName(name);
@@ -47,7 +47,7 @@ public class SprintDao extends BaseDao {
 
         }
 
-        if (mapper.getProjectById(projectId)==null){
+        if (mapper.getProjectById(projectId) == null) {
             logger.error(LogMessageUtil.PROJECT_NOT_EXISTS);
             throw new DataExistenceException(LogMessageUtil.PROJECT_NOT_EXISTS);
         }
@@ -63,7 +63,7 @@ public class SprintDao extends BaseDao {
             throw new DataCreationException(LogMessageUtil.WRONG_END_DATE);
         }
 
-        sprint = new Sprint(name, startDate, endDate,projectId);
+        sprint = new Sprint(name, startDate, endDate, projectId);
 
         mapper.insertSprint(sprint);
 
@@ -80,11 +80,13 @@ public class SprintDao extends BaseDao {
      * @param name      - sprint name
      * @param startDate - sprint start date
      * @param endDate   - sprint end date
-     * @throws DataExistenceException - sprint not exists or sprint name already exists
-     * @throws DataCreationException - sprint end date is before start date
+     * @param isCurrent - sprint is current
      * @return sprint POJO
+     * @throws DataExistenceException - sprint not exists or sprint name already exists,
+     *                                there is already a current sprint for project
+     * @throws DataCreationException  - sprint end date is before start date
      */
-    public Sprint updateSprint(long sprintId, String name, Date startDate, Date endDate)
+    public Sprint updateSprint(long sprintId, String name, Date startDate, Date endDate, Boolean isCurrent)
             throws DataExistenceException, DataCreationException {
 
         var sprint = getSprintById(sprintId);
@@ -113,6 +115,13 @@ public class SprintDao extends BaseDao {
             sprint.setEndDate(startDate);
         }
 
+        if (isCurrent != null) {
+            if (isCurrent && mapper.getCurrentSprint(sprint.getProjectId()) != null) {
+                throw new DataExistenceException(LogMessageUtil.SPRINT_ACTIVE_EXISTS);
+            }
+
+            sprint.setCurrent(isCurrent);
+        }
 
         mapper.updateSprint(sprint);
 
@@ -126,8 +135,8 @@ public class SprintDao extends BaseDao {
      * Find a sprint by id
      *
      * @param sprintId - sprint id
-     * @throws DataExistenceException - sprint not exists
      * @return sprint POJO
+     * @throws DataExistenceException - sprint not exists
      */
     public Sprint getSprintById(long sprintId) throws DataExistenceException {
 
@@ -145,23 +154,51 @@ public class SprintDao extends BaseDao {
     }
 
     /**
+     * Get current sprint for project
+     * @param projectId - project id to look for
+     * @return current sprint of project
+     * @throws DataExistenceException - project not found
+     */
+    public Sprint getCurrentSprint(long projectId) throws DataExistenceException {
+
+        var msg = "";
+        if (mapper.getProjectById(projectId) == null) {
+            msg = String.format(LogMessageUtil.LOG_FORMAT, LogMessageUtil.PROJECT_NOT_EXISTS, projectId);
+            logger.error(msg);
+
+            throw new DataExistenceException(LogMessageUtil.PROJECT_NOT_EXISTS);
+        }
+
+        var sprint = mapper.getCurrentSprint(projectId);
+        if (sprint == null) {
+            logger.info("Project has no active sprints");
+            return null;
+        } else {
+            msg = String.format(LogMessageUtil.LOG_FORMAT, "Found sprint ", sprint.getId());
+            logger.info(msg);
+            return sprint;
+        }
+
+    }
+
+    /**
      * Get the list of sprints with offset and limit
      *
      * @param projectId - project for which sprints to retrieve
-     * @param offset - start of list
-     * @param limit  - list size
+     * @param offset    - start of list
+     * @param limit     - list size
      * @return Object wrapper with sprint POJO list or with error message
      */
-    public List<Sprint> getSprints(long projectId,int offset, int limit) throws DataExistenceException {
+    public List<Sprint> getSprints(long projectId, int offset, int limit) throws DataExistenceException {
 
         String msg;
-        if (mapper.getProjectById(projectId)==null) {
-            msg = String.format(LogMessageUtil.LOG_FORMAT,LogMessageUtil.PROJECT_NOT_EXISTS,projectId);
+        if (mapper.getProjectById(projectId) == null) {
+            msg = String.format(LogMessageUtil.LOG_FORMAT, LogMessageUtil.PROJECT_NOT_EXISTS, projectId);
             logger.error(msg);
             throw new DataExistenceException(LogMessageUtil.PROJECT_NOT_EXISTS);
         }
 
-        var sprints = mapper.getSprints(projectId,offset, limit);
+        var sprints = mapper.getSprints(projectId, offset, limit);
 
         msg = String.format("%s %d", "Found sprints: ", sprints.size());
         logger.info(msg);
@@ -171,21 +208,22 @@ public class SprintDao extends BaseDao {
 
     /**
      * Counts the number of sprints for project
+     *
      * @param prjId - project to be counted
      * @return number of sprint tasks
      * @throws DataExistenceException - user not found
      */
-    public Integer countSprints(Long prjId) throws DataExistenceException{
+    public Integer countSprints(Long prjId) throws DataExistenceException {
 
         String msg;
-        if (mapper.getProjectById(prjId)==null) {
-            msg = String.format(LogMessageUtil.LOG_FORMAT,LogMessageUtil.PROJECT_NOT_EXISTS,prjId);
+        if (mapper.getProjectById(prjId) == null) {
+            msg = String.format(LogMessageUtil.LOG_FORMAT, LogMessageUtil.PROJECT_NOT_EXISTS, prjId);
             logger.error(msg);
             throw new DataExistenceException(LogMessageUtil.PROJECT_NOT_EXISTS);
         }
 
         var res = mapper.countSprints(prjId);
-        msg = String.format(LogMessageUtil.LOG_COUNT_FORMAT, "Counted tasks for user ", prjId,res);
+        msg = String.format(LogMessageUtil.LOG_COUNT_FORMAT, "Counted tasks for user ", prjId, res);
         logger.info(msg);
 
         return res;

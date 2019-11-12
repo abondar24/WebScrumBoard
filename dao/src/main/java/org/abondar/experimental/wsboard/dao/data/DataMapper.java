@@ -44,6 +44,8 @@ public interface DataMapper {
 
     void updateTaskSprint(@Param("id")Long id,@Param("sprintId") long sprintId);
 
+    void updateTasksSprint(@Param("idList") List<Long> idList,@Param("sprintId") long sprintId);
+
     User getUserByLogin(@Param("login") String login);
 
     User getUserById(@Param("id") long id);
@@ -89,6 +91,8 @@ public interface DataMapper {
     Sprint getSprintByName(@Param("name") String name);
 
     Sprint getSprintById(@Param("id")long id);
+
+    Sprint getCurrentSprint(@Param("prId") long prId);
 
     List<Sprint> getSprints(@Param("projectId")long projectId, @Param("offset") int offset, @Param("limit") int limit);
 

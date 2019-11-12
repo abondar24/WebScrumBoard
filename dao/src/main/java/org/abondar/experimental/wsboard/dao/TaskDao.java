@@ -135,6 +135,21 @@ public class TaskDao extends BaseDao {
         return task;
     }
 
+    /**
+     * Set a sprint to a task
+     *
+     * @param taskIds   - list of task ids
+     * @param sprintId - sprint id
+     * @throws DataExistenceException - sprint doesn't exist
+     */
+    public void updateTasksSprint(List<Long> taskIds, long sprintId) throws DataExistenceException {
+
+        checkSprint(sprintId);
+
+        mapper.updateTasksSprint(taskIds, sprintId);
+    }
+
+
 
     /**
      * Update state of task

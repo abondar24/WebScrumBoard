@@ -63,6 +63,8 @@
         <result column="start_date" property="startDate"/>
         <result column="end_date" property="endDate"/>
         <result column="project_id" property="projectId"/>
+        <result column="is_current" property="isCurrent"/>
+
     </resultMap>
 
     <resultMap id="securityCodeMap" type="SecurityCode">
@@ -166,7 +168,8 @@
         UPDATE sprint
         SET name       = #{sprint.name},
             start_date = #{sprint.startDate},
-            end_date   = #{sprint.endDate}
+            end_date   = #{sprint.endDate},
+            is_current = #{sprint.isCurrent}
         WHERE id = #{sprint.id}
     </update>
 
@@ -188,6 +191,16 @@
         SET sprint_id = #{sprintId}
         WHERE id = #{id}
     </update>
+
+    <update id="updateTasksSprint">
+        UPDATE task
+        SET sprint_id = #{sprintId}
+        WHERE id IN
+        <foreach item='id' index='index' collection='idList' open='(' separator=',' close=')'>
+            #{id}
+        </foreach>
+    </update>
+
 
     <update id="deactivateUserContributors">
         UPDATE contributor
@@ -363,6 +376,13 @@
         SELECT *
         FROM sprint
         WHERE name = #{name}
+    </select>
+
+    <select id="getCurrentSprint" resultMap="sprintMap">
+        SELECT *
+        FROM sprint
+        WHERE project_id = #{prId}
+        AND is_current = true;
     </select>
 
     <select id="getSprints" resultMap="sprintMap" useCache="true">

@@ -13,6 +13,7 @@ import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
@@ -83,7 +84,7 @@ public class SprintDaoTest extends BaseDaoTest {
         var id = sp.getId();
         var startDate = new Date();
         var endDate = new Date();
-        var res = sprintDao.updateSprint(sp.getId(), null, startDate, endDate);
+        var res = sprintDao.updateSprint(sp.getId(), null, startDate, endDate, true);
 
         assertEquals(id, res.getId());
         assertEquals(startDate, res.getStartDate());
@@ -96,7 +97,7 @@ public class SprintDaoTest extends BaseDaoTest {
     public void updateSprintNotFoundTest() {
         cleanData();
         assertThrows(DataExistenceException.class, () ->
-                sprintDao.updateSprint(100, null, null, null));
+                sprintDao.updateSprint(100, null, null, null, null));
     }
 
     @Test
@@ -105,8 +106,7 @@ public class SprintDaoTest extends BaseDaoTest {
         var sp = sprintDao.createSprint("test", new Date(), new Date(), createProject().getId());
 
         assertThrows(DataExistenceException.class, () ->
-                sprintDao.updateSprint(sp.getId(), sp.getName(),
-                        null, null));
+                sprintDao.updateSprint(sp.getId(), sp.getName(), null, null, null));
 
     }
 
@@ -116,9 +116,20 @@ public class SprintDaoTest extends BaseDaoTest {
         var sp = sprintDao.createSprint("test", new Date(), new Date(), createProject().getId());
 
         assertThrows(DataCreationException.class, () ->
-                sprintDao.updateSprint(sp.getId(), null,
-                        new Date(), yesterday()));
+                sprintDao.updateSprint(sp.getId(), null, new Date(), yesterday(), null));
 
+    }
+
+    @Test
+    public void updateSprintActiveExistsTest() throws Exception {
+        cleanData();
+
+        var sp = sprintDao.createSprint("test", new Date(), new Date(), createProject().getId());
+        sprintDao.updateSprint(sp.getId(), null, null, null, true);
+
+
+        assertThrows(DataExistenceException.class, () ->
+                sprintDao.updateSprint(sp.getId(), null, null, null, true));
     }
 
 
@@ -145,6 +156,45 @@ public class SprintDaoTest extends BaseDaoTest {
 
         assertEquals(1, res.size());
         assertEquals(sp.getName(), res.get(0).getName());
+
+    }
+
+    @Test
+    public void getCurrentSprintTest() throws Exception {
+        cleanData();
+
+        var prj = createProject();
+        var sp = sprintDao.createSprint("test", new Date(), new Date(), prj.getId());
+        sp = sprintDao.updateSprint(sp.getId(), null, null, null, true);
+
+        var res = sprintDao.getCurrentSprint(prj.getId());
+
+        assertEquals(sp.getId(), res.getId());
+
+    }
+
+    @Test
+    public void getCurrentSprintProjectNotExistsTest() throws Exception {
+        cleanData();
+
+        var prj = createProject();
+        var sp = sprintDao.createSprint("test", new Date(), new Date(), prj.getId());
+        sprintDao.updateSprint(sp.getId(), null, null, null, true);
+
+        assertThrows(DataExistenceException.class, () -> sprintDao.getCurrentSprint(100));
+
+    }
+
+    @Test
+    public void getCurrentSprintNullTest() throws Exception {
+        cleanData();
+
+        var prj = createProject();
+        sprintDao.createSprint("test", new Date(), new Date(), prj.getId());
+
+        var res = sprintDao.getCurrentSprint(prj.getId());
+
+        assertNull(res);
 
     }
 
