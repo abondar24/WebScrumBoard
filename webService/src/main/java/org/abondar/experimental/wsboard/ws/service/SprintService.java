@@ -61,12 +61,14 @@ public interface SprintService {
             @ApiResponse(code = 205, message = "Sprint end date is wrong"),
             @ApiResponse(code = 206, message = "Form data is not complete or wrong"),
             @ApiResponse(code = 302, message = "Sprint with name already exists"),
-            @ApiResponse(code = 404, message = "Sprint with id not exists")
+            @ApiResponse(code = 404, message = "Sprint with id not exists"),
+            @ApiResponse(code = 409, message = "Project already has an active sprint"),
     })
     Response updateSprint(@FormParam("id") @ApiParam(required = true) long sprintId,
                           @FormParam("name") @ApiParam String name,
                           @FormParam("startDate") @ApiParam String startDate,
-                          @FormParam("endDate") @ApiParam String endDate);
+                          @FormParam("endDate") @ApiParam String endDate,
+                          @FormParam("isCurrent") @ApiParam Boolean isCurrent);
 
     @GET
     @Path("/find")
@@ -80,6 +82,21 @@ public interface SprintService {
             @ApiResponse(code = 404, message = "Sprint with id not exists")
     })
     Response getSprintById(@QueryParam("id") @ApiParam(required = true) long sprintId);
+
+    @GET
+    @Path("/find_current")
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(
+            value = "Find current",
+            notes = "Find current sprint for project",
+            produces = "application/json")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Current sprint for project", response = Sprint.class),
+            @ApiResponse(code = 204, message = "No active sprints found"),
+            @ApiResponse(code = 404, message = "Project not exists")
+    })
+    Response getCurrentSprint(@QueryParam("prId") @ApiParam(required = true) long projectId);
+
 
     @GET
     @Path("/find_all")

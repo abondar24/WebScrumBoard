@@ -69,7 +69,7 @@ public class SprintServiceTestImpl implements SprintService {
     }
 
     @Override
-    public Response updateSprint(long sprintId, String name, String startDate, String endDate) {
+    public Response updateSprint(long sprintId, String name, String startDate, String endDate, Boolean isCurrent) {
 
         if (testSprint.getId() != sprintId) {
             return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.SPRINT_NOT_EXISTS).build();
@@ -82,6 +82,12 @@ public class SprintServiceTestImpl implements SprintService {
                 testSprint.setName(name);
             }
         }
+
+        if (isCurrent && testSprint.isCurrent()){
+            return Response.status(Response.Status.CONFLICT).entity(LogMessageUtil.SPRINT_ACTIVE_EXISTS).build();
+        }
+
+        testSprint.setCurrent(isCurrent);
 
         try {
             Date startDt;
@@ -113,6 +119,20 @@ public class SprintServiceTestImpl implements SprintService {
         if (testSprint.getId() != sprintId) {
             return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.SPRINT_NOT_EXISTS).build();
         }
+
+        return Response.ok(testSprint).build();
+    }
+
+    @Override
+    public Response getCurrentSprint(long projectId) {
+        if (testProject.getId()!=projectId){
+            return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.PROJECT_NOT_EXISTS).build();
+        }
+
+        if (!testSprint.isCurrent()){
+            return Response.status(Response.Status.NO_CONTENT).build();
+        }
+
 
         return Response.ok(testSprint).build();
     }

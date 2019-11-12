@@ -36,6 +36,7 @@ public class I18nKeyUtil {
     public static final String TASK_MOVE_NOT_AVAILABLE = "task.move_not_available";
     public static final String SPRINT_EXISTS = "sprint.exists";
     public static final String SPRINT_NOT_EXISTS = "sprint.not_exists";
+    public static final String SPRINT_ACTIVE_EXISTS = "sprint.active_exists";
     public static final String BLANK_DATA = "blank_data";
     public static final String HASH_NOT_CREATED = "hash_not_created";
     public static final String CODE_NOT_EXISTS = "code.not_exists";

@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest(classes = WebScrumBoardApplication.class)
 @ExtendWith(SpringExtension.class)
@@ -262,6 +263,27 @@ public class SprintServiceTest {
         assertEquals(LogMessageUtil.SPRINT_EXISTS, msg);
     }
 
+    @Test
+    public void updateSprintCurrentExistsTest() {
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+
+        var sp = createSprint(createProject());
+        updateSprint(sp.getId(),true);
+
+        var form = new Form();
+        form.param("id", String.valueOf(sp.getId()));
+        form.param("isCurrent","true");
+
+        client.path("/sprint/update").accept(MediaType.APPLICATION_JSON);
+
+        var res = client.post(form);
+        assertEquals(409, res.getStatus());
+
+        var msg = res.readEntity(String.class);
+        assertEquals(LogMessageUtil.SPRINT_ACTIVE_EXISTS,msg);
+    }
+
+
 
     @Test
     public void findSprintTest() {
@@ -291,6 +313,39 @@ public class SprintServiceTest {
 
         var found = res.readEntity(String.class);
         assertEquals(LogMessageUtil.SPRINT_NOT_EXISTS, found);
+    }
+
+    @Test
+    public void findCurrentSprintTest() {
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+
+        var pr = createProject();
+        var sp = createSprint(pr);
+        updateSprint(sp.getId(),true);
+
+
+        client.path("/sprint/find_current").query("prId", String.valueOf(pr));
+
+        var res = client.get();
+        assertEquals(200, res.getStatus());
+
+        var curr = res.readEntity(Sprint.class);
+        assertEquals(sp.getId(),curr.getId());
+        assertTrue(curr.isCurrent());
+    }
+
+    @Test
+    public void findNoCurrentSprintTest() {
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+
+        var pr = createProject();
+        createSprint(pr);
+
+        client.path("/sprint/find_current").query("prId", String.valueOf(pr));
+
+        var res = client.get();
+        assertEquals(204, res.getStatus());
+
     }
 
     @Test
@@ -421,6 +476,18 @@ public class SprintServiceTest {
 
         var res = client.post(form);
         return res.readEntity(Sprint.class);
+
+    }
+
+    private void updateSprint(long sprintId,boolean isCurrent) {
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+
+        var form = new Form();
+        form.param("id", String.valueOf(sprintId));
+        form.param("isCurrent", String.valueOf(isCurrent));
+
+        client.path("/sprint/update").accept(MediaType.APPLICATION_JSON);
+        client.post(form);
 
     }
 }

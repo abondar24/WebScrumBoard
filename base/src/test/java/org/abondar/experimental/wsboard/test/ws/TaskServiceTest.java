@@ -227,6 +227,25 @@ public class TaskServiceTest {
     }
 
     @Test
+    public void updateTasksSprintTest() {
+        createProject();
+        createUser();
+        var ctrId = createContributor();
+        var taskId = createTask(ctrId);
+        var sprintId = createSprint();
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+        client.path("/task/update_tasks_sprint").accept(MediaType.APPLICATION_JSON)
+                .query("id", taskId)
+                .query("id", 1L)
+                .query("id", 2L)
+                .query("sprintId",sprintId);
+
+        var resp = client.put(null);
+        assertEquals(200, resp.getStatus());
+    }
+
+    @Test
     public void updateTaskSprintTaskNotFoundTest() {
         createProject();
         createUser();

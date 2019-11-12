@@ -16,6 +16,7 @@ import javax.ws.rs.core.Response;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import static org.abondar.experimental.wsboard.ws.util.RouteConstantUtil.LOG_HEADERS;
@@ -102,6 +103,21 @@ public class TaskServiceRoute extends RouteBuilder {
                     }
                 });
 
+        from("direct:updateTasksSprint").routeId("updateTasksSprint")
+                .log(LoggingLevel.DEBUG, LOG_HEADERS)
+                .transform()
+                .body((bdy, hdrs) -> {
+                    MessageContentsList formData = (MessageContentsList) bdy;
+                    String lang = (String) hdrs.get("Accept-Language");
+
+                    try {
+                        taskDao.updateTasksSprint((List<Long>) formData.get(1),(Long) formData.get(0));
+                        return Response.ok().build();
+                    } catch (DataExistenceException ex) {
+                            return getLocalizedResponse(lang, I18nKeyUtil.SPRINT_NOT_EXISTS, Response.Status.NOT_FOUND);
+
+                    }
+                });
 
         from("direct:updateTaskState").routeId("updateTaskState")
                 .log(LoggingLevel.DEBUG, LOG_HEADERS)

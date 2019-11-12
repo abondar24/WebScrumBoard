@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.List;
 import java.util.Map;
 
 @SpringBootTest(classes = WebScrumBoardApplication.class)
@@ -67,6 +68,17 @@ public class TaskServiceRouteTest {
         mockEndpoint.reset();
     }
 
+    @Test
+    public void updateTasksSprintRouteTest() throws Exception {
+        Object[] values = new Object[]{someId, List.of(someId)};
+        MessageContentsList testList = new MessageContentsList(values);
+        producerTemplate.sendBodyAndHeaders("direct:updateTasksSprint", testList,
+                Map.of());
+        mockEndpoint.assertIsSatisfied();
+        mockEndpoint.expectedBodiesReceived();
+        mockEndpoint.expectedMessageCount(1);
+        mockEndpoint.reset();
+    }
 
     @Test
     public void updateTaskStateRouteTest() throws Exception {

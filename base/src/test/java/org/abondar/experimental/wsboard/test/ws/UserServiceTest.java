@@ -461,7 +461,7 @@ public class UserServiceTest {
 
         client.path("/user/reset_pwd").accept(MediaType.APPLICATION_JSON).query("id", usr.getId());
 
-        var resp = client.get();
+        var resp = client.put(null);
         assertEquals(200, resp.getStatus());
 
 

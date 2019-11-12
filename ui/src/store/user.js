@@ -133,7 +133,7 @@ export default {
                 });
         },
         resetPassword({commit, getters}) {
-            return Axios.get(userUrl + '/reset_pwd', {
+            return Axios.put(userUrl + '/reset_pwd', {
                 params: {
                     id: getters.getUserId
                 }

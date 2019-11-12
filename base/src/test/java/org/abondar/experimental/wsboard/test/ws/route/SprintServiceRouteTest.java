@@ -44,7 +44,7 @@ public class SprintServiceRouteTest {
 
     @Test
     public void updateSprintRouteTest() throws Exception {
-        Object[] values = new Object[]{someId, someName, date, date};
+        Object[] values = new Object[]{someId, someName, date, date,true};
         MessageContentsList testList = new MessageContentsList(values);
         producerTemplate.sendBodyAndHeaders("direct:updateSprint", testList,
                 Map.of());
@@ -59,6 +59,18 @@ public class SprintServiceRouteTest {
         Object[] values = new Object[]{someId};
         MessageContentsList testList = new MessageContentsList(values);
         producerTemplate.sendBodyAndHeaders("direct:getSprintById", testList,
+                Map.of());
+        mockEndpoint.assertIsSatisfied();
+        mockEndpoint.expectedBodiesReceived();
+        mockEndpoint.expectedMessageCount(1);
+        mockEndpoint.reset();
+    }
+
+    @Test
+    public void getCurrentSprintRouteTest() throws Exception {
+        Object[] values = new Object[]{someId};
+        MessageContentsList testList = new MessageContentsList(values);
+        producerTemplate.sendBodyAndHeaders("direct:getCurrentSprint", testList,
                 Map.of());
         mockEndpoint.assertIsSatisfied();
         mockEndpoint.expectedBodiesReceived();

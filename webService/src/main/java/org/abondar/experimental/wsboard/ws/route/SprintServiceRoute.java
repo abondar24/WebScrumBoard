@@ -83,7 +83,7 @@ public class SprintServiceRoute extends RouteBuilder {
                         }
 
                         var sprint = sprintDao.updateSprint((long) formData.get(0), (String) formData.get(1),
-                                startDt, endDt);
+                                startDt, endDt,(Boolean) formData.get(4));
 
                         return Response.ok(sprint).build();
                     } catch (DataCreationException ex) {
@@ -95,8 +95,10 @@ public class SprintServiceRoute extends RouteBuilder {
                     } catch (DataExistenceException ex) {
                         if (ex.getMessage().equals(LogMessageUtil.SPRINT_NOT_EXISTS)) {
                             return getLocalizedResponse(lang, I18nKeyUtil.SPRINT_NOT_EXISTS,Response.Status.NOT_FOUND);
-                        } else {
+                        } else if (ex.getMessage().equals(LogMessageUtil.SPRINT_EXISTS)) {
                             return getLocalizedResponse(lang, I18nKeyUtil.SPRINT_EXISTS,Response.Status.FOUND);
+                        } else {
+                            return getLocalizedResponse(lang, I18nKeyUtil.SPRINT_ACTIVE_EXISTS,Response.Status.CONFLICT);
                         }
                     }
                 });
@@ -126,6 +128,26 @@ public class SprintServiceRoute extends RouteBuilder {
                     try{
                         var sprints = sprintDao.getSprints((long)queryData.get(0),(int) queryData.get(1), (int) queryData.get(2));
                         if (sprints.isEmpty()) {
+                            return Response.status(Response.Status.NO_CONTENT).build();
+                        }
+
+                        return Response.ok(sprints).build();
+                    } catch (DataExistenceException ex){
+                        return getLocalizedResponse(lang, I18nKeyUtil.PROJECT_NOT_EXISTS,Response.Status.NOT_FOUND);
+                    }
+
+                });
+
+        from("direct:getCurrentSprint").routeId("getCurrentSprint")
+                .log(LoggingLevel.DEBUG,LOG_HEADERS)
+                .transform()
+                .body((bdy, hdrs) -> {
+                    MessageContentsList queryData = (MessageContentsList) bdy;
+                    String lang = (String) hdrs.get("Accept-Language");
+
+                    try{
+                        var sprints = sprintDao.getCurrentSprint((long)queryData.get(0));
+                        if (sprints==null) {
                             return Response.status(Response.Status.NO_CONTENT).build();
                         }
 

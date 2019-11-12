@@ -12,11 +12,13 @@ import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.List;
 
 /**
  * Task CRUD web service
@@ -83,6 +85,23 @@ public interface TaskService {
     })
     Response updateTaskSprint(@FormParam("id") @ApiParam(required = true) long taskId,
                               @FormParam("sprintId") @ApiParam(required = true) long sprintId);
+
+
+    @PUT
+    @Path("/update_tasks_sprint")
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(
+            value = "Update tasks sprint",
+            notes = "Update sprint for several tasks",
+            consumes = "application/json",
+            produces = "application/json")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Tasks updated"),
+            @ApiResponse(code = 404, message = "Sprint not found")
+    })
+    Response updateTasksSprint(@QueryParam("id") @ApiParam(required = true) List<Long> ids,
+                               @QueryParam("sprintId") @ApiParam(required = true) long sprintId);
 
     @POST
     @Path("/update_state")
@@ -209,7 +228,6 @@ public interface TaskService {
             @ApiResponse(code = 404, message = "User not found")
     })
     Response countUserTasks(@QueryParam("userId") @ApiParam(required = true) long ctrId);
-
 
 
     @GET

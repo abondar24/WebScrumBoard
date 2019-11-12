@@ -94,6 +94,15 @@ public class TaskServiceTestImpl implements TaskService {
     }
 
     @Override
+    public Response updateTasksSprint(List<Long> ids, long sprintId) {
+        if (ids.contains(testTask.getId())){
+            return Response.ok().build();
+        }
+
+        return null;
+    }
+
+    @Override
     public Response updateTaskState(long taskId, String state) {
 
         if (testTask.getId() != taskId) {
