@@ -54,9 +54,6 @@ public class I18nKeyUtil {
     public static final String USER_EMAIL_RESET_PASSWORD_BODY1="user.email.reset.password.body1";
     public static final String USER_EMAIL_DELETE_BODY="user.email.delete.body";
     public static final String USER_EMAIL_DELETE_BODY1="user.email.delete.body1";
-
-
-
     public static final String USER_EMAIL_THANKS="user.email.thanks";
 
 

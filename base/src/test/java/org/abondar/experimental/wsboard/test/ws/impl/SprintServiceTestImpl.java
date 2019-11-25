@@ -83,11 +83,16 @@ public class SprintServiceTestImpl implements SprintService {
             }
         }
 
-        if (isCurrent && testSprint.isCurrent()){
-            return Response.status(Response.Status.CONFLICT).entity(LogMessageUtil.SPRINT_ACTIVE_EXISTS).build();
+        if (isCurrent!=null){
+            if (isCurrent && testSprint.isCurrent()){
+                return Response.status(Response.Status.CONFLICT).entity(LogMessageUtil.SPRINT_ACTIVE_EXISTS).build();
+            }
+
+            testSprint.setCurrent(isCurrent);
         }
 
-        testSprint.setCurrent(isCurrent);
+
+
 
         try {
             Date startDt;
