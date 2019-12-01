@@ -146,7 +146,7 @@ public class UserDao extends BaseDao {
         var usr = findUserById(userId);
 
        if(!PasswordUtil.verifyPassword(oldPassword, usr.getPassword())){
-           throw  new InvalidHashException(LogMessageUtil.WRONG_PASSWORD);
+           throw  new InvalidHashException(LogMessageUtil.WRONG_PWD);
        }
         usr.setPassword(PasswordUtil.createHash(newPassword));
         mapper.updateUser(usr);

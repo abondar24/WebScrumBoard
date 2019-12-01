@@ -121,6 +121,8 @@ public class ContributorDao extends BaseDao {
 
         if (isOwner != null) {
             var ownr = mapper.getProjectOwner(ctr.getProjectId());
+
+
             if (isOwner) {
                 if (ctr.isOwner()) {
                     logger.error(LogMessageUtil.CONTRIBUTOR_IS_ALREADY_OWNER);
@@ -140,10 +142,7 @@ public class ContributorDao extends BaseDao {
                     mapper.updateContributor(oldOwner);
                 }
 
-            }
-
-
-            if (!isOwner) {
+            } else {
 
                 if (ownr == null || ownr.getId() == ctr.getUserId()) {
                     logger.error(LogMessageUtil.PROJECT_HAS_NO_OWNER);

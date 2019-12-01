@@ -49,11 +49,11 @@ public class I18nKeyUtil {
     public static final String USER_EMAIL_CREATED_BODY="user.email.created.body";
     public static final String USER_EMAIL_CREATED_BODY1="user.email.created.body1";
     public static final String USER_EMAIL_UPDATE_LOGIN_BODY="user.email.update.login.body";
-    public static final String USER_EMAIL_UPDATE_PASSWORD_BODY="user.email.update.password.body";
-    public static final String USER_EMAIL_RESET_PASSWORD_BODY="user.email.reset.password.body";
-    public static final String USER_EMAIL_RESET_PASSWORD_BODY1="user.email.reset.password.body1";
+    public static final String USER_EMAIL_UPDATE_PWD_BODY ="user.email.update.password.body";
+    public static final String USER_EMAIL_RESET_PWD_BODY="user.email.reset.password.body";
+    public static final String USER_EMAIL_RESET_PWD_BODY1 =USER_EMAIL_RESET_PWD_BODY+".body1";
     public static final String USER_EMAIL_DELETE_BODY="user.email.delete.body";
-    public static final String USER_EMAIL_DELETE_BODY1="user.email.delete.body1";
+    public static final String USER_EMAIL_DELETE_BODY1=USER_EMAIL_DELETE_BODY+".body1";
     public static final String USER_EMAIL_THANKS="user.email.thanks";
 
 

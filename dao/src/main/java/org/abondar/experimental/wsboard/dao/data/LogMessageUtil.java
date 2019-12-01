@@ -42,7 +42,7 @@ public class LogMessageUtil {
     public static final String LOG_COUNT_FORMAT = "%s with id %d:  %d";
     public static final String CODE_NOT_EXISTS = "Security code does not exist";
     public static final String CODE_NOT_MATCHES = "Codes don't match";
-    public static final String WRONG_PASSWORD = "Password is wrong";
+    public static final String WRONG_PWD = "Password is wrong";
     public static final String CONTRIBUTOR_EXISTS_LOG = "Contributor for selected project %d exists for user %d";
     public static final String CONTRIBUTOR_EXISTS_EX = "Contributor for selected project exists for this user";
 

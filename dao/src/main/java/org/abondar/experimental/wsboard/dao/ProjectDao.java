@@ -100,15 +100,15 @@ public class ProjectDao extends BaseDao {
                 transactionManager.getTransaction(new DefaultTransactionDefinition());
         try {
         if (isActive != null) {
-            if (isActive && !prj.isActive()) {
-                throw new DataCreationException(LogMessageUtil.PROJECT_CANNOT_BE_REACTIVATED);
-            } else if (!isActive) {
+           if (!isActive) {
                 mapper.deactivateProjectContributors(prj.getId());
                 if (endDate != null && !prj.getStartDate().after(endDate)) {
                     prj.setEndDate(endDate);
                 } else {
                     throw new DataCreationException(LogMessageUtil.WRONG_END_DATE);
                 }
+            } else if (!prj.isActive()){
+                throw new DataCreationException(LogMessageUtil.PROJECT_CANNOT_BE_REACTIVATED);
             }
 
             prj.setActive(isActive);

@@ -18,6 +18,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import static org.abondar.experimental.wsboard.ws.util.RouteConstantUtil.ACCEPT_LANG_HEADER;
 import static org.abondar.experimental.wsboard.ws.util.RouteConstantUtil.LOG_HEADERS;
 
 /**
@@ -42,7 +43,7 @@ public class ProjectServiceRoute extends RouteBuilder {
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList formData = (MessageContentsList) bdy;
-                    String lang = (String) hdrs.get("Accept-Language");
+                    String lang = (String) hdrs.get(ACCEPT_LANG_HEADER);
 
                     try {
                         var prj = projectDao.createProject((String) formData.get(0),
@@ -62,7 +63,7 @@ public class ProjectServiceRoute extends RouteBuilder {
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList formData = (MessageContentsList) bdy;
-                    String lang = (String) hdrs.get("Accept-Language");
+                    String lang = (String) hdrs.get(ACCEPT_LANG_HEADER);
 
                     try {
                         Date endDt = null;
@@ -103,7 +104,7 @@ public class ProjectServiceRoute extends RouteBuilder {
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList queryData = (MessageContentsList) bdy;
-                    String lang = (String) hdrs.get("Accept-Language");
+                    String lang = (String) hdrs.get(ACCEPT_LANG_HEADER);
 
                     try {
                         projectDao.deleteProject((long) queryData.get(0));
@@ -119,7 +120,7 @@ public class ProjectServiceRoute extends RouteBuilder {
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList queryData = (MessageContentsList) bdy;
-                    String lang = (String) hdrs.get("Accept-Language");
+                    String lang = (String) hdrs.get(ACCEPT_LANG_HEADER);
 
                     try {
                         var prj = projectDao.findProjectById((long) queryData.get(0));
@@ -134,7 +135,7 @@ public class ProjectServiceRoute extends RouteBuilder {
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList queryData = (MessageContentsList) bdy;
-                    String lang = (String) hdrs.get("Accept-Language");
+                    String lang = (String) hdrs.get(ACCEPT_LANG_HEADER);
 
                     try {
                         var prj = projectDao.findUserProjects((long) queryData.get(0));

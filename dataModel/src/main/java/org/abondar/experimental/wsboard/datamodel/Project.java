@@ -95,9 +95,6 @@ public class Project implements Serializable {
         isActive = active;
     }
 
-    public static long getSerialVersionUID() {
-        return serialVersionUID;
-    }
 
     public String getDescription() {
         return description;

@@ -16,6 +16,7 @@ import org.springframework.context.MessageSource;
 import javax.ws.rs.core.Response;
 import java.util.Locale;
 
+import static org.abondar.experimental.wsboard.ws.util.RouteConstantUtil.ACCEPT_LANG_HEADER;
 import static org.abondar.experimental.wsboard.ws.util.RouteConstantUtil.LOG_HEADERS;
 
 /**
@@ -42,7 +43,7 @@ public class ContributorServiceRoute extends RouteBuilder {
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList formData = (MessageContentsList) bdy;
-                    String lang = (String) hdrs.get("Accept-Language");
+                    String lang = (String) hdrs.get(ACCEPT_LANG_HEADER);
 
                     try {
                         var ctr = contributorDao.createContributor((long) formData.get(0), (long) formData.get(1),
@@ -74,7 +75,7 @@ public class ContributorServiceRoute extends RouteBuilder {
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList formData = (MessageContentsList) bdy;
-                    String lang = (String) hdrs.get("Accept-Language");
+                    String lang = (String) hdrs.get(ACCEPT_LANG_HEADER);
 
                     try {
 
@@ -115,7 +116,7 @@ public class ContributorServiceRoute extends RouteBuilder {
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList queryData = (MessageContentsList) bdy;
-                    String lang = (String) hdrs.get("Accept-Language");
+                    String lang = (String) hdrs.get(ACCEPT_LANG_HEADER);
 
                     try {
                         var owner = contributorDao.findProjectOwner((long) queryData.get(0));
@@ -134,7 +135,7 @@ public class ContributorServiceRoute extends RouteBuilder {
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList queryData = (MessageContentsList) bdy;
-                    String lang = (String) hdrs.get("Accept-Language");
+                    String lang = (String) hdrs.get(ACCEPT_LANG_HEADER);
 
                     try {
                         var contributors = contributorDao.findProjectContributors((long) queryData.get(0),
@@ -156,7 +157,7 @@ public class ContributorServiceRoute extends RouteBuilder {
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList queryData = (MessageContentsList) bdy;
-                    String lang = (String) hdrs.get("Accept-Language");
+                    String lang = (String) hdrs.get(ACCEPT_LANG_HEADER);
 
                     try {
                         var contributors = contributorDao.countProjectContributors((long) queryData.get(0));

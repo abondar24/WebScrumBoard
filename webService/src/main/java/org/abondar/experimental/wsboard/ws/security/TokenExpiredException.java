@@ -9,7 +9,7 @@ import org.apache.cxf.rs.security.jose.jwt.JwtException;
  */
 public class TokenExpiredException extends JwtException {
 
-    private String exLang;
+    private final String exLang;
 
 
     public TokenExpiredException(String message,String exLang){

@@ -18,6 +18,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import static org.abondar.experimental.wsboard.ws.util.RouteConstantUtil.ACCEPT_LANG_HEADER;
 import static org.abondar.experimental.wsboard.ws.util.RouteConstantUtil.LOG_HEADERS;
 
 /**
@@ -42,7 +43,7 @@ public class SprintServiceRoute extends RouteBuilder {
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList formData = (MessageContentsList) bdy;
-                    String lang = (String) hdrs.get("Accept-Language");
+                    String lang = (String) hdrs.get(ACCEPT_LANG_HEADER);
 
                     try {
                         var startDt = convertDate((String) formData.get(1));
@@ -68,7 +69,7 @@ public class SprintServiceRoute extends RouteBuilder {
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList formData = (MessageContentsList) bdy;
-                    String lang = (String) hdrs.get("Accept-Language");
+                    String lang = (String) hdrs.get(ACCEPT_LANG_HEADER);
 
                     try {
                         Date startDt = null;
@@ -108,7 +109,7 @@ public class SprintServiceRoute extends RouteBuilder {
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList queryData = (MessageContentsList) bdy;
-                    String lang = (String) hdrs.get("Accept-Language");
+                    String lang = (String) hdrs.get(ACCEPT_LANG_HEADER);
 
                     try {
                         var sprint = sprintDao.getSprintById((long) queryData.get(0));
@@ -123,7 +124,7 @@ public class SprintServiceRoute extends RouteBuilder {
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList queryData = (MessageContentsList) bdy;
-                    String lang = (String) hdrs.get("Accept-Language");
+                    String lang = (String) hdrs.get(ACCEPT_LANG_HEADER);
 
                     try{
                         var sprints = sprintDao.getSprints((long)queryData.get(0),(int) queryData.get(1), (int) queryData.get(2));
@@ -143,7 +144,7 @@ public class SprintServiceRoute extends RouteBuilder {
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList queryData = (MessageContentsList) bdy;
-                    String lang = (String) hdrs.get("Accept-Language");
+                    String lang = (String) hdrs.get(ACCEPT_LANG_HEADER);
 
                     try{
                         var sprints = sprintDao.getCurrentSprint((long)queryData.get(0));
@@ -163,7 +164,7 @@ public class SprintServiceRoute extends RouteBuilder {
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList queryData = (MessageContentsList) bdy;
-                    String lang = (String) hdrs.get("Accept-Language");
+                    String lang = (String) hdrs.get(ACCEPT_LANG_HEADER);
 
                     try {
                         var tasks = sprintDao.countSprints((long) queryData.get(0));
@@ -181,7 +182,7 @@ public class SprintServiceRoute extends RouteBuilder {
                 .transform()
                 .body((bdy, hdrs) -> {
                     MessageContentsList queryData = (MessageContentsList) bdy;
-                    String lang = (String) hdrs.get("Accept-Language");
+                    String lang = (String) hdrs.get(ACCEPT_LANG_HEADER);
 
                     try {
                         sprintDao.deleteSprint((long) queryData.get(0));

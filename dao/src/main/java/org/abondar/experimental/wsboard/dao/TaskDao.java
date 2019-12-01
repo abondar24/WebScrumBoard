@@ -11,8 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Date;
+import java.util.EnumMap;
 import java.util.EnumSet;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -417,7 +417,7 @@ public class TaskDao extends BaseDao {
      * @return Map of states and available moves
      */
     private Map<TaskState, List<TaskState>> initMoves() {
-        Map<TaskState, List<TaskState>> moves = new HashMap<>();
+        Map<TaskState, List<TaskState>> moves = new EnumMap<>(TaskState.class);
 
         for (TaskState ts : EnumSet.allOf(TaskState.class)) {
             switch (ts) {

@@ -10,6 +10,8 @@ import org.springframework.context.MessageSource;
 import java.util.Locale;
 
 import static org.abondar.experimental.wsboard.ws.util.RouteConstantUtil.EMAIL_TYPE_HEADER;
+import static org.abondar.experimental.wsboard.ws.util.RouteConstantUtil.LOGIN_HEADER;
+import static org.abondar.experimental.wsboard.ws.util.RouteConstantUtil.THANKS_HEADER;
 
 /**
  * Route sending email based on header
@@ -54,13 +56,13 @@ public class EmailRoute extends RouteBuilder {
                         messageSource.getMessage(I18nKeyUtil.USER_EMAIL_CREATED_BODY, null, locale))
                 .setHeader("body1",()->
                         messageSource.getMessage(I18nKeyUtil.USER_EMAIL_CREATED_BODY1, null, locale))
-                .setHeader("thanks",()->
+                .setHeader(THANKS_HEADER,()->
                         messageSource.getMessage(I18nKeyUtil.USER_EMAIL_THANKS, null, locale))
                 .to("velocity:/velocity/createUser.html")
                 .removeHeader("email")
                 .removeHeader("firstName")
                 .removeHeader("lastName")
-                .removeHeader("login")
+                .removeHeader(LOGIN_HEADER)
                 .removeHeader("password")
                 .removeHeader("roles")
                 .endChoice()
@@ -82,11 +84,11 @@ public class EmailRoute extends RouteBuilder {
                 .setHeader("head",()->
                         messageSource.getMessage(I18nKeyUtil.USER_EMAIL_HEAD, null, locale))
                 .setHeader("body",()->
-                        messageSource.getMessage(I18nKeyUtil.USER_EMAIL_UPDATE_PASSWORD_BODY, null, locale))
-                .setHeader("thanks",()->
+                        messageSource.getMessage(I18nKeyUtil.USER_EMAIL_UPDATE_PWD_BODY, null, locale))
+                .setHeader(THANKS_HEADER,()->
                         messageSource.getMessage(I18nKeyUtil.USER_EMAIL_THANKS, null, locale))
                 .to("velocity:/velocity/updatePassword.html")
-                .removeHeader("login")
+                .removeHeader(LOGIN_HEADER)
                 .removeHeader("id")
                 .removeHeader("newPassword")
                 .removeHeader("oldPassword")
@@ -96,13 +98,13 @@ public class EmailRoute extends RouteBuilder {
                 .setHeader("head",()->
                         messageSource.getMessage(I18nKeyUtil.USER_EMAIL_HEAD, null, locale))
                 .setHeader("body",()->
-                        messageSource.getMessage(I18nKeyUtil.USER_EMAIL_RESET_PASSWORD_BODY, null, locale))
+                        messageSource.getMessage(I18nKeyUtil.USER_EMAIL_RESET_PWD_BODY, null, locale))
                 .setHeader("body1",()->
-                        messageSource.getMessage(I18nKeyUtil.USER_EMAIL_RESET_PASSWORD_BODY1, null, locale))
-                .setHeader("thanks",()->
+                        messageSource.getMessage(I18nKeyUtil.USER_EMAIL_RESET_PWD_BODY1, null, locale))
+                .setHeader(THANKS_HEADER,()->
                         messageSource.getMessage(I18nKeyUtil.USER_EMAIL_THANKS, null, locale))
                 .to("velocity:/velocity/resetPassword.html")
-                .removeHeader("login")
+                .removeHeader(LOGIN_HEADER)
                 .removeHeader("id")
                 .removeHeader("code")
                 .endChoice()
@@ -114,7 +116,7 @@ public class EmailRoute extends RouteBuilder {
                         messageSource.getMessage(I18nKeyUtil.USER_EMAIL_DELETE_BODY, null, locale))
                 .setHeader("body1",()->
                         messageSource.getMessage(I18nKeyUtil.USER_EMAIL_DELETE_BODY1, null, locale))
-                .setHeader("thanks",()->
+                .setHeader(THANKS_HEADER,()->
                         messageSource.getMessage(I18nKeyUtil.USER_EMAIL_THANKS, null, locale))
                 .to("velocity:/velocity/deleteUser.html")
                 .removeHeader("id")
