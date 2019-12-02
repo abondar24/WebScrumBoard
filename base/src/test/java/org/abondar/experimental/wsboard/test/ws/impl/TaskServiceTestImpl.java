@@ -272,6 +272,11 @@ public class TaskServiceTestImpl implements TaskService {
         return Response.ok(tasks).build();
     }
 
+    @Override
+    public Response countSprintTasks(long spId) {
+        return Response.ok(7).build();
+    }
+
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)

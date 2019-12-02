@@ -464,7 +464,7 @@ public class TaskDaoTest  extends BaseDaoTest{
     }
 
     @Test
-    public void countContributorTasks() throws Exception {
+    public void countContributorTasksTest() throws Exception {
         cleanData();
 
         var usr = createUser("");
@@ -475,6 +475,33 @@ public class TaskDaoTest  extends BaseDaoTest{
         var res = dao.countContributorTasks(contr.getId());
 
         assertEquals(Integer.valueOf(1), res);
+
+    }
+
+    @Test
+    public void countSprintTasksTest() throws Exception {
+        cleanData();
+
+        var usr = createUser("");
+        var prj = createProject(true);
+        var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
+        var task = dao.createTask(contr.getId(), new Date(), true, "name", "descr");
+        var sprint = sprintDao.createSprint("test",new Date(),new Date(),prj.getId());
+
+        dao.updateTaskSprint(task.getId(),sprint.getId());
+        var res = dao.countSprintTasks(sprint.getId());
+
+        assertEquals(Integer.valueOf(1), res);
+
+    }
+
+    @Test
+    public void countSprintNotFoundTasksTest() {
+        cleanData();
+
+        assertThrows(DataExistenceException.class,()->{
+            dao.countSprintTasks(100L);
+        });
 
     }
 

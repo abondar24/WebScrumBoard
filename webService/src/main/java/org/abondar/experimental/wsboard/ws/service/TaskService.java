@@ -246,4 +246,17 @@ public interface TaskService {
                                @QueryParam("offset") @ApiParam(required = true) int offset,
                                @QueryParam("limit") @ApiParam(required = true) int limit);
 
+
+    @GET
+    @Path("/count_sprint_tasks")
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(
+            value = "Count sprint tasks",
+            notes = "Count number of tasks in a sprint",
+            produces = "application/json")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Tasks counted", response = Integer.class),
+            @ApiResponse(code = 404, message = "Sprint not found")
+    })
+    Response countSprintTasks(@QueryParam("sprintId") @ApiParam(required = true) long spId);
 }

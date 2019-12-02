@@ -88,6 +88,8 @@ public interface DataMapper {
 
     Integer countContributorTasks(@Param("ctrId") long ctrId);
 
+    Integer countSprintTasks(@Param("spId") long spId);
+
     Sprint getSprintByName(@Param("name") String name);
 
     Sprint getSprintById(@Param("id")long id);

@@ -391,6 +391,23 @@ public class TaskDao extends BaseDao {
         return tasks;
     }
 
+    /**
+     * Counts the number of tasks for sprint
+     * @param spId - sprint to be counted
+     * @return number of sprint tasks
+     * @throws DataExistenceException - sprint not found
+     */
+    public Integer countSprintTasks(Long spId) throws DataExistenceException{
+
+        checkSprint(spId);
+
+        var res = mapper.countSprintTasks(spId);
+        var msg = String.format(LogMessageUtil.LOG_COUNT_FORMAT, "Counted tasks for sprint ", spId,res);
+        logger.info(msg);
+
+        return res;
+
+    }
 
     /**
      * Counts the number of tasks for contributor

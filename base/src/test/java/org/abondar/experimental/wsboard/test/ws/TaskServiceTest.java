@@ -855,6 +855,22 @@ public class TaskServiceTest {
         assertEquals(LogMessageUtil.SPRINT_NOT_EXISTS, msg);
     }
 
+    @Test
+    public void countSprintTasksTest() {
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+        client.path("/task/count_sprint_tasks")
+                .accept(MediaType.APPLICATION_JSON)
+                .query("sprintId", 7);
+
+        var res = client.get();
+        assertEquals(200, res.getStatus());
+
+        var count = res.readEntity(Integer.class);
+        assertEquals(Integer.valueOf(7), count);
+
+    }
+
+
 
     private long createUser() {
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));

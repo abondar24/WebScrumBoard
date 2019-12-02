@@ -436,6 +436,23 @@ public class MapperTest {
 
     }
 
+
+    @Test
+    public void countSprintTasksTest() {
+        cleanData();
+        var user = createUser();
+        var project = createProject();
+        var contributor = createContributor(user.getId(), project.getId(), false);
+        var sprint = createSprint(project.getId());
+        var task = createTask(contributor.getId());
+
+        mapper.updateTaskSprint(task.getId(),sprint.getId());
+        var res = mapper.countSprintTasks(sprint.getId());
+
+        assertEquals(Integer.valueOf(1), res);
+
+    }
+
     @Test
     public void insertSprintTest() {
         cleanData();

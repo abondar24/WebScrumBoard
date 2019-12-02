@@ -314,6 +314,23 @@ public class TaskServiceRoute extends RouteBuilder {
 
                 });
 
+        from("direct:countSprintTasks").routeId("countSprintTasks")
+                .log(LoggingLevel.DEBUG, LOG_HEADERS)
+                .transform()
+                .body((bdy, hdrs) -> {
+                    MessageContentsList queryData = (MessageContentsList) bdy;
+                    String lang = (String) hdrs.get(ACCEPT_LANG_HEADER);
+
+                    try {
+                        var tasks = taskDao.countSprintTasks((long) queryData.get(0));
+
+                        return Response.ok(tasks).build();
+                    } catch (DataExistenceException ex) {
+                        return getLocalizedResponse(lang, I18nKeyUtil.USER_NOT_EXISTS, Response.Status.NOT_FOUND);
+                    }
+
+
+                });
 
     }
 

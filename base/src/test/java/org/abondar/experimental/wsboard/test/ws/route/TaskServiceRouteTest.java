@@ -165,6 +165,18 @@ public class TaskServiceRouteTest {
     }
 
     @Test
+    public void countSprintTasksRouteTest() throws Exception {
+        Object[] values = new Object[]{someId};
+        MessageContentsList testList = new MessageContentsList(values);
+        producerTemplate.sendBodyAndHeaders("direct:countSprintTasks", testList,
+                Map.of());
+        mockEndpoint.assertIsSatisfied();
+        mockEndpoint.expectedBodiesReceived();
+        mockEndpoint.expectedMessageCount(1);
+        mockEndpoint.reset();
+    }
+
+    @Test
     public void getTasksForUserRouteTest() throws Exception {
         Object[] values = new Object[]{someId, page, page};
         MessageContentsList testList = new MessageContentsList(values);

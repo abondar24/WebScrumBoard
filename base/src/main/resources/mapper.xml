@@ -359,6 +359,13 @@
         WHERE contributor_id = #{ctrId};
     </select>
 
+    <select id="countSprintTasks" resultType="Integer">
+        SELECT count(id)
+        FROM task
+        WHERE sprint_id = #{spId};
+    </select>
+
+
     <select id="countSprints" resultType="integer" useCache="true">
         SELECT count(id)
         FROM sprint
