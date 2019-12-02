@@ -5,6 +5,8 @@ import AuthModule from "./auth";
 import ProjectModule from "./project";
 import ContributorModule from "./contributor"
 import TaskModule from "./task"
+import SprintModule from "./sprint"
+
 import Cookies from 'js-cookie'
 import VuexPersistence from 'vuex-persist'
 
@@ -31,7 +33,8 @@ export default new Vuex.Store({
     strict: false,
     plugins: [vuexCookie.plugin,vuexLocal.plugin],
     modules: {user: UserModule, auth: AuthModule,
-        project: ProjectModule, contributor: ContributorModule,task: TaskModule},
+        project: ProjectModule, contributor: ContributorModule,task: TaskModule,
+    sprint:SprintModule},
     state: {
         errorMessage: ''
     },
