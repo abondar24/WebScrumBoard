@@ -7,6 +7,13 @@
             <NavbarRight></NavbarRight>
         </b-navbar>
         <b-container>
+            <b-alert
+                    :show="errorOccurred"
+                    dismissible
+                    variant="danger">
+                {{errorMessage}}
+            </b-alert>
+
             <b-row id="buttonRow">
                 <b-button id="viewSprints" v-b-modal.sprintsView>View Sprints</b-button>
                 <b-button id="createSprint" @click="createSprint" variant="info">Create Sprint</b-button>
@@ -39,7 +46,9 @@
                     repository: '',
                     description: '',
                     active: false
-                }
+                },
+                errorMessage: '',
+                errorOccurred: false,
             }
         },
         beforeMount() {

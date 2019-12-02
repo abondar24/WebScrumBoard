@@ -1,5 +1,12 @@
 <template>
     <b-container>
+        <b-alert
+                :show="errorOccurred"
+                dismissible
+                variant="danger">
+            {{errorMessage}}
+        </b-alert>
+
         <b-row>
             <div v-if="noSprints">
                 Current Project has no Sprints
@@ -13,8 +20,10 @@
                         :fields="spFields"
                         :per-page="perPage"
                         :current-page="spCurrentPage">
+                    <!--TODO: add button for deleteion -->
+                    <!--TODO: add button for editing -->
                     <template v-slot:cell(sprintName)="data">
-                        <b-button variant="link" @click="viewTasks(data.item)">{data.item.sprintName}</b-button>
+                        <b-button variant="link" @click="viewTasks(data.item.id)">{data.item.sprintName}</b-button>
 
                     </template>
 
