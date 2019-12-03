@@ -1,9 +1,12 @@
 const taskUrl = process.env.VUE_APP_API_ENDPOINT + "/task";
 const formConfig = {
     headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Accept-Language':'en'
     }
 };
+
+const langHeader = {'Accept-Language': 'en'};
 
 export default {
     state: {
@@ -64,7 +67,8 @@ export default {
                     spId: queryParams.sprintId,
                     offset: queryParams.offset,
                     limit: queryParams.limit
-                }
+                },
+                headers: langHeader
             }).then(
                 (response) => {
                     commit('setErrorMessage', '');
@@ -84,7 +88,8 @@ export default {
                     ctrId: queryParams.contributorId,
                     offset: queryParams.offset,
                     limit: queryParams.limit
-                }
+                },
+                headers: langHeader
             }).then(
                 (response) => {
                     commit('setErrorMessage', '');
@@ -104,7 +109,8 @@ export default {
                     ctrId: queryParams.userId,
                     offset: queryParams.offset,
                     limit: queryParams.limit
-                }
+                },
+                headers: langHeader
             }).then(
                 (response) => {
                     commit('setErrorMessage', '');
@@ -122,7 +128,8 @@ export default {
             return getters.authenticatedAxios.get(taskUrl + '/count_contributor_tasks', {
                 params: {
                     contributorId: contributorId,
-                }
+                },
+                headers: langHeader
             }).then(
                 (response) => {
                     commit('setErrorMessage', '');
@@ -140,7 +147,8 @@ export default {
             return getters.authenticatedAxios.get(taskUrl + '/count_user_tasks', {
                 params: {
                     userId: userId,
-                }
+                },
+                headers: langHeader
             }).then(
                 (response) => {
                     commit('setErrorMessage', '');
@@ -158,7 +166,8 @@ export default {
             return getters.authenticatedAxios.get(taskUrl + '/count_sprint_tasks', {
                 params: {
                     sprintId: sprintId,
-                }
+                },
+                headers: langHeader
             }).then(
                 (response) => {
                     commit('setErrorMessage', '');

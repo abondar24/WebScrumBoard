@@ -19,7 +19,6 @@ public class TokenExpiredMapper implements ExceptionMapper<TokenExpiredException
     private MessageSource messageSource;
 
 
-    //TODO: fix locale bug
     @Override
     public Response toResponse(TokenExpiredException e) {
         Locale locale = new Locale.Builder().setLanguage(e.getExLang()).build();

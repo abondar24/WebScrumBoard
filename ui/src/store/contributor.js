@@ -1,9 +1,13 @@
 const contributorUrl = process.env.VUE_APP_API_ENDPOINT + "/contributor";
 const formConfig = {
     headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Accept-Language':'en'
     }
 };
+
+const langHeader = {'Accept-Language': 'en'};
+
 export default {
     state: {
         projectOwner: {
@@ -113,7 +117,8 @@ export default {
                     projectId: queryParams.projectId,
                     offset: queryParams.offset,
                     limit: queryParams.limit
-                }
+                },
+                headers: langHeader
             }).then(
                 (response) => {
                     commit('setErrorMessage', '');
@@ -131,7 +136,8 @@ export default {
             return getters.authenticatedAxios.get(contributorUrl + '/count_project_contributors', {
                 params: {
                     projectId: prjId
-                }
+                },
+                headers: langHeader
             }).then(
                 (response) => {
                     commit('setErrorMessage', '');
@@ -146,7 +152,8 @@ export default {
                 params: {
                     userId: queryParams.userId,
                     projectId: queryParams.projectId
-                }
+                },
+                headers: langHeader
             }).then(
                 (response) => {
                     commit('setErrorMessage', '');

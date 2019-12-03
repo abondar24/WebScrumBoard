@@ -1,9 +1,14 @@
 const sprintUrl = process.env.VUE_APP_API_ENDPOINT + "/sprint";
+
+const langHeader = {'Accept-Language': 'en'};
+
 const formConfig = {
     headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Accept-Language': 'en'
     }
 };
+
 
 export default {
     state: {
@@ -33,7 +38,8 @@ export default {
                     projectId: queryParams.projectId,
                     offset: queryParams.offset,
                     limit: queryParams.limit
-                }
+                },
+                headers: langHeader
             }).then(
                 (response) => {
                     commit('setErrorMessage', '');
@@ -51,7 +57,8 @@ export default {
             return getters.authenticatedAxios.get(sprintUrl + '/count', {
                 params: {
                     projectId: projectId,
-                }
+                },
+                headers: langHeader
             }).then(
                 (response) => {
                     commit('setErrorMessage', '');

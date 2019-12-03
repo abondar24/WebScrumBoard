@@ -3,11 +3,15 @@ import qs from "qs"
 
 const userUrl = process.env.VUE_APP_API_ENDPOINT + "/user";
 
+const langHeader = {'Accept-Language': 'en'};
+
 const formConfig = {
     headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Accept-Language': 'en'
     }
 };
+
 
 export default {
     state: {
@@ -86,7 +90,8 @@ export default {
                 params: {
                     userId: getters.getUserId,
                     code: code
-                }
+                },
+                headers: langHeader
             })
                 .then(
                     (response) => {
@@ -99,7 +104,8 @@ export default {
         getUserByLogin({commit, getters}, params) {
             return Axios.get(userUrl + '/find', {
                 params: {
-                    login: params.login
+                    login: params.login,
+                    headers: langHeader
                 }
             }).then(
                 (response) => {
@@ -120,6 +126,7 @@ export default {
                 params: {
                     id: ids
                 },
+                headers: langHeader,
                 paramsSerializer: function (params) {
                     return qs.stringify(params, {arrayFormat: 'repeat'})
                 }
@@ -136,7 +143,8 @@ export default {
             return Axios.put(userUrl + '/reset_pwd', {
                 params: {
                     id: getters.getUserId
-                }
+                },
+                headers: langHeader
             }).then(
                 (response) => {
                     commit('setErrorMessage', '');
@@ -162,7 +170,8 @@ export default {
         updateAvatar({commit, getters}, avatar) {
             const config = {
                 headers: {
-                    'Content-Type': `multipart/form-data;`
+                    'Content-Type': `multipart/form-data;`,
+                    langHeader
                 },
                 params: {
                     id: getters.getUserId
@@ -222,7 +231,8 @@ export default {
             return getters.authenticatedAxios.delete(userUrl + '/delete', {
                 params: {
                     id: getters.getUserId,
-                }
+                },
+                headers: langHeader
             }).then(
                 (response) => {
                     commit('setErrorMessage', '');

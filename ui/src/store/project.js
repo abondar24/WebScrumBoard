@@ -1,9 +1,13 @@
 const projectUrl = process.env.VUE_APP_API_ENDPOINT + "/project";
 const formConfig = {
     headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Accept-Language':'en'
     }
 };
+
+const langHeader = {'Accept-Language': 'en'};
+
 
 export default {
     state: {
@@ -92,7 +96,8 @@ export default {
             return getters.authenticatedAxios.delete(projectUrl + '/delete', {
                 params: {
                     id: id
-                }
+                },
+                headers: langHeader
             }).then(
                 (response) => {
                     commit('setErrorMessage', '');
@@ -106,7 +111,8 @@ export default {
             return getters.authenticatedAxios.get(projectUrl + '/find', {
                 params: {
                     id: id
-                }
+                },
+                headers: langHeader
             }).then(
                 (response) => {
                     commit('setErrorMessage', '');
@@ -120,7 +126,8 @@ export default {
             return getters.authenticatedAxios.get(projectUrl + '/find_user_projects', {
                 params: {
                     id: userId
-                }
+                },
+                headers: langHeader
             }).then(
                 (response) => {
                     commit('setErrorMessage', '');
