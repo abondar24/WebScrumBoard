@@ -16,13 +16,21 @@
 
             <b-row id="buttonRow">
                 <b-button id="viewSprints" v-b-modal.sprintsView>View Sprints</b-button>
-                <b-button id="createSprint" @click="createSprint" variant="info">Create Sprint</b-button>
-                <b-button id="addTask" @click="addTask" variant="primary">Add Task</b-button>
+                <b-button id="createSprint" v-b-modal.sprintCreate variant="info">Create Sprint</b-button>
+                <b-button id="addTask" variant="primary">Add Task</b-button>
 
                 <b-modal id="sprintsView"
                          ok-only
                          title="Project Sprints">
                     <ViewSprints :prId="project.id"></ViewSprints>
+                </b-modal>
+
+
+                <b-modal id="sprintCreate"
+                         ref="spEdit"
+                         title="Create Sprint"
+                         hide-footer>
+                    <CreateEditSprint :prId="project.id" :isEdit="false" @exit="hideCreate"></CreateEditSprint>
                 </b-modal>
             </b-row>
         </b-container>
@@ -32,10 +40,11 @@
 <script>
     import NavbarRight from "./NavbarRight";
     import ViewSprints from "./ViewSprints";
+    import CreateEditSprint from "./CreateEditSprint";
 
     export default {
         name: "ProjectBoard",
-        components: {ViewSprints, NavbarRight},
+        components: {CreateEditSprint, ViewSprints, NavbarRight},
         data() {
             return {
                 project: {
@@ -58,12 +67,9 @@
             routeBack() {
                 this.$router.push({path: '/project/' + this.$route.params.id});
             },
-            createSprint() {
-
-            },
-            addTask() {
-
-            }
+           hideCreate(){
+               this.$refs['spEdit'].hide();
+           }
         },
         computed: {
             getProject() {
