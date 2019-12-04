@@ -326,7 +326,7 @@ public class TaskServiceRoute extends RouteBuilder {
 
                         return Response.ok(tasks).build();
                     } catch (DataExistenceException ex) {
-                        return getLocalizedResponse(lang, I18nKeyUtil.USER_NOT_EXISTS, Response.Status.NOT_FOUND);
+                        return getLocalizedResponse(lang, I18nKeyUtil.SPRINT_NOT_EXISTS, Response.Status.NOT_FOUND);
                     }
 
 

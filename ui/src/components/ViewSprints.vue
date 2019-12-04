@@ -23,7 +23,7 @@
                     <!--TODO: add button for deleteion -->
                     <!--TODO: add button for editing -->
                     <template v-slot:cell(sprintName)="data">
-                        <b-button variant="link" @click="viewTasks(data.item.id)">{data.item.sprintName}</b-button>
+                        <b-button variant="link" @click="viewTasks(data.item.id)">{{data.item.sprintName}}</b-button>
 
                     </template>
 
@@ -37,9 +37,9 @@
             </div>
 
         </b-row>
-        <b-row v-if="!noSprints">
+        <b-row v-if="showTasks">
             <div v-if="noTasks">
-                Current Project has no Sprints
+                Current Sprint has no tasks
             </div>
 
             <div v-if="!noTasks">
@@ -65,7 +65,9 @@
 </template>
 
 <script>
-    //TODO: check after sprint and task creation
+    //TODO: check after task creation
+    //TODO: reactive sprints list update after create
+    //TODO: fix pagination offset everywhere
     export default {
         name: "ViewSprints",
         props: ['prId'],
@@ -90,11 +92,12 @@
                 spCurrentPage: 1,
                 tsCurrentPage: 1,
                 perPage: 5,
-                totalSprints:0,
-                totalTasks:0,
-                spId:0,
-                noSprints:false,
-                noTasks:false
+                totalSprints: 0,
+                totalTasks: 0,
+                spId: 0,
+                noSprints: false,
+                noTasks: false,
+                showTasks:false
 
             }
         },
@@ -111,20 +114,21 @@
             loadNextSprints(index) {
                 this.findSprints(index);
             },
-            viewTasks(spId){
-                 this.spId = spId;
+            viewTasks(spId) {
+                this.spId = spId;
+                this.showTasks =true;
 
-                 this.countTasks();
-                 if (this.totalTasks>0){
-                     this.findTasks(0);
-                 } else {
-                     this.noTasks=true;
-                 }
+                this.countTasks();
+                if (this.totalTasks > 0) {
+                    this.findTasks(0);
+                } else {
+                    this.noTasks = true;
+                }
 
             },
             findTasks(offset) {
                 this.$store.dispatch('findSprintTasks', {
-                    contributorId: this.spId,
+                    sprintId: this.spId,
                     offset: offset,
                     limit: this.perPage
                 }).then(() => {
@@ -134,17 +138,19 @@
                     } else {
                         for (let i = 0; i < this.getTasks.length; i++) {
                             this.tasks.push({
-                                name: this.getTasks[i].name,
-                                startDate: this.getTasks[i].startDate,
-                                endDate: this.getTasks[i].endDate,
-                                state: this.getTasks[i].taskState
+                                taskName: this.getTasks[i].name,
+                                taskStartDate:
+                                    this.formatDate(new Date(this.getTasks[i].startDate)),
+                                taskEndDate:
+                                    this.formatDate(new Date(this.getTasks[i].endDate)),
+                                taskState: this.getTasks[i].taskState
                             });
                         }
 
                     }
                 });
             },
-            countTasks(){
+            countTasks() {
                 this.$store.dispatch('countSprintTasks', this.spId).then(() => {
                     this.errorMessage = this.getError;
                     if (this.errorMessage.length) {
@@ -152,13 +158,13 @@
                     }
                 });
 
-                this.totalTasks=this.getTasksCount;
+                this.totalTasks = this.getTasksCount;
             },
 
 
             findSprints(offset) {
                 this.$store.dispatch('findSprints', {
-                    contributorId: this.prId,
+                    projectId: this.prId,
                     offset: offset,
                     limit: this.perPage
                 }).then(() => {
@@ -168,16 +174,37 @@
                     } else {
                         for (let i = 0; i < this.getSprints.length; i++) {
                             this.sprints.push({
-                                name: this.getSprints[i].name,
-                                startDate: this.getSprints[i].startDate,
-                                endDate: this.getSprints[i].endDate,
+                                id: this.getSprints[i].id,
+                                sprintName: this.getSprints[i].name,
+                                sprintStartDate:
+                                    this.formatDate(new Date(this.getSprints[i].startDate)),
+                                sprintEndDate:
+                                    this.formatDate(new Date(this.getSprints[i].endDate)),
                             });
                         }
 
                     }
                 });
             },
-            countSprints(){
+            formatDate(rawDate) {
+                let date = new Date(rawDate);
+
+                let dd = date.getDate();
+                let mm = date.getMonth() + 1;
+                let yyyy = date.getFullYear();
+
+                if (dd < 10) {
+                    dd = '0' + dd;
+                }
+
+                if (mm < 10) {
+                    mm = '0' + mm;
+                }
+
+                return dd + '/' + mm + '/' + yyyy;
+            },
+
+            countSprints() {
                 this.$store.dispatch('countSprints', this.prId).then(() => {
                     this.errorMessage = this.getError;
                     if (this.errorMessage.length) {
@@ -185,7 +212,7 @@
                     }
                 });
 
-                this.totalSprints=this.getSprintsCount;
+                this.totalSprints = this.getSprintsCount;
             },
         },
         computed: {
@@ -195,13 +222,13 @@
             getTasks() {
                 return this.$store.getters.getSprintTasks;
             },
-            getTasksCount(){
+            getTasksCount() {
                 return this.$store.getters.getSprintTasksNum;
             },
-            getSprints(){
+            getSprints() {
                 return this.$store.getters.getSprints;
             },
-            getSprintsCount(){
+            getSprintsCount() {
                 return this.$store.getters.getSprintsCount;
             }
         }
