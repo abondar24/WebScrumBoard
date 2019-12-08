@@ -55,7 +55,7 @@
                 <b-pagination
                         v-model="tsCurrentPage"
                         :total-rows="totalTasks"
-                        @input="loadNextSprints(tsCurrentPage-1)"
+                        @input="loadNextTasks(tsCurrentPage-1)"
                         :per-page="perPage"
                         aria-controls="taskTable"/>
             </div>
@@ -112,7 +112,15 @@
         },
         methods: {
             loadNextSprints(index) {
-                this.findSprints(index);
+                this.$store.commit('setSprints',[]);
+                this.findSprints(this.calcOffset(index));
+            },
+            loadNextTasks(index) {
+                    this.findTasks(index);
+
+            },
+            calcOffset(index){
+                return index * this.perPage;
             },
             viewTasks(spId) {
                 this.spId = spId;

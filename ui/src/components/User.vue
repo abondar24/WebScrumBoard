@@ -225,7 +225,7 @@
                 });
             },
             loadNext(index){
-                this.findTasks(index);
+                this.findTasks(index * this.perPage);
             },
             hideEdit(){
                 this.$refs['userEdit'].hide();

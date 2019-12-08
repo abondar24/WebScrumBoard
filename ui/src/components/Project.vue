@@ -303,7 +303,7 @@
                 this.selectedCtr = {};
             },
             loadNext(index) {
-                this.findContributors(index);
+                this.findContributors(index * this.perPage);
             },
             makeAsOwner(ctrData) {
                 this.$store.dispatch('updateContributor', {

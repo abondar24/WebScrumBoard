@@ -113,7 +113,7 @@
                 this.totalRows=this.getTasksCount;
             },
             loadNext(index) {
-                this.findTasks(index);
+                this.findTasks(index * this.perPage);
             },
             close() {
                 this.$emit('exit');
