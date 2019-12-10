@@ -111,7 +111,7 @@ export default {
         deleteSprint({commit, getters}, sprintId) {
             return getters.authenticatedAxios.delete(sprintUrl + '/delete', {
                 params: {
-                    sprintId: sprintId
+                    id: sprintId
                 },
                 headers: langHeader
             }).then(

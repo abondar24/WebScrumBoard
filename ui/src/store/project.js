@@ -20,7 +20,8 @@ export default {
             description: '',
             active: false
         },
-        userProjects: []
+        userProjects: [],
+        projectEditable:false
     },
     mutations: {
         setProject(state, project) {
@@ -33,7 +34,10 @@ export default {
             state.project = {
 
             }
-        }
+        },
+        setProjectEditable(state, editable) {
+            state.projectEditable = editable;
+        },
     },
     getters: {
         getProject: state => {
@@ -44,6 +48,9 @@ export default {
         },
         getUserProjects: state => {
             return state.userProjects;
+        },
+        getProjectEditable: state =>{
+            return state.projectEditable;
         }
     },
     actions: {

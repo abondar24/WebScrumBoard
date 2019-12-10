@@ -12,6 +12,7 @@
                 Current Project has no Sprints
             </div>
             <div v-if="!noSprints">
+
                 <b-table
                         id="sprintTable"
                         hover
@@ -20,14 +21,30 @@
                         :fields="spFields"
                         :per-page="perPage"
                         :current-page="spCurrentPage">
-                    <!--TODO: add button for deleteion -->
-                    <!--TODO: add button for editing -->
                     <template v-slot:cell(sprintName)="data">
                         <b-button variant="link" @click="viewTasks(data.item.id)">{{data.item.sprintName}}</b-button>
 
                     </template>
+                    <template v-slot:cell(sprintActions)="data" v-if="isEditable">
+                        <b-button-group>
+                            <b-button variant="warning">Edit</b-button>
+                            <b-button variant="danger" @click="handleDelete(data.item.id)">Delete</b-button>
+
+
+                        </b-button-group>
+                    </template>
+
 
                 </b-table>
+
+                <b-modal id="deleteSprint"
+                         ref="delSprint"
+                         @ok="deleteSprint()"
+                         variant="danger"
+                         title="Delete Sprints" >
+                    Are you sure ,you want to delete this sprint?
+                </b-modal>
+
                 <b-pagination
                         v-model="spCurrentPage"
                         :total-rows="totalSprints"
@@ -39,7 +56,7 @@
         </b-row>
         <b-row v-if="showTasks">
             <div v-if="noTasks">
-                Current Sprint has no tasks
+                Selected Sprint has no tasks
             </div>
 
             <div v-if="!noTasks">
@@ -66,8 +83,8 @@
 
 <script>
     //TODO: check after task creation
-    //TODO: reactive sprints list update after create
-    //TODO: fix pagination offset everywhere
+    //TODO: fix pagination on re-click
+    //TODO: reactive list update on delete
     export default {
         name: "ViewSprints",
         props: ['prId'],
@@ -81,6 +98,7 @@
                     {key: 'sprintName', label: 'Sprint Name'},
                     {key: 'sprintStartDate', label: 'Start Date'},
                     {key: 'sprintEndDate', label: 'End Date'},
+                    {key: 'sprintActions', label: ''},
                 ],
                 tsFields: [
                     {key: 'taskName', label: 'Task Name'},
@@ -97,7 +115,9 @@
                 spId: 0,
                 noSprints: false,
                 noTasks: false,
-                showTasks:false
+                showTasks: false,
+                isEditable: false,
+                delSprint:0,
 
             }
         },
@@ -109,22 +129,24 @@
             } else {
                 this.noSprints = true;
             }
+
+            this.isEditable = this.getEditable;
+
         },
         methods: {
             loadNextSprints(index) {
-                this.$store.commit('setSprints',[]);
                 this.findSprints(this.calcOffset(index));
             },
             loadNextTasks(index) {
-                    this.findTasks(index);
+                this.findTasks(index);
 
             },
-            calcOffset(index){
+            calcOffset(index) {
                 return index * this.perPage;
             },
             viewTasks(spId) {
                 this.spId = spId;
-                this.showTasks =true;
+                this.showTasks = true;
 
                 this.countTasks();
                 if (this.totalTasks > 0) {
@@ -222,6 +244,19 @@
 
                 this.totalSprints = this.getSprintsCount;
             },
+            handleDelete(spId){
+                this.delSprint=spId;
+                this.$refs['delSprint'].show();
+            },
+
+            deleteSprint() {
+                this.$store.dispatch('deleteSprint',this.delSprint).then(() => {
+                    this.errorMessage = this.getError;
+                    if (this.errorMessage.length) {
+                        this.errorOccurred = true;
+                    }
+                });
+            },
         },
         computed: {
             getError() {
@@ -238,6 +273,9 @@
             },
             getSprintsCount() {
                 return this.$store.getters.getSprintsCount;
+            },
+            getEditable(){
+                return this.$store.getters.getProjectEditable;
             }
         }
     }

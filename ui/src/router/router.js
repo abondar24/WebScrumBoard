@@ -35,7 +35,7 @@ export default new Router({
                 }
             }
         },
-        {path: '/project/:id/board', name: 'ProjectBoard', component: ProjectBoard,
+        {path: '/project/:id/board', name: 'ProjectBoard', props: true, component: ProjectBoard,
             beforeEnter(to, from, next) {
                 if (store.state.auth.authenticated) {
                     next();

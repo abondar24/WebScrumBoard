@@ -206,6 +206,7 @@
                         this.ownerName = this.getOwner.firstName + ' ' + this.getOwner.lastName;
                     }
 
+                    this.$store.commit('setProjectEditable',this.isEditable);
                 });
 
             },

@@ -21,7 +21,7 @@
 
                 <b-modal id="sprintsView"
                          ok-only
-                         title="Project Sprints">
+                         title="Project Sprints" >
                     <ViewSprints :prId="project.id"></ViewSprints>
                 </b-modal>
 
@@ -69,7 +69,7 @@
             },
            hideCreate(){
                this.$refs['spEdit'].hide();
-           }
+           },
         },
         computed: {
             getProject() {
