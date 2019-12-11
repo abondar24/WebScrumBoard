@@ -27,7 +27,7 @@
                     </template>
                     <template v-slot:cell(sprintActions)="data" v-if="isEditable">
                         <b-button-group>
-                            <b-button variant="warning">Edit</b-button>
+                            <b-button variant="warning" @click="handleEdit(data.item)">Edit</b-button>
                             <b-button variant="danger" @click="handleDelete(data.item.id)">Delete</b-button>
 
 
@@ -37,8 +37,16 @@
 
                 </b-table>
 
+
+                <b-modal id="editSprint"
+                         ref="spEdit"
+                         hide-footer
+                         title="Edit Sprint">
+                    <CreateEditSprint  :isEdit="true" @exit="hideEdit"></CreateEditSprint>
+                </b-modal>
+
                 <b-modal id="deleteSprint"
-                         ref="delSprint"
+                         ref="spDelete"
                          @ok="deleteSprint()"
                          variant="danger"
                          title="Delete Sprints" >
@@ -85,8 +93,11 @@
     //TODO: check after task creation
     //TODO: fix pagination on re-click
     //TODO: reactive list update on delete
+    import CreateEditSprint from "./CreateEditSprint";
+
     export default {
         name: "ViewSprints",
+        components: {CreateEditSprint},
         props: ['prId'],
         data() {
             return {
@@ -246,7 +257,16 @@
             },
             handleDelete(spId){
                 this.delSprint=spId;
-                this.$refs['delSprint'].show();
+                this.$refs['spDelete'].show();
+            },
+            handleEdit(sprint){
+                this.$store.commit('setEditSprint',{
+                    id:sprint.id,
+                    name:sprint.sprintName,
+                    startDate:sprint.startDate,
+                    endDate:sprint.endDate,
+                });
+                this.$refs['spEdit'].show();
             },
 
             deleteSprint() {
@@ -256,6 +276,9 @@
                         this.errorOccurred = true;
                     }
                 });
+            },
+            hideEdit(){
+                this.$refs['spEdit'].hide();
             },
         },
         computed: {

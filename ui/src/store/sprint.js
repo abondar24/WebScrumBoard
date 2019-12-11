@@ -41,8 +41,8 @@ export default {
         setCurrentSprint(state,currSp){
             state.currentSprint = currSp;
         },
-        setEditSprint(state,currSp){
-            state.editSprint = currSp;
+        setEditSprint(state,editSp){
+            state.editSprint = editSp;
         }
     },
     getters: {

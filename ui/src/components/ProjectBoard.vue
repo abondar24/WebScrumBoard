@@ -27,7 +27,7 @@
 
 
                 <b-modal id="sprintCreate"
-                         ref="spEdit"
+                         ref="spCreate"
                          title="Create Sprint"
                          hide-footer>
                     <CreateEditSprint :prId="project.id" :isEdit="false" @exit="hideCreate"></CreateEditSprint>
@@ -68,7 +68,7 @@
                 this.$router.push({path: '/project/' + this.$route.params.id});
             },
            hideCreate(){
-               this.$refs['spEdit'].hide();
+               this.$refs['spCreate'].hide();
            },
         },
         computed: {
