@@ -22,14 +22,6 @@ export default {
             projectId: 0,
             current: false
         },
-        editSprint: {
-            id: 0,
-            name: "",
-            startDate: null,
-            endDate: null,
-            projectId: 0,
-            current: false
-        }
     },
     mutations: {
         setSprints(state, prSprints) {
@@ -41,9 +33,6 @@ export default {
         setCurrentSprint(state,currSp){
             state.currentSprint = currSp;
         },
-        setEditSprint(state,editSp){
-            state.editSprint = editSp;
-        }
     },
     getters: {
         getSprints: state => {
@@ -54,9 +43,6 @@ export default {
         },
         getCurrentSprint: state => {
             return state.currentSprint;
-        },
-        getEditSprint: state => {
-            return state.editSprint;
         },
 
     },
@@ -87,10 +73,26 @@ export default {
             const form = new URLSearchParams();
 
             form.append("id", sprintData.id);
-            form.append("name", sprintData.name);
-            form.append("startDate", sprintData.startDate);
-            form.append("endDate", sprintData.endDate);
-            form.append("isCurrent", sprintData.isCurrent);
+
+            if (sprintData.name.length){
+                form.append("name", sprintData.name);
+            }
+
+            if (sprintData.startDate!=null){
+                form.append("startDate", sprintData.startDate);
+            }
+
+            if (sprintData.endDate!=null){
+                form.append("endDate", sprintData.endDate);
+            }
+
+
+            if (sprintData.isCurrent===undefined){
+                form.append("isCurrent", "false");
+            } else {
+                form.append("isCurrent", sprintData.isCurrent);
+            }
+
 
             return getters.authenticatedAxios.post(sprintUrl + '/update', form, formConfig).then(
                 (response) => {
@@ -125,7 +127,7 @@ export default {
         findCurrentSprint({commit, getters}, projectId) {
             return getters.authenticatedAxios.get(sprintUrl + '/find_current', {
                 params: {
-                    prId: projectId
+                    id: projectId
                 },
                 headers: langHeader
             }).then(

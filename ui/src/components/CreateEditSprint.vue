@@ -9,19 +9,29 @@
 
         <b-form @submit.prevent="submitData">
             <b-form-group id="name" label="Sprint name" label-for="nameInput">
-                <b-form-input
-                        id="name"
-                        v-model="sprintData.name"
-                        required
-                        :state="nameValidation"
-                        placeholder="Enter name">
-                </b-form-input>
+               <div v-if="!isEdit">
+                   <b-form-input
+                           id="name"
+                           v-model="sprintData.name"
+                           required
+                           :state="nameValidation"
+                           placeholder="Enter name">
+                   </b-form-input>
+               </div>
+                <div v-if="isEdit">
+                    <b-form-input
+                            id="name"
+                            v-model="sprintData.name"
+                            placeholder="Enter name">
+                    </b-form-input>
+                </div>
+
             </b-form-group >
             <b-form-group id="startDate" label="Start date" label-for="dateInput">
-                <datepicker v-model="sprintData.startDate" :format="dateFormat"></datepicker>
+                <datepicker v-model="sprintData.startDate" :format="dateFormat" placeholder="Select date"></datepicker>
             </b-form-group>
             <b-form-group id="endDate" label="End date" label-for="dateInput">
-                <datepicker v-model="sprintData.endDate" :format="dateFormat"></datepicker>
+                <datepicker v-model="sprintData.endDate" :format="dateFormat" placeholder="Select date"></datepicker>
 
             </b-form-group>
 
@@ -41,7 +51,7 @@
     import Datepicker from "vuejs-datepicker/dist/vuejs-datepicker.esm.js";
 
     export default {
-        props: ['prId','isEdit'],
+        props: ['id','isEdit'],
         name: "CreateEditSprint",
         components: {
             Datepicker
@@ -63,19 +73,25 @@
             }
         },
         created(){
+
             if (this.isEdit){
-                this.sprintData = this.getEditSprint;
-                this.btnName = "Edit"
+               this.btnName = "Edit";
+                this.sprintData.id = this.id;
             } else {
-                this.sprintData.projectId = this.prId;
-                this.btnName = "Create"
+                this.btnName = "Create";
+                this.sprintData.projectId = this.id;
             }
         },
         methods:{
             submitData(){
 
-                this.sprintData.startDate = this.convertDate(this.sprintData.startDate);
-                this.sprintData.endDate = this.convertDate(this.sprintData.endDate);
+                if (this.sprintData.startDate!==null){
+                    this.sprintData.startDate = this.convertDate(this.sprintData.startDate);
+                }
+
+                if (this.sprintData.endDate!==null){
+                    this.sprintData.endDate = this.convertDate(this.sprintData.endDate);
+                }
 
                 if (!this.isEdit){
                     this.$store.dispatch('createSprint', this.sprintData).then(() => {
@@ -87,6 +103,7 @@
                         }
                     });
                 } else {
+
                     this.$store.dispatch('updateSprint', this.sprintData).then(() => {
                         this.errorMessage = this.getError;
                         if (this.errorMessage.length) {
@@ -102,6 +119,7 @@
                 this.errorOccurred = false;
                 this.errorMessage = '';
             },
+
             convertDate(rawDate){
                 let date = new Date(rawDate);
 
@@ -127,11 +145,8 @@
             getError() {
                 return this.$store.getters.getErrorMsg;
             },
-            getEditSprint(){
-                return this.$store.getters.getEditSprint;
-            },
             nameValidation() {
-                return this.sprintData.name.length > 0
+                return this.sprintData.name.length > 0;
             },
         }
     }

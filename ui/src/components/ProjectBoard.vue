@@ -30,7 +30,7 @@
                          ref="spCreate"
                          title="Create Sprint"
                          hide-footer>
-                    <CreateEditSprint :prId="project.id" :isEdit="false" @exit="hideCreate"></CreateEditSprint>
+                    <CreateEditSprint :id="project.id" :isEdit="false" @exit="hideCreate"></CreateEditSprint>
                 </b-modal>
             </b-row>
         </b-container>

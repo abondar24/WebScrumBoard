@@ -16,7 +16,6 @@
                 <b-table
                         id="sprintTable"
                         hover
-                        responsive
                         :items="sprints"
                         :fields="spFields"
                         :per-page="perPage"
@@ -27,7 +26,7 @@
                     </template>
                     <template v-slot:cell(sprintActions)="data" v-if="isEditable">
                         <b-button-group>
-                            <b-button variant="warning" @click="handleEdit(data.item)">Edit</b-button>
+                            <b-button variant="warning" @click="handleEdit(data.item.id)">Edit</b-button>
                             <b-button variant="danger" @click="handleDelete(data.item.id)">Delete</b-button>
 
 
@@ -42,7 +41,7 @@
                          ref="spEdit"
                          hide-footer
                          title="Edit Sprint">
-                    <CreateEditSprint  :isEdit="true" @exit="hideEdit"></CreateEditSprint>
+                    <CreateEditSprint  :isEdit="true" :id="editSprint" @exit="hideEdit"></CreateEditSprint>
                 </b-modal>
 
                 <b-modal id="deleteSprint"
@@ -71,7 +70,6 @@
                 <b-table
                         id="taskTable"
                         hover
-                        responsive
                         :items="tasks"
                         :fields="tsFields"
                         :per-page="perPage"
@@ -92,7 +90,7 @@
 <script>
     //TODO: check after task creation
     //TODO: fix pagination on re-click
-    //TODO: reactive list update on delete
+    //TODO: reactive list update
     import CreateEditSprint from "./CreateEditSprint";
 
     export default {
@@ -129,7 +127,7 @@
                 showTasks: false,
                 isEditable: false,
                 delSprint:0,
-
+                editSprint:0
             }
         },
         beforeMount() {
@@ -259,13 +257,8 @@
                 this.delSprint=spId;
                 this.$refs['spDelete'].show();
             },
-            handleEdit(sprint){
-                this.$store.commit('setEditSprint',{
-                    id:sprint.id,
-                    name:sprint.sprintName,
-                    startDate:sprint.startDate,
-                    endDate:sprint.endDate,
-                });
+            handleEdit(spId){
+                this.editSprint=spId;
                 this.$refs['spEdit'].show();
             },
 
