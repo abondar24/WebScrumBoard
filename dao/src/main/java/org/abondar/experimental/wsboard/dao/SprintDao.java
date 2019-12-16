@@ -112,7 +112,7 @@ public class SprintDao extends BaseDao {
                 throw new DataCreationException(LogMessageUtil.WRONG_END_DATE);
             }
 
-            sprint.setEndDate(startDate);
+            sprint.setEndDate(endDate);
         }
 
         if (isCurrent != null) {
