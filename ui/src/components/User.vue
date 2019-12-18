@@ -191,6 +191,8 @@
                     }
                 });
                 this.totalRows=this.getTasksCount;
+                this.errorMessage = '';
+                this.errorOccurred = false;
             },
             findTasks(offset) {
                 this.$store.dispatch('findUserTasks', {
@@ -212,6 +214,8 @@
 
                     }
                 });
+                this.errorMessage = '';
+                this.errorOccurred = false;
             },
             setImage(output) {
                 this.image = output.dataUrl;
@@ -224,6 +228,8 @@
                         this.image = require('@/assets/emptyAvatar.png');
                     }
                 });
+                this.errorMessage = '';
+                this.errorOccurred = false;
             },
             loadNext(index){
                 this.findTasks(index * this.perPage);

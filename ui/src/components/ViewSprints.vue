@@ -16,6 +16,7 @@
                 <b-table
                         id="sprintTable"
                         hover
+                        responsive
                         :items="sprints"
                         :fields="spFields"
                         :per-page="perPage"
@@ -70,6 +71,7 @@
                 <b-table
                         id="taskTable"
                         hover
+                        responsive
                         :items="tasks"
                         :fields="tsFields"
                         :per-page="perPage"
@@ -88,7 +90,6 @@
 </template>
 
 <script>
-    //TODO: check after task creation
     //TODO: fix pagination on re-click
     //TODO: reactive list update
     import CreateEditSprint from "./CreateEditSprint";
@@ -188,6 +189,9 @@
 
                     }
                 });
+
+                this.errorMessage = '';
+                this.errorOccurred = false;
             },
             countTasks() {
                 this.$store.dispatch('countSprintTasks', this.spId).then(() => {
@@ -198,6 +202,9 @@
                 });
 
                 this.totalTasks = this.getTasksCount;
+
+                this.errorMessage = '';
+                this.errorOccurred = false;
             },
 
 
@@ -224,6 +231,9 @@
 
                     }
                 });
+
+                this.errorMessage = '';
+                this.errorOccurred = false;
             },
             formatDate(rawDate) {
                 let date = new Date(rawDate);
@@ -252,6 +262,8 @@
                 });
 
                 this.totalSprints = this.getSprintsCount;
+                this.errorMessage = '';
+                this.errorOccurred = false;
             },
             handleDelete(spId){
                 this.delSprint=spId;
@@ -263,12 +275,25 @@
             },
 
             deleteSprint() {
-                this.$store.dispatch('deleteSprint',this.delSprint).then(() => {
+                this.$store.dispatch('deleteSprint', this.delSprint).then(() => {
                     this.errorMessage = this.getError;
                     if (this.errorMessage.length) {
                         this.errorOccurred = true;
+                    } else {
+                        // let id = this.delSprint;
+                        // let filteredSprints = this.getSprints.filter(function (value, index, arr) {
+                        //     return value.id !== id;
+                        // });
+                        //
+                        // this.$store.commit('setSprints', filteredSprints);
+                        //
+                        // this.spFields = this.spFields.filter(function (value, index, arr) {
+                        //     return value.id !== id;
+                        // });
                     }
                 });
+                this.errorMessage = '';
+                this.errorOccurred = false;
             },
             hideEdit(){
                 this.$refs['spEdit'].hide();

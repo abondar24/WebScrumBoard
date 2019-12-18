@@ -74,6 +74,9 @@
                         this.projects = this.getProjects;
                     }
                 });
+
+                this.errorMessage = '';
+                this.errorOccurred = false;
             },
             routeToProject(project){
               this.$router.push({path: '/project/' + project.id});

@@ -80,6 +80,8 @@
                     }
                 });
 
+                this.errorMessage = '';
+                this.errorOccurred = false;
             },
             findTasks(offset) {
                 this.$store.dispatch('findContributorTasks', {
@@ -101,6 +103,8 @@
 
                     }
                 });
+                this.errorMessage = '';
+                this.errorOccurred = false;
             },
             countTasks(){
                 this.$store.dispatch('countContributorTasks', this.getContributorId).then(() => {
@@ -111,6 +115,8 @@
                 });
 
                 this.totalRows=this.getTasksCount;
+                this.errorMessage = '';
+                this.errorOccurred = false;
             },
             loadNext(index) {
                 this.findTasks(index * this.perPage);

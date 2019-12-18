@@ -62,6 +62,8 @@
                     }
                 });
                 this.userId=0;
+                this.errorMessage = '';
+                this.errorOccurred = false;
             },
             findUser(){
                 this.$store.dispatch('getUserByLogin',{

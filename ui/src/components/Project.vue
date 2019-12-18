@@ -193,6 +193,8 @@
                 });
 
                 this.project = this.getProject;
+                this.errorMessage = '';
+                this.errorOccurred = false;
             },
             findOwner() {
                 this.$store.dispatch('findProjectOwner', this.$route.params.id).then(() => {
@@ -208,6 +210,8 @@
 
                     this.$store.commit('setProjectEditable',this.isEditable);
                 });
+                this.errorMessage = '';
+                this.errorOccurred = false;
 
             },
             findContributors(offset) {
@@ -231,6 +235,8 @@
 
                     }
                 });
+                this.errorMessage = '';
+                this.errorOccurred = false;
             },
             countContributors() {
                 this.$store.dispatch('countProjectContributors', this.$route.params.id).then(() => {
@@ -241,6 +247,8 @@
                 });
 
                 this.totalRows = this.getCount;
+                this.errorMessage = '';
+                this.errorOccurred = false;
             },
             setDate() {
 

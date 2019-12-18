@@ -21,6 +21,7 @@
 
                 <b-modal id="sprintsView"
                          ok-only
+                         size="lg"
                          title="Project Sprints" >
                     <ViewSprints :prId="project.id"></ViewSprints>
                 </b-modal>

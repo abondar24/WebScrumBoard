@@ -121,6 +121,7 @@
                         this.$emit('exit');
                     }
                 });
+                this.errorMessage = '';
                 this.errorOccurred = false;
             },
             cancel() {
@@ -136,6 +137,7 @@
                         this.$router.push('/');
                     }
                 });
+                this.errorMessage = '';
                 this.errorOccurred = false;
             }
         },

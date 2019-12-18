@@ -88,6 +88,9 @@
                         this.$router.push({path: '/user/' + this.getId});
                     }
                 });
+
+                this.errorMessage = '';
+                this.errorOccurred = false;
             },
         },
         computed: {
