@@ -58,6 +58,7 @@
                         :total-rows="totalSprints"
                         @input="loadNextSprints(spCurrentPage-1)"
                         :per-page="perPage"
+                        :current-page="spCurrentPage"
                         aria-controls="sprintTable"/>
             </div>
 
@@ -90,8 +91,9 @@
 </template>
 
 <script>
-    //TODO: fix pagination on re-click
     //TODO: reactive list update
+    //TODO: remove value from sp offsets if pagenum has changed
+    //TODO: apply spOffset fix to User,Project,CtrTasks and VueSprints.tasks table
     import CreateEditSprint from "./CreateEditSprint";
 
     export default {
@@ -128,7 +130,8 @@
                 showTasks: false,
                 isEditable: false,
                 delSprint:0,
-                editSprint:0
+                editSprint:0,
+                spOffsets: [],
             }
         },
         beforeMount() {
@@ -209,28 +212,35 @@
 
 
             findSprints(offset) {
-                this.$store.dispatch('findSprints', {
-                    projectId: this.prId,
-                    offset: offset,
-                    limit: this.perPage
-                }).then(() => {
-                    this.errorMessage = this.getError;
-                    if (this.errorMessage.length) {
-                        this.errorOccurred = true;
-                    } else {
-                        for (let i = 0; i < this.getSprints.length; i++) {
-                            this.sprints.push({
-                                id: this.getSprints[i].id,
-                                sprintName: this.getSprints[i].name,
-                                sprintStartDate:
-                                    this.formatDate(new Date(this.getSprints[i].startDate)),
-                                sprintEndDate:
-                                    this.formatDate(new Date(this.getSprints[i].endDate)),
-                            });
-                        }
 
-                    }
-                });
+                if (!this.spOffsets.includes(offset)){
+                    this.$store.dispatch('findSprints', {
+                        projectId: this.prId,
+                        offset: offset,
+                        limit: this.perPage
+                    }).then(() => {
+                        this.errorMessage = this.getError;
+                        if (this.errorMessage.length) {
+                            this.errorOccurred = true;
+                        } else {
+                            for (let i = 0; i < this.getSprints.length; i++) {
+                                this.sprints.push({
+                                    id: this.getSprints[i].id,
+                                    sprintName: this.getSprints[i].name,
+                                    sprintStartDate:
+                                        this.formatDate(new Date(this.getSprints[i].startDate)),
+                                    sprintEndDate:
+                                        this.formatDate(new Date(this.getSprints[i].endDate)),
+                                });
+
+                                this.spOffsets.push(offset);
+                            }
+
+                        }
+                    });
+
+                }
+
 
                 this.errorMessage = '';
                 this.errorOccurred = false;
