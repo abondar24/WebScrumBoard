@@ -123,7 +123,8 @@
                 isEditable: true,
                 totalRows:0,
                 noTasks:false,
-                userId:0
+                userId:0,
+                tsOffsets:[],
 
             }
         },
@@ -161,8 +162,21 @@
                     });
                 }
             );
+
+            this.$store.watch(
+                (state, getters) => getters.getTasksCount,
+                (newVal, oldVal) => {
+                    this.totalRows = newVal;
+                    this.cleanTsOffsets();
+                }
+            );
         },
         methods: {
+            cleanTsOffsets(){
+                if ((this.perPage * this.tsOffsets.length)-this.totalRows>=5){
+                    this.tsOffsets.pop();
+                }
+            },
             fillUserData(user){
                 if (user.avatar !== null) {
                     this.image = user.avatar;
@@ -195,25 +209,28 @@
                 this.errorOccurred = false;
             },
             findTasks(offset) {
-                this.$store.dispatch('findUserTasks', {
-                    contributorId: this.userId,
-                    offset: offset,
-                    limit: this.perPage
-                }).then(() => {
-                    this.errorMessage = this.getError;
-                    if (this.errorMessage.length) {
-                        this.errorOccurred = true;
-                    } else {
-                        for (let i = 0; i < this.getTasks.length; i++) {
-                            this.tasks.push({
-                                name: this.getTasks[i].name,
-                                state: this.getTasks[i].taskState,
-                                storyPoints: this.getTasks[i].storyPoints
-                            });
+                if (!this.tsOffsets.includes(offset)){
+                    this.$store.dispatch('findUserTasks', {
+                        contributorId: this.userId,
+                        offset: offset,
+                        limit: this.perPage
+                    }).then(() => {
+                        this.errorMessage = this.getError;
+                        if (this.errorMessage.length) {
+                            this.errorOccurred = true;
+                        } else {
+                            for (let i = 0; i < this.getTasks.length; i++) {
+                                this.tasks.push({
+                                    name: this.getTasks[i].name,
+                                    state: this.getTasks[i].taskState,
+                                    storyPoints: this.getTasks[i].storyPoints
+                                });
+                            }
+                            this.tsOffsets.push(offset);
                         }
+                    });
+                }
 
-                    }
-                });
                 this.errorMessage = '';
                 this.errorOccurred = false;
             },

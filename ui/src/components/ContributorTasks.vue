@@ -53,7 +53,8 @@
                 currentPage: 1,
                 perPage: 5,
                 totalRows: 0,
-                noTasks: false
+                noTasks: false,
+                tsOffsets: []
             }
         },
         beforeMount() {
@@ -66,7 +67,22 @@
             }
 
         },
+        created() {
+
+            this.$store.watch(
+                (state, getters) => getters.getTasksCount,
+                (newVal, oldVal) => {
+                    this.totalRows = newVal;
+                    this.cleanTsOffsets();
+                }
+            );
+        },
         methods: {
+            cleanTsOffsets(){
+                if ((this.perPage * this.tsOffsets.length)-this.totalRows>=5){
+                    this.tsOffsets.pop();
+                }
+            },
             findContributorId() {
                 this.$store.dispatch('findContributor', {
                     userId: this.user.id,

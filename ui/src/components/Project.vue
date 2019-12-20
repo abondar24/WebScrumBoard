@@ -160,7 +160,8 @@
                 ],
                 ownerChanged: false,
                 tasksToShow: false,
-                selectedCtr: {}
+                selectedCtr: {},
+                ctrOffsets:[],
             }
         },
         beforeMount() {
@@ -182,8 +183,22 @@
                 }
             );
 
+
+            this.$store.watch(
+                (state, getters) => getters.getCount,
+                (newVal, oldVal) => {
+                    this.totalRows = newVal;
+                    this.cleanCtrOffsets();
+                }
+            );
+
         },
         methods: {
+            cleanCtrOffsets(){
+                if ((this.perPage * this.ctrOffsets.length)-this.totalRows>=5){
+                    this.ctrOffsets.pop();
+                }
+            },
             findProject() {
                 this.$store.dispatch('findProject', this.$route.params.id).then(() => {
                     this.errorMessage = this.getError;
@@ -215,26 +230,29 @@
 
             },
             findContributors(offset) {
-                this.$store.dispatch('findProjectContributors', {
-                    projectId: this.$route.params.id,
-                    offset: offset,
-                    limit: this.perPage
-                }).then(() => {
-                    this.errorMessage = this.getError;
-                    if (this.errorMessage.length) {
-                        this.errorOccurred = true;
-                    } else {
+                if (!this.ctrOffsets.includes(offset)){
+                    this.$store.dispatch('findProjectContributors', {
+                        projectId: this.$route.params.id,
+                        offset: offset,
+                        limit: this.perPage
+                    }).then(() => {
+                        this.errorMessage = this.getError;
+                        if (this.errorMessage.length) {
+                            this.errorOccurred = true;
+                        } else {
 
-                        for (let i = 0; i < this.getContributors.length; i++) {
-                            this.ctrItems.push({
-                                id: this.getContributors[i].id,
-                                ctr_name: this.getContributors[i].firstName +
-                                    ' ' + this.getContributors[i].lastName
-                            });
+                            for (let i = 0; i < this.getContributors.length; i++) {
+                                this.ctrItems.push({
+                                    id: this.getContributors[i].id,
+                                    ctr_name: this.getContributors[i].firstName +
+                                        ' ' + this.getContributors[i].lastName
+                                });
+                            }
+                            this.ctrOffsets.push(offset);
                         }
+                    });
+                }
 
-                    }
-                });
                 this.errorMessage = '';
                 this.errorOccurred = false;
             },

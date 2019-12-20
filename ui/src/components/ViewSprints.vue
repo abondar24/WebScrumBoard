@@ -92,8 +92,6 @@
 
 <script>
     //TODO: reactive list update
-    //TODO: remove value from sp offsets if pagenum has changed
-    //TODO: apply spOffset fix to User,Project,CtrTasks and VueSprints.tasks table
     import CreateEditSprint from "./CreateEditSprint";
 
     export default {
@@ -132,6 +130,7 @@
                 delSprint:0,
                 editSprint:0,
                 spOffsets: [],
+                tsOffsets: []
             }
         },
         beforeMount() {
@@ -146,7 +145,35 @@
             this.isEditable = this.getEditable;
 
         },
+        created(){
+            this.$store.watch(
+                (state, getters) => getters.getSprintsCount,
+                (newVal, oldVal) => {
+                    this.totalSprints = newVal;
+                    this.cleanSpOffsets();
+                }
+            );
+
+
+            this.$store.watch(
+                (state, getters) => getters.getTasksCount,
+                (newVal, oldVal) => {
+                    this.totalTasks = newVal;
+                    this.cleanTsOffsets();
+                }
+            );
+        },
         methods: {
+            cleanSpOffsets(){
+                if ((this.perPage * this.spOffsets.length)-this.totalSprints>=5){
+                    this.spOffsets.pop();
+                }
+            },
+            cleanTsOffsets(){
+                if ((this.perPage * this.tsOffsets.length)-this.totalTasks>=5){
+                    this.tsOffsets.pop();
+                }
+            },
             loadNextSprints(index) {
                 this.findSprints(this.calcOffset(index));
             },
@@ -170,28 +197,31 @@
 
             },
             findTasks(offset) {
-                this.$store.dispatch('findSprintTasks', {
-                    sprintId: this.spId,
-                    offset: offset,
-                    limit: this.perPage
-                }).then(() => {
-                    this.errorMessage = this.getError;
-                    if (this.errorMessage.length) {
-                        this.errorOccurred = true;
-                    } else {
-                        for (let i = 0; i < this.getTasks.length; i++) {
-                            this.tasks.push({
-                                taskName: this.getTasks[i].name,
-                                taskStartDate:
-                                    this.formatDate(new Date(this.getTasks[i].startDate)),
-                                taskEndDate:
-                                    this.formatDate(new Date(this.getTasks[i].endDate)),
-                                taskState: this.getTasks[i].taskState
-                            });
+                if (!this.tsOffsets.includes(offset)){
+                    this.$store.dispatch('findSprintTasks', {
+                        sprintId: this.spId,
+                        offset: offset,
+                        limit: this.perPage
+                    }).then(() => {
+                        this.errorMessage = this.getError;
+                        if (this.errorMessage.length) {
+                            this.errorOccurred = true;
+                        } else {
+                            for (let i = 0; i < this.getTasks.length; i++) {
+                                this.tasks.push({
+                                    taskName: this.getTasks[i].name,
+                                    taskStartDate:
+                                        this.formatDate(new Date(this.getTasks[i].startDate)),
+                                    taskEndDate:
+                                        this.formatDate(new Date(this.getTasks[i].endDate)),
+                                    taskState: this.getTasks[i].taskState
+                                });
+                            }
+                            this.tsOffsets.push(offset);
                         }
+                    });
+                }
 
-                    }
-                });
 
                 this.errorMessage = '';
                 this.errorOccurred = false;
