@@ -117,6 +117,20 @@ export default {
                     commit('setErrorMessage', error.response.data);
                 });
         },
+        deleteTask({commit, getters}, taskId) {
+            return getters.authenticatedAxios.delete(taskId + '/delete', {
+                params: {
+                    id: taskId
+                },
+                headers: langHeader
+            }).then(
+                (response) => {
+                    commit('setErrorMessage', '');
+                },
+                (error) => {
+                    commit('setErrorMessage', error.response.data);
+                });
+        },
         updateSprint({commit, getters}, taskData) {
 
             const form = new URLSearchParams();
