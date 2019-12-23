@@ -17,12 +17,12 @@
             <b-row id="buttonRow">
                 <b-button id="viewSprints" v-b-modal.sprintsView>View Sprints</b-button>
                 <b-button id="createSprint" v-b-modal.sprintCreate variant="info">Create Sprint</b-button>
-                <b-button id="addTask" variant="primary">Add Task</b-button>
+                <b-button id="addTask" v-b-modal.taskCreate variant="primary">Add Task</b-button>
 
                 <b-modal id="sprintsView"
                          ok-only
                          size="lg"
-                         title="Project Sprints" >
+                         title="Project Sprints">
                     <ViewSprints :prId="project.id"></ViewSprints>
                 </b-modal>
 
@@ -33,6 +33,15 @@
                          hide-footer>
                     <CreateEditSprint :id="project.id" :isEdit="false" @exit="hideCreate"></CreateEditSprint>
                 </b-modal>
+
+                <b-modal id="taskCreate"
+                         ref="tsCreate"
+                         title="Create Task"
+                         hide-footer>
+                    <CreateEditTask :isEdit="false" @exit="hideTaskCreate"></CreateEditTask>
+                </b-modal>
+
+
             </b-row>
         </b-container>
     </div>
@@ -42,6 +51,7 @@
     import NavbarRight from "./NavbarRight";
     import ViewSprints from "./ViewSprints";
     import CreateEditSprint from "./CreateEditSprint";
+    import CreateEditTask from "./CreateEditTask";
 
     export default {
         name: "ProjectBoard",
@@ -68,9 +78,12 @@
             routeBack() {
                 this.$router.push({path: '/project/' + this.$route.params.id});
             },
-           hideCreate(){
-               this.$refs['spCreate'].hide();
-           },
+            hideCreate() {
+                this.$refs['spCreate'].hide();
+            },
+            hideTaskCreate() {
+                this.$refs['tsCreate'].hide();
+            },
         },
         computed: {
             getProject() {

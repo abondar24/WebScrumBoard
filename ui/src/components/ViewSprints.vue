@@ -91,7 +91,6 @@
 </template>
 
 <script>
-    //TODO: reactive list update
     import CreateEditSprint from "./CreateEditSprint";
 
     export default {
@@ -319,17 +318,6 @@
                     this.errorMessage = this.getError;
                     if (this.errorMessage.length) {
                         this.errorOccurred = true;
-                    } else {
-                        // let id = this.delSprint;
-                        // let filteredSprints = this.getSprints.filter(function (value, index, arr) {
-                        //     return value.id !== id;
-                        // });
-                        //
-                        // this.$store.commit('setSprints', filteredSprints);
-                        //
-                        // this.spFields = this.spFields.filter(function (value, index, arr) {
-                        //     return value.id !== id;
-                        // });
                     }
                 });
                 this.errorMessage = '';
