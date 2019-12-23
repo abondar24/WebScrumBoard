@@ -2,7 +2,7 @@ const taskUrl = process.env.VUE_APP_API_ENDPOINT + "/task";
 const formConfig = {
     headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
-        'Accept-Language':'en'
+        'Accept-Language': 'en'
     }
 };
 
@@ -61,6 +61,78 @@ export default {
 
     },
     actions: {
+        createTask({commit, getters}, taskData) {
+            const form = new URLSearchParams();
+
+            form.append("ctrId", taskData.ctrId);
+            form.append("startDate", taskData.startDate);
+            form.append("devOps", taskData.devOps);
+            form.append("taskName", taskData.taskName);
+            form.append("taskDescription", taskData.taskDescription);
+
+
+            return getters.authenticatedAxios.post(taskUrl + '/create', form, formConfig).then(
+                (response) => {
+                    commit('setErrorMessage', '');
+                },
+                (error) => {
+                    commit('setErrorMessage', error.response.data);
+                });
+        },
+        updateTask({commit, getters}, taskData) {
+            const form = new URLSearchParams();
+
+            form.append("id", taskData.id);
+
+            if (taskData.ctrId !== 0) {
+                form.append("ctrId", taskData.ctrId);
+            }
+
+            if (taskData.startDate !== null) {
+                form.append("startDate", taskData.startDate);
+
+            }
+
+            if (taskData.devOps!==null){
+                form.append("devOps", taskData.devOps);
+            }
+
+            if (taskData.storyPoints!==0){
+                form.append("devOps", taskData.storyPoints);
+            }
+
+            if (taskData.taskName.length){
+                form.append("taskName", taskData.taskName);
+            }
+
+            if (taskData.taskDescription.length){
+                form.append("taskDescription", taskData.taskDescription);
+            }
+
+            return getters.authenticatedAxios.post(taskUrl + '/update', form, formConfig).then(
+                (response) => {
+                    commit('setErrorMessage', '');
+                },
+                (error) => {
+                    commit('setErrorMessage', error.response.data);
+                });
+        },
+        updateSprint({commit, getters}, taskData) {
+
+            const form = new URLSearchParams();
+
+            form.append("id",taskData.id);
+            form.append("sprintId",taskData.sprintId);
+
+            return getters.authenticatedAxios.post(taskUrl + '/update_sprint', form, formConfig).then(
+                (response) => {
+                    commit('setErrorMessage', '');
+                },
+                (error) => {
+                    commit('setErrorMessage', error.response.data);
+                });
+        },
+
         findSprintTasks({commit, getters}, queryParams) {
             return getters.authenticatedAxios.get(taskUrl + '/find_sprint_tasks', {
                 params: {
