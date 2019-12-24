@@ -36,7 +36,6 @@
 </template>
 
 <script>
-    //TODO: check tasks table after adding tasks
     export default {
         name: "ContributorTasks",
         props: ['exit', 'user'],

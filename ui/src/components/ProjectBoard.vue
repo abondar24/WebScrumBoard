@@ -55,7 +55,7 @@
 
     export default {
         name: "ProjectBoard",
-        components: {CreateEditSprint, ViewSprints, NavbarRight},
+        components: {CreateEditTask, CreateEditSprint, ViewSprints, NavbarRight},
         data() {
             return {
                 project: {

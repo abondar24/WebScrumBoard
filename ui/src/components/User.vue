@@ -98,7 +98,6 @@
     import EditCredentialsForm from "./EditCredentialsForm";
 
     export default {
-        //TODO: check tasks table after adding tasks
         //TODO: verify or popup if user has not done it on register
         name: "User",
         components: {EditCredentialsForm, EditUserForm, NavbarCommon},

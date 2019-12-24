@@ -280,7 +280,7 @@ public class TaskDao extends BaseDao {
      * @return task POJO list
      * @throws DataExistenceException - project not exists
      */
-    public List<Task> getTasksForProject(long projectId, int offset, int limit) throws DataExistenceException {
+    public List<Task> getTasksForProject(long projectId, int offset, Integer limit) throws DataExistenceException {
 
         var prj = mapper.getProjectById(projectId);
         if (prj == null) {
