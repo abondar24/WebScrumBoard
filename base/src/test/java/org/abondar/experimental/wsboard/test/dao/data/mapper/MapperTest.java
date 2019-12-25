@@ -502,6 +502,19 @@ public class MapperTest {
     }
 
     @Test
+    public void getSprintsNullLimitTest() {
+        cleanData();
+        var prId = createProject().getId();
+        createSprint(prId);
+        createSprint(prId);
+        createSprint(prId);
+
+        var sprints = mapper.getSprints(prId, 0,null);
+        assertEquals(3, sprints.size());
+
+    }
+
+    @Test
     public void getCurrentSprintTest(){
         cleanData();
         var prId = createProject().getId();

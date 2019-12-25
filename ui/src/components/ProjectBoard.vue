@@ -19,6 +19,7 @@
                 <b-button id="createSprint" v-b-modal.sprintCreate variant="info">Create Sprint</b-button>
                 <b-button id="addTask" v-b-modal.taskCreate variant="primary">Add Task</b-button>
 
+                <!--TODO: add view list of tasks which are not in sprint -->
                 <b-modal id="sprintsView"
                          ok-only
                          size="lg"

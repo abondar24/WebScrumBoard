@@ -4,6 +4,7 @@ import org.abondar.experimental.wsboard.dao.SprintDao;
 import org.abondar.experimental.wsboard.dao.data.LogMessageUtil;
 import org.abondar.experimental.wsboard.dao.exception.DataCreationException;
 import org.abondar.experimental.wsboard.dao.exception.DataExistenceException;
+import org.abondar.experimental.wsboard.datamodel.Sprint;
 import org.abondar.experimental.wsboard.ws.util.I18nKeyUtil;
 import org.apache.camel.LoggingLevel;
 import org.apache.camel.builder.RouteBuilder;
@@ -16,6 +17,7 @@ import javax.ws.rs.core.Response;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import static org.abondar.experimental.wsboard.ws.util.RouteConstantUtil.ACCEPT_LANG_HEADER;
@@ -127,7 +129,15 @@ public class SprintServiceRoute extends RouteBuilder {
                     String lang = (String) hdrs.get(ACCEPT_LANG_HEADER);
 
                     try{
-                        var sprints = sprintDao.getSprints((long)queryData.get(0),(int) queryData.get(1), (int) queryData.get(2));
+                        List<Sprint>  sprints;
+                        if (queryData.size()==2){
+                             sprints = sprintDao.getSprints((long)queryData.get(0),(int) queryData.get(1), null);
+
+                        } else {
+                            sprints = sprintDao.getSprints((long)queryData.get(0),
+                                    (int) queryData.get(1), (Integer) queryData.get(2));
+
+                        }
                         if (sprints.isEmpty()) {
                             return Response.status(Response.Status.NO_CONTENT).build();
                         }

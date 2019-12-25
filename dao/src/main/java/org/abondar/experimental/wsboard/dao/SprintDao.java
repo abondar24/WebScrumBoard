@@ -189,7 +189,7 @@ public class SprintDao extends BaseDao {
      * @param limit     - list size
      * @return Object wrapper with sprint POJO list or with error message
      */
-    public List<Sprint> getSprints(long projectId, int offset, int limit) throws DataExistenceException {
+    public List<Sprint> getSprints(long projectId, int offset, Integer limit) throws DataExistenceException {
 
         String msg;
         if (mapper.getProjectById(projectId) == null) {

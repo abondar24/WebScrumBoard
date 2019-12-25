@@ -98,7 +98,7 @@ public interface DataMapper {
 
     Sprint getCurrentSprint(@Param("prId") long prId);
 
-    List<Sprint> getSprints(@Param("projectId")long projectId, @Param("offset") int offset, @Param("limit") int limit);
+    List<Sprint> getSprints(@Param("projectId")long projectId, @Param("offset") int offset, @Param("limit") Integer limit);
 
     Integer countSprints(@Param("prjId") long prjId);
 

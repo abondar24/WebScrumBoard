@@ -59,7 +59,6 @@
                 DevOps required
             </b-form-checkbox>
 
-            <b-form-select v-model="taskData.storyPoints" :options="storyPoints" size="sm" class="mt-3"></b-form-select>
 
             <div v-if="isEdit">
                 <b-button v-b-modal.deleteTask variant="danger" id="deleteTask">
@@ -70,9 +69,15 @@
                          ref="tsDelete"
                          @ok="deleteTask()"
                          variant="danger"
-                         title="Delete Task" >
+                         title="Delete Task">
                     Are you sure ,you want to delete this task?
                 </b-modal>
+
+                <b-form-select v-model="taskData.storyPoints" :options="storyPoints" size="sm"
+                               class="mt-3"></b-form-select>
+
+                <!--TODO: check on edit -->
+                <b-form-select v-model="taskData.sprintId" :options="sprints" size="sm" class="mt-3"></b-form-select>
 
             </div>
 
@@ -103,7 +108,7 @@
                 errorMessage: '',
                 errorOccurred: false,
                 ctrLogin: '',
-                ctrFound:false,
+                ctrFound: false,
                 taskData: {
                     id: 0,
                     ctrId: 0,
@@ -127,8 +132,24 @@
                     {value: 20, text: '20'},
                     {value: 40, text: '40'},
                     {value: 100, text: '100'}
-                ]
+                ],
+                sprints: []
             }
+        },
+        beforeMount() {
+            this.$store.dispatch('findSprints',
+                {
+                    projectId: this.getProjectId,
+                    offset: 0,
+                    limit: null
+                }).then(() => {
+                this.errorMessage = this.getError;
+                if (this.errorMessage.length) {
+                    this.errorOccurred = true;
+                } else {
+                    this.sprints = this.getSprints;
+                }
+            });
         },
         created() {
 
@@ -146,7 +167,7 @@
                     this.taskData.startDate = this.convertDate(this.taskData.startDate);
                 }
 
-                if (this.ctrFound){
+                if (this.ctrFound) {
                     this.taskData.ctrId = this.getContributor.id;
                 }
 
@@ -196,7 +217,7 @@
             cancel() {
                 this.$emit('exit');
             },
-            deleteTask(){
+            deleteTask() {
                 this.$store.dispatch('deleteTask', this.taskData.id).then(() => {
                     this.errorMessage = this.getError;
                     if (this.errorMessage.length) {
@@ -210,7 +231,7 @@
                 this.errorOccurred = false;
                 this.errorMessage = '';
             },
-            findContributor(){
+            findContributor() {
                 this.ctrLogin;
                 this.$store.dispatch('findContributorByLogin', this.ctrLogin).then(() => {
                     this.errorMessage = this.getError;
@@ -230,8 +251,14 @@
             getError() {
                 return this.$store.getters.getErrorMsg;
             },
-            getContributor(){
-               return this.$store.getters.getFoundContributor;
+            getProjectId() {
+                return this.$store.getters.getProjectId;
+            },
+            getSprints() {
+                return this.$store.getters.getSpritns;
+            },
+            getContributor() {
+                return this.$store.getters.getFoundContributor;
             },
             nameValidation() {
                 return this.taskData.taskName.length > 0;
