@@ -20,6 +20,11 @@ export default {
             roles: '',
             avatar: null
         },
+        foundContributor:{
+            id:0,
+            userId:0,
+            projectId:0
+        },
         projectContributors: [],
         ctrCount: 0,
         selectedCtrId: 0,
@@ -36,6 +41,9 @@ export default {
         },
         setSelectedContributorId(state, id) {
             state.selectedCtrId = id;
+        },
+        setFoundContributor(state,ctr){
+            state.foundContributor = ctr;
         }
     },
     getters: {
@@ -50,6 +58,9 @@ export default {
         },
         getSelectedContributorId: state => {
             return state.selectedCtrId;
+        },
+        getFoundContributor: state => {
+            return state.foundContributor;
         }
     },
     actions: {
@@ -158,6 +169,22 @@ export default {
                 (response) => {
                     commit('setErrorMessage', '');
                     commit('setSelectedContributorId', response.data);
+                },
+                (error) => {
+                    commit('setErrorMessage', error.response.data);
+                });
+        },
+        findContributorByLogin({commit, getters},login) {
+            return getters.authenticatedAxios.get(contributorUrl + '/find_contributor_by_login', {
+                params: {
+                    projectId: getters.getProjectId,
+                    login: login
+                },
+                headers: langHeader
+            }).then(
+                (response) => {
+                    commit('setErrorMessage', '');
+                    commit('setFoundContributor', response.data);
                 },
                 (error) => {
                     commit('setErrorMessage', error.response.data);

@@ -7,7 +7,24 @@
             {{errorMessage}}
         </b-alert>
 
+        <b-alert
+                :show="ctrFound"
+                dismissible
+                variant="success">
+            Contributor is assigned to task
+        </b-alert>
+
         <b-form @submit.prevent="submitData">
+
+            <b-input-group id="assignGrp" class="mb-3">
+                <b-input-group-text slot="prepend" size="sm">Assignee</b-input-group-text>
+                <b-form-input v-model="ctrLogin" :state="ctrValidation" placeholder="login"></b-form-input>
+
+                <b-input-group-append>
+                    <b-button variant="outline-primary" v-on:click="findContributor">Find</b-button>
+                </b-input-group-append>
+            </b-input-group>
+
             <b-form-group id="tsName" label="Task name" label-for="nameInput">
                 <div v-if="!isEdit">
                     <b-form-input
@@ -85,7 +102,8 @@
             return {
                 errorMessage: '',
                 errorOccurred: false,
-                ctrName: '',
+                ctrLogin: '',
+                ctrFound:false,
                 taskData: {
                     id: 0,
                     ctrId: 0,
@@ -126,6 +144,10 @@
             submitData() {
                 if (this.taskData.startDate !== null) {
                     this.taskData.startDate = this.convertDate(this.taskData.startDate);
+                }
+
+                if (this.ctrFound){
+                    this.taskData.ctrId = this.getContributor.id;
                 }
 
                 if (!this.isEdit) {
@@ -183,14 +205,39 @@
                         this.$emit('exit');
                     }
                 });
+
+
+                this.errorOccurred = false;
+                this.errorMessage = '';
+            },
+            findContributor(){
+                this.ctrLogin;
+                this.$store.dispatch('findContributorByLogin', this.ctrLogin).then(() => {
+                    this.errorMessage = this.getError;
+                    if (this.errorMessage.length) {
+                        this.errorOccurred = true;
+                    } else {
+                        this.ctrFound = true;
+                    }
+                });
+
+
+                this.errorOccurred = false;
+                this.errorMessage = '';
             }
         },
         computed: {
             getError() {
                 return this.$store.getters.getErrorMsg;
             },
+            getContributor(){
+               return this.$store.getters.getFoundContributor;
+            },
             nameValidation() {
                 return this.taskData.taskName.length > 0;
+            },
+            ctrValidation() {
+                return this.ctrLogin.length > 0;
             },
         }
     }
