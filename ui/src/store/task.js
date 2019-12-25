@@ -192,7 +192,7 @@ export default {
         findUserTasks({commit, getters}, queryParams) {
             return getters.authenticatedAxios.get(taskUrl + '/find_user_tasks', {
                 params: {
-                    ctrId: queryParams.userId,
+                    usrId: queryParams.userId,
                     offset: queryParams.offset,
                     limit: queryParams.limit
                 },

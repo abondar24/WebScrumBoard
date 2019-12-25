@@ -98,7 +98,7 @@
     import EditCredentialsForm from "./EditCredentialsForm";
 
     export default {
-        //TODO: verify or popup if user has not done it on register
+        //TODO:  popup if user has not done it on register
         name: "User",
         components: {EditCredentialsForm, EditUserForm, NavbarCommon},
         data() {
@@ -113,8 +113,8 @@
                 email: '',
                 tasks: [],
                 fields: [
-                    {key: 'taskName', label: 'Task Name'},
-                    {key: 'taskState', label: 'Task State'},
+                    {key: 'name', label: 'Task Name'},
+                    {key: 'state', label: 'Task State'},
                     {key: 'storyPoints', label: 'Story Points'},
                 ],
                 currentPage:1,
@@ -210,7 +210,7 @@
             findTasks(offset) {
                 if (!this.tsOffsets.includes(offset)){
                     this.$store.dispatch('findUserTasks', {
-                        contributorId: this.userId,
+                        userId: this.userId,
                         offset: offset,
                         limit: this.perPage
                     }).then(() => {
@@ -220,7 +220,7 @@
                         } else {
                             for (let i = 0; i < this.getTasks.length; i++) {
                                 this.tasks.push({
-                                    name: this.getTasks[i].name,
+                                    name: this.getTasks[i].taskName,
                                     state: this.getTasks[i].taskState,
                                     storyPoints: this.getTasks[i].storyPoints
                                 });
