@@ -20,7 +20,7 @@
                     :per-page="perPage"
                     caption-top
                     :current-page="currentPage">
-                <template v-slot:table-caption>Tasks of {{this.user.ctr_name}}</template>
+                <template v-slot:table-caption>Tasks of {{ctrName}}</template>
             </b-table>
             <b-pagination
                     v-model="currentPage"
@@ -45,19 +45,22 @@
                 errorOccurred: false,
                 tasks: [],
                 fields: [
-                    {key: 'taskName', label: 'Task Name'},
-                    {key: 'taskState', label: 'Task State'},
+                    {key: 'name', label: 'Task Name'},
+                    {key: 'state', label: 'Task State'},
                     {key: 'storyPoints', label: 'Story Points'},
                 ],
                 currentPage: 1,
                 perPage: 5,
                 totalRows: 0,
                 noTasks: false,
-                tsOffsets: []
+                tsOffsets: [],
+                ctrName:''
             }
         },
         beforeMount() {
             this.findContributorId();
+            this.totalRows=this.getTasksCount;
+            this.ctrName=this.user.ctr_name;
 
             if (this.totalRows > 0) {
                 this.findTasks(0);
@@ -99,25 +102,28 @@
                 this.errorOccurred = false;
             },
             findTasks(offset) {
-                this.$store.dispatch('findContributorTasks', {
-                    contributorId: this.getContributorId,
-                    offset: offset,
-                    limit: this.perPage
-                }).then(() => {
-                    this.errorMessage = this.getError;
-                    if (this.errorMessage.length) {
-                        this.errorOccurred = true;
-                    } else {
-                        for (let i = 0; i < this.getTasks.length; i++) {
-                            this.tasks.push({
-                                name: this.getTasks[i].name,
-                                state: this.getTasks[i].taskState,
-                                storyPoints: this.getTasks[i].storyPoints
-                            });
+                if (!this.tsOffsets.includes(offset)){
+                    this.$store.dispatch('findContributorTasks', {
+                        contributorId: this.getContributorId,
+                        offset: offset,
+                        limit: this.perPage
+                    }).then(() => {
+                        this.errorMessage = this.getError;
+                        if (this.errorMessage.length) {
+                            this.errorOccurred = true;
+                        } else {
+                            for (let i = 0; i < this.getTasks.length; i++) {
+                                this.tasks.push({
+                                    name: this.getTasks[i].taskName,
+                                    state: this.getTasks[i].taskState,
+                                    storyPoints: this.getTasks[i].storyPoints
+                                });
+                            }
+                            this.tsOffsets.push(offset);
                         }
+                    });
+                }
 
-                    }
-                });
                 this.errorMessage = '';
                 this.errorOccurred = false;
             },
@@ -129,7 +135,7 @@
                     }
                 });
 
-                this.totalRows=this.getTasksCount;
+
                 this.errorMessage = '';
                 this.errorOccurred = false;
             },
