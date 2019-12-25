@@ -64,9 +64,7 @@ public interface DataMapper {
 
     Contributor getContributorById(@Param("id") long id);
 
-    Contributor getContributorByName(@Param("projectId") long projectId,
-                                     @Param("firstName")String firstName,
-                                     @Param("lastName") String lastName);
+    Contributor getContributorByLogin(@Param("projectId") long projectId, @Param("login")String login);
 
     Contributor getContributorByUserAndProject(@Param("userId") long userId,@Param("projectId") Long projectId);
 

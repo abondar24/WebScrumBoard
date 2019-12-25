@@ -230,13 +230,18 @@ public class ContributorDao extends BaseDao {
     }
 
 
-    public Contributor findContributorByName(long projectId,String name) throws DataExistenceException {
-        var delim = "###";
+    /**
+     * Find contributor by project and name
+     * @param projectId - project id
+     * @param login - contributor login
+     * @return
+     * @throws DataExistenceException - project or contributor not found
+     */
+    public Contributor findContributorByLogin(long projectId, String login) throws DataExistenceException {
 
         findProjectById(projectId);
-        String[] names = name.split(delim);
 
-        var ctr = mapper.getContributorByName(projectId,names[0],names[1]);
+        var ctr = mapper.getContributorByLogin(projectId,login);
         if (ctr==null){
             throw new DataExistenceException(LogMessageUtil.CONTRIBUTOR_NOT_EXISTS);
         }

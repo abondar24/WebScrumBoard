@@ -309,7 +309,7 @@ public class MapperTest {
         var project = createProject();
         var ctr = createContributor(user.getId(), project.getId(), true);
 
-        var res = mapper.getContributorByName(project.getId(),user.getFirstName(),user.getLastName());
+        var res = mapper.getContributorByLogin(project.getId(),user.getLogin());
         assertEquals(ctr.getId(),res.getId());
     }
 

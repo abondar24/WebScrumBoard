@@ -206,13 +206,12 @@ public class ContributorServiceTestImpl implements ContributorService {
     }
 
     @Override
-    public Response findContributorByName(long projectId, String name) {
+    public Response findContributorByLogin(long projectId, String login) {
         if (testProject.getId()!=projectId){
             return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.PROJECT_NOT_EXISTS).build();
         }
 
-        String[] names = name.split("###");
-        if (!testUser.getFirstName().equals(names[0]) || !testUser.getLastName().equals(names[1])){
+        if (!testUser.getLogin().equals(login)){
             return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.CONTRIBUTOR_NOT_EXISTS).build();
         }
 

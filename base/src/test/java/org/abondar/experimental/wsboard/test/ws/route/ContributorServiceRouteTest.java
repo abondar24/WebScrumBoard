@@ -117,10 +117,10 @@ public class ContributorServiceRouteTest {
     }
 
     @Test
-    public void findContributorByNameTest() throws Exception {
+    public void findContributorByLoginTest() throws Exception {
         Object[] values = new Object[]{someId, "sssss"};
         MessageContentsList testList = new MessageContentsList(values);
-        producerTemplate.sendBodyAndHeaders("direct:findContributorByName", testList,
+        producerTemplate.sendBodyAndHeaders("direct:findContributorByLogin", testList,
                 Map.of());
         mockEndpoint.assertIsSatisfied();
         mockEndpoint.expectedBodiesReceived();

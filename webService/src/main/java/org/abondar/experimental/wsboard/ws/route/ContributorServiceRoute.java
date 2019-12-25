@@ -215,7 +215,7 @@ public class ContributorServiceRoute extends RouteBuilder {
 
                 });
 
-        from("direct:findContributorByName").routeId("findProjectContributorByName")
+        from("direct:findContributorByLogin").routeId("findContributorByLogin")
                 .log(LoggingLevel.DEBUG,LOG_HEADERS)
                 .transform()
                 .body((bdy, hdrs) -> {
@@ -223,7 +223,7 @@ public class ContributorServiceRoute extends RouteBuilder {
                     String lang = (String) hdrs.get("Accept-Language");
 
                     try {
-                        var res = contributorDao.findContributorByName((long) queryData.get(0), (String) queryData.get(1));
+                        var res = contributorDao.findContributorByLogin((long) queryData.get(0), (String) queryData.get(1));
 
                         return Response.ok(res).build();
                     } catch (DataExistenceException ex) {

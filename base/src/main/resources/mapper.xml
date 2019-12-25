@@ -293,14 +293,13 @@
         LIMIT #{limit}
     </select>
 
-    <select id="getContributorByName" resultMap="contributorMap" useCache="true">
+    <select id="getContributorByLogin" resultMap="contributorMap" useCache="true">
         SELECT *
         FROM contributor ctr
                  JOIN wsuser usr ON ctr.user_id = usr.id
         WHERE ctr.project_id = #{projectId}
-          AND usr.first_name = #{firstName}
-          AND usr.last_name = #{lastName}
-    </select>
+          AND usr.login = #{login}
+</select>
 
 
     <select id="countProjectContributors" resultType="integer" useCache="true">
