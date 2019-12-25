@@ -666,6 +666,66 @@ public class ContributorServiceTest {
         assertEquals(LogMessageUtil.PROJECT_NOT_EXISTS, msg);
     }
 
+    @Test
+    public void findContributorByNameTest() {
+        deleteContributor();
+        var userId = createUser();
+        var projectId = createProject();
+        var ctr = createContributor(userId, projectId, "false");
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+        client.path("/contributor/find_contributor_by_name")
+                .accept(MediaType.APPLICATION_JSON)
+                .query("projectId", projectId)
+                .query("name", "First###Last");
+
+        var res = client.get();
+        assertEquals(200, res.getStatus());
+
+        var ctrId = res.readEntity(Contributor.class).getId();
+        assertEquals(ctr.getId(),ctrId);
+    }
+
+    @Test
+    public void findContributorNotExistsByNameTest() {
+        deleteContributor();
+        var userId = createUser();
+        var projectId = createProject();
+        var ctr = createContributor(userId, projectId, "false");
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+        client.path("/contributor/find_contributor_by_name")
+                .accept(MediaType.APPLICATION_JSON)
+                .query("projectId", projectId)
+                .query("name", "First###test");
+
+        var res = client.get();
+        assertEquals(404, res.getStatus());
+
+        var msg = res.readEntity(String.class);
+        assertEquals(LogMessageUtil.CONTRIBUTOR_NOT_EXISTS, msg);
+    }
+
+    @Test
+    public void findContributorByNameProjectNotExistsTest() {
+        deleteContributor();
+        var userId = createUser();
+        var projectId = createProject();
+        var ctr = createContributor(userId, projectId, "false");
+
+        var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
+        client.path("/contributor/find_contributor_by_name")
+                .accept(MediaType.APPLICATION_JSON)
+                .query("projectId",100)
+                .query("name", "First###Last");
+
+        var res = client.get();
+        assertEquals(404, res.getStatus());
+
+        var msg = res.readEntity(String.class);
+        assertEquals(LogMessageUtil.PROJECT_NOT_EXISTS, msg);
+    }
+
     private Contributor createContributor(long userId, long projectId, String isOwner) {
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
         client.path("/contributor/create").accept(MediaType.APPLICATION_JSON);

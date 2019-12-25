@@ -101,7 +101,7 @@ public class ContributorDaoTest extends BaseDaoTest {
 
         var usr = createUser();
         var prj = createProject(false);
-        projectDao.updateProject(prj.getId(),"","",false,new Date(),"");
+        projectDao.updateProject(prj.getId(), "", "", false, new Date(), "");
 
         assertThrows(DataCreationException.class, () ->
                 contributorDao.createContributor(usr.getId(), prj.getId(), false));
@@ -298,6 +298,44 @@ public class ContributorDaoTest extends BaseDaoTest {
 
         assertEquals(1, contrs.size());
 
+    }
+
+    @Test
+    public void findContributorByNameTest() throws Exception {
+        cleanData();
+
+        var usr = createUser();
+        var prj = createProject(true);
+        var ctr = contributorDao.createContributor(usr.getId(), prj.getId(), true);
+
+        var name = usr.getFirstName() + "###" + usr.getLastName();
+        var res = contributorDao.findContributorByName(prj.getId(), name);
+
+        assertEquals(ctr.getId(), res.getId());
+    }
+
+    @Test
+    public void findContributorNotExistsByNameTest() throws Exception {
+        cleanData();
+
+        var usr = createUser();
+        var prj = createProject(true);
+        contributorDao.createContributor(usr.getId(), prj.getId(), true);
+
+        var name = usr.getFirstName() + "###" + "bla";
+        assertThrows(DataExistenceException.class, () -> contributorDao.findContributorByName(prj.getId(), name));
+    }
+
+    @Test
+    public void findContributorByNameProjectNotExistsTest() throws Exception {
+        cleanData();
+
+        var usr = createUser();
+        var prj = createProject(true);
+        contributorDao.createContributor(usr.getId(), prj.getId(), true);
+
+        var name = usr.getFirstName() + "###" + usr.getLastName();
+        assertThrows(DataExistenceException.class, () -> contributorDao.findContributorByName(100, name));
     }
 
     @Test

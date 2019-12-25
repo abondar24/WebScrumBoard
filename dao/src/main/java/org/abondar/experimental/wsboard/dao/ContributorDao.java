@@ -219,16 +219,32 @@ public class ContributorDao extends BaseDao {
      */
     public List<User> findProjectContributors(long projectId, int offset, int limit) throws DataExistenceException {
 
-
-        var msg = "";
         findProjectById(projectId);
 
         var contrs = mapper.getContributorsForProject(projectId, offset, limit);
 
-        msg = String.format(LogMessageUtil.LOG_FORMAT, "Number contributors for project  ", contrs.size());
+        var  msg = String.format(LogMessageUtil.LOG_FORMAT, "Number contributors for project  ", contrs.size());
         logger.info(msg);
 
         return contrs;
+    }
+
+
+    public Contributor findContributorByName(long projectId,String name) throws DataExistenceException {
+        var delim = "###";
+
+        findProjectById(projectId);
+        String[] names = name.split(delim);
+
+        var ctr = mapper.getContributorByName(projectId,names[0],names[1]);
+        if (ctr==null){
+            throw new DataExistenceException(LogMessageUtil.CONTRIBUTOR_NOT_EXISTS);
+        }
+
+        var msg = String.format(LogMessageUtil.LOG_FORMAT, "Found contributor", ctr.getId());
+        logger.info(msg);
+
+        return ctr;
     }
 
     /**

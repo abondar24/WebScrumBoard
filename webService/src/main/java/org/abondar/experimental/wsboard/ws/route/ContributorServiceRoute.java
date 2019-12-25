@@ -214,6 +214,28 @@ public class ContributorServiceRoute extends RouteBuilder {
 
 
                 });
+
+        from("direct:findContributorByName").routeId("findProjectContributorByName")
+                .log(LoggingLevel.DEBUG,LOG_HEADERS)
+                .transform()
+                .body((bdy, hdrs) -> {
+                    MessageContentsList queryData = (MessageContentsList) bdy;
+                    String lang = (String) hdrs.get("Accept-Language");
+
+                    try {
+                        var res = contributorDao.findContributorByName((long) queryData.get(0), (String) queryData.get(1));
+
+                        return Response.ok(res).build();
+                    } catch (DataExistenceException ex) {
+                        if (ex.getMessage().equals(LogMessageUtil.CONTRIBUTOR_NOT_EXISTS)){
+                            return getLocalizedResponse(lang, I18nKeyUtil.CONTRIBUTOR_NOT_EXISTS,Response.Status.NOT_FOUND);
+                        } else {
+                            return getLocalizedResponse(lang, I18nKeyUtil.PROJECT_NOT_EXISTS,Response.Status.NOT_FOUND);
+                        }
+                    }
+
+
+                });
     }
 
     /**

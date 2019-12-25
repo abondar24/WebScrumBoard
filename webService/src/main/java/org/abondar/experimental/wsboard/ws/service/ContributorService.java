@@ -139,4 +139,17 @@ public interface ContributorService {
     })
     Response findProjectContributor(@QueryParam("userId") @ApiParam(required = true) long userId,
                              @QueryParam("projectId") @ApiParam(required = true) long projectId);
+
+    @GET
+    @Path("/find_contributor_by_name")
+    @ApiOperation(
+            value = "Find Contributor by name",
+            notes = "Find a single contributor by name",
+            produces = "application/json")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Project contributor", response = Contributor.class),
+            @ApiResponse(code = 404, message = "User or Project not found")
+    })
+    Response findContributorByName(@QueryParam("projectId") @ApiParam(required = true) long projectId,
+                                   @QueryParam("name") @ApiParam(required = true) String name);
 }

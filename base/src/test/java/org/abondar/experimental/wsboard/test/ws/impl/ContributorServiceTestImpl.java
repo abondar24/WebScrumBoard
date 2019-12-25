@@ -205,6 +205,20 @@ public class ContributorServiceTestImpl implements ContributorService {
         return Response.ok(testContributor.getId()).build();
     }
 
+    @Override
+    public Response findContributorByName(long projectId, String name) {
+        if (testProject.getId()!=projectId){
+            return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.PROJECT_NOT_EXISTS).build();
+        }
+
+        String[] names = name.split("###");
+        if (!testUser.getFirstName().equals(names[0]) || !testUser.getLastName().equals(names[1])){
+            return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.CONTRIBUTOR_NOT_EXISTS).build();
+        }
+
+        return Response.ok(testContributor).build();
+    }
+
 
     @POST
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)

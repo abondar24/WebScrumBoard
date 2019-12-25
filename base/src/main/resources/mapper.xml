@@ -293,6 +293,16 @@
         LIMIT #{limit}
     </select>
 
+    <select id="getContributorByName" resultMap="contributorMap" useCache="true">
+        SELECT *
+        FROM contributor ctr
+                 JOIN wsuser usr ON ctr.user_id = usr.id
+        WHERE ctr.project_id = #{projectId}
+          AND usr.first_name = #{firstName}
+          AND usr.last_name = #{lastName}
+    </select>
+
+
     <select id="countProjectContributors" resultType="integer" useCache="true">
         SELECT count(id)
         FROM contributor
@@ -389,7 +399,7 @@
         SELECT *
         FROM sprint
         WHERE project_id = #{prId}
-        AND is_current = true;
+          AND is_current = true;
     </select>
 
     <select id="getSprints" resultMap="sprintMap" useCache="true">

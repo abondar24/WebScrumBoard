@@ -301,6 +301,17 @@ public class MapperTest {
 
     }
 
+    @Test
+    public void getContributorByNameTest(){
+        cleanData();
+
+        var user = createUser();
+        var project = createProject();
+        var ctr = createContributor(user.getId(), project.getId(), true);
+
+        var res = mapper.getContributorByName(project.getId(),user.getFirstName(),user.getLastName());
+        assertEquals(ctr.getId(),res.getId());
+    }
 
     @Test
     public void countProjectContributorsTest() {

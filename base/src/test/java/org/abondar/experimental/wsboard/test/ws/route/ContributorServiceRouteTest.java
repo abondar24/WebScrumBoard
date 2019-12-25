@@ -115,4 +115,16 @@ public class ContributorServiceRouteTest {
         mockEndpoint.expectedMessageCount(1);
         mockEndpoint.reset();
     }
+
+    @Test
+    public void findContributorByNameTest() throws Exception {
+        Object[] values = new Object[]{someId, "sssss"};
+        MessageContentsList testList = new MessageContentsList(values);
+        producerTemplate.sendBodyAndHeaders("direct:findContributorByName", testList,
+                Map.of());
+        mockEndpoint.assertIsSatisfied();
+        mockEndpoint.expectedBodiesReceived();
+        mockEndpoint.expectedMessageCount(1);
+        mockEndpoint.reset();
+    }
 }
