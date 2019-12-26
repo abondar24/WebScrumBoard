@@ -76,7 +76,6 @@
                 <b-form-select v-model="taskData.storyPoints" :options="storyPoints" size="sm"
                                class="mt-3"></b-form-select>
 
-                <!--TODO: check on edit -->
                 <b-form-select v-model="taskData.sprintId" :options="sprints" size="sm" class="mt-3"></b-form-select>
 
             </div>
@@ -133,28 +132,37 @@
                     {value: 40, text: '40'},
                     {value: 100, text: '100'}
                 ],
-                sprints: []
+                sprints: [],
+
             }
         },
         beforeMount() {
-            this.$store.dispatch('findSprints',
-                {
-                    projectId: this.getProjectId,
-                    offset: 0,
-                    limit: null
-                }).then(() => {
-                this.errorMessage = this.getError;
-                if (this.errorMessage.length) {
-                    this.errorOccurred = true;
-                } else {
-                    this.sprints = this.getSprints;
-                }
-            });
+
+            if (this.isEdit){
+                this.$store.dispatch('findSprints',
+                    {
+                        projectId: this.getProjectId,
+                        offset: 0
+                    }).then(() => {
+                    this.errorMessage = this.getError;
+                    if (this.errorMessage.length) {
+                        this.errorOccurred = true;
+                    } else {
+
+                        for (let i=0;i<this.getSprints.length;i++){
+                            this.sprints.push({
+                                value:this.getSprints[i].id,
+                                text:this.getSprints[i].name
+                            })
+                        }
+                    }
+                });
+            }
+
         },
         created() {
 
             if (this.isEdit) {
-                console.log(this.id);
                 this.btnName = "Edit";
                 this.taskData.id = this.id;
 
@@ -233,7 +241,6 @@
                 this.errorMessage = '';
             },
             findContributor() {
-                this.ctrLogin;
                 this.$store.dispatch('findContributorByLogin', this.ctrLogin).then(() => {
                     this.errorMessage = this.getError;
                     if (this.errorMessage.length) {
@@ -256,7 +263,7 @@
                 return this.$store.getters.getProjectId;
             },
             getSprints() {
-                return this.$store.getters.getSpritns;
+                return this.$store.getters.getSprints;
             },
             getContributor() {
                 return this.$store.getters.getFoundContributor;

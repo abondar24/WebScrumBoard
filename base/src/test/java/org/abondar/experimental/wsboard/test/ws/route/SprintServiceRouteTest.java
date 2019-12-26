@@ -92,7 +92,7 @@ public class SprintServiceRouteTest {
 
     @Test
     public void getSprintsNullLimitRouteTest() throws Exception {
-        Object[] values = new Object[]{someId,0};
+        Object[] values = new Object[]{someId,0,0};
         MessageContentsList testList = new MessageContentsList(values);
         producerTemplate.sendBodyAndHeaders("direct:getSprints", testList,
                 Map.of());

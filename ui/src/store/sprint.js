@@ -146,12 +146,11 @@ export default {
                 });
         },
         findSprints({commit, getters}, queryParams) {
+
+
+
             return getters.authenticatedAxios.get(sprintUrl + '/find_all', {
-                params: {
-                    projectId: queryParams.projectId,
-                    offset: queryParams.offset,
-                    limit: queryParams.limit
-                },
+               params:queryParams,
                 headers: langHeader
             }).then(
                 (response) => {

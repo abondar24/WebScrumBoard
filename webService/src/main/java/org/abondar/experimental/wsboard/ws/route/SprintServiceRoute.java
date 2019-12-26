@@ -130,7 +130,7 @@ public class SprintServiceRoute extends RouteBuilder {
 
                     try{
                         List<Sprint>  sprints;
-                        if (queryData.size()==2){
+                        if ( (Integer) queryData.get(2)==0){
                              sprints = sprintDao.getSprints((long)queryData.get(0),(int) queryData.get(1), null);
 
                         } else {
