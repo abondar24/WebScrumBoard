@@ -118,7 +118,7 @@ public class TaskServiceRouteTest {
 
     @Test
     public void getTasksForProjectRouteTest() throws Exception {
-        Object[] values = new Object[]{someId, page, page};
+        Object[] values = new Object[]{someId, page, page,false};
         MessageContentsList testList = new MessageContentsList(values);
         producerTemplate.sendBodyAndHeaders("direct:getTasksForProject", testList,
                 Map.of());
