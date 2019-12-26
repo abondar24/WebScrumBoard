@@ -15,6 +15,7 @@ import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 /**
@@ -282,12 +283,7 @@ public class TaskDao extends BaseDao {
      */
     public List<Task> getTasksForProject(long projectId, int offset, Integer limit) throws DataExistenceException {
 
-        var prj = mapper.getProjectById(projectId);
-        if (prj == null) {
-            var msg = String.format(LogMessageUtil.LOG_FORMAT, LogMessageUtil.PROJECT_NOT_EXISTS, projectId);
-            logger.info(msg);
-            throw new DataExistenceException(LogMessageUtil.PROJECT_NOT_EXISTS);
-        }
+        checkProject(projectId);
 
         var tasks = mapper.getTasksForProject(projectId, offset, limit);
 
@@ -296,6 +292,27 @@ public class TaskDao extends BaseDao {
 
         return tasks;
     }
+
+
+    /**
+     * Get the list of tasks for project which are not in any sprint
+     *
+     * @param projectId - project id
+     * @return task POJO list
+     * @throws DataExistenceException - project not exists
+     */
+    public List<Task> getNonSprintTasksForProject(long projectId) throws DataExistenceException{
+        checkProject(projectId);
+
+        var tasks = mapper.getTasksForProject(projectId, 0,null);
+
+        var msg = String.format(LogMessageUtil.LOG_FORMAT, "Found non-sprint tasks for project ", projectId);
+        logger.info(msg);
+
+        return  tasks.stream().filter(ts-> ts.getSprintId()==0).collect(Collectors.toList());
+    }
+
+
 
     /**
      * Get the list of tasks of contributor with offset and limit
@@ -494,6 +511,16 @@ public class TaskDao extends BaseDao {
         } catch (IllegalArgumentException ex) {
             logger.error(ex.getMessage());
             throw new DataExistenceException(LogMessageUtil.TASK_STATE_UNKNOWN);
+        }
+    }
+
+
+    private void checkProject(long projectId) throws DataExistenceException {
+        var prj = mapper.getProjectById(projectId);
+        if (prj == null) {
+            var msg = String.format(LogMessageUtil.LOG_FORMAT, LogMessageUtil.PROJECT_NOT_EXISTS, projectId);
+            logger.info(msg);
+            throw new DataExistenceException(LogMessageUtil.PROJECT_NOT_EXISTS);
         }
     }
 

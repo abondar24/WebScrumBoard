@@ -599,7 +599,8 @@ public class TaskServiceTest {
         client.path("/task/find_project_tasks").accept(MediaType.APPLICATION_JSON)
                 .query("prId", prId)
                 .query("offset", 0)
-                .query("limit", 2);
+                .query("limit", 2)
+                .query("all","true");
 
         var resp = client.get();
         assertEquals(200, resp.getStatus());
@@ -620,7 +621,9 @@ public class TaskServiceTest {
         client.path("/task/find_project_tasks").accept(MediaType.APPLICATION_JSON)
                 .query("prId", prId)
                 .query("offset", 1)
-                .query("limit", 1);
+                .query("limit", 1)
+                .query("all","true");
+
 
         var resp = client.get();
         assertEquals(204, resp.getStatus());
@@ -637,7 +640,9 @@ public class TaskServiceTest {
         client.path("/task/find_project_tasks").accept(MediaType.APPLICATION_JSON)
                 .query("prId", 8)
                 .query("offset", 0)
-                .query("limit", 2);
+                .query("limit", 2)
+                .query("all","true");
+
 
         var resp = client.get();
         assertEquals(404, resp.getStatus());

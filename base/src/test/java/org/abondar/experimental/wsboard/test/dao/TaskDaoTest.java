@@ -447,6 +447,22 @@ public class TaskDaoTest  extends BaseDaoTest{
     }
 
     @Test
+    public void getNonSprintTasksForProjectTest() throws Exception {
+        cleanData();
+
+        var usr = createUser("");
+        var prj = createProject(true);
+        var contr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
+
+        var task = dao.createTask(contr.getId(), new Date(), true, "name", "descr");
+        var res = dao.getNonSprintTasksForProject(prj.getId());
+
+        assertEquals(1, res.size());
+        assertEquals(task.getId(), res.get(0).getId());
+
+    }
+
+    @Test
     public void getTasksForContributorTest() throws Exception {
         cleanData();
 

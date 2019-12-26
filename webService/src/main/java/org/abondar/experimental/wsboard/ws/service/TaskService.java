@@ -167,7 +167,8 @@ public interface TaskService {
     })
     Response getTasksForProject(@QueryParam("prId") @ApiParam(required = true) long projectId,
                                 @QueryParam("offset") @ApiParam(required = true) int offset,
-                                @QueryParam("limit") @ApiParam(required = true) int limit);
+                                @QueryParam("limit") @ApiParam(required = true) int limit,
+                                @QueryParam("all")@ApiParam(required = true) boolean all);
 
     @GET
     @Path("/find_contributor_tasks")

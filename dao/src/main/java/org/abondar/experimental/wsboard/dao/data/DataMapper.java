@@ -78,7 +78,7 @@ public interface DataMapper {
 
     Integer checkCodeExists(@Param("code") long code);
 
-    List<Task> getTasksForProject(@Param("projectId") long projectId, @Param("offset") int offset, @Param("limit") int limit);
+    List<Task> getTasksForProject(@Param("projectId") long projectId, @Param("offset") int offset, @Param("limit") Integer limit);
 
     List<Task> getTasksForContributor(@Param("contributorId") long contributorId, @Param("offset") int offset, @Param("limit") int limit);
 

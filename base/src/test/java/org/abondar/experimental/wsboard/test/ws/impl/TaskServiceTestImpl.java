@@ -173,7 +173,7 @@ public class TaskServiceTestImpl implements TaskService {
     }
 
     @Override
-    public Response getTasksForProject(long projectId, int offset, int limit) {
+    public Response getTasksForProject(long projectId, int offset, int limit,boolean all) {
         if (testProject.getId() != projectId) {
             return Response.status(Response.Status.NOT_FOUND).entity(LogMessageUtil.PROJECT_NOT_EXISTS).build();
         }

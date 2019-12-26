@@ -4,6 +4,7 @@ import org.abondar.experimental.wsboard.dao.TaskDao;
 import org.abondar.experimental.wsboard.dao.data.LogMessageUtil;
 import org.abondar.experimental.wsboard.dao.exception.DataCreationException;
 import org.abondar.experimental.wsboard.dao.exception.DataExistenceException;
+import org.abondar.experimental.wsboard.datamodel.task.Task;
 import org.abondar.experimental.wsboard.ws.util.I18nKeyUtil;
 import org.apache.camel.LoggingLevel;
 import org.apache.camel.builder.RouteBuilder;
@@ -202,8 +203,15 @@ public class TaskServiceRoute extends RouteBuilder {
                     String lang = (String) hdrs.get(ACCEPT_LANG_HEADER);
 
                     try {
-                        var tasks = taskDao.getTasksForProject((long) queryData.get(0),
-                                (int) queryData.get(1), (int) queryData.get(2));
+                        List<Task> tasks;
+
+                        if ((boolean) queryData.get(3)){
+                            tasks = taskDao.getTasksForProject((long) queryData.get(0),
+                                    (int) queryData.get(1), (int) queryData.get(2));
+                        } else {
+                            tasks = taskDao.getNonSprintTasksForProject((long) queryData.get(0));
+                        }
+
                         if (tasks.isEmpty()) {
                             return Response.status(Response.Status.NO_CONTENT).build();
                         }
