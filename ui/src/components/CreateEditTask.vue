@@ -190,7 +190,6 @@
                         }
                     });
                 } else {
-
                     this.$store.dispatch('updateTask', this.taskData).then(() => {
                         this.errorMessage = this.getError;
                         if (this.errorMessage.length) {
@@ -199,6 +198,17 @@
                             this.$emit('exit');
                         }
                     });
+
+                    if (this.taskData.sprintId!==0){
+                        this.$store.dispatch('updateTaskSprint', this.taskData).then(() => {
+                            this.errorMessage = this.getError;
+                            if (this.errorMessage.length) {
+                                this.errorOccurred = true;
+                            } else {
+                                this.$emit('exit');
+                            }
+                        });
+                    }
                 }
 
 

@@ -105,7 +105,7 @@ export default {
             }
 
             if (taskData.storyPoints!==0){
-                form.append("devOps", taskData.storyPoints);
+                form.append("storyPoints", taskData.storyPoints);
             }
 
             if (taskData.taskName.length){
@@ -138,7 +138,7 @@ export default {
                     commit('setErrorMessage', error.response.data);
                 });
         },
-        updateSprint({commit, getters}, taskData) {
+        updateTaskSprint({commit, getters}, taskData) {
 
             const form = new URLSearchParams();
 
