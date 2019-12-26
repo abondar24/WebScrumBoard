@@ -98,7 +98,7 @@
     import Datepicker from "vuejs-datepicker";
 
     export default {
-        props: ['isEdit'],
+        props: ['isEdit','id'],
         name: "CreateEditTask",
         components: {
             Datepicker
@@ -154,6 +154,7 @@
         created() {
 
             if (this.isEdit) {
+                console.log(this.id);
                 this.btnName = "Edit";
                 this.taskData.id = this.id;
 

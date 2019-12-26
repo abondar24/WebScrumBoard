@@ -10,6 +10,7 @@ const langHeader = {'Accept-Language': 'en'};
 
 export default {
     state: {
+        projectTasks:[],
         userTasks: [],
         contributorTasks: [],
         sprintTasks: [],
@@ -19,6 +20,9 @@ export default {
 
     },
     mutations: {
+        setProjectTasks(state,pTasks){
+            state.projectTasks = pTasks;
+        },
         setUserTasks(state, uTasks) {
             state.userTasks = uTasks;
         },
@@ -40,6 +44,9 @@ export default {
 
     },
     getters: {
+        getProjectTasks: state => {
+          return state.projectTasks;
+        },
         getUserTasks: state => {
             return state.userTasks;
         },
@@ -203,6 +210,28 @@ export default {
 
                     if (response.code !== 204) {
                         commit('setUserTasks', response.data);
+                    }
+
+                },
+                (error) => {
+                    commit('setErrorMessage', error.response.data);
+                });
+        },
+        findProjectTasks({commit, getters}, queryParams) {
+            return getters.authenticatedAxios.get(taskUrl + '/find_project_tasks', {
+                params: {
+                    prId: queryParams.prId,
+                    offset: queryParams.offset,
+                    limit: queryParams.limit,
+                    all: queryParams.all,
+                },
+                headers: langHeader
+            }).then(
+                (response) => {
+                    commit('setErrorMessage', '');
+
+                    if (response.code !== 204) {
+                        commit('setProjectTasks', response.data);
                     }
 
                 },

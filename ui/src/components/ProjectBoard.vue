@@ -18,8 +18,8 @@
                 <b-button id="viewSprints" v-b-modal.sprintsView>View Sprints</b-button>
                 <b-button id="createSprint" v-b-modal.sprintCreate variant="info">Create Sprint</b-button>
                 <b-button id="addTask" v-b-modal.taskCreate variant="primary">Add Task</b-button>
+                <b-button id="backlog" v-b-modal.taskBacklog variant="warning">Tasks Backlog</b-button>
 
-                <!--TODO: add view list of tasks which are not in sprint -->
                 <b-modal id="sprintsView"
                          ok-only
                          size="lg"
@@ -43,6 +43,12 @@
                 </b-modal>
 
 
+                <b-modal id="taskBacklog" ref="tsBacklog"
+                         title="Backlog">
+                    <TasksBacklog></TasksBacklog>
+                </b-modal>
+
+
             </b-row>
         </b-container>
     </div>
@@ -53,10 +59,11 @@
     import ViewSprints from "./ViewSprints";
     import CreateEditSprint from "./CreateEditSprint";
     import CreateEditTask from "./CreateEditTask";
+    import TasksBacklog from "./TasksBacklog";
 
     export default {
         name: "ProjectBoard",
-        components: {CreateEditTask, CreateEditSprint, ViewSprints, NavbarRight},
+        components: {TasksBacklog, CreateEditTask, CreateEditSprint, ViewSprints, NavbarRight},
         data() {
             return {
                 project: {
@@ -95,7 +102,7 @@
 </script>
 
 <style scoped>
-    #viewSprints, #createSprint, #addTask {
+    #viewSprints, #createSprint, #addTask, #backlog {
         margin-left: 10px;
     }
 
