@@ -28,7 +28,7 @@ import static org.abondar.experimental.wsboard.dao.data.LogMessageUtil.VERIFICAT
  * @author a.bondar
  */
 public class AuthServiceImpl implements AuthService {
-    private static final Long EXPIRY_PERIOD = 3600L;
+    private static final Long EXPIRY_PERIOD = 604800L;
     private static final String TOKEN_ISSUER = "borscht";
 
     @Autowired

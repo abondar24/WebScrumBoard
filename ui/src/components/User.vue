@@ -98,7 +98,6 @@
     import EditCredentialsForm from "./EditCredentialsForm";
 
     export default {
-        //TODO:  popup if user has not done it on register
         name: "User",
         components: {EditCredentialsForm, EditUserForm, NavbarCommon},
         data() {

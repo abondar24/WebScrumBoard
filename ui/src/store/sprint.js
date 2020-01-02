@@ -127,7 +127,7 @@ export default {
         findCurrentSprint({commit, getters}, projectId) {
             return getters.authenticatedAxios.get(sprintUrl + '/find_current', {
                 params: {
-                    id: projectId
+                    prId: projectId
                 },
                 headers: langHeader
             }).then(
@@ -135,7 +135,7 @@ export default {
                     commit('setErrorMessage', '');
 
                     if (response.code === 204) {
-                        commit('setErrorMessage', error.response.data);
+                        commit('setErrorMessage',response.data);
                     } else {
                         commit('setCurrentSprint', response.data);
                     }
