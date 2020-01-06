@@ -1,5 +1,12 @@
 <template>
     <b-container>
+        <b-alert
+                :show="errorOccurred"
+                dismissible
+                variant="danger">
+            {{errorMessage}}
+        </b-alert>
+
         <b-row>
             <b-form-select v-model="selectedSprintId" :options="sprints" size="sm" class="mt-3"></b-form-select>
         </b-row>
@@ -58,7 +65,7 @@
                 let sprintData = {};
                 sprintData.id = this.getCurrentSprint.id;
                 sprintData.name = '';
-                sprintData.current = false;
+                sprintData.isCurrent = false;
 
                 this.$store.dispatch('updateSprint',sprintData).then(() => {
                     this.errorMessage = this.getError;
@@ -77,7 +84,7 @@
                 let sprintData = {};
                 sprintData.id = this.selectedSprintId;
                 sprintData.name = '';
-                sprintData.current = true;
+                sprintData.isCurrent = true;
 
                 this.$store.dispatch('updateSprint',sprintData).then(() => {
                     this.errorMessage = this.getError;
