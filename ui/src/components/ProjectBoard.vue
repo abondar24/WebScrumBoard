@@ -16,12 +16,12 @@
 
             <b-row id="buttonRow">
 
-                <!--                <b-form-select v-model="selectedSprintId" :options="sprints" @change="loadSprint" size="sm"-->
-                <!--                               class="mt-3"></b-form-select>-->
+
                 <b-button id="viewSprints" v-b-modal.sprintsView>View Sprints</b-button>
                 <b-button id="createSprint" v-b-modal.sprintCreate variant="info">Create Sprint</b-button>
                 <b-button id="addTask" v-b-modal.taskCreate variant="primary">Add Task</b-button>
                 <b-button id="backlog" v-b-modal.taskBacklog variant="warning">Tasks Backlog</b-button>
+                <b-button id="endSprint" v-b-modal.sprintEnd variant="danger">End sprint</b-button>
 
                 <b-modal id="sprintsView"
                          ok-only
@@ -51,6 +51,9 @@
                     <TasksBacklog></TasksBacklog>
                 </b-modal>
 
+                <b-modal id="sprintEnd" ref="spEnd" title="End Sprint" hide-footer>
+                        <EndSprint @exit="endSprint"></EndSprint>
+                </b-modal>
 
             </b-row>
             <b-row id="sprintRow">
@@ -75,10 +78,11 @@
     import CreateEditSprint from "./CreateEditSprint";
     import CreateEditTask from "./CreateEditTask";
     import TasksBacklog from "./TasksBacklog";
+    import EndSprint from "./EndSprint";
 
     export default {
         name: "ProjectBoard",
-        components: {TasksBacklog, CreateEditTask, CreateEditSprint, ViewSprints, NavbarRight},
+        components: {EndSprint, TasksBacklog, CreateEditTask, CreateEditSprint, ViewSprints, NavbarRight},
         data() {
             return {
                 project: {
@@ -92,46 +96,23 @@
                 },
                 errorMessage: '',
                 errorOccurred: false,
-                selectedSprintId: 0,
                 currentSprintStartDate: '',
                 currentSprintEndDate: '',
-                sprints: [],
+
             }
         },
         beforeMount() {
             this.project = this.getProject;
+            this.loadCurrentSprint();
 
-            this.$store.dispatch('findSprints',
-                {
-                    projectId: this.getProjectId,
-                    offset: 0
-                }).then(() => {
-                this.errorMessage = this.getError;
-                if (this.errorMessage.length) {
-                    this.errorOccurred = true;
-                } else {
+        },
+        created() {
+            this.$store.watch(
+                (state, getters) => getters.getCurrentSprint,
+                (newVal, oldVal) => {
 
-                    for (let i = 0; i < this.getSprints.length; i++) {
-                        this.sprints.push({
-                            value: this.getSprints[i].id,
-                            text: this.getSprints[i].name
-                        })
-                    }
                 }
-            });
-
-            this.$store.dispatch('findCurrentSprint', this.getProjectId).then(() => {
-                this.errorMessage = this.getError;
-                if (this.errorMessage.length) {
-                    this.errorOccurred = true;
-                } else {
-                    this.setDate();
-                }
-            });
-
-            this.errorMessage = '';
-            this.errorOccurred = false;
-
+            );
 
         },
         methods: {
@@ -144,7 +125,23 @@
             hideTaskCreate() {
                 this.$refs['tsCreate'].hide();
             },
-            loadSprint() {
+            endSprint(){
+                this.$refs['spEnd'].hide();
+                this.loadCurrentSprint();
+            },
+            loadCurrentSprint(){
+
+                this.$store.dispatch('findCurrentSprint', this.getProjectId).then(() => {
+                    this.errorMessage = this.getError;
+                    if (this.errorMessage.length) {
+                        this.errorOccurred = true;
+                    } else {
+                        this.setDate();
+                    }
+                });
+
+                this.errorMessage = '';
+                this.errorOccurred = false;
 
             },
             setDate() {
@@ -192,7 +189,7 @@
 </script>
 
 <style scoped>
-    #viewSprints, #createSprint, #addTask, #backlog {
+    #viewSprints, #createSprint, #addTask, #backlog,#endSprint {
         margin-left: 10px;
     }
 

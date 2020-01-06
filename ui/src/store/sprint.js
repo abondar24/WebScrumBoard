@@ -147,8 +147,6 @@ export default {
         },
         findSprints({commit, getters}, queryParams) {
 
-
-
             return getters.authenticatedAxios.get(sprintUrl + '/find_all', {
                params:queryParams,
                 headers: langHeader
