@@ -52,7 +52,7 @@
                 </b-modal>
 
                 <b-modal id="sprintEnd" ref="spEnd" title="End Sprint" hide-footer>
-                        <EndSprint @exit="endSprint"></EndSprint>
+                    <EndSprint @exit="endSprint"></EndSprint>
                 </b-modal>
 
             </b-row>
@@ -62,11 +62,67 @@
                     <h3>CurrentSprint: {{this.getCurrentSprint.name}}</h3>
 
                 </b-col>
-                <b-col >
+                <b-col>
                     <h3>Period: {{this.currentSprintStartDate}} - {{this.currentSprintEndDate}}</h3>
 
                 </b-col>
+            </b-row>
+            <b-row>
+                <b-col col-3 id="created">
+                    <h3>Created</h3>
+                    <draggable v-model="createdTasks" group="tasks" @start="drag=true" @end="drag=false"
+                               @change="handleChange">
+                        <div class="list-group-item" v-for="ts in createdTasks" :key="ts.id">{{ts.taskName}}</div>
+                    </draggable>
+                </b-col>
 
+                <b-col col-3 id="develop">
+                    <h3>In Development</h3>
+                    <draggable v-model="devTasks" group="tasks" @start="drag=true" @end="drag=false"
+                               @change="handleChange">
+                        <div class="list-group-item" v-for="ts in devTasks" :key="ts.id">{{ts.taskName}}</div>
+                    </draggable>
+                </b-col>
+
+                <b-col col-3 id="pause">
+                    <h3>Paused</h3>
+                    <draggable v-model="pausedTasks" group="tasks" @start="drag=true" @end="drag=false"
+                               @change="handleChange">
+                        <div class="list-group-item" v-for="ts in pausedTasks" :key="ts.id">{{ts.taskName}}</div>
+                    </draggable>
+                </b-col>
+
+                <b-col col-3 id="review">
+                    <h3>In Code review</h3>
+                    <draggable v-model="reviewTasks" group="tasks" @start="drag=true" @end="drag=false"
+                               @change="handleChange">
+                        <div class="list-group-item" v-for="ts in reviewTasks" :key="ts.id">{{ts.taskName}}</div>
+                    </draggable>
+                </b-col>
+
+                <b-col col-3 id="test">
+                    <h3>In Test</h3>
+                    <draggable v-model="testTasks" group="tasks" @start="drag=true" @end="drag=false"
+                               @change="handleChange">
+                        <div class="list-group-item" v-for="ts in testTasks" :key="ts.id">{{ts.taskName}}</div>
+                    </draggable>
+                </b-col>
+
+                <b-col col-3 id="deploy">
+                    <h3>In Deployment</h3>
+                    <draggable v-model="deployTasks" group="tasks" @start="drag=true" @end="drag=false"
+                               @change="handleChange">
+                        <div class="list-group-item" v-for="ts in deployTasks" :key="ts.id">{{ts.taskName}}</div>
+                    </draggable>
+                </b-col>
+
+                <b-col col-3>
+                    <h3>Completed</h3>
+                    <draggable v-model="completedTasks" group="tasks" @start="drag=true" @end="drag=false"
+                               @change="handleChange">
+                        <div class="list-group-item" v-for="ts in completedTasks" :key="ts.id">{{ts.taskName}}</div>
+                    </draggable>
+                </b-col>
             </b-row>
         </b-container>
     </div>
@@ -79,10 +135,11 @@
     import CreateEditTask from "./CreateEditTask";
     import TasksBacklog from "./TasksBacklog";
     import EndSprint from "./EndSprint";
+    import draggable from "vuedraggable";
 
     export default {
         name: "ProjectBoard",
-        components: {EndSprint, TasksBacklog, CreateEditTask, CreateEditSprint, ViewSprints, NavbarRight},
+        components: {EndSprint, TasksBacklog, CreateEditTask, CreateEditSprint, ViewSprints, NavbarRight, draggable},
         data() {
             return {
                 project: {
@@ -98,13 +155,67 @@
                 errorOccurred: false,
                 currentSprintStartDate: '',
                 currentSprintEndDate: '',
-
+                taskStates: ['CREATED', 'IN_DEVELOPMENT', 'PAUSED', 'IN_CODE_REVIEW',
+                    'IN_TEST', 'IN_DEPLOYMENT', 'COMPLETED'],
+                createdTasks: [],
+                devTasks: [],
+                pausedTasks: [],
+                reviewTasks: [],
+                testTasks: [],
+                deployTasks: [],
+                completedTasks: []
             }
         },
         beforeMount() {
             this.project = this.getProject;
             this.loadCurrentSprint();
 
+            this.$store.dispatch('findSprintTasks', {
+                sprintId: this.getCurrentSprint.id,
+                offset: 0,
+                limit: null
+            }).then(() => {
+                this.errorMessage = this.getError;
+                if (this.errorMessage.length) {
+                    this.errorOccurred = true;
+                }
+            });
+
+            let tasks = this.getTasks;
+            for (let i = 0; i < tasks.length; i++) {
+                switch (tasks[i].taskState) {
+                    case this.taskStates[0]:
+                        this.createdTasks.push(tasks[i]);
+                        break;
+
+                    case this.taskStates[1]:
+                        this.devTasks.push(tasks[i]);
+                        break;
+
+                    case this.taskStates[2]:
+                        this.pausedTasks.push(tasks[i]);
+                        break;
+
+                    case this.taskStates[3]:
+                        this.reviewTasks.push(tasks[i]);
+                        break;
+
+                    case this.taskStates[4]:
+                        this.testTasks.push(tasks[i]);
+                        break;
+
+                    case this.taskStates[5]:
+                        this.deployTasks.push(tasks[i]);
+                        break;
+
+                    case this.taskStates[6]:
+                        this.completedTasks.push(tasks[i]);
+                        break;
+                }
+
+
+            }
+            console.log(this.createdTasks);
         },
         created() {
             this.$store.watch(
@@ -125,11 +236,14 @@
             hideTaskCreate() {
                 this.$refs['tsCreate'].hide();
             },
-            endSprint(){
+            endSprint() {
                 this.$refs['spEnd'].hide();
                 this.loadCurrentSprint();
             },
-            loadCurrentSprint(){
+            handleChange(ev) {
+                console.log(ev);
+            },
+            loadCurrentSprint() {
 
                 this.$store.dispatch('findCurrentSprint', this.getProjectId).then(() => {
                     this.errorMessage = this.getError;
@@ -181,19 +295,43 @@
             getCurrentSprint() {
                 return this.$store.getters.getCurrentSprint;
             },
-            getSprints() {
-                return this.$store.getters.getSprints;
+            getTasks() {
+                return this.$store.getters.getSprintTasks;
             }
         }
     }
 </script>
 
 <style scoped>
-    #viewSprints, #createSprint, #addTask, #backlog,#endSprint {
+    #viewSprints, #createSprint, #addTask, #backlog, #endSprint {
         margin-left: 10px;
     }
 
     #buttonRow {
         margin-top: 10px;
+    }
+
+    #created {
+        background-color: #42b983;
+    }
+
+    #develop {
+        background-color: #0074D9;
+    }
+
+    #pause {
+        background-color: #cc0000;
+    }
+
+    #review {
+        background-color: #ffc520;
+    }
+
+    #test {
+        background-color: darkgray;
+    }
+
+    #deploy {
+        background-color: azure;
     }
 </style>
