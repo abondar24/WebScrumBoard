@@ -1,3 +1,5 @@
+import qs from "qs";
+
 const taskUrl = process.env.VUE_APP_API_ENDPOINT + "/task";
 const formConfig = {
     headers: {
@@ -153,7 +155,40 @@ export default {
                     commit('setErrorMessage', error.response.data);
                 });
         },
+        updateTaskState({commit, getters}, taskData) {
 
+            const form = new URLSearchParams();
+
+            form.append("id",taskData.id);
+            form.append("sprintId",taskData.state);
+
+            return getters.authenticatedAxios.post(taskUrl + '/update_state', form, formConfig).then(
+                (response) => {
+                    commit('setErrorMessage', response.data);
+                },
+                (error) => {
+                    commit('setErrorMessage', error.response.data);
+                });
+        },
+
+        updateTasksSprint({commit,getters},params){
+            return getters.authenticatedAxios.put(taskUrl + '/update_tasks_sprints', {
+                params: {
+                    id: params.ids,
+                    sprintId: params.sprintId
+                },
+                headers: langHeader,
+                paramsSerializer: function (params) {
+                    return qs.stringify(params.id, {arrayFormat: 'repeat'})
+                }
+            }).then(
+                (response) => {
+                    commit('setErrorMessage', '');
+                },
+                (error) => {
+                    commit('setErrorMessage', error.response.data);
+                });
+        },
         findSprintTasks({commit, getters}, queryParams) {
             return getters.authenticatedAxios.get(taskUrl + '/find_sprint_tasks', {
                 params: {
