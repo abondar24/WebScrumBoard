@@ -84,7 +84,7 @@ public interface DataMapper {
 
     List<Task> getTasksForUser(@Param("userId") long userId, @Param("offset") int offset, @Param("limit") int limit);
 
-    List<Task> getTasksForSprint(@Param("sprintId") long sprintId, @Param("offset") int offset, @Param("limit") int limit);
+    List<Task> getTasksForSprint(@Param("sprintId") long sprintId, @Param("offset") int offset, @Param("limit") Integer limit);
 
     Integer countUserTasks(@Param("userId") long userId);
 

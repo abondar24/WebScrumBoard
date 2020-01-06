@@ -396,7 +396,7 @@ public class TaskDao extends BaseDao {
      * @return Object wrapper with task POJO or with error message
      * @throws DataExistenceException - sprint not exists
      */
-    public List<Task> getTasksForSprint(long sprintId, int offset, int limit) throws DataExistenceException {
+    public List<Task> getTasksForSprint(long sprintId, int offset, Integer limit) throws DataExistenceException {
 
         checkSprint(sprintId);
 

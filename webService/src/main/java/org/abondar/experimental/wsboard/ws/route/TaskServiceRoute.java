@@ -309,8 +309,18 @@ public class TaskServiceRoute extends RouteBuilder {
                     String lang = (String) hdrs.get(ACCEPT_LANG_HEADER);
 
                     try {
-                        var tasks = taskDao.getTasksForSprint((long) queryData.get(0),
-                                (int) queryData.get(1), (int) queryData.get(2));
+                        List<Task> tasks;
+
+                        if ((int) queryData.get(2)==0){
+                            tasks = taskDao.getTasksForSprint((long) queryData.get(0),
+                                    (int) queryData.get(1), null);
+
+                        } else {
+                            tasks = taskDao.getTasksForSprint((long) queryData.get(0),
+                                    (int) queryData.get(1), (int) queryData.get(2));
+
+                        }
+
                         if (tasks.isEmpty()) {
                             return Response.status(Response.Status.NO_CONTENT).build();
                         }
