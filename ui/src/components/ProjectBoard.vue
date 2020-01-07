@@ -67,11 +67,10 @@
 
                 </b-col>
             </b-row>
-            <b-row>
+            <b-row id="board">
                 <b-col col-3 id="created">
                     <h3>Created</h3>
-                    <draggable v-model="createdTasks" group="tasks" @start="drag=true" @end="drag=false"
-                               @change="handleChange">
+                    <draggable v-model="createdTasks" group="tasks" @start="drag=true" @end="drag=false">
                         <div class="list-group-item" v-for="ts in createdTasks" :key="ts.id">{{ts.taskName}}</div>
                     </draggable>
                 </b-col>
@@ -79,16 +78,8 @@
                 <b-col col-3 id="develop">
                     <h3>In Development</h3>
                     <draggable v-model="devTasks" group="tasks" @start="drag=true" @end="drag=false"
-                               @change="handleChange">
+                               @change="changeToInDevelopment">
                         <div class="list-group-item" v-for="ts in devTasks" :key="ts.id">{{ts.taskName}}</div>
-                    </draggable>
-                </b-col>
-
-                <b-col col-3 id="pause">
-                    <h3>Paused</h3>
-                    <draggable v-model="pausedTasks" group="tasks" @start="drag=true" @end="drag=false"
-                               @change="handleChange">
-                        <div class="list-group-item" v-for="ts in pausedTasks" :key="ts.id">{{ts.taskName}}</div>
                     </draggable>
                 </b-col>
 
@@ -116,11 +107,19 @@
                     </draggable>
                 </b-col>
 
-                <b-col col-3>
+                <b-col col-3 id="completed">
                     <h3>Completed</h3>
                     <draggable v-model="completedTasks" group="tasks" @start="drag=true" @end="drag=false"
-                               @change="handleChange">
+                             >
                         <div class="list-group-item" v-for="ts in completedTasks" :key="ts.id">{{ts.taskName}}</div>
+                    </draggable>
+                </b-col>
+
+                <b-col col-3 id="pause">
+                    <h3>Paused</h3>
+                    <draggable v-model="pausedTasks" group="tasks" @start="drag=true" @end="drag=false"
+                               @change="handleChange">
+                        <div class="list-group-item" v-for="ts in pausedTasks" :key="ts.id">{{ts.taskName}}</div>
                     </draggable>
                 </b-col>
             </b-row>
@@ -215,7 +214,6 @@
 
 
             }
-            console.log(this.createdTasks);
         },
         created() {
             this.$store.watch(
@@ -240,9 +238,40 @@
                 this.$refs['spEnd'].hide();
                 this.loadCurrentSprint();
             },
-            handleChange(ev) {
-                console.log(ev);
+            changeToInDevelopment(ev){
+                if (ev.added){
+                    if (ev.added.element.prevState===this.taskStates[2]){
+                        this.updateState(ev.added.element,this.taskStates[2],this.pausedTasks,this.devTasks);
+                    } else {
+                        this.updateState(ev.added.element,this.taskStates[1],this.createdTasks,this.devTasks);
+                    }
+
+                }
+
             },
+            handleChange(ev) {
+            },
+            updateState(task,newState,oldArr,newArr){
+                this.$store.dispatch('updateTaskState',{
+                    id:task.id,
+                    state:newState
+                }).then(() => {
+                    this.errorMessage = this.getError;
+                    if (this.errorMessage.length) {
+                        this.errorOccurred = true;
+                    } else {
+                        newArr.push(task);
+                        oldArr.splice(oldArr.findIndex(function(i){
+                            return i.id === task.id;
+                        }), 1);
+                    }
+                });
+
+                this.errorMessage = '';
+                this.errorOccurred = false;
+
+            },
+
             loadCurrentSprint() {
 
                 this.$store.dispatch('findCurrentSprint', this.getProjectId).then(() => {
@@ -334,4 +363,13 @@
     #deploy {
         background-color: azure;
     }
+
+    #completed {
+       background-color: #ffdddd;
+    }
+
+    #board {
+        margin-top: 100px;
+    }
+
 </style>

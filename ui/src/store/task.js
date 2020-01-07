@@ -160,7 +160,7 @@ export default {
             const form = new URLSearchParams();
 
             form.append("id",taskData.id);
-            form.append("sprintId",taskData.state);
+            form.append("state",taskData.state);
 
             return getters.authenticatedAxios.post(taskUrl + '/update_state', form, formConfig).then(
                 (response) => {
