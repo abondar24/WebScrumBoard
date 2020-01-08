@@ -86,7 +86,7 @@
                 <b-col col-3 id="review">
                     <h3>In Code review</h3>
                     <draggable v-model="reviewTasks" group="tasks" @start="drag=true" @end="drag=false"
-                               @change="handleChange">
+                               @change="changeToInCodeReview">
                         <div class="list-group-item" v-for="ts in reviewTasks" :key="ts.id">{{ts.taskName}}</div>
                     </draggable>
                 </b-col>
@@ -94,7 +94,7 @@
                 <b-col col-3 id="test">
                     <h3>In Test</h3>
                     <draggable v-model="testTasks" group="tasks" @start="drag=true" @end="drag=false"
-                               @change="handleChange">
+                               @change="changeToInTest">
                         <div class="list-group-item" v-for="ts in testTasks" :key="ts.id">{{ts.taskName}}</div>
                     </draggable>
                 </b-col>
@@ -102,7 +102,7 @@
                 <b-col col-3 id="deploy">
                     <h3>In Deployment</h3>
                     <draggable v-model="deployTasks" group="tasks" @start="drag=true" @end="drag=false"
-                               @change="handleChange">
+                               @change="changeToInDeployment">
                         <div class="list-group-item" v-for="ts in deployTasks" :key="ts.id">{{ts.taskName}}</div>
                     </draggable>
                 </b-col>
@@ -110,7 +110,7 @@
                 <b-col col-3 id="completed">
                     <h3>Completed</h3>
                     <draggable v-model="completedTasks" group="tasks" @start="drag=true" @end="drag=false"
-                             >
+                               @change="changeToCompleted">
                         <div class="list-group-item" v-for="ts in completedTasks" :key="ts.id">{{ts.taskName}}</div>
                     </draggable>
                 </b-col>
@@ -118,7 +118,7 @@
                 <b-col col-3 id="pause">
                     <h3>Paused</h3>
                     <draggable v-model="pausedTasks" group="tasks" @start="drag=true" @end="drag=false"
-                               @change="handleChange">
+                               @change="changeToPaused">
                         <div class="list-group-item" v-for="ts in pausedTasks" :key="ts.id">{{ts.taskName}}</div>
                     </draggable>
                 </b-col>
@@ -238,30 +238,109 @@
                 this.$refs['spEnd'].hide();
                 this.loadCurrentSprint();
             },
-            changeToInDevelopment(ev){
-                if (ev.added){
-                    if (ev.added.element.prevState===this.taskStates[2]){
-                        this.updateState(ev.added.element,this.taskStates[2],this.pausedTasks,this.devTasks);
+            changeToInDevelopment(ev) {
+                let oldArr = [];
+                if (ev.added) {
+                    if (ev.added.element.prevState === this.taskStates[2]) {
+                        oldArr = this.pausedTasks;
                     } else {
-                        this.updateState(ev.added.element,this.taskStates[1],this.createdTasks,this.devTasks);
+                        oldArr = this.createdTasks;
                     }
+                    this.updateState(ev.added.element, this.taskStates[1], oldArr, this.testTasks);
+                }
 
+
+            },
+            changeToInCodeReview(ev) {
+                let oldArr = [];
+                if (ev.added) {
+                    if (ev.added.element.prevState === this.taskStates[2]) {
+                        oldArr = this.pausedTasks;
+                    } else {
+                        oldArr = this.devTasks;
+                    }
+                    this.updateState(ev.added.element, this.taskStates[3], oldArr, this.testTasks);
                 }
 
             },
-            handleChange(ev) {
+            changeToInTest(ev) {
+                let oldArr = [];
+                if (ev.added) {
+                    if (ev.added.element.prevState === this.taskStates[2]) {
+                        oldArr = this.pausedTasks;
+                    } else {
+                        oldArr = this.reviewTasks;
+                    }
+                    this.updateState(ev.added.element, this.taskStates[4], oldArr, this.testTasks);
+                }
+
             },
-            updateState(task,newState,oldArr,newArr){
-                this.$store.dispatch('updateTaskState',{
-                    id:task.id,
-                    state:newState
+            changeToInDeployment(ev) {
+                let oldArr = [];
+                if (ev.added) {
+                    if (ev.added.element.prevState === this.taskStates[2]) {
+                        oldArr = this.pausedTasks;
+                    } else {
+                        oldArr = this.testTasks;
+                    }
+                    this.updateState(ev.added.element, this.taskStates[5], oldArr, this.testTasks);
+                }
+
+            },
+            changeToCompleted(ev) {
+                let oldArr = [];
+                if (ev.added) {
+                    if (ev.added.element.prevState === this.taskStates[2]) {
+                        oldArr = this.pausedTasks;
+                    } else {
+                        oldArr = this.deployTasks;
+                    }
+                    this.updateState(ev.added.element, this.taskStates[6], oldArr, this.testTasks);
+                }
+
+            },
+            changeToPaused(ev) {
+                let oldArr = [];
+
+                if (ev.added) {
+                    switch (ev.added.element.prevState) {
+                        case this.taskStates[0]:
+                            oldArr = this.createdTasks;
+                            break;
+
+                        case this.taskStates[1]:
+                            oldArr = this.devTasks;
+                            break;
+
+                        case this.taskStates[3]:
+                            oldArr = this.reviewTasks;
+                            break;
+
+                        case this.taskStates[4]:
+                            oldArr = this.testTasks;
+                            break;
+
+                        case this.taskStates[5]:
+                            oldArr = this.deployTasks;
+                            break;
+
+                    }
+
+                    this.updateState(ev.added.element, this.taskStates[2], oldArr, this.pausedTasks);
+                }
+
+            },
+            updateState(task, newState, oldArr, newArr) {
+                this.$store.dispatch('updateTaskState', {
+                    id: task.id,
+                    state: newState
                 }).then(() => {
                     this.errorMessage = this.getError;
                     if (this.errorMessage.length) {
                         this.errorOccurred = true;
                     } else {
                         newArr.push(task);
-                        oldArr.splice(oldArr.findIndex(function(i){
+                        oldArr.splice(oldArr.findIndex(function (i) {
                             return i.id === task.id;
                         }), 1);
                     }
@@ -365,7 +444,7 @@
     }
 
     #completed {
-       background-color: #ffdddd;
+        background-color: #ffdddd;
     }
 
     #board {
