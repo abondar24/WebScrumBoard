@@ -1,14 +1,6 @@
 import qs from "qs";
 
 const taskUrl = process.env.VUE_APP_API_ENDPOINT + "/task";
-const formConfig = {
-    headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Accept-Language': 'en'
-    }
-};
-
-const langHeader = {'Accept-Language': 'en'};
 
 export default {
     state: {
@@ -80,7 +72,7 @@ export default {
             form.append("taskDescription", taskData.taskDescription);
 
 
-            return getters.authenticatedAxios.post(taskUrl + '/create', form, formConfig).then(
+            return getters.authenticatedAxios.post(taskUrl + '/create', form, getters.getFormConfig).then(
                 (response) => {
                     commit('setErrorMessage', '');
                 },
@@ -118,7 +110,7 @@ export default {
                 form.append("taskDescription", taskData.taskDescription);
             }
 
-            return getters.authenticatedAxios.post(taskUrl + '/update', form, formConfig).then(
+            return getters.authenticatedAxios.post(taskUrl + '/update', form,  getters.getFormConfig).then(
                 (response) => {
                     commit('setErrorMessage', '');
                 },
@@ -131,7 +123,7 @@ export default {
                 params: {
                     id: taskId
                 },
-                headers: langHeader
+                headers: getters.getLangHeader
             }).then(
                 (response) => {
                     commit('setErrorMessage', '');
@@ -147,7 +139,7 @@ export default {
             form.append("id",taskData.id);
             form.append("sprintId",taskData.sprintId);
 
-            return getters.authenticatedAxios.post(taskUrl + '/update_sprint', form, formConfig).then(
+            return getters.authenticatedAxios.post(taskUrl + '/update_sprint', form, getters.getFormConfig).then(
                 (response) => {
                     commit('setErrorMessage', '');
                 },
@@ -162,7 +154,7 @@ export default {
             form.append("id",taskData.id);
             form.append("state",taskData.state);
 
-            return getters.authenticatedAxios.post(taskUrl + '/update_state', form, formConfig).then(
+            return getters.authenticatedAxios.post(taskUrl + '/update_state', form, getters.getFormConfig).then(
                 (response) => {
                     commit('setErrorMessage', response.data);
                 },
@@ -177,7 +169,7 @@ export default {
                     id: params.ids,
                     sprintId: params.sprintId
                 },
-                headers: langHeader,
+                headers: getters.getLangHeader,
                 paramsSerializer: function (params) {
                     return qs.stringify(params.id, {arrayFormat: 'repeat'})
                 }
@@ -196,7 +188,7 @@ export default {
                     offset: queryParams.offset,
                     limit: queryParams.limit
                 },
-                headers: langHeader
+                headers: getters.getLangHeader
             }).then(
                 (response) => {
                     commit('setErrorMessage', '');
@@ -217,7 +209,7 @@ export default {
                     offset: queryParams.offset,
                     limit: queryParams.limit
                 },
-                headers: langHeader
+                headers: getters.getLangHeader
             }).then(
                 (response) => {
                     commit('setErrorMessage', '');
@@ -238,7 +230,7 @@ export default {
                     offset: queryParams.offset,
                     limit: queryParams.limit
                 },
-                headers: langHeader
+                headers: getters.getLangHeader
             }).then(
                 (response) => {
                     commit('setErrorMessage', '');
@@ -260,7 +252,7 @@ export default {
                     limit: queryParams.limit,
                     all: queryParams.all,
                 },
-                headers: langHeader
+                headers: getters.getLangHeader
             }).then(
                 (response) => {
                     commit('setErrorMessage', '');
@@ -279,7 +271,7 @@ export default {
                 params: {
                     contributorId: contributorId,
                 },
-                headers: langHeader
+                headers: getters.getLangHeader
             }).then(
                 (response) => {
                     commit('setErrorMessage', '');
@@ -298,7 +290,7 @@ export default {
                 params: {
                     userId: userId,
                 },
-                headers: langHeader
+                headers: getters.getLangHeader
             }).then(
                 (response) => {
                     commit('setErrorMessage', '');
@@ -317,7 +309,7 @@ export default {
                 params: {
                     sprintId: sprintId,
                 },
-                headers: langHeader
+                headers: getters.getLangHeader
             }).then(
                 (response) => {
                     commit('setErrorMessage', '');

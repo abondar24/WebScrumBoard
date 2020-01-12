@@ -3,15 +3,6 @@ import qs from "qs"
 
 const userUrl = process.env.VUE_APP_API_ENDPOINT + "/user";
 
-const langHeader = {'Accept-Language': 'en'};
-
-const formConfig = {
-    headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Accept-Language': 'en'
-    }
-};
-
 
 export default {
     state: {
@@ -62,7 +53,7 @@ export default {
         }
     },
     actions: {
-        registerUser({commit}, user) {
+        registerUser({commit,getters}, user) {
             const form = new URLSearchParams();
             form.append('login', user.login);
             form.append('password', user.password);
@@ -71,7 +62,7 @@ export default {
             form.append('lastName', user.lastName);
             form.append('roles', user.roles);
 
-            return Axios.post(userUrl + '/create', form, formConfig)
+            return Axios.post(userUrl + '/create', form, getters.getFormConfig)
                 .then(
                     (response) => {
                         commit('setUser', response.data);
@@ -91,7 +82,7 @@ export default {
                     userId: getters.getUserId,
                     code: code
                 },
-                headers: langHeader
+                headers: getters.getLangHeader
             })
                 .then(
                     (response) => {
@@ -105,7 +96,7 @@ export default {
             return Axios.get(userUrl + '/find', {
                 params: {
                     login: params.login,
-                    headers: langHeader
+                    headers: getters.getLangHeader
                 }
             }).then(
                 (response) => {
@@ -126,7 +117,7 @@ export default {
                 params: {
                     id: ids
                 },
-                headers: langHeader,
+                headers: getters.getLangHeader,
                 paramsSerializer: function (params) {
                     return qs.stringify(params, {arrayFormat: 'repeat'})
                 }
@@ -144,7 +135,7 @@ export default {
                 params: {
                     id: getters.getUserId
                 },
-                headers: langHeader
+                headers: getters.getLangHeader,
             }).then(
                 (response) => {
                     commit('setErrorMessage', '');
@@ -159,7 +150,7 @@ export default {
             form.append('newPassword', passwords.newPassword);
             form.append('id', getters.getUserId);
 
-            return Axios.post(userUrl + '/update_password', form, formConfig).then(
+            return Axios.post(userUrl + '/update_password', form, getters.getFormConfig).then(
                 (response) => {
                     commit('setErrorMessage', '');
                 },
@@ -169,10 +160,7 @@ export default {
         },
         updateAvatar({commit, getters}, avatar) {
             const config = {
-                headers: {
-                    'Content-Type': `multipart/form-data;`,
-                    langHeader
-                },
+                headers: getters.getMultipartHeaders,
                 params: {
                     id: getters.getUserId
                 },
@@ -195,7 +183,7 @@ export default {
             form.append('login', login);
             form.append('id', getters.getUserId);
 
-            return getters.authenticatedAxios.post(userUrl + '/update_login', form, formConfig).then(
+            return getters.authenticatedAxios.post(userUrl + '/update_login', form, getters.getFormConfig).then(
                 (response) => {
                     if (response.code === 302) {
                         commit('setErrorMessage', response.data);
@@ -218,7 +206,7 @@ export default {
             form.append('roles', updUser.roles);
 
 
-            return getters.authenticatedAxios.post(userUrl + '/update', form, formConfig).then(
+            return getters.authenticatedAxios.post(userUrl + '/update', form, getters.getFormConfig).then(
                 (response) => {
                     commit('setErrorMessage', '');
                     commit('setUser', response.data);
@@ -232,7 +220,7 @@ export default {
                 params: {
                     id: getters.getUserId,
                 },
-                headers: langHeader
+                headers: getters.getLangHeader
             }).then(
                 (response) => {
                     commit('setErrorMessage', '');

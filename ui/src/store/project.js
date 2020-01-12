@@ -1,12 +1,5 @@
 const projectUrl = process.env.VUE_APP_API_ENDPOINT + "/project";
-const formConfig = {
-    headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Accept-Language':'en'
-    }
-};
 
-const langHeader = {'Accept-Language': 'en'};
 
 
 export default {
@@ -59,7 +52,7 @@ export default {
             form.append('name', projectData.name);
             form.append('startDate', projectData.startDate);
 
-            return getters.authenticatedAxios.post(projectUrl + '/create', form, formConfig).then(
+            return getters.authenticatedAxios.post(projectUrl + '/create', form, getters.getFormConfig).then(
                 (response) => {
                     commit('setErrorMessage', '');
 
@@ -90,7 +83,7 @@ export default {
             }
             form.append('description', projectData.description);
 
-            return getters.authenticatedAxios.post(projectUrl + '/update', form, formConfig).then(
+            return getters.authenticatedAxios.post(projectUrl + '/update', form, getters.getFormConfig).then(
                 (response) => {
                     commit('setErrorMessage', '');
                     commit('setProject', response.data);
@@ -104,7 +97,7 @@ export default {
                 params: {
                     id: id
                 },
-                headers: langHeader
+                headers: getters.getLangHeader
             }).then(
                 (response) => {
                     commit('setErrorMessage', '');
@@ -119,7 +112,7 @@ export default {
                 params: {
                     id: id
                 },
-                headers: langHeader
+                headers: getters.getLangHeader
             }).then(
                 (response) => {
                     commit('setErrorMessage', '');
@@ -134,7 +127,7 @@ export default {
                 params: {
                     id: userId
                 },
-                headers: langHeader
+                headers: getters.getLangHeader
             }).then(
                 (response) => {
                     commit('setErrorMessage', '');

@@ -3,7 +3,7 @@ import Axios from "axios";
 const loginUrl = process.env.VUE_APP_API_ENDPOINT + "/user/login";
 const logoutUrl = process.env.VUE_APP_API_ENDPOINT + "/user/logout";
 const authorization = 'authorization';
-const langHeader = {'Accept-Language': 'en'};
+
 
 export default {
     state: {
@@ -38,19 +38,14 @@ export default {
         }
     },
     actions: {
-        loginUser({commit,dispatch}, credentials) {
+        loginUser({commit,dispatch,getters}, credentials) {
             const form = new URLSearchParams();
             form.append('login', credentials.login);
             form.append('password', credentials.password);
 
-            const formConfig = {
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'Accept-Language': 'en'
-                }
-            };
+            console.log(getters.getFormConfig)
 
-            return Axios.post(loginUrl, form, formConfig).then(
+            return Axios.post(loginUrl, form, getters.getFormConfig).then(
                 (response) => {
                     commit('setErrorMessage', '');
                     commit('setAuthenticated', response.headers[authorization]);
@@ -72,7 +67,7 @@ export default {
                 params: {
                     id: getters.getUserId
                 },
-                headers:langHeader
+                headers:getters.getLangHeader
             }).then(
                 (response) => {
                     commit('setErrorMessage', '');

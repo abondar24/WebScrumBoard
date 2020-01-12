@@ -1,12 +1,4 @@
 const contributorUrl = process.env.VUE_APP_API_ENDPOINT + "/contributor";
-const formConfig = {
-    headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Accept-Language':'en'
-    }
-};
-
-const langHeader = {'Accept-Language': 'en'};
 
 export default {
     state: {
@@ -70,7 +62,7 @@ export default {
             form.append('projectId', ctrData.projectId);
             form.append('isOwner', ctrData.owner);
 
-            return getters.authenticatedAxios.post(contributorUrl + '/create', form, formConfig).then(
+            return getters.authenticatedAxios.post(contributorUrl + '/create', form, getters.getFormConfig).then(
                 (response) => {
                     commit('setErrorMessage', '');
 
@@ -89,7 +81,7 @@ export default {
             form.append('isOwner', ctrData.owner);
             form.append('isActive', ctrData.active);
 
-            return getters.authenticatedAxios.post(contributorUrl + '/update', form, formConfig).then(
+            return getters.authenticatedAxios.post(contributorUrl + '/update', form, getters.getFormConfig).then(
                 (response) => {
                     commit('setErrorMessage', '');
 
@@ -129,7 +121,7 @@ export default {
                     offset: queryParams.offset,
                     limit: queryParams.limit
                 },
-                headers: langHeader
+                headers: getters.getLangHeader
             }).then(
                 (response) => {
                     commit('setErrorMessage', '');
@@ -148,7 +140,7 @@ export default {
                 params: {
                     projectId: prjId
                 },
-                headers: langHeader
+                headers: getters.getLangHeader
             }).then(
                 (response) => {
                     commit('setErrorMessage', '');
@@ -164,7 +156,7 @@ export default {
                     userId: queryParams.userId,
                     projectId: queryParams.projectId
                 },
-                headers: langHeader
+                headers: getters.getLangHeader
             }).then(
                 (response) => {
                     commit('setErrorMessage', '');
@@ -180,7 +172,7 @@ export default {
                     projectId: getters.getProjectId,
                     login: login
                 },
-                headers: langHeader
+                headers: getters.getLangHeader
             }).then(
                 (response) => {
                     commit('setErrorMessage', '');

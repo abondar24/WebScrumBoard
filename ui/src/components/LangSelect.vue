@@ -16,6 +16,7 @@
         methods:{
             setLanguage(lang){
                 Vue.i18n.set(lang);
+                this.$store.commit('setLangHeaders',lang);
             }
         },
     }
