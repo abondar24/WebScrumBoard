@@ -9,10 +9,21 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import BootstrapVue from 'bootstrap-vue'
 import store from './store/store';
 import ImageUploader from "vue-image-upload-resize";
+import vuexI18n from 'vuex-i18n';
+import trEnglish from './lang/en';
+import trGerman from './lang/de';
+import trRussian from './lang/ru';
+
 Vue.config.productionTip = false;
 
 Vue.use(BootstrapVue);
 Vue.use(ImageUploader);
+Vue.use(vuexI18n.plugin,store);
+
+Vue.i18n.add('en', trEnglish);
+Vue.i18n.add('de', trGerman);
+Vue.i18n.add('ru', trRussian);
+Vue.i18n.set('en');
 
 /* eslint-disable no-new */
 new Vue({
@@ -21,3 +32,4 @@ new Vue({
   router,
   components: { App }
 }).$mount('#app')
+

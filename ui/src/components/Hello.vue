@@ -2,7 +2,7 @@
   <div>
     <div>
       <img src="@/assets/logo.png" alt="app-logo">
-      <h1>{{ msg }}</h1>
+      <h1>{{ $t('greet') }}</h1>
     </div>
     <div>
       <router-link to="/register">
@@ -12,18 +12,21 @@
       <router-link to="/login">
         <b-button variant="success" id="login">Log in</b-button>
       </router-link>
-
+    </div>
+    <div>
+      <LangSelect></LangSelect>
     </div>
   </div>
 
 </template>
 
 <script>
+  import LangSelect from "./LangSelect";
     export default {
         name: 'Hello',
-        data() {
+      components: {LangSelect},
+      data() {
             return {
-                msg: 'Work With your projects in agile manner'
             }
         },
       beforeMount(){
