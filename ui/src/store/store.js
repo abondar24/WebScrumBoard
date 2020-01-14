@@ -51,38 +51,39 @@ export default new Vuex.Store({
                 },
 
         },
-        mutations: {
-            setErrorMessage(state, msg) {
-                state.errorMessage = msg;
-            },
-            setLangHeaders(state, lang) {
-                state.langHeader = {'Accept-Language': lang};
 
-                state.formConfig.headers = {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'Accept-Language': lang
-                };
-
-                state.multiPartHeaders = {
-                    'Content-Type': `multipart/form-data;`,
-                    'Accept-Language': lang
-                };
-            },
+    },
+    mutations: {
+        setErrorMessage(state, msg) {
+            state.errorMessage = msg;
         },
-        getters: {
-            getErrorMsg: state => {
-                return state.errorMessage;
-            },
-            getLangHeader: state => {
-                return state.langHeader;
-            },
-            getFormConfig: state => {
-                return state.formConfig;
-            },
-            getMultipartHeaders: state => {
-                return state.multiPartHeaders;
-            },
-        }
+        setLangHeaders(state, lang) {
+            state.langHeader = {'Accept-Language': lang};
+
+            state.formConfig.headers = {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Accept-Language': lang
+            };
+
+            state.multiPartHeaders = {
+                'Content-Type': `multipart/form-data;`,
+                'Accept-Language': lang
+            };
+        },
+    },
+    getters: {
+        getErrorMsg: state => {
+            return state.errorMessage;
+        },
+        getLangHeader: state => {
+            return state.langHeader;
+        },
+        getFormConfig: state => {
+            return state.formConfig;
+        },
+        getMultipartHeaders: state => {
+            return state.multiPartHeaders;
+        },
     },
     actions: {}
 
