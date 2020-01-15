@@ -1,13 +1,16 @@
 export default {
+    'code_empty':'Пустой код',
     'enter':'Ввод',
     'find':'Найти',
     'github':'Вход через  Github',
     'greet': 'Работайте с вашими проектами гибко',
     'lang': 'Язык',
     'log_in': 'Вход',
+    'log_out': 'Выход',
     'login': 'Логин',
     'or':'Или',
     'password':'Пароль',
+    'projects':'Проекты ',
     'pwd_forgot':'Забыл пароль',
     'pwd_new':'Новый пароль',
     'pwd_reset':'Сброс пароля',
@@ -19,4 +22,6 @@ export default {
     'sec_code':'Код безопасности',
     'sign_in': 'Вход',
     'upd':'Обновить',
+    'user':'Пользователь',
+    'verify':'Подтвердить'
 }

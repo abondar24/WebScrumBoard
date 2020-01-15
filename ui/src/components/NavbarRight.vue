@@ -2,7 +2,7 @@
     <b-navbar-nav class="ml-auto" right>
        <LangSelect></LangSelect>
 
-        <b-button size="sm" class="my-2 my-sm-0" type="submit" v-on:click="logOut">Log out</b-button>
+        <b-button size="sm" class="my-2 my-sm-0" type="submit" v-on:click="logOut">{{ $t('log_out') }}</b-button>
     </b-navbar-nav>
 
 

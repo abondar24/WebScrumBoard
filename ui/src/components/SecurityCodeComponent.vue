@@ -10,10 +10,10 @@
             <b-form-input v-model="code" :state="codeValidation">
             </b-form-input>
             <b-form-invalid-feedback :state="codeValidation">
-                Code is empty
+                {{ $t('code_empty') }}
             </b-form-invalid-feedback>
         </b-input-group>
-        <b-button class="mt-3" variant="success" block @click="verifyCode">Verify</b-button>
+        <b-button class="mt-3" variant="success" block @click="verifyCode">{{ $t('verify') }}Verify</b-button>
     </b-container>
 
 </template>

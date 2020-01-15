@@ -1,8 +1,8 @@
 <template>
     <b-navbar type="dark" variant="dark">
         <b-navbar-nav tabs>
-            <b-nav-item v-on:click="routeToUser">User</b-nav-item>
-            <b-nav-item v-on:click="routeToProject">Projects</b-nav-item>
+            <b-nav-item v-on:click="routeToUser">{{ $t('user') }}</b-nav-item>
+            <b-nav-item v-on:click="routeToProject">{{ $t('projects') }}</b-nav-item>
         </b-navbar-nav>
         <NavbarRight></NavbarRight>
     </b-navbar>

@@ -1,13 +1,16 @@
 export default {
+    'code_empty':'Code ist leer',
     'enter':'Eingeben',
     'find':'Finden',
     'github':'Melde dich mit Github an',
     'greet': 'Arbeiten Sie agil mit Ihren Projekten',
     'lang': 'Sprache',
     'log_in': 'Einloggen',
+    'log_out': 'Ausloggen',
     'login': 'Login',
     'or':'ODER',
     'password':'Kennwort',
+    'projects':'Projekte',
     'pwd_forgot':'Passwort vergessen',
     'pwd_new':'Neues Passwort',
     'pwd_reset':'Passwort zurücksetzen',
@@ -19,5 +22,7 @@ export default {
     'sec_code':'Sicherheitscode',
     'sign_in': 'Einloggen',
     'upd':'Aktualisieren',
+    'user':'Benutzer',
+    'verify':'Überprüfen'
 
 }
