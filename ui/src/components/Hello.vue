@@ -6,11 +6,11 @@
     </div>
     <div>
       <router-link to="/register">
-        <b-button variant="primary" id="register">Sign Up</b-button>
+        <b-button variant="primary" id="register">{{ $t('register') }}</b-button>
       </router-link>
 
       <router-link to="/login">
-        <b-button variant="success" id="login">Log in</b-button>
+        <b-button variant="success" id="login">{{ $t('log_in') }}</b-button>
       </router-link>
     </div>
     <div>
