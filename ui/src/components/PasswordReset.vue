@@ -2,7 +2,7 @@
     <div id="root">
         <div id="heading">
             <b-navbar type="dark" variant="dark">
-                <b-navbar-brand href="#">Password Reset</b-navbar-brand>
+                <b-navbar-brand href="#">{{ $t('pwd_reset') }}</b-navbar-brand>
             </b-navbar>
         </div>
         <b-alert
@@ -15,53 +15,54 @@
                 :show="passwordReset"
                 dismissible
                 variant="warning">
-            Your password has been reset!
-            Please enter a code from email. After this you can enter a new password
+            {{$t('pwd_reset_warn')}}
         </b-alert>
         <b-alert
                 :show="passwordUpdated"
                 dismissible
                 variant="success">
-          Your password has been updated. You can login now
+            {{$t('pwd_updated')}}
         </b-alert>
 
         <b-col md="3" offset-md="4" id="resetDiv">
             <b-card class="text-left" bg-variant="light">
 
                 <b-input-group id="loginGrp" class="mb-3">
-                    <b-input-group-text slot="prepend" size="sm">Login</b-input-group-text>
+                    <b-input-group-text slot="prepend" size="sm">{{$t('login')}}</b-input-group-text>
                     <b-form-input v-model="login" :state="loginValidation"></b-form-input>
 
                     <b-input-group-append>
-                        <b-button variant="outline-primary" v-on:click="findLogin">Find</b-button>
+                        <b-button variant="outline-primary" v-on:click="findLogin">{{$t('find')}}</b-button>
                     </b-input-group-append>
                 </b-input-group>
 
                 <b-input-group id="codeGrp" class="mb-3">
-                    <b-input-group-text slot="prepend">Security Code</b-input-group-text>
+                    <b-input-group-text slot="prepend">{{$t('sec_code')}}</b-input-group-text>
                     <b-form-input v-model="code" :state="codeValidation">
 
                     </b-form-input>
                     <b-input-group-append>
-                        <b-button variant="outline-warning" v-on:click="enterCode">Enter</b-button>
+                        <b-button variant="outline-warning" v-on:click="enterCode">{{$t('enter')}}</b-button>
                     </b-input-group-append>
                 </b-input-group>
 
                 <b-input-group id="passGrp" class="mb-3">
-                    <b-input-group-text slot="prepend">New Password</b-input-group-text>
+                    <b-input-group-text slot="prepend">{{$t('pwd_new')}}</b-input-group-text>
                     <b-form-input  type="password" v-model="password" :state="passwordValidation"
                                    :disabled="!newPwdEnabled">
 
                     </b-form-input>
                     <b-input-group-append>
-                        <b-button variant="outline-success" v-on:click="updatePass" :disabled="!newPwdEnabled">Update</b-button>
+                        <b-button variant="outline-success" v-on:click="updatePass" :disabled="!newPwdEnabled">
+                            {{$t('upd')}}
+                        </b-button>
                     </b-input-group-append>
                 </b-input-group>
-                <p>Your password must be 5-20 characters long, contain letters and numbers.</p>
+                <p> {{$t('pwd_size')}}</p>
 
 
                 <b-button id="signInBtn" v-on:click="signIn" variant="primary" size="md">
-                    Sign in
+                    {{ $t('sign_in') }}
                 </b-button>
             </b-card>
         </b-col>
