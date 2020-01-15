@@ -2,7 +2,7 @@
     <div id="root">
         <div id="heading">
             <b-navbar type="dark" variant="dark">
-                <b-navbar-brand href="#">Sign in</b-navbar-brand>
+                <b-navbar-brand href="#">{{ $t('sign_in') }}</b-navbar-brand>
             </b-navbar>
         </div>
         <b-alert
@@ -17,7 +17,7 @@
 
                 <b-form @submit.prevent="submit">
                     <b-form-group
-                            label="Login"
+                            v-bind:label="$t('login')"
                             label-for="logInp">
                         <b-form-input
                                 id="logInp"
@@ -29,7 +29,7 @@
                         </b-form-invalid-feedback>
                     </b-form-group>
 
-                    <b-form-group label="Password" label-for="pwdInp">
+                    <b-form-group v-bind:label="$t('password')" label-for="pwdInp">
                         <b-form-input
                                 id="pwdInp"
                                 v-model="credentials.password"
@@ -43,20 +43,20 @@
                     </b-form-group>
                     <b-form-group>
                         <router-link to="/reset">
-                            <b-button variant="link">Forgot password</b-button>
+                            <b-button variant="link">{{ $t('pwd_forgot') }}</b-button>
                         </router-link>
                     </b-form-group>
 
 
                     <b-button type="submit" variant="primary" size="md">
-                        Sign in
+                        {{ $t('sign_in') }}
                     </b-button>
                 </b-form>
             </b-card>
             <br/>
-            <p>OR</p>
+            <p>{{ $t('or') }}</p>
             <br/>
-            <b-button variant="success">Sign in with github</b-button>
+            <b-button variant="success">{{ $t('github') }}</b-button>
 
         </b-col>
     </div>
