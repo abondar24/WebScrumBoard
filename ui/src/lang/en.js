@@ -24,6 +24,7 @@ export default {
     'or':'OR',
     'password':'Password',
     'projects':'Projects',
+    'project_create':'Create project',
     'pwd_forgot':'Forgot password',
     'pwd_help':'Your password must be 5-20 characters long, contain english letters and numbers.',
     'pwd_new':'New Password',
@@ -50,6 +51,7 @@ export default {
     'user_edit':'Edit User',
     'user_edit_title':'Edit user data',
     'user_no_tasks':'User currently has no assigned tasks',
+    'user_projects':'User related projects.',
     'verify':'Verify'
 
 }

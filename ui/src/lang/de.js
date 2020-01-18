@@ -24,6 +24,7 @@ export default {
     'or':'ODER',
     'password':'Kennwort',
     'projects':'Projekte',
+    'project_create':'Projekt erstellen',
     'pwd_forgot':'Passwort vergessen',
     'pwd_help':'Ihr Passwort muss 5-20 Zeichen lang sein und englische Buchstaben und Zahlen enthalten.',
     'pwd_new':'Neues Passwort',
@@ -50,6 +51,7 @@ export default {
     'user_edit':'Benutzer bearbeiten',
     'user_edit_title':'Benutzerdaten bearbeiten',
     'user_no_tasks':'Dem Benutzer sind derzeit keine Aufgaben zugewiesen',
+    'user_projects':'Benutzerbezogene Projekte.',
     'verify':'Überprüfen'
 
 }

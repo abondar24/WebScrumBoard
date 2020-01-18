@@ -10,12 +10,12 @@
         <b-container>
             <b-row>
                 <b-button id="createProject" variant="success" v-b-modal.createProject>
-                    Create project
+                    {{ $t('project_create') }}
                 </b-button>
                 <b-modal
                         id="createProject"
                         ref="projectCreate"
-                        title="Create project"
+                        v-bind:title="$t('project_create')"
                         hide-footer>
                     <CreateProjectForm @exit="hideCreate"></CreateProjectForm>
                 </b-modal>
@@ -29,7 +29,7 @@
                          :fields="fields"
                          caption-top
                          @row-clicked="routeToProject($event)">
-                    <template v-slot:table-caption>User related projects.</template>
+                    <template v-slot:table-caption> {{ $t('user_projects') }}</template>
                 </b-table>
             </b-row>
 
