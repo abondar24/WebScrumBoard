@@ -2,7 +2,7 @@
     <div id="root">
         <div id="heading">
             <b-navbar type="dark" variant="dark">
-                <b-navbar-brand href="#">Registration</b-navbar-brand>
+                <b-navbar-brand href="#">{{ $t('registration') }}</b-navbar-brand>
             </b-navbar>
         </div>
 
@@ -15,20 +15,20 @@
                     {{errorMessage}}
                 </b-alert>
                 <b-form @submit.prevent="submit" @reset="reset">
-                    <b-form-group id="login" label="Login" label-for="loginInput">
+                    <b-form-group id="login" v-bind:label="$t('login')" label-for="loginInput">
                         <b-form-input
                                 id="login"
                                 v-model="user.login"
                                 required
                                 :state="loginValidation"
-                                placeholder="Enter login">
+                                v-bind:placeholder="$t('login_pl')">
                         </b-form-input>
                         <b-form-invalid-feedback :state="loginValidation">
-                            Your login must be have more than 5 only-english characters.
+                            {{ $t('login_val') }}
                         </b-form-invalid-feedback>
                     </b-form-group>
 
-                    <b-form-group id="pass" label="Password" label-for="passwordInput">
+                    <b-form-group id="pass" v-bind:label="$t('password')" label-for="passwordInput">
                         <b-form-input
                                 id="pass"
                                 v-model="user.password"
@@ -36,59 +36,59 @@
                                 type="password"
                                 :state="passwordValidation"
                                 aria-describedby="password-help-block"
-                                placeholder="Enter password">
+                                v-bind:placeholder="$t('pwd_pl')">
                         </b-form-input>
                         <b-form-text id="password-help-block">
-                            Your password must be 5-20 characters long, contain english letters and numbers.
+                            {{ $t('pwd_help') }}
                         </b-form-text>
                         <b-form-invalid-feedback :state="passwordValidation">
-                            Password is too short and contains only letters or numbers
+                            {{ $t('pwd_val') }}
                         </b-form-invalid-feedback>
                     </b-form-group>
 
                     <b-form-group
                             id="email"
-                            label="Email address"
+                            v-bind:label="$t('email')"
                             label-for="emailInput"
-                            description="We'll never share your email with anyone else.">
+                            v-bind:description="$t('email_descr')">
                         <b-form-input
                                 id="emailInput"
                                 v-model="user.email"
                                 type="email"
                                 required
-                                placeholder="Enter email">
+                                v-bind:placeholder="$t('email_pl')">
                         </b-form-input>
                     </b-form-group>
 
                     <b-form-group
                             id="fname"
-                            label="First Name"
+                            v-bind:label="$t('first_name')"
                             label-for="fnameInput">
                         <b-form-input
                                 id="fnameInput"
                                 v-model="user.firstName"
                                 required
-                                placeholder="Enter first name"
+                                v-bind:placeholder="$t('fname_pl')"
                                 :state="firstNameValidation">
                         </b-form-input>
                     </b-form-group>
 
                     <b-form-group
                             id="lname"
-                            label="Last Name"
+                            v-bind:label="$t('last_name')"
                             label-for="lnameInput">
                         <b-form-input
                                 id="lnameInput"
                                 v-model="user.lastName"
                                 required
-                                placeholder="Enter last name"
+                                v-bind:placeholder="$t('lname_pl')"
                                 :state="lastNameValidation">
                         </b-form-input>
                     </b-form-group>
 
                     <b-form-group
                             id="roles"
-                            label="User roles"
+                            v-bind:label="$t('roles')"
                             label-for="roleInput">
                         <b-form-select
                                 id="roleInput"
@@ -98,20 +98,21 @@
                                 :select-size="3"
                                 :state="roleValidation"></b-form-select>
                         <b-form-text id="password-help-block">
-                            Select at least one role
+                            {{ $t('role_select') }}
                         </b-form-text>
                     </b-form-group>
 
                     <b-button type="submit" variant="primary" id="regButton"
                               @click="showVerify">
                         Register
+                        {{ $t('reg') }}
                     </b-button>
-                    <b-button type="reset" variant="danger" id="cancelButton">Cancel</b-button>
+                    <b-button type="reset" variant="danger" id="cancelButton"> {{ $t('cancel') }}</b-button>
 
                     <b-modal
                             ref="codeModal"
                             v-model="showVerify"
-                            title="Enter security code"
+                            v-bind:label="$t('sec_code_title')"
                             hide-footer
                             no-close-on-backdrop
                             no-close-on-esc>
