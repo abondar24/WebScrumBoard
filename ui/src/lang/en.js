@@ -1,6 +1,8 @@
 export default {
     'cancel':'Cancel',
     'code_empty':'Code is empty',
+    'creds_edit':'Edit credentials',
+    'creds_edit_title':'Edit user credentials',
     'email':'Email address',
     'email_descr':'We will never share your email with anyone else.',
     'email_pl':'Enter email',
@@ -10,6 +12,7 @@ export default {
     'fname_pl':'Enter first name',
     'github':'Sign in with Github',
     'greet': 'Work With your projects in agile manner',
+    'img_upload':'Click to upload',
     'lang': 'Language',
     'last_name':'Last Name',
     'lname_pl':'Enter last name',
@@ -39,8 +42,14 @@ export default {
     'sec_code':'Security Code',
     'sec_code_title':'Enter security code',
     'sign_in': 'Sign In',
+    'story_points':'Story points',
+    'task_name':'Task Name',
+    'task_state':'Task state',
     'upd':'Update',
     'user':'User',
+    'user_edit':'Edit User',
+    'user_edit_title':'Edit user data',
+    'user_no_tasks':'User currently has no assigned tasks',
     'verify':'Verify'
 
 }

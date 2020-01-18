@@ -1,6 +1,8 @@
 export default {
     'cancel':'Stornieren',
     'code_empty':'Code ist leer',
+    'creds_edit':'Anmeldeinformationen bearbeiten',
+    'creds_edit_title':'Bearbeiten Sie die Benutzeranmeldeinformationen',
     'email':'E-Mail-Addresse',
     'email_descr':'Wir werden Ihre E-Mail-Adresse niemals an Dritte weitergeben.',
     'email_pl':'Email eingeben',
@@ -10,6 +12,7 @@ export default {
     'fname_pl':'Bitte Vornamen eingeben',
     'github':'Melde dich mit Github an',
     'greet': 'Arbeiten Sie agil mit Ihren Projekten',
+    'img_upload':'Klicken Sie zum Hochladen',
     'lang': 'Sprache',
     'last_name':'Nachname',
     'lname_pl':'Nachnamen eingeben',
@@ -39,8 +42,14 @@ export default {
     'sec_code':'Sicherheitscode',
     'sec_code_title':'Sicherheitscode eingeben',
     'sign_in': 'Einloggen',
+    'story_points':'Story-Punkte',
+    'task_name':'Aufgabennname',
+    'task_state':'Task-Status',
     'upd':'Aktualisieren',
     'user':'Benutzer',
+    'user_edit':'Benutzer bearbeiten',
+    'user_edit_title':'Benutzerdaten bearbeiten',
+    'user_no_tasks':'Dem Benutzer sind derzeit keine Aufgaben zugewiesen',
     'verify':'Überprüfen'
 
 }

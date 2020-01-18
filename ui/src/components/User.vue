@@ -34,7 +34,7 @@
 
                                         </path>
                                     </figure>
-                                    <span class="upload-caption">Click to upload</span>
+                                    <span class="upload-caption">{{ $t('img_upload') }}</span>
                                 </label>
                             </image-uploader>
                             <p>{{firstName}} {{lastName}}</p>
@@ -45,20 +45,20 @@
                                 </li>
                             </ul>
                             <b-button-group v-if="isEditable">
-                                <b-button variant="info" v-b-modal.editUser size="sm">Edit User</b-button>
-                                <b-button variant="warning" v-b-modal.editCreds size="sm">Edit credentials</b-button>
+                                <b-button variant="info" v-b-modal.editUser size="sm">{{ $t('user_edit') }}</b-button>
+                                <b-button variant="warning" v-b-modal.editCreds size="sm">{{ $t('creds_edit') }}</b-button>
                             </b-button-group>
                             <b-modal
                                     id="editUser"
                                     ref="userEdit"
-                                    title="Edit user data"
+                                    v-bind:title="$t('user_edit_title')"
                                     hide-footer>
                                 <EditUserForm @exit="hideEdit"></EditUserForm>
                             </b-modal>
                             <b-modal
                                     id="editCreds"
                                     ref="credsEdit"
-                                    title="Edit user credentials"
+                                    v-bind:title="$t('creds_edit_title')"
                                     hide-footer>
                                 <EditCredentialsForm  @exit="hideCreds"></EditCredentialsForm>
                             </b-modal>
@@ -68,7 +68,7 @@
                 </b-col>
                 <b-col>
                     <div v-if="noTasks">
-                        User currently has no assigned tasks
+                        {{ $t('user_no_tasks') }}
                     </div>
                     <div v-if="!noTasks">
                         <b-table striped hover
@@ -112,9 +112,9 @@
                 email: '',
                 tasks: [],
                 fields: [
-                    {key: 'name', label: 'Task Name'},
-                    {key: 'state', label: 'Task State'},
-                    {key: 'storyPoints', label: 'Story Points'},
+                    {key: 'name', label: this.$i18n.translate('task_name')},
+                    {key: 'state', label: this.$i18n.translate('task_state')},
+                    {key: 'storyPoints', label: this.$i18n.translate('story_points')},
                 ],
                 currentPage:1,
                 perPage: 10,

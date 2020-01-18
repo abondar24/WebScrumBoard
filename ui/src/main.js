@@ -18,6 +18,8 @@ Vue.config.productionTip = false;
 
 Vue.use(BootstrapVue);
 Vue.use(ImageUploader);
+
+//TODO:fix on reload
 Vue.use(vuexI18n.plugin,store);
 
 Vue.i18n.add('en', trEnglish);
