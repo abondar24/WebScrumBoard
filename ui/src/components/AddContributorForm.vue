@@ -10,23 +10,25 @@
                 :show="userFound"
                 dismissible
                 variant="success">
-           User found by login!!
+            {{$t('user_found')}}
         </b-alert>
         <b-form @submit.prevent="submit">
             <b-input-group id="loginGrp" class="mb-3">
-                <b-input-group-text slot="prepend" size="sm">User login</b-input-group-text>
+                <b-input-group-text slot="prepend" size="sm"> {{$t('user_login')}}</b-input-group-text>
                 <b-form-input v-model="login" :state="loginValidation"></b-form-input>
 
                 <b-input-group-append>
-                    <b-button variant="outline-primary" v-on:click="findUser">Find</b-button>
+                    <b-button variant="outline-primary" v-on:click="findUser">
+                        {{$t('find')}}
+                    </b-button>
                 </b-input-group-append>
             </b-input-group>
 
             <b-button type="submit" variant="primary" id="addButton">
-                Add
+                {{$t('add')}}
             </b-button>
             <b-button  variant="danger" id="cancelButton" @click="cancel">
-                Cancel
+                {{$t('cancel')}}
             </b-button>
         </b-form>
     </b-container>

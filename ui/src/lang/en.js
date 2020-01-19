@@ -1,4 +1,5 @@
 export default {
+    'add':'Add',
     'board_view':'View Board',
     'cancel':'Cancel',
     'code_empty':'Code is empty',
@@ -81,6 +82,8 @@ export default {
     'user':'User',
     'user_edit':'Edit User',
     'user_edit_title':'Edit user data',
+    'user_found':'User found by login!!',
+    'user_login':'User login',
     'user_no_tasks':'User currently has no assigned tasks',
     'user_projects':'User related projects.',
     'verify':'Verify',

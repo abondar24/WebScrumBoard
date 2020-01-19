@@ -1,4 +1,5 @@
 export default {
+    'add':'Hinzufügen',
     'board_view':'Forum anzeigen',
     'cancel':'Stornieren',
     'code_empty':'Code ist leer',
@@ -81,6 +82,8 @@ export default {
     'user':'Benutzer',
     'user_edit':'Benutzer bearbeiten',
     'user_edit_title':'Benutzerdaten bearbeiten',
+    'user_found':'Benutzer per Login gefunden !!',
+    'user_login':'Benutzer-Anmeldung',
     'user_no_tasks':'Dem Benutzer sind derzeit keine Aufgaben zugewiesen',
     'user_projects':'Benutzerbezogene Projekte.',
     'verify':'Überprüfen',
