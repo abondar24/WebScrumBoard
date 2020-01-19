@@ -8,30 +8,32 @@
         </b-alert>
 
         <b-form @submit.prevent="submitData">
-            <b-form-group id="name" label="Sprint name" label-for="nameInput">
+            <b-form-group id="name" v-bind:label="$t('sprint_name')" label-for="nameInput">
                <div v-if="!isEdit">
                    <b-form-input
                            id="name"
                            v-model="sprintData.name"
                            required
                            :state="nameValidation"
-                           placeholder="Enter name">
+                           v-bind:label="$t('enter_name')">
                    </b-form-input>
                </div>
                 <div v-if="isEdit">
                     <b-form-input
                             id="name"
                             v-model="sprintData.name"
-                            placeholder="Enter name">
+                            v-bind:label="$t('enter_name')">
                     </b-form-input>
                 </div>
 
             </b-form-group >
-            <b-form-group id="startDate" label="Start date" label-for="dateInput">
-                <datepicker v-model="sprintData.startDate" :format="dateFormat" placeholder="Select date"></datepicker>
+            <b-form-group id="startDate" v-bind:label="$t('start_date')" label-for="dateInput">
+                <datepicker v-model="sprintData.startDate" :format="dateFormat"
+                            v-bind:placeholder="$t('select_date')"></datepicker>
             </b-form-group>
-            <b-form-group id="endDate" label="End date" label-for="dateInput">
-                <datepicker v-model="sprintData.endDate" :format="dateFormat" placeholder="Select date"></datepicker>
+            <b-form-group id="endDate" v-bind:label="$t('end_date')" label-for="dateInput">
+                <datepicker v-model="sprintData.endDate" :format="dateFormat"
+                            v-bind:placeholder="$t('select_date')"></datepicker>
 
             </b-form-group>
 
@@ -41,7 +43,7 @@
             </b-button>
 
 
-            <b-button variant="danger" id="cancelButton" @click="cancel">Cancel</b-button>
+            <b-button variant="danger" id="cancelButton" @click="cancel">{{$t('cancel')}}</b-button>
 
         </b-form>
     </b-container>
