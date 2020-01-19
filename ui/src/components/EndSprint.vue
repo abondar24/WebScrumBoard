@@ -13,9 +13,12 @@
         <b-row id="buttonRow">
             <b-button variant="primary" id="endButton" @click="endSprint">
                End
+                {{$t('end')}}
             </b-button>
 
-            <b-button id="cancelButton" @click="doExit">Cancel</b-button>
+            <b-button id="cancelButton" @click="doExit">
+                {{$t('cancel')}}
+            </b-button>
 
         </b-row>
     </b-container>

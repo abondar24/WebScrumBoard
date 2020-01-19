@@ -18,6 +18,7 @@ export default {
     'email':'E-Mail-Addresse',
     'email_descr':'Wir werden Ihre E-Mail-Adresse niemals an Dritte weitergeben.',
     'email_pl':'Email eingeben',
+    'end':'Enden',
     'end_date':'Endtermin',
     'enter':'Eingeben',
     'find':'Finden',

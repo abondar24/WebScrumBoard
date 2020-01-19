@@ -18,6 +18,7 @@ export default {
     'email':'Email address',
     'email_descr':'We will never share your email with anyone else.',
     'email_pl':'Enter email',
+    'end':'End',
     'end_date':'End date',
     'enter':'Enter',
     'find':'Find',

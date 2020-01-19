@@ -18,6 +18,7 @@ export default {
     'email':'Email  адрес',
     'email_descr':'Мы никогда не поделимся ни с кем вашим email адресом',
     'email_pl':'Введите  email',
+    'end':'Закончить',
     'end_date':'Дата окончания',
     'enter':'Ввод',
     'find':'Найти',
