@@ -20,14 +20,14 @@
             </b-table>
             <b-modal id="taskEdit"
                      ref="tsEdit"
-                     title="Edit Task"
+                     v-bind:title="$t('task_edit')"
                      hide-footer>
                 <CreateEditTask :isEdit="true" :id="editTask" @exit="hideTaskEdit"></CreateEditTask>
             </b-modal>
         </div>
 
         <div v-if="tasks.length===0">
-            All tasks are assigned to sprints
+            {{$t('tasks_assigned')}}
         </div>
 
     </b-container>
