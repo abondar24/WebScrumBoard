@@ -10,23 +10,23 @@
 
             <b-form-group
                     id="fname"
-                    label="First Name"
+                    v-bind:label="$t('first_name')"
                     label-for="fnameInput">
                 <b-form-input
                         id="fnameInput"
                         v-model="updUser.firstName"
-                        placeholder="Enter first name">
+                        v-bind:placeholder="$t('fname_pl')">
                 </b-form-input>
             </b-form-group>
 
             <b-form-group
                     id="lname"
-                    label="Last Name"
+                    v-bind:label="$t('last_name')"
                     label-for="lnameInput">
                 <b-form-input
                         id="lnameInput"
                         v-model="updUser.lastName"
-                        placeholder="Enter first name">
+                        v-bind:placeholder="$t('lname_pl')">
                 </b-form-input>
             </b-form-group>
 
@@ -45,7 +45,7 @@
 
             <b-form-group
                     id="roles"
-                    label="User roles"
+                    v-bind:label="$t('roles')"
                     label-for="roleInput">
                 <b-form-select
                         id="roleInput"
@@ -56,21 +56,22 @@
             </b-form-group>
 
             <b-alert :show="true" variant="danger">
-                <h2>DANGER ZONE !</h2>
-                <b-button size="bg" v-b-modal.userDelete>Delete User</b-button>
+                <h2>{{ $t('danger_zone') }}</h2>
+                <b-button size="bg" v-b-modal.userDelete>{{ $t('delete_user') }}</b-button>
 
                 <b-modal id="userDelete"
                          ref="userDelete"
-                         title="User deletion"
+                         v-bind:title="$t('delete_user_title')"
                          @ok="performDelete()"
-                         ok-title="Delete"
+                         v-bind:ok-title="$t('delete')"
+                         ok-title=""
                          ok-variant="danger">
-                    Are you sure you want to be deleted?
+                    {{ $t('delete_confirm') }}
                 </b-modal>
             </b-alert>
 
-            <b-button type="submit" variant="primary" id="editButton">Edit</b-button>
-            <b-button variant="danger" id="cancelButton" @click="cancel">Cancel</b-button>
+            <b-button type="submit" variant="primary" id="editButton">{{ $t('edit') }}</b-button>
+            <b-button variant="danger" id="cancelButton" @click="cancel">{{ $t('cancel') }}</b-button>
 
         </b-form>
     </b-container>

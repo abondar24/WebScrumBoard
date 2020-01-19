@@ -104,7 +104,6 @@
 
                     <b-button type="submit" variant="primary" id="regButton"
                               @click="showVerify">
-                        Register
                         {{ $t('reg') }}
                     </b-button>
                     <b-button type="reset" variant="danger" id="cancelButton"> {{ $t('cancel') }}</b-button>
