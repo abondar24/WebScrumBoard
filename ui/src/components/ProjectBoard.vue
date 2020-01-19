@@ -17,41 +17,42 @@
             <b-row id="buttonRow">
 
 
-                <b-button id="viewSprints" v-b-modal.sprintsView>View Sprints</b-button>
-                <b-button id="createSprint" v-b-modal.sprintCreate variant="info">Create Sprint</b-button>
-                <b-button id="addTask" v-b-modal.taskCreate variant="primary">Add Task</b-button>
-                <b-button id="backlog" v-b-modal.taskBacklog variant="warning">Tasks Backlog</b-button>
-                <b-button id="endSprint" v-b-modal.sprintEnd variant="danger">End sprint</b-button>
+                <b-button id="viewSprints" v-b-modal.sprintsView>{{$t('sprints_view')}}</b-button>
+                <b-button id="createSprint" v-b-modal.sprintCreate variant="info">{{$t('sprint_create')}}</b-button>
+                <b-button id="addTask" v-b-modal.taskCreate variant="primary">{{$t('task_add')}}</b-button>
+                <b-button id="backlog" v-b-modal.taskBacklog variant="warning">{{$t('task_backlog')}}</b-button>
+                <b-button id="endSprint" v-b-modal.sprintEnd variant="danger">{{$t('sprint_end')}}</b-button>
 
                 <b-modal id="sprintsView"
                          ok-only
                          size="lg"
-                         title="Project Sprints">
+                         v-bind:title="$t('project_sprints')">
                     <ViewSprints :prId="project.id"></ViewSprints>
                 </b-modal>
 
 
                 <b-modal id="sprintCreate"
                          ref="spCreate"
-                         title="Create Sprint"
+                         v-bind:title="$t('sprint_create')"
                          hide-footer>
                     <CreateEditSprint :id="project.id" :isEdit="false" @exit="hideCreate"></CreateEditSprint>
                 </b-modal>
 
                 <b-modal id="taskCreate"
                          ref="tsCreate"
-                         title="Create Task"
+                         v-bind:title="$t('task_create')"
                          hide-footer>
                     <CreateEditTask :isEdit="false" @exit="hideTaskCreate"></CreateEditTask>
                 </b-modal>
 
 
-                <b-modal id="taskBacklog" ref="tsBacklog"
-                         title="Backlog">
+                <b-modal id="taskBacklog"
+                         ref="tsBacklog"
+                         v-bind:title="$t('task_backlog')">
                     <TasksBacklog></TasksBacklog>
                 </b-modal>
 
-                <b-modal id="sprintEnd" ref="spEnd" title="End Sprint" hide-footer>
+                <b-modal id="sprintEnd" ref="spEnd"  v-bind:title="$t('sprint_end')" hide-footer>
                     <EndSprint @exit="endSprint"></EndSprint>
                 </b-modal>
 
@@ -59,24 +60,24 @@
             <b-row id="sprintRow">
 
                 <b-col md="4">
-                    <h3>CurrentSprint: {{this.getCurrentSprint.name}}</h3>
+                    <h3>{{$t('sprint_current')}} {{this.getCurrentSprint.name}}</h3>
 
                 </b-col>
                 <b-col>
-                    <h3>Period: {{this.currentSprintStartDate}} - {{this.currentSprintEndDate}}</h3>
+                    <h3>{{$t('sprint_period')}}  {{this.currentSprintStartDate}} - {{this.currentSprintEndDate}}</h3>
 
                 </b-col>
             </b-row>
             <b-row id="board">
                 <b-col col-3 id="created">
-                    <h3>Created</h3>
+                    <h3>{{$t('state_created')}}</h3>
                     <draggable v-model="createdTasks" group="tasks" @start="drag=true" @end="drag=false">
                         <div class="list-group-item" v-for="ts in createdTasks" :key="ts.id">{{ts.taskName}}</div>
                     </draggable>
                 </b-col>
 
                 <b-col col-3 id="develop">
-                    <h3>In Development</h3>
+                    <h3>{{$t('state_development')}}</h3>
                     <draggable v-model="devTasks" group="tasks" @start="drag=true" @end="drag=false"
                                @change="changeToInDevelopment">
                         <div class="list-group-item" v-for="ts in devTasks" :key="ts.id">{{ts.taskName}}</div>
@@ -84,7 +85,7 @@
                 </b-col>
 
                 <b-col col-3 id="review">
-                    <h3>In Code review</h3>
+                    <h3>{{$t('state_review')}}</h3>
                     <draggable v-model="reviewTasks" group="tasks" @start="drag=true" @end="drag=false"
                                @change="changeToInCodeReview">
                         <div class="list-group-item" v-for="ts in reviewTasks" :key="ts.id">{{ts.taskName}}</div>
@@ -92,7 +93,7 @@
                 </b-col>
 
                 <b-col col-3 id="test">
-                    <h3>In Test</h3>
+                    <h3>{{$t('state_test')}}</h3>
                     <draggable v-model="testTasks" group="tasks" @start="drag=true" @end="drag=false"
                                @change="changeToInTest">
                         <div class="list-group-item" v-for="ts in testTasks" :key="ts.id">{{ts.taskName}}</div>
@@ -100,7 +101,7 @@
                 </b-col>
 
                 <b-col col-3 id="deploy">
-                    <h3>In Deployment</h3>
+                    <h3>{{$t('state_deployment')}}</h3>
                     <draggable v-model="deployTasks" group="tasks" @start="drag=true" @end="drag=false"
                                @change="changeToInDeployment">
                         <div class="list-group-item" v-for="ts in deployTasks" :key="ts.id">{{ts.taskName}}</div>
@@ -108,7 +109,7 @@
                 </b-col>
 
                 <b-col col-3 id="completed">
-                    <h3>Completed</h3>
+                    <h3>{{$t('state_completed')}}</h3>
                     <draggable v-model="completedTasks" group="tasks" @start="drag=true" @end="drag=false"
                                @change="changeToCompleted">
                         <div class="list-group-item" v-for="ts in completedTasks" :key="ts.id">{{ts.taskName}}</div>
@@ -116,7 +117,7 @@
                 </b-col>
 
                 <b-col col-3 id="pause">
-                    <h3>Paused</h3>
+                    <h3>{{$t('state_paused')}}</h3>
                     <draggable v-model="pausedTasks" group="tasks" @start="drag=true" @end="drag=false"
                                @change="changeToPaused">
                         <div class="list-group-item" v-for="ts in pausedTasks" :key="ts.id">{{ts.taskName}}</div>
