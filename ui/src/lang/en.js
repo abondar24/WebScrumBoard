@@ -3,6 +3,7 @@ export default {
     'code_empty':'Code is empty',
     'creds_edit':'Edit credentials',
     'creds_edit_title':'Edit user credentials',
+    'creds_updated':'Your credentials have been updated',
     'danger_zone':'DANGER ZONE!',
     'delete':'Delete',
     'delete_confirm':'Are you sure you want to be deleted?',
@@ -25,6 +26,7 @@ export default {
     'log_in': 'Log In',
     'log_out': 'Log Out',
     'login': 'Login',
+    'login_new':'New Login',
     'login_pl':'Enter login',
     'login_val':'Your login must be have more than 5 only-english characters.',
     'or':'OR',
@@ -34,6 +36,7 @@ export default {
     'pwd_forgot':'Forgot password',
     'pwd_help':'Your password must be 5-20 characters long, contain english letters and numbers.',
     'pwd_new':'New Password',
+    'pwd_old':'Old Password',
     'pwd_pl':'Enter password',
     'pwd_reset':'Password Reset',
     'pwd_reset_warn':'Your password has been reset!\n' +

@@ -10,47 +10,47 @@
                 :show="dataUpdated"
                 dismissible
                 variant="success">
-            Your credentials have been updated
+            {{ $t('creds_updated') }}
         </b-alert>
         <b-form>
 
             <b-input-group id="loginGrp" class="mb-3">
-                <b-input-group-text slot="prepend" size="sm">New Login</b-input-group-text>
+                <b-input-group-text slot="prepend" size="sm">{{ $t('login_new') }}</b-input-group-text>
                 <b-form-input v-model="login" :state="loginValidation"></b-form-input>
 
                 <b-input-group-append>
-                    <b-button variant="outline-primary" v-on:click="updateUserLogin">Update</b-button>
+                    <b-button variant="outline-primary" v-on:click="updateUserLogin">{{ $t('upd') }}</b-button>
                 </b-input-group-append>
             </b-input-group>
 
             <b-input-group id="passGrp" class="mb-3">
-                <b-input-group-text slot="prepend">Old Password</b-input-group-text>
+                <b-input-group-text slot="prepend">{{ $t('pwd_old') }}</b-input-group-text>
                 <b-form-input type="password" v-model="oldPassword" >
                 </b-form-input>
             </b-input-group>
 
             <b-input-group id="passGrp" class="mb-3">
-                <b-input-group-text slot="prepend">New Password</b-input-group-text>
+                <b-input-group-text slot="prepend">{{ $t('pwd_new') }}</b-input-group-text>
                 <b-form-input type="password" v-model="newPassword" :state="passwordValidation">
 
                 </b-form-input>
                 <b-input-group-append>
-                    <b-button variant="outline-success" v-on:click="updateUserPassword">Update</b-button>
+                    <b-button variant="outline-success" v-on:click="updateUserPassword">{{ $t('upd') }}</b-button>
                 </b-input-group-append>
                 <b-form-text id="password-help-block">
-                    Your password must be 5-20 characters long, contain letters and numbers.
+                    {{ $t('pwd_size') }}
                 </b-form-text>
                 <b-form-invalid-feedback :state="passwordValidation">
-                    Password is too short and contains only letters or numbers
+                    {{ $t('pwd_val') }}
                 </b-form-invalid-feedback>
             </b-input-group>
 
             <router-link to="/reset">
-                <b-button variant="link">Forgot password</b-button>
+                <b-button variant="link">{{ $t('pwd_forgot') }}</b-button>
             </router-link>
 
 
-            <b-button variant="danger" @click="cancel">Cancel</b-button>
+            <b-button variant="danger" @click="cancel">{{ $t('cancel') }}</b-button>
 
         </b-form>
     </b-container>

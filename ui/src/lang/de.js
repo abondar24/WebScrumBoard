@@ -3,6 +3,7 @@ export default {
     'code_empty':'Code ist leer',
     'creds_edit':'Anmeldeinformationen bearbeiten',
     'creds_edit_title':'Bearbeiten Sie die Benutzeranmeldeinformationen',
+    'creds_updated':'Ihre Anmeldeinformationen wurden aktualisiert',
     'danger_zone':'ASTHUNG!',
     'delete':'Löschen',
     'delete_confirm':'Möchten Sie wirklich gelöscht werden?',
@@ -25,6 +26,7 @@ export default {
     'log_in': 'Einloggen',
     'log_out': 'Ausloggen',
     'login': 'Login',
+    'login_new':'Neuer Login',
     'login_pl':'Login eingeben',
     'login_val':'Ihr Login muss aus mehr als 5 ausschließlich englischen Zeichen bestehen.',
     'or':'ODER',
@@ -34,6 +36,7 @@ export default {
     'pwd_forgot':'Passwort vergessen',
     'pwd_help':'Ihr Passwort muss 5-20 Zeichen lang sein und englische Buchstaben und Zahlen enthalten.',
     'pwd_new':'Neues Passwort',
+    'pwd_old':'Alter Passwort',
     'pwd_pl':'Passwort eingeben',
     'pwd_reset':'Passwort zurücksetzen',
     'pwd_reset_warn':'Ihr Passwort wurde zurückgesetzt! \n' +
