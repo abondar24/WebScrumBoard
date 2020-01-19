@@ -7,7 +7,7 @@
         </b-alert>
 
         <div v-if="noTasks">
-            Contributor currently has no assigned tasks
+            {{$t('ctr_no_tasks')}}
         </div>
 
         <div v-if="!noTasks">
@@ -31,7 +31,7 @@
         </div>
 
 
-        <b-button variant="danger" @click="close">Hide</b-button>
+        <b-button variant="danger" @click="close">{{$t('hide')}}</b-button>
     </b-container>
 </template>
 
@@ -45,9 +45,9 @@
                 errorOccurred: false,
                 tasks: [],
                 fields: [
-                    {key: 'name', label: 'Task Name'},
-                    {key: 'state', label: 'Task State'},
-                    {key: 'storyPoints', label: 'Story Points'},
+                    {key: 'name', label: this.$i18n.translate('task_name')},
+                    {key: 'state', label: this.$i18n.translate('task_state')},
+                    {key: 'storyPoints', label:  this.$i18n.translate('story_points')},
                 ],
                 currentPage: 1,
                 perPage: 5,
