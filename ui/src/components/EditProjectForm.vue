@@ -9,43 +9,45 @@
         <b-form @submit.prevent="submit">
             <b-form-group
                     id="name"
-                    label="Project name"
+                    v-bind:label="$t('project_name')"
                     label-for="nameInput">
                 <b-form-input
                         id="nameInput"
                         v-model="project.name"
-                        placeholder="Enter project name">
+                        v-bind:label="$t('project_name_pl')">
                 </b-form-input>
             </b-form-group>
             <b-form-group
                     id="name"
-                    label="Project repository"
+                    v-bind:label="$t('project_repo')"
                     label-for="repoInput">
                 <b-form-input
                         id="repoInput"
                         v-model="project.repository"
-                        placeholder="Enter project repository">
+                        v-bind:placeholder="$t('project_repo_pl')">
                 </b-form-input>
             </b-form-group>
             <b-form-textarea
                     id="description"
                     v-model="project.description"
-                    placeholder="Enter description..."
+                    v-bind:placeholder="$t('project_descr')"
                     rows="3"
                     max-rows="6"></b-form-textarea>
             <b-form-checkbox
                     v-model="project.isActive"
                     name="checkbox-1">
-                Project active
+
             </b-form-checkbox>
-            <b-form-group id="date" label="End date" label-for="dateInput" v-if="!project.isActive">
+            <b-form-group id="date" v-bind:label="$t('end_date')" label-for="dateInput" v-if="!project.isActive">
                 <datepicker v-model="project.endDate" :format="dateFormat"></datepicker>
 
             </b-form-group>
             <b-button type="submit" variant="primary" id="regButton">
-                Edit
+                {{$t('edit')}}
             </b-button>
-            <b-button variant="danger" id="cancelButton" @click="cancel">Cancel</b-button>
+            <b-button variant="danger" id="cancelButton" @click="cancel">
+                {{$t('cancel')}}
+            </b-button>
 
 
         </b-form>
