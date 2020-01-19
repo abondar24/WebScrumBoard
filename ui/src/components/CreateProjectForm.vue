@@ -7,24 +7,24 @@
             {{errorMessage}}
         </b-alert>
         <b-form @submit.prevent="create">
-            <b-form-group id="name" label="Project name" label-for="nameInput">
+            <b-form-group id="name" v-bind:label="$t('project_name')" label-for="nameInput">
                 <b-form-input
                         id="name"
                         v-model="project.name"
                         required
                         :state="nameValidation"
-                        placeholder="Enter name">
+                        v-bind:placeholder="$t('project_name_pl')">
                 </b-form-input>
             </b-form-group >
-            <b-form-group id="date" label="Start date" label-for="dateInput">
+            <b-form-group id="date" v-bind:label="$t('start_date')" label-for="dateInput">
                 <datepicker v-model="project.startDate" :format="dateFormat"></datepicker>
 
             </b-form-group>
 
                 <b-button type="submit" variant="primary" id="regButton">
-                    Create
+                    {{ $t('create') }}
                 </b-button>
-                <b-button variant="danger" id="cancelButton" @click="cancel">Cancel</b-button>
+                <b-button variant="danger" id="cancelButton" @click="cancel">{{ $t('cancel') }}</b-button>
 
         </b-form>
     </b-container>
