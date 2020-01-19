@@ -14,7 +14,7 @@
                     :show="ownerChanged"
                     dismissible
                     variant="warning">
-                Project Owner has been changed
+                {{$t('project_owner_chg')}}
             </b-alert>
             <b-row id="topRow">
                 <b-col>
@@ -23,52 +23,56 @@
                         <b-img id="activeImg" :src="image" v-bind="imgProps" alt="Project status"></b-img>
                     </b-row>
                     <b-row>
-                        <p>Started on: {{project.startDate}}</p>
+                        <p>{{$t('started_on')}} {{project.startDate}}</p>
                     </b-row>
                     <b-row>
-                        <p v-if="!project.active">Finished on: {{project.endDate}}</p>
+                        <p v-if="!project.active">{{$t('finished_on')}} {{project.endDate}}</p>
                     </b-row>
                     <b-row>
                         <b-link v-bind:href="project.repository"
                                 v-if="project.repository!==null && project.repository.length">
-                            Project repository
+                            {{$t('project_repo')}}
                         </b-link>
                     </b-row>
                 </b-col>
                 <b-col>
                     <b-row>
-                        <h2>Owner: {{ownerName}}</h2>
+                        <h2>{{$t('project_own')}} {{ownerName}}</h2>
                     </b-row>
                     <b-row>
                         <router-link :to="{ name: 'ProjectBoard', params: { id: this.getProject.id }}">
-                            <b-button variant="primary">View board</b-button>
+                            <b-button variant="primary">{{$t('board_view')}}</b-button>
                         </router-link>
 
                         <div v-if="isEditable">
-                            <b-button id="editPrj" v-if="project.active" v-b-modal.editProject>Edit project</b-button>
-                            <b-button id="addCtr" v-b-modal.addContributor variant="success" v-if="project.active">Add
-                                Contributor
+                            <b-button id="editPrj" v-if="project.active" v-b-modal.editProject>
+                                {{$t('project_edit')}}
+                            </b-button>
+                            <b-button id="addCtr" v-b-modal.addContributor variant="success" v-if="project.active">
+                                {{$t('ctr_add')}}
                             </b-button>
 
-                            <b-button id="deleteProject" v-b-modal.delPrj variant="danger">Delete project</b-button>
+                            <b-button id="deleteProject" v-b-modal.delPrj variant="danger">
+                                {{$t('project_delete')}}
+                            </b-button>
                             <b-modal
                                     id="delPrj"
-                                    title="Delete project"
+                                    v-bind:title="$t('project_delete')"
                                     ok-variant="danger"
-                                    ok-title="yes"
+                                    v-bind:ok-title="$t('yes')"
                                     @ok="delProject"
-                                    cancel-title="no">
-                                Are you sure you want to delete project?
+                                    v-bind:cancel-title="$t('no')">
+                                {{$t('project_delete_conf')}}
                             </b-modal>
                             <b-modal id="editProject"
                                      ref="prjEdit"
                                      hide-footer
-                                     title="Edit project">
+                                     v-bind:title="$t('project_edit')">
                                 <EditProjectForm @exit="hideEdit"></EditProjectForm>
                             </b-modal>
                             <b-modal
                                     id="addContributor"
-                                    title="Add contributor"
+                                    v-bind:title="$t('ctr_add')"
                                     ref="ctrAdd"
                                     hide-footer>
                                 <AddContributorForm @exit="hideCtr"></AddContributorForm>
@@ -91,7 +95,7 @@
                         :per-page="perPage"
                         caption-top
                         :current-page="currentPage">
-                    <template v-slot:table-caption>Project contributors</template>
+                    <template v-slot:table-caption> {{$t('project_ctrs')}}</template>
                     <template v-slot:cell(ctr_name)="data">
                         <router-link :to="{ name: 'User', params: { id: data.item.id }}">
                             {{data.item.ctr_name}}
@@ -100,10 +104,16 @@
                     <template v-slot:cell(ctr_actions)="data">
                         <b-button-group>
                             <div v-if="isEditable">
-                                <b-button variant="warning" @click="makeAsOwner(data.item)">Make as owner</b-button>
-                                <b-button variant="danger" @click="deleteContributor(data.item)">Delete</b-button>
+                                <b-button variant="warning" @click="makeAsOwner(data.item)">
+                                    {{$t('owner_make')}}
+                                </b-button>
+                                <b-button variant="danger" @click="deleteContributor(data.item)">
+                                    {{$t('delete')}}
+                                </b-button>
                             </div>
-                            <b-button variant="success" @click="showTasks(data.item)">View tasks</b-button>
+                            <b-button variant="success" @click="showTasks(data.item)">
+                                {{$t('tasks_view')}}
+                            </b-button>
                         </b-button-group>
                     </template>
 
