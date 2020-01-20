@@ -11,17 +11,17 @@
                 :show="ctrFound"
                 dismissible
                 variant="success">
-            Contributor is assigned to task
+            {{$t('ctr_assigned')}}
         </b-alert>
 
         <b-form @submit.prevent="submitData">
 
             <b-input-group id="assignGrp" class="mb-3">
-                <b-input-group-text slot="prepend" size="sm">Assignee</b-input-group-text>
-                <b-form-input v-model="ctrLogin" :state="ctrValidation" placeholder="login"></b-form-input>
+                <b-input-group-text slot="prepend" size="sm">{{$t('assignee')}}</b-input-group-text>
+                <b-form-input v-model="ctrLogin" :state="ctrValidation" v-bind:placeholder="$t('login')"></b-form-input>
 
                 <b-input-group-append>
-                    <b-button variant="outline-primary" v-on:click="findContributor">Find</b-button>
+                    <b-button variant="outline-primary" v-on:click="findContributor">{{$t('find')}}</b-button>
                 </b-input-group-append>
             </b-input-group>
 
@@ -32,45 +32,45 @@
                             v-model="taskData.taskName"
                             required
                             :state="nameValidation"
-                            placeholder="Enter name">
+                            v-bind:placeholder="$t('enter_name')">
                     </b-form-input>
                 </div>
                 <div v-if="isEdit">
                     <b-form-input
                             id="name"
                             v-model="taskData.taskName"
-                            placeholder="Enter name">
+                            v-bind:placeholder="$t('enter_name')">
                     </b-form-input>
                 </div>
             </b-form-group>
             <b-form-textarea
                     id="name"
                     v-model="taskData.taskDescription"
-                    placeholder="Description">
+                    v-bind:placeholder="$t('description')">
             </b-form-textarea>
-            <b-form-group id="startDate" label="Start date" label-for="dateInput">
-                <datepicker v-model="taskData.startDate" :format="dateFormat" placeholder="Select date"></datepicker>
+            <b-form-group id="startDate" v-bind:label="$t('start_date')" label-for="dateInput">
+                <datepicker v-model="taskData.startDate" :format="dateFormat" v-bind:placeholder="$t('select_date')"></datepicker>
             </b-form-group>
 
             <b-form-checkbox
                     id="devOps"
                     v-model="taskData.devOps"
                     name="devOps">
-                DevOps required
+                {{$t('dev_ops')}}
             </b-form-checkbox>
 
 
             <div v-if="isEdit">
                 <b-button v-b-modal.deleteTask variant="danger" id="deleteTask">
-                    Delete
+                   {{$t('delete')}}
                 </b-button>
 
                 <b-modal id="deleteTask"
                          ref="tsDelete"
                          @ok="deleteTask()"
                          variant="danger"
-                         title="Delete Task">
-                    Are you sure ,you want to delete this task?
+                         v-bind:title="$t('task_delete')">
+                    {{$t('task_delete_conf')}}
                 </b-modal>
 
                 <b-form-select v-model="taskData.storyPoints" :options="storyPoints" size="sm"
@@ -82,10 +82,10 @@
 
             <div id="saveDiv">
                 <b-button type="submit" variant="primary" id="submitButton">
-                    Save
+                    {{$t('save')}}
                 </b-button>
 
-                <b-button id="cancelButton" @click="cancel">Cancel</b-button>
+                <b-button id="cancelButton" @click="cancel">{{$t('cancel')}}</b-button>
 
             </div>
         </b-form>
