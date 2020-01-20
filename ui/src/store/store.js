@@ -40,6 +40,7 @@ export default new Vuex.Store({
     state: {
         errorMessage: '',
         langHeader: {'Accept-Language': 'en'},
+        lang:'en',
         formConfig: {
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -58,6 +59,7 @@ export default new Vuex.Store({
             state.errorMessage = msg;
         },
         setLangHeaders(state, lang) {
+            state.lang = lang;
             state.langHeader = {'Accept-Language': lang};
 
             state.formConfig.headers = {
@@ -84,6 +86,9 @@ export default new Vuex.Store({
         getMultipartHeaders: state => {
             return state.multiPartHeaders;
         },
+        getLang: state => {
+            return state.lang;
+        }
     },
     actions: {}
 

@@ -13,19 +13,24 @@ import vuexI18n from 'vuex-i18n';
 import trEnglish from './lang/en';
 import trGerman from './lang/de';
 import trRussian from './lang/ru';
+import trSpanish from './lang/es';
+import trFrench from './lang/fr';
+
 
 Vue.config.productionTip = false;
 
 Vue.use(BootstrapVue);
 Vue.use(ImageUploader);
 
-//TODO:fix on reload
+
 Vue.use(vuexI18n.plugin,store);
 
 Vue.i18n.add('en', trEnglish);
 Vue.i18n.add('de', trGerman);
 Vue.i18n.add('ru', trRussian);
-Vue.i18n.set('en');
+Vue.i18n.add('es', trSpanish);
+Vue.i18n.add('fr', trFrench);
+Vue.i18n.set(store.getters.getLang);
 
 /* eslint-disable no-new */
 new Vue({
