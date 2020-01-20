@@ -9,7 +9,7 @@
 
         <b-row>
             <div v-if="noSprints">
-                Current Project has no Sprints
+                {{$t('project_no_sp')}}
             </div>
             <div v-if="!noSprints">
 
@@ -27,8 +27,8 @@
                     </template>
                     <template v-slot:cell(sprintActions)="data" v-if="isEditable">
                         <b-button-group>
-                            <b-button variant="warning" @click="handleEdit(data.item.id)">Edit</b-button>
-                            <b-button variant="danger" @click="handleDelete(data.item.id)">Delete</b-button>
+                            <b-button variant="warning" @click="handleEdit(data.item.id)">{{$t('edit')}}</b-button>
+                            <b-button variant="danger" @click="handleDelete(data.item.id)">{{$t('delete')}}</b-button>
 
 
                         </b-button-group>
@@ -41,16 +41,16 @@
                 <b-modal id="editSprint"
                          ref="spEdit"
                          hide-footer
-                         title="Edit Sprint">
-                    <CreateEditSprint  :isEdit="true" :id="editSprint" @exit="hideEdit"></CreateEditSprint>
+                         v-bind:title="$t('sprint_edit')">
+                    <CreateEditSprint :isEdit="true" :id="editSprint" @exit="hideEdit"></CreateEditSprint>
                 </b-modal>
 
                 <b-modal id="deleteSprint"
                          ref="spDelete"
                          @ok="deleteSprint()"
                          variant="danger"
-                         title="Delete Sprints" >
-                    Are you sure ,you want to delete this sprint?
+                         v-bind:title="$t('sprint_delete')">
+                    {{$t('sprint_delete_conf')}}
                 </b-modal>
 
                 <b-pagination
@@ -65,7 +65,7 @@
         </b-row>
         <b-row v-if="showTasks">
             <div v-if="noTasks">
-                Selected Sprint has no tasks
+                {{$t('sprint_no_tasks')}}
             </div>
 
             <div v-if="!noTasks">
@@ -104,16 +104,16 @@
                 errorMessage: '',
                 errorOccurred: false,
                 spFields: [
-                    {key: 'sprintName', label: 'Sprint Name'},
-                    {key: 'sprintStartDate', label: 'Start Date'},
-                    {key: 'sprintEndDate', label: 'End Date'},
+                    {key: 'sprintName', label: this.$i18n.translate('sprint_name')},
+                    {key: 'sprintStartDate', label:  this.$i18n.translate('start_date')},
+                    {key: 'sprintEndDate', label: this.$i18n.translate('end_date')},
                     {key: 'sprintActions', label: ''},
                 ],
                 tsFields: [
-                    {key: 'taskName', label: 'Task Name'},
-                    {key: 'taskStartDate', label: 'Start Date'},
-                    {key: 'taskEndDate', label: 'End Date'},
-                    {key: 'taskState', label: 'Status'},
+                    {key: 'taskName', label: this.$i18n.translate('task_name')},
+                    {key: 'taskStartDate', label: this.$i18n.translate('start_date')},
+                    {key: 'taskEndDate', label: this.$i18n.translate('end_date')},
+                    {key: 'taskState', label: this.$i18n.translate('task_state')},
 
                 ],
                 spCurrentPage: 1,
@@ -126,8 +126,8 @@
                 noTasks: false,
                 showTasks: false,
                 isEditable: false,
-                delSprint:0,
-                editSprint:0,
+                delSprint: 0,
+                editSprint: 0,
                 spOffsets: [],
                 tsOffsets: []
             }
@@ -144,7 +144,7 @@
             this.isEditable = this.getEditable;
 
         },
-        created(){
+        created() {
             this.$store.watch(
                 (state, getters) => getters.getSprintsCount,
                 (newVal, oldVal) => {
@@ -163,13 +163,13 @@
             );
         },
         methods: {
-            cleanSpOffsets(){
-                if ((this.perPage * this.spOffsets.length)-this.totalSprints>=5){
+            cleanSpOffsets() {
+                if ((this.perPage * this.spOffsets.length) - this.totalSprints >= 5) {
                     this.spOffsets.pop();
                 }
             },
-            cleanTsOffsets(){
-                if ((this.perPage * this.tsOffsets.length)-this.totalTasks>=5){
+            cleanTsOffsets() {
+                if ((this.perPage * this.tsOffsets.length) - this.totalTasks >= 5) {
                     this.tsOffsets.pop();
                 }
             },
@@ -196,7 +196,7 @@
 
             },
             findTasks(offset) {
-                if (!this.tsOffsets.includes(offset)){
+                if (!this.tsOffsets.includes(offset)) {
                     this.$store.dispatch('findSprintTasks', {
                         sprintId: this.spId,
                         offset: offset,
@@ -242,7 +242,7 @@
 
             findSprints(offset) {
 
-                if (!this.spOffsets.includes(offset)){
+                if (!this.spOffsets.includes(offset)) {
                     this.$store.dispatch('findSprints', {
                         projectId: this.prId,
                         offset: offset,
@@ -304,12 +304,12 @@
                 this.errorMessage = '';
                 this.errorOccurred = false;
             },
-            handleDelete(spId){
-                this.delSprint=spId;
+            handleDelete(spId) {
+                this.delSprint = spId;
                 this.$refs['spDelete'].show();
             },
-            handleEdit(spId){
-                this.editSprint=spId;
+            handleEdit(spId) {
+                this.editSprint = spId;
                 this.$refs['spEdit'].show();
             },
 
@@ -323,7 +323,7 @@
                 this.errorMessage = '';
                 this.errorOccurred = false;
             },
-            hideEdit(){
+            hideEdit() {
                 this.$refs['spEdit'].hide();
             },
         },
@@ -343,7 +343,7 @@
             getSprintsCount() {
                 return this.$store.getters.getSprintsCount;
             },
-            getEditable(){
+            getEditable() {
                 return this.$store.getters.getProjectEditable;
             }
         }
