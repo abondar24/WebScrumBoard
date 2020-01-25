@@ -6,37 +6,37 @@ services:
     # Link to containers in another service
     links:
       - db
-     # - wsb-email
+      - wsb-email
     volumes:
       - $PWD
     networks:
       - wsbnet
 
-#
-#  srv:
-#    image: wsb/srv
-#
-#    ports:
-#      - 80:80
-#    links:
-#      - wsb-email
-#      - app
-#    networks:
-#      - wsbnet
+
+  srv:
+    image: wsb/srv
+
+    ports:
+      - 80:80
+    links:
+      - wsb-email
+      - app
+    networks:
+      - wsbnet
 
 
-#  wsb-email:
-#     image: juanluisbaptiste/postfix
-#     restart: always
-#
-#     environment:
-#       SMTP_PORT: 587
-#       SERVER_HOSTNAME: localhost
-#       SMTP_USERNAME: admin
-#       SMTP_PASSWORD: admin217
-#
-#     networks:
-#       - wsbnet
+  wsb-email:
+     image: juanluisbaptiste/postfix
+     restart: always
+
+     environment:
+       SMTP_PORT: 587
+       SERVER_HOSTNAME: localhost
+       SMTP_USERNAME: admin
+       SMTP_PASSWORD: admin217
+
+     networks:
+       - wsbnet
 
   db:
      image: postgres:9.6

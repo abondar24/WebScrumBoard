@@ -85,10 +85,7 @@
                                 repackage
                             </goal>
                         </goals>
-                        <configuration>
-                            <attach>false</attach>
-                            <mainClass>org.abondar.experimental.wsboard.base.WebScrumBoardApplication</mainClass>
-                        </configuration>
+
                     </execution>
                 </executions>
             </plugin>
@@ -109,6 +106,7 @@
             <id>docker</id>
             <properties>
                 <spring.profiles.active>docker</spring.profiles.active>
+                <fabric8.build.strategy>docker</fabric8.build.strategy>
             </properties>
             <build>
                 <plugins>
@@ -132,9 +130,21 @@
                             <images>
                                 <image>
                                     <name>wsb/app:latest</name>
+                                    <build>
+
+                                        <maintainer>Alex Bondar'abondar1992@gmail.com'</maintainer>
+                                        <from>fabric8/java-centos-openjdk11-jre</from>
+                                        <assembly>
+                                            <basedir>/deployments</basedir>
+                                            <descriptorRef>artifact</descriptorRef>
+                                        </assembly>
+
+                                    </build>
                                 </image>
                             </images>
                         </configuration>
+
+
                     </plugin>
                 </plugins>
             </build>
