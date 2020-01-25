@@ -122,7 +122,7 @@
                                 </includes>
                                 <config>
                                     <spring-boot>
-                                        <alias>wsb</alias>
+                                        <alias>app</alias>
                                     </spring-boot>
                                 </config>
                             </generator>
