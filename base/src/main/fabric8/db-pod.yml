@@ -1,0 +1,11 @@
+kind: Pod
+metadata:
+  name: db
+spec:
+  containers:
+    - name: db
+      image: postgres:9.6
+    -env:
+     - POSTGRES_USER: admin
+     - POSTGRES_PASSWORD: admin217\
+     - POSTGRES_DB: wsboard

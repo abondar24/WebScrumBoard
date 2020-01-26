@@ -1,0 +1,7 @@
+kind: Pod
+metadata:
+  name: srv
+spec:
+  containers:
+    - name: srv
+      image: wsb/srv

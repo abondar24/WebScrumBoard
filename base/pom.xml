@@ -150,5 +150,64 @@
             </build>
 
         </profile>
+        <profile>
+            <id>kube</id>
+            <properties>
+                <spring.profiles.active>docker</spring.profiles.active>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>io.fabric8</groupId>
+                        <artifactId>fabric8-maven-plugin</artifactId>
+                        <version>4.3.1</version>
+                        <configuration>
+                            <verbose>true</verbose>
+                            <generator>
+                                <includes>
+                                    <include>spring-boot</include>
+                                </includes>
+                                <config>
+                                    <spring-boot>
+                                        <alias>app</alias>
+                                    </spring-boot>
+                                </config>
+                            </generator>
+
+                            <images>
+                                <image>
+                                    <name>wsb/app:latest</name>
+                                    <build>
+
+                                        <maintainer>Alex Bondar'abondar1992@gmail.com'</maintainer>
+                                        <from>fabric8/java-centos-openjdk11-jre</from>
+                                        <assembly>
+                                            <basedir>/deployments</basedir>
+                                            <descriptorRef>artifact</descriptorRef>
+                                        </assembly>
+
+                                    </build>
+
+
+                                </image>
+                            </images>
+
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>run</id>
+                                <goals>
+                                    <goal>resource</goal>
+                                    <goal>build</goal>
+                                    <goal>helm</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+
+                    </plugin>
+                </plugins>
+            </build>
+
+        </profile>
     </profiles>
 </project>

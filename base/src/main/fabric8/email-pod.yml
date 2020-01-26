@@ -1,0 +1,12 @@
+kind: Pod
+metadata:
+  name: wsb-email
+spec:
+  containers:
+    - name: wsb-email
+      image: juanluisbaptiste/postfix
+    -env:
+       - SMTP_PORT: 587
+       - SERVER_HOSTNAME: localhost
+       - SMTP_USERNAME: admin
+       - SMTP_PASSWORD: admin217
