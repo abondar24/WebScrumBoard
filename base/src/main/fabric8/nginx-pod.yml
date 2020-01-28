@@ -5,3 +5,5 @@ spec:
   containers:
     - name: srv
       image: wsb/srv
+      ports:
+        - containerPort: 80

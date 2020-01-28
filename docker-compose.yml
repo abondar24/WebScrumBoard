@@ -29,6 +29,10 @@ services:
      image: juanluisbaptiste/postfix
      restart: always
 
+     ports:
+       - 25:25
+       - 587:587
+
      environment:
        SMTP_PORT: 587
        SERVER_HOSTNAME: localhost
