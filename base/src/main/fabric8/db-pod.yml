@@ -6,6 +6,11 @@ spec:
     - name: db
       image: postgres:9.6
       env:
-        - POSTGRES_USER: admin
-        - POSTGRES_PASSWORD: admin217
-        - POSTGRES_DB: wsboard
+        - name: POSTGRES_USER
+          value: admin
+
+        - name: POSTGRES_PASSWORD
+          value: admin217
+
+        - name: POSTGRES_DB
+          value: wsboard

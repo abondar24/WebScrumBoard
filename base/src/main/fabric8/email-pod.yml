@@ -7,7 +7,18 @@ spec:
       image: juanluisbaptiste/postfix
 
       env:
-        - SMTP_PORT: 587
-        - SERVER_HOSTNAME: localhost
-        - SMTP_USERNAME: admin
-        - SMTP_PASSWORD: admin217
+        - name:  SMTP_PORT
+          value: 587
+
+        - name:  SERVER_HOSTNAME
+          value: localhost
+
+        - name: SMTP_SERVER
+          value : smtp.gmail.com
+
+        - name:  SMTP_USERNAME
+          value: admin
+
+        - name:  SMTP_PASSWORD
+          value: admin217
+

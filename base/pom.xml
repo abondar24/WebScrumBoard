@@ -129,7 +129,7 @@
 
                             <images>
                                 <image>
-                                    <name>wsb/app:latest</name>
+                                    <name>abondar/wsb-app:latest</name>
                                     <build>
 
                                         <maintainer>Alex Bondar'abondar1992@gmail.com'</maintainer>
@@ -176,7 +176,7 @@
 
                             <images>
                                 <image>
-                                    <name>wsb/app:latest</name>
+                                    <name>abondar/wsb-app:latest</name>
                                     <build>
 
                                         <maintainer>Alex Bondar'abondar1992@gmail.com'</maintainer>
@@ -199,6 +199,7 @@
                                 <goals>
                                     <goal>resource</goal>
                                     <goal>build</goal>
+                                    <goal>push</goal>
                                     <goal>helm</goal>
                                 </goals>
                             </execution>

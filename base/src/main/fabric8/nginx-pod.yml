@@ -4,6 +4,6 @@ metadata:
 spec:
   containers:
     - name: srv
-      image: wsb/srv
+      image: abondar/wsb-srv
       ports:
         - containerPort: 80

@@ -1,8 +1,7 @@
 version: '3'
 services:
   app:
-    image:
-      "wsb/app"
+    image: abondar/wsb-app
     # Link to containers in another service
     links:
       - db
@@ -14,7 +13,7 @@ services:
 
 
   srv:
-    image: wsb/srv
+    image: abondar/wsb-srv
 
     ports:
       - 80:80
@@ -36,6 +35,7 @@ services:
      environment:
        SMTP_PORT: 587
        SERVER_HOSTNAME: localhost
+       SMTP_SERVER: smtp.gmail.com
        SMTP_USERNAME: admin
        SMTP_PASSWORD: admin217
 
