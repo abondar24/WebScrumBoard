@@ -167,11 +167,6 @@
                                 <includes>
                                     <include>spring-boot</include>
                                 </includes>
-                                <config>
-                                    <spring-boot>
-                                        <alias>app</alias>
-                                    </spring-boot>
-                                </config>
                             </generator>
 
                             <images>
@@ -192,6 +187,15 @@
                                 </image>
                             </images>
 
+                            <resources>
+
+                                <services>
+                                    <service>
+                                        <name>wsb-app</name>
+                                    </service>
+                                </services>
+                            </resources>
+
                         </configuration>
                         <executions>
                             <execution>
@@ -199,7 +203,6 @@
                                 <goals>
                                     <goal>resource</goal>
                                     <goal>build</goal>
-                                    <goal>push</goal>
                                     <goal>helm</goal>
                                 </goals>
                             </execution>
