@@ -6,15 +6,21 @@ spec:
     - name: wsb-email
       image: juanluisbaptiste/postfix
 
+      ports:
+
+        - name: smtp
+          containerPort: 25
+
+
       env:
         - name:  SMTP_PORT
-          value: 587
+          value: 25
 
         - name:  SERVER_HOSTNAME
-          value: localhost
+          value: wsb-email
 
         - name: SMTP_SERVER
-          value : smtp.gmail.com
+          value: smtp.gmail.com
 
         - name:  SMTP_USERNAME
           value: admin

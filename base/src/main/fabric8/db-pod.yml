@@ -5,6 +5,9 @@ spec:
   containers:
     - name: db
       image: postgres:9.6
+      ports:
+        - name: http
+          containerPort: 5432
       env:
         - name: POSTGRES_USER
           value: admin

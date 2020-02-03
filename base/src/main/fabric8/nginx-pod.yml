@@ -7,3 +7,13 @@ spec:
       image: abondar/wsb-srv
       ports:
         - containerPort: 80
+  dnsPolicy: ClusterFirstWithHostNet
+  dnsConfig:
+    nameservers:
+      - 80.80.80.80
+    searches:
+      - scrum-board.tk
+    options:
+      - name: ndots
+        value: "2"
+      - name: edns0

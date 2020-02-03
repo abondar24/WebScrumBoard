@@ -8,7 +8,3 @@ spec:
       port: 25
       targetPort: 25
 
-    - name: external
-      protocol: TCP
-      port: 587
-      targetPort: 587
