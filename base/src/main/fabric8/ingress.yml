@@ -1,0 +1,13 @@
+kind: Ingress
+metadata:
+  name: wsb-ingress
+
+spec:
+  rules:
+    - host: srcum-board.tk
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: wsb-app
+              servicePort: 8024
