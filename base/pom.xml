@@ -122,7 +122,7 @@
                                 </includes>
                                 <config>
                                     <spring-boot>
-                                        <alias>app</alias>
+                                        <alias>wsb-app</alias>
                                     </spring-boot>
                                 </config>
                             </generator>
@@ -131,20 +131,16 @@
                                 <image>
                                     <name>abondar/wsb-app:latest</name>
                                     <build>
-
                                         <maintainer>Alex Bondar'abondar1992@gmail.com'</maintainer>
                                         <from>fabric8/java-centos-openjdk11-jre</from>
                                         <assembly>
                                             <basedir>/deployments</basedir>
                                             <descriptorRef>artifact</descriptorRef>
                                         </assembly>
-
                                     </build>
                                 </image>
                             </images>
                         </configuration>
-
-
                     </plugin>
                 </plugins>
             </build>
@@ -167,23 +163,24 @@
                                 <includes>
                                     <include>spring-boot</include>
                                 </includes>
+                                <config>
+                                    <spring-boot>
+                                        <alias>wsb-app</alias>
+                                    </spring-boot>
+                                </config>
                             </generator>
-
                             <images>
                                 <image>
                                     <name>abondar/wsb-app:latest</name>
+                                    <alias>wsb-app</alias>
                                     <build>
-
                                         <maintainer>Alex Bondar'abondar1992@gmail.com'</maintainer>
                                         <from>fabric8/java-centos-openjdk11-jre</from>
                                         <assembly>
                                             <basedir>/deployments</basedir>
                                             <descriptorRef>artifact</descriptorRef>
                                         </assembly>
-
                                     </build>
-
-
                                 </image>
                             </images>
 
@@ -203,11 +200,9 @@
                                 <goals>
                                     <goal>resource</goal>
                                     <goal>build</goal>
-                                    <goal>helm</goal>
                                 </goals>
                             </execution>
                         </executions>
-
                     </plugin>
                 </plugins>
             </build>

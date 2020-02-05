@@ -1,0 +1,8 @@
+kind: Service
+metadata:
+  name: wsb-app
+spec:
+  ports:
+    - protocol: TCP
+      port: 8024
+      targetPort: 8024
