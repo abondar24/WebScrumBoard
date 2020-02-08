@@ -55,6 +55,10 @@ java -jar base-<ver>.jar
 ### Docker-Compose
 
 ```yaml
+mvn clean install
+ 
+cd base/
+
 mvn clean install -Pdocker
 
 docker-compose up
@@ -74,6 +78,10 @@ docker compose build . -t <image tag>
 The app was tested in with microk8s on ubuntu.
 
 ```yaml
+mvn clean install
+ 
+cd base/
+
 mvn clean install -DskipTests -Pkube  fabric8:deploy
 
 ```
