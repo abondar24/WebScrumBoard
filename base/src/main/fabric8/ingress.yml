@@ -1,15 +1,13 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: wsb-ingress
-  annotations:
-    nginx.org/rewrites: /
+  name: base
 spec:
   rules:
-    - host: srcum-board.tk
-      http:
+    - #for nginxinc controller host should be set
+    - http:
         paths:
-          - path: /board
+          - path: /
             backend:
-              serviceName: wsb-app
-              servicePort: 80
+              serviceName: base
+              servicePort: 8024

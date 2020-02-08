@@ -1,8 +1,10 @@
 kind: Service
 metadata:
-  name: wsb-app
+  name: base
 spec:
   ports:
     - protocol: TCP
-      port: 80
+      port: 8024
       targetPort: 8024
+  selector:
+    app: base
