@@ -9,7 +9,7 @@ spec:
     - host: srcum-board.tk
       http:
         paths:
-          - path: /
+          - path: /board
             backend:
               serviceName: wsb-app
               servicePort: 80
