@@ -4,7 +4,7 @@ metadata:
   name: base
 spec:
   rules:
-    - #for nginxinc controller host should be set
+     #for nginxinc controller host should be set
     - http:
         paths:
           - path: /
