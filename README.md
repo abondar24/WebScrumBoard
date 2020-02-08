@@ -98,3 +98,6 @@ and save to /.kube/config
 
 Note 3: In microk8s used default nginx-ingress controler in cloud 
 nginxinx/kubernetes-ingress controller is suggested for usage. In ingress.yaml host must be set.
+
+
+PS: frontend is very bad and contains some bugs
