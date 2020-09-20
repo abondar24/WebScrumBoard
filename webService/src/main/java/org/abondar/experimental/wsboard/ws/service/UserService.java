@@ -16,6 +16,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
@@ -34,7 +35,6 @@ public interface UserService {
     @POST
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/create")
     @ApiOperation(
             value = "Create user",
             notes = "Creates a new user based on form data",
@@ -53,10 +53,10 @@ public interface UserService {
                         @FormParam("lastName") @ApiParam(required = true) String lastName,
                         @FormParam("roles") @ApiParam(required = true) String roles);
 
-    @POST
+    @PUT
+    @Path("/{id}")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/update")
     @ApiOperation(
             value = "Update user",
             notes = "Update user first,last name,email and roles",
@@ -67,16 +67,16 @@ public interface UserService {
             @ApiResponse(code = 204, message = ""),
             @ApiResponse(code = 404, message = "User with id not exists")
     })
-    Response updateUser(@FormParam("id") @ApiParam(required = true) long id,
+    Response updateUser(@PathParam("id") @ApiParam(required = true) long id,
                         @FormParam("firstName") @ApiParam(required = true) String firstName,
                         @FormParam("lastName") @ApiParam(required = true) String lastName,
                         @FormParam("email") @ApiParam(required = true) String email,
                         @FormParam("roles") @ApiParam(required = true) String roles);
 
-    @POST
+    @PUT
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/update_avatar")
+    @Path("/{id}/avatar")
     @ApiOperation(
             value = "Update avatar",
             notes = "Update user avatar",
@@ -88,12 +88,12 @@ public interface UserService {
             @ApiResponse(code = 404, message = "User with id not exists"),
             @ApiResponse(code = 500, message = "Avatar is empty")
     })
-    Response updateAvatar(@QueryParam("id") @ApiParam(required = true) long id, MultipartBody avatar);
+    Response updateAvatar(@PathParam("id") @ApiParam(required = true) long id, MultipartBody avatar);
 
-    @POST
+    @PUT
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/update_login")
+    @Path("/{id}/login")
     @ApiOperation(
             value = "Update login",
             notes = "Update user login",
@@ -106,12 +106,12 @@ public interface UserService {
             @ApiResponse(code = 501, message = "User login is empty")
     })
     Response updateLogin(@FormParam("login") @ApiParam(required = true) String login,
-                         @FormParam("id") @ApiParam(required = true) long id);
+                         @PathParam("id") @ApiParam(required = true) long id);
 
-    @POST
+    @PUT
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/update_password")
+    @Path("/{id}/password")
     @ApiOperation(
             value = "Update password",
             notes = "Update user password",
@@ -124,12 +124,12 @@ public interface UserService {
     })
     Response updatePassword(@FormParam("oldPassword") @ApiParam(required = true) String oldPassword,
                             @FormParam("newPassword") @ApiParam(required = true) String newPassword,
-                            @FormParam("id") @ApiParam(required = true) long id);
+                            @PathParam("id") @ApiParam(required = true) long id);
 
 
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/delete")
+    @Path("/{id}")
     @ApiOperation(
             value = "Delete",
             notes = "Delete user",
@@ -139,7 +139,7 @@ public interface UserService {
             @ApiResponse(code = 404, message = "User with id not exists"),
             @ApiResponse(code = 501, message = "User is project owner")
     })
-    Response deleteUser(@QueryParam("id") @ApiParam(required = true) long id);
+    Response deleteUser(@PathParam("id") @ApiParam(required = true) long id);
 
     @POST
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
@@ -160,7 +160,7 @@ public interface UserService {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/logout")
+    @Path("/{id}/logout")
     @ApiOperation(
             value = "Logout",
             notes = "Log out user",
@@ -169,11 +169,11 @@ public interface UserService {
             @ApiResponse(code = 200, message = "User logged out"),
             @ApiResponse(code = 404, message = "User with id not exists")
     })
-    Response logoutUser(@QueryParam("id") @ApiParam(required = true) long id);
+    Response logoutUser(@PathParam("id") @ApiParam(required = true) long id);
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/find")
+    @Path("/{login}")
     @ApiOperation(
             value = "Find",
             notes = "Find user by login",
@@ -182,11 +182,10 @@ public interface UserService {
             @ApiResponse(code = 200, message = "User found"),
             @ApiResponse(code = 404, message = "User not found")
     })
-    Response findUserByLogin(@QueryParam("login") @ApiParam(required = true) String login);
+    Response findUserByLogin(@PathParam("login") @ApiParam(required = true) String login);
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/find_by_ids")
     @ApiOperation(
             value = "Find by IDs",
             notes = "Find users by ids",
@@ -199,7 +198,7 @@ public interface UserService {
 
 
     @PUT
-    @Path("/reset_pwd")
+    @Path("/{id}/reset_pwd")
     @ApiOperation(
             value = "Reset password",
             notes = "Reset user password to value 'reset'. " +
@@ -210,12 +209,12 @@ public interface UserService {
             @ApiResponse(code = 404, message = "User not found"),
             @ApiResponse(code = 503, message = "Password hash not created")
     })
-    Response resetPassword(@QueryParam("id") @ApiParam(required = true) long id);
+    Response resetPassword(@PathParam("id") @ApiParam(required = true) long id);
 
 
-    @GET
+    @POST
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/enter_code")
+    @Path("/{userId}/code")
     @PermitAll
     @ApiOperation(
             value = "Update code",
@@ -226,7 +225,7 @@ public interface UserService {
             @ApiResponse(code = 400, message = "Wrong code entered"),
             @ApiResponse(code = 404, message = "User or code not found"),
     })
-    Response enterCode(@QueryParam("userId") @ApiParam(required = true) long userId,
-                       @QueryParam("code") @ApiParam(required = true) long code);
+    Response enterCode(@PathParam("userId") @ApiParam(required = true) long userId,
+                       @FormParam("code") @ApiParam(required = true) String code);
 
 }

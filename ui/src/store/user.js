@@ -62,7 +62,7 @@ export default {
             form.append('lastName', user.lastName);
             form.append('roles', user.roles);
 
-            return Axios.post(userUrl + '/create', form, getters.getFormConfig)
+            return Axios.post(userUrl, form, getters.getFormConfig)
                 .then(
                     (response) => {
                         commit('setUser', response.data);
@@ -77,9 +77,8 @@ export default {
 
         },
         verifyCode({commit, getters}, code) {
-            return Axios.get(userUrl + '/enter_code', {
+            return Axios.get(userUrl +'/'+getters.getUserId +'/code', {
                 params: {
-                    userId: getters.getUserId,
                     code: code
                 },
                 headers: getters.getLangHeader
@@ -93,9 +92,8 @@ export default {
                     });
         },
         getUserByLogin({commit, getters}, params) {
-            return Axios.get(userUrl + '/find', {
+            return Axios.get(userUrl + '/'+params.login, {
                 params: {
-                    login: params.login,
                     headers: getters.getLangHeader
                 }
             }).then(
@@ -113,7 +111,7 @@ export default {
                 });
         },
         getUsersByIds({commit, getters}, ids) {
-            return getters.authenticatedAxios.get(userUrl + '/find_by_ids', {
+            return getters.authenticatedAxios.get(userUrl , {
                 params: {
                     id: ids
                 },
@@ -131,10 +129,7 @@ export default {
                 });
         },
         resetPassword({commit, getters}) {
-            return Axios.put(userUrl + '/reset_pwd', {
-                params: {
-                    id: getters.getUserId
-                },
+            return Axios.put(userUrl +'/'+ getters.getUserId+'/reset_pwd', {
                 headers: getters.getLangHeader,
             }).then(
                 (response) => {
@@ -148,9 +143,8 @@ export default {
             const form = new URLSearchParams();
             form.append('oldPassword', passwords.oldPassword);
             form.append('newPassword', passwords.newPassword);
-            form.append('id', getters.getUserId);
 
-            return Axios.post(userUrl + '/update_password', form, getters.getFormConfig).then(
+            return Axios.put(userUrl +'/'+getters.getUserId+ '/password', form, getters.getFormConfig).then(
                 (response) => {
                     commit('setErrorMessage', '');
                 },
@@ -161,15 +155,12 @@ export default {
         updateAvatar({commit, getters}, avatar) {
             const config = {
                 headers: getters.getMultipartHeaders,
-                params: {
-                    id: getters.getUserId
-                },
             };
 
             const body = new FormData();
             body.append('file', avatar);
 
-            return getters.authenticatedAxios.post(userUrl + '/update_avatar', body, config).then(
+            return getters.authenticatedAxios.put(userUrl +'/'+getters.getUserId +'/avatar', body, config).then(
                 (response) => {
                     commit('setErrorMessage', '');
                     commit('setAvatar', avatar);
@@ -181,9 +172,8 @@ export default {
         updateLogin({commit, getters}, login) {
             const form = new URLSearchParams();
             form.append('login', login);
-            form.append('id', getters.getUserId);
 
-            return getters.authenticatedAxios.post(userUrl + '/update_login', form, getters.getFormConfig).then(
+            return getters.authenticatedAxios.put(userUrl +'/'+getters.getUserId +'/avatar', form, getters.getFormConfig).then(
                 (response) => {
                     if (response.code === 302) {
                         commit('setErrorMessage', response.data);
@@ -199,14 +189,13 @@ export default {
         },
         updateUser({commit, getters}, updUser) {
             const form = new URLSearchParams();
-            form.append('id', getters.getUserId);
             form.append('firstName', updUser.firstName);
             form.append('lastName', updUser.lastName);
             form.append('email', updUser.email);
             form.append('roles', updUser.roles);
 
 
-            return getters.authenticatedAxios.post(userUrl + '/update', form, getters.getFormConfig).then(
+            return getters.authenticatedAxios.put(userUrl + '/'+getters.getUserId , form, getters.getFormConfig).then(
                 (response) => {
                     commit('setErrorMessage', '');
                     commit('setUser', response.data);
@@ -216,10 +205,7 @@ export default {
                 });
         },
         deleteUser({commit, dispatch, getters}) {
-            return getters.authenticatedAxios.delete(userUrl + '/delete', {
-                params: {
-                    id: getters.getUserId,
-                },
+            return getters.authenticatedAxios.delete(userUrl + '/'+getters.getUserId, {
                 headers: getters.getLangHeader
             }).then(
                 (response) => {

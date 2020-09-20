@@ -60,7 +60,7 @@ public class UserServiceTest {
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
 
-        client.path("/user/create").accept(MediaType.APPLICATION_JSON);
+        client.path("/user").accept(MediaType.APPLICATION_JSON);
 
         var form = new Form();
         form.param("login", login);
@@ -85,7 +85,7 @@ public class UserServiceTest {
     public void createUserLoginExistsTest() {
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
-        client.path("/user/create").accept(MediaType.APPLICATION_JSON);
+        client.path("/user").accept(MediaType.APPLICATION_JSON);
 
         var form = new Form();
         form.param("login", "testLogin");
@@ -109,7 +109,7 @@ public class UserServiceTest {
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
 
-        client.path("/user/create").accept(MediaType.APPLICATION_JSON);
+        client.path("/user").accept(MediaType.APPLICATION_JSON);
 
         var form = new Form();
         form.param("login", login);
@@ -130,7 +130,7 @@ public class UserServiceTest {
     public void createUserNoRolesTest() {
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
-        client.path("/user/create").accept(MediaType.APPLICATION_JSON);
+        client.path("/user").accept(MediaType.APPLICATION_JSON);
 
         var form = new Form();
         form.param("login", login);
@@ -156,13 +156,13 @@ public class UserServiceTest {
         var usr = createUser();
 
         var form = new Form();
-        form.param("id", String.valueOf(usr.getId()));
         form.param("email", "newEmail");
 
-        client.path("/user/update")
+
+        client.path("/user/{id}",usr.getId())
                 .accept(MediaType.APPLICATION_JSON);
 
-        var resp = client.post(form);
+        var resp = client.put(form);
         assertEquals(200, resp.getStatus());
 
         usr = resp.readEntity(User.class);
@@ -173,16 +173,15 @@ public class UserServiceTest {
     public void updateUserNotFoundTest() {
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
-        createUser();
+        var usr = createUser();
 
         var form = new Form();
-        form.param("id", "1024");
         form.param("email", "newEmail");
 
-        client.path("/user/update")
+        client.path("/user/7")
                 .accept(MediaType.APPLICATION_JSON);
 
-        var resp = client.post(form);
+        var resp = client.put(form);
         assertEquals(404, resp.getStatus());
 
         var msg = resp.readEntity(String.class);
@@ -196,13 +195,12 @@ public class UserServiceTest {
         var usr = createUser();
 
         var form = new Form();
-        form.param("id", String.valueOf(usr.getId()));
         form.param("roles", "newEmail");
 
-        client.path("/user/update")
+        client.path("/user/{id}",usr.getId())
                 .accept(MediaType.APPLICATION_JSON);
 
-        var resp = client.post(form);
+        var resp = client.put(form);
         assertEquals(204, resp.getStatus());
 
         var msg = resp.readEntity(String.class);
@@ -218,7 +216,7 @@ public class UserServiceTest {
 
         var avatar = "avatar".getBytes();
 
-        client.path("/user/update_avatar").query("id", usr.getId())
+        client.path("/user/{id}/avatar",usr.getId())
                 .type(MediaType.MULTIPART_FORM_DATA)
                 .accept(MediaType.APPLICATION_JSON);
 
@@ -226,7 +224,7 @@ public class UserServiceTest {
         var attrs = new ArrayList<Attachment>();
         attrs.add(new Attachment("file",avatar));
         var body = new MultipartBody(attrs);
-        var resp = client.post(body);
+        var resp = client.put(body);
         assertEquals(200, resp.getStatus());
 
         usr = resp.readEntity(User.class);
@@ -241,14 +239,14 @@ public class UserServiceTest {
 
         var avatar = "avatar".getBytes();
 
-        client.path("/user/update_avatar").query("id", "1024")
+        client.path("/user/1024/avatar")
                 .type(MediaType.MULTIPART_FORM_DATA)
                 .accept(MediaType.APPLICATION_JSON);
 
         var attrs = new ArrayList<Attachment>();
         attrs.add(new Attachment("file",avatar));
         var body = new MultipartBody(attrs);
-        var resp = client.post(body);
+        var resp = client.put(body);
         assertEquals(404, resp.getStatus());
 
         var msg = resp.readEntity(String.class);
@@ -263,11 +261,11 @@ public class UserServiceTest {
 
         var avatar = "".getBytes();
 
-        client.path("/user/update_avatar").query("id", usr.getId())
+        client.path("/user/{id}/avatar",usr.getId())
                 .type(MediaType.MULTIPART_FORM_DATA)
                 .accept(MediaType.APPLICATION_JSON);
 
-        var resp = client.post(avatar);
+        var resp = client.put(avatar);
         assertEquals(500, resp.getStatus());
 
     }
@@ -279,13 +277,12 @@ public class UserServiceTest {
         var usr = createUser();
 
         var form = new Form();
-        form.param("id", String.valueOf(usr.getId()));
         form.param("login", "newLogin");
 
 
-        client.path("/user/update_login").accept(MediaType.APPLICATION_JSON);
+        client.path("/user/{id}/login",usr.getId()).accept(MediaType.APPLICATION_JSON);
 
-        var resp = client.post(form);
+        var resp = client.put(form);
         assertEquals(200, resp.getStatus());
 
         usr = resp.readEntity(User.class);
@@ -300,13 +297,12 @@ public class UserServiceTest {
         createUser();
 
         var form = new Form();
-        form.param("id", "1024");
         form.param("login", "newLogin");
 
 
-        client.path("/user/update_login").accept(MediaType.APPLICATION_JSON);
+        client.path("/user/1024/login").accept(MediaType.APPLICATION_JSON);
 
-        var resp = client.post(form);
+        var resp = client.put(form);
         assertEquals(404, resp.getStatus());
 
         var msg = resp.readEntity(String.class);
@@ -320,13 +316,12 @@ public class UserServiceTest {
         var usr = createUser();
 
         var form = new Form();
-        form.param("id", String.valueOf(usr.getId()));
         form.param("login", usr.getLogin());
 
 
-        client.path("/user/update_login").accept(MediaType.APPLICATION_JSON);
+        client.path("/user/{id}/login",usr.getId()).accept(MediaType.APPLICATION_JSON);
 
-        var resp = client.post(form);
+        var resp = client.put(form);
         assertEquals(302, resp.getStatus());
 
         var msg = resp.readEntity(String.class);
@@ -341,14 +336,13 @@ public class UserServiceTest {
 
         var oldHash = usr.getPassword();
         var form = new Form();
-        form.param("id", String.valueOf(usr.getId()));
         form.param("oldPassword", password);
         form.param("newPassword", "newPwd");
 
 
-        client.path("/user/update_password").accept(MediaType.APPLICATION_JSON);
+        client.path("/user/{id}/password",usr.getId()).accept(MediaType.APPLICATION_JSON);
 
-        var resp = client.post(form);
+        var resp = client.put(form);
         assertEquals(200, resp.getStatus());
 
         usr = resp.readEntity(User.class);
@@ -362,14 +356,13 @@ public class UserServiceTest {
         createUser();
 
         var form = new Form();
-        form.param("id", "1024");
         form.param("oldPassword", password);
         form.param("newPassword", "newPwd");
 
 
-        client.path("/user/update_password").accept(MediaType.APPLICATION_JSON);
+        client.path("/user/1024/password").accept(MediaType.APPLICATION_JSON);
 
-        var resp = client.post(form);
+        var resp = client.put(form);
         assertEquals(404, resp.getStatus());
 
         var msg = resp.readEntity(String.class);
@@ -384,13 +377,12 @@ public class UserServiceTest {
         var usr = createUser();
 
         var form = new Form();
-        form.param("id", String.valueOf(usr.getId()));
         form.param("oldPassword", "blabla");
         form.param("newPassword", "newPwd");
 
-        client.path("/user/update_password").accept(MediaType.APPLICATION_JSON);
+        client.path("/user/{id}/password",usr.getId()).accept(MediaType.APPLICATION_JSON);
 
-        var resp = client.post(form);
+        var resp = client.put(form);
         assertEquals(401, resp.getStatus());
 
     }
@@ -400,7 +392,7 @@ public class UserServiceTest {
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
         var usr = createUser();
 
-        client.path("/user/find").accept(MediaType.APPLICATION_JSON).query("login", usr.getLogin());
+        client.path("/user/{login}",usr.getLogin()).accept(MediaType.APPLICATION_JSON);
 
         var resp = client.get();
         assertEquals(200, resp.getStatus());
@@ -415,7 +407,7 @@ public class UserServiceTest {
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
         createUser();
 
-        client.path("/user/find").accept(MediaType.APPLICATION_JSON).query("login", "test");
+        client.path("/user/test").accept(MediaType.APPLICATION_JSON);
 
         var resp = client.get();
         assertEquals(404, resp.getStatus());
@@ -429,7 +421,7 @@ public class UserServiceTest {
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
         var usr = createUser();
 
-        client.path("/user/find_by_ids").accept(MediaType.APPLICATION_JSON)
+        client.path("/user").accept(MediaType.APPLICATION_JSON)
                 .query("id", usr.getId())
                 .query("id", 1L)
                 .query("id", 2L);
@@ -446,7 +438,7 @@ public class UserServiceTest {
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
         createUser();
 
-        client.path("/user/find_by_ids").accept(MediaType.APPLICATION_JSON)
+        client.path("/user").accept(MediaType.APPLICATION_JSON)
                 .query("id", 1L)
                 .query("id", 2L);
 
@@ -459,11 +451,9 @@ public class UserServiceTest {
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
         var usr = createUser();
 
-        client.path("/user/reset_pwd").accept(MediaType.APPLICATION_JSON).query("id", usr.getId());
-
+        client.path("/user/{id}/reset_pwd",usr.getId()).accept(MediaType.APPLICATION_JSON);
         var resp = client.put(null);
         assertEquals(200, resp.getStatus());
-
 
     }
 
@@ -472,7 +462,7 @@ public class UserServiceTest {
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
         createUser();
 
-        client.path("/user/reset_pwd").accept(MediaType.APPLICATION_JSON).query("id", 7);
+        client.path("/user/7/reset_pwd").accept(MediaType.APPLICATION_JSON);
 
         var resp = client.put(null);
         assertEquals(404, resp.getStatus());
@@ -487,7 +477,7 @@ public class UserServiceTest {
 
         var usr = createUser();
 
-        client.path("/user/delete").query("id", usr.getId()).accept(MediaType.APPLICATION_JSON);
+        client.path("/user/{id}",usr.getId()).accept(MediaType.APPLICATION_JSON);
 
         var resp = client.delete();
         assertEquals(200, resp.getStatus());
@@ -504,7 +494,7 @@ public class UserServiceTest {
 
         createUser();
 
-        client.path("/user/delete").query("id", 1024).accept(MediaType.APPLICATION_JSON);
+        client.path("/user/1024").accept(MediaType.APPLICATION_JSON);
 
         var resp = client.delete();
         assertEquals(404, resp.getStatus());
@@ -521,7 +511,7 @@ public class UserServiceTest {
         var usr = createUser();
         createTestContributor(usr.getId());
 
-        client.path("/user/delete").query("id", usr.getId()).accept(MediaType.APPLICATION_JSON);
+        client.path("/user/{id}",usr.getId()).accept(MediaType.APPLICATION_JSON);
 
         var resp = client.delete();
         assertEquals(501, resp.getStatus());
@@ -602,7 +592,7 @@ public class UserServiceTest {
 
         var usr = createUser();
 
-        client.path("/user/logout").query("id", usr.getId()).accept(MediaType.APPLICATION_JSON);
+        client.path("/user/{id}/logout",usr.getId()).accept(MediaType.APPLICATION_JSON);
 
         var resp = client.get();
         assertEquals(200, resp.getStatus());
@@ -618,7 +608,7 @@ public class UserServiceTest {
 
         createUser();
 
-        client.path("/user/logout").query("id", 1024).accept(MediaType.APPLICATION_JSON);
+        client.path("/user/1024/logout").accept(MediaType.APPLICATION_JSON);
 
         var resp = client.get();
         assertEquals(404, resp.getStatus());
@@ -634,12 +624,13 @@ public class UserServiceTest {
 
         var usr = createUser();
 
-        client.path("/user/enter_code")
-                .query("userId", usr.getId())
-                .query("code", 12345)
+        var form = new Form();
+        form.param("code", "12345");
+
+        client.path("/user/{userId}/code",usr.getId())
                 .accept(MediaType.APPLICATION_JSON);
 
-        var resp = client.get();
+        var resp = client.post(form);
         assertEquals(200, resp.getStatus());
 
 
@@ -651,9 +642,14 @@ public class UserServiceTest {
 
         createUser();
 
-        client.path("/user/enter_code").query("userId", 1024).accept(MediaType.APPLICATION_JSON);
+        var form = new Form();
+        form.param("code", "12345");
 
-        var resp = client.get();
+        client.path("/user/7/code")
+                .accept(MediaType.APPLICATION_JSON);
+
+
+        var resp = client.post(form);
         assertEquals(404, resp.getStatus());
 
         var msg = resp.readEntity(String.class);
@@ -667,12 +663,14 @@ public class UserServiceTest {
 
         var usr = createUser();
 
-        client.path("/user/enter_code")
-                .query("userId", usr.getId())
-                .query("code", 123)
+        var form = new Form();
+        form.param("code", "123");
+
+        client.path("/user/{userId}/code",usr.getId())
                 .accept(MediaType.APPLICATION_JSON);
 
-        var resp = client.get();
+
+        var resp = client.post(form);
         assertEquals(400, resp.getStatus());
 
         var msg = resp.readEntity(String.class);
@@ -683,7 +681,7 @@ public class UserServiceTest {
     private User createUser() {
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
-        client.path("/user/create").accept(MediaType.APPLICATION_JSON);
+        client.path("/user").accept(MediaType.APPLICATION_JSON);
 
         var form = new Form();
         form.param("login", login);

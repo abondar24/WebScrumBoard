@@ -1,7 +1,7 @@
 import Axios from "axios";
 
 const loginUrl = process.env.VUE_APP_API_ENDPOINT + "/user/login";
-const logoutUrl = process.env.VUE_APP_API_ENDPOINT + "/user/logout";
+const logoutUrl = process.env.VUE_APP_API_ENDPOINT + "/user";
 const authorization = 'authorization';
 
 
@@ -63,10 +63,8 @@ export default {
                 });
         },
         logOutUser({commit, getters}) {
-            return getters.authenticatedAxios.get(logoutUrl, {
-                params: {
-                    id: getters.getUserId
-                },
+            return getters.authenticatedAxios.get(logoutUrl +'/' +getters.getUserId + '/', {
+
                 headers:getters.getLangHeader
             }).then(
                 (response) => {

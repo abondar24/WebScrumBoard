@@ -30,13 +30,13 @@ public class UserServiceRouteTest {
     @EndpointInject(uri = "mock:sendEmail")
     private MockEndpoint mockEndpoint;
 
-    private long userId = 7L;
-    private String login = "login";
-    private String email = "email@email.com";
-    private String password = "pwd";
-    private String firstName = "fname";
-    private String lastName = "lname";
-    private String userRoles = UserRole.DEVELOPER.name() + ";" + UserRole.DEV_OPS.name();
+    private final long userId = 7L;
+    private final String login = "login";
+    private final String email = "email@email.com";
+    private final String password = "pwd";
+    private final String firstName = "fname";
+    private final String lastName = "lname";
+    private final String userRoles = UserRole.DEVELOPER.name() + ";" + UserRole.DEV_OPS.name();
 
 
 
