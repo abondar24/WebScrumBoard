@@ -12,7 +12,9 @@ import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
@@ -28,7 +30,6 @@ import javax.ws.rs.core.Response;
 public interface SprintService {
 
     @POST
-    @Path("/create")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(
@@ -47,8 +48,8 @@ public interface SprintService {
                           @FormParam("endDate") @ApiParam(required = true) String endDate,
                           @FormParam("projectId") @ApiParam(required = true) long projectId);
 
-    @POST
-    @Path("/update")
+    @PUT
+    @Path("/{id}")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(
@@ -64,14 +65,14 @@ public interface SprintService {
             @ApiResponse(code = 404, message = "Sprint with id not exists"),
             @ApiResponse(code = 409, message = "Project already has an active sprint"),
     })
-    Response updateSprint(@FormParam("id") @ApiParam(required = true) long sprintId,
+    Response updateSprint(@PathParam("id") @ApiParam(required = true) long sprintId,
                           @FormParam("name") @ApiParam String name,
                           @FormParam("startDate") @ApiParam String startDate,
                           @FormParam("endDate") @ApiParam String endDate,
                           @FormParam("isCurrent") @ApiParam Boolean isCurrent);
 
     @GET
-    @Path("/find")
+    @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(
             value = "Find",
@@ -81,10 +82,10 @@ public interface SprintService {
             @ApiResponse(code = 200, message = "Sprint with selected id", response = Sprint.class),
             @ApiResponse(code = 404, message = "Sprint with id not exists")
     })
-    Response getSprintById(@QueryParam("id") @ApiParam(required = true) long sprintId);
+    Response getSprintById(@PathParam("id") @ApiParam(required = true) long sprintId);
 
     @GET
-    @Path("/find_current")
+    @Path("/current")
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(
             value = "Find current",
@@ -99,7 +100,7 @@ public interface SprintService {
 
 
     @GET
-    @Path("/find_all")
+    @Path("/all")
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(
             value = "Find sprints",
@@ -130,7 +131,7 @@ public interface SprintService {
     Response countSprints(@QueryParam("projectId") @ApiParam(required = true) long projectId);
 
     @DELETE
-    @Path("/delete")
+    @Path("/{id}")
     @ApiOperation(
             value = "Delete",
             notes = "Delete Sprint by id",
@@ -139,6 +140,6 @@ public interface SprintService {
             @ApiResponse(code = 200, message = "Sprint is deleted"),
             @ApiResponse(code = 404, message = "Sprint with id not exists")
     })
-    Response deleteSprint(@QueryParam("id") @ApiParam(required = true) long sprintId);
+    Response deleteSprint(@PathParam("id") @ApiParam(required = true) long sprintId);
 
 }

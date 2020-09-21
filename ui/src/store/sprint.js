@@ -45,7 +45,7 @@ export default {
             form.append("endDate", sprintData.endDate);
             form.append("projectId", sprintData.projectId);
 
-            return getters.authenticatedAxios.post(sprintUrl + '/create', form, getters.getFormConfig).then(
+            return getters.authenticatedAxios.post(sprintUrl, form, getters.getFormConfig).then(
                 (response) => {
                     commit('setErrorMessage', '');
 
@@ -63,7 +63,6 @@ export default {
         updateSprint({commit, getters}, sprintData) {
             const form = new URLSearchParams();
 
-            form.append("id", sprintData.id);
 
             if (sprintData.name.length){
                 form.append("name", sprintData.name);
@@ -85,7 +84,7 @@ export default {
             }
 
 
-            return getters.authenticatedAxios.post(sprintUrl + '/update', form, getters.getFormConfig).then(
+            return getters.authenticatedAxios.post(sprintUrl + '/' + sprintData.id, form, getters.getFormConfig).then(
                 (response) => {
                     commit('setErrorMessage', '');
 
@@ -102,10 +101,7 @@ export default {
                 });
         },
         deleteSprint({commit, getters}, sprintId) {
-            return getters.authenticatedAxios.delete(sprintUrl + '/delete', {
-                params: {
-                    id: sprintId
-                },
+            return getters.authenticatedAxios.delete(sprintUrl + '/'+sprintId, {
                 headers: getters.getLangHeader
             }).then(
                 (response) => {
@@ -116,7 +112,7 @@ export default {
                 });
         },
         findCurrentSprint({commit, getters}, projectId) {
-            return getters.authenticatedAxios.get(sprintUrl + '/find_current', {
+            return getters.authenticatedAxios.get(sprintUrl + '/current', {
                 params: {
                     prId: projectId
                 },
@@ -138,7 +134,7 @@ export default {
         },
         findSprints({commit, getters}, queryParams) {
 
-            return getters.authenticatedAxios.get(sprintUrl + '/find_all', {
+            return getters.authenticatedAxios.get(sprintUrl + '/all', {
                params:queryParams,
                 headers: getters.getLangHeader
             }).then(
