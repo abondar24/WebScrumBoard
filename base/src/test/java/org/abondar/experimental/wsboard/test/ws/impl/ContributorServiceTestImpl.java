@@ -11,6 +11,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
@@ -222,7 +223,7 @@ public class ContributorServiceTestImpl implements ContributorService {
     @POST
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/create_user")
+    @Path("/user")
     public Response createUser(@FormParam("login") String login,
                                @FormParam("email") String email,
                                @FormParam("firstName") String firstName,
@@ -239,7 +240,7 @@ public class ContributorServiceTestImpl implements ContributorService {
     }
 
     @POST
-    @Path("/create_project")
+    @Path("/project")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
     public Response createProject(@FormParam("name") String name,
@@ -260,8 +261,8 @@ public class ContributorServiceTestImpl implements ContributorService {
     }
 
 
-    @POST
-    @Path("/update_project")
+    @PUT
+    @Path("/project")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
     public Response createProject(@FormParam("isActive") boolean isActive) {
@@ -273,7 +274,6 @@ public class ContributorServiceTestImpl implements ContributorService {
 
 
     @DELETE
-    @Path("/delete_contributor")
     @Produces(MediaType.APPLICATION_JSON)
     public Response delete() {
         testContributor = null;

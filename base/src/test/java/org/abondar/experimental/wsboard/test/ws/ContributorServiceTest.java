@@ -48,7 +48,7 @@ public class ContributorServiceTest {
     public void createContributorTest() {
         deleteContributor();
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/contributor/create").accept(MediaType.APPLICATION_JSON);
+        client.path("/contributor").accept(MediaType.APPLICATION_JSON);
 
         var userId = createUser();
         var projectId = createProject();
@@ -71,7 +71,7 @@ public class ContributorServiceTest {
     public void createContributorUserNotFoundTest() {
         deleteContributor();
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/contributor/create").accept(MediaType.APPLICATION_JSON);
+        client.path("/contributor").accept(MediaType.APPLICATION_JSON);
 
         createUser();
         var projectId = createProject();
@@ -94,7 +94,7 @@ public class ContributorServiceTest {
     public void createContributorProjectNotFoundTest() {
         deleteContributor();
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/contributor/create").accept(MediaType.APPLICATION_JSON);
+        client.path("/contributor").accept(MediaType.APPLICATION_JSON);
 
         var userId = createUser();
         createProject();
@@ -117,7 +117,7 @@ public class ContributorServiceTest {
     public void createContributorProjectNotActiveTest() {
         deleteContributor();
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/contributor/create").accept(MediaType.APPLICATION_JSON);
+        client.path("/contributor").accept(MediaType.APPLICATION_JSON);
 
         var userId = createUser();
         var projectId = createProject();
@@ -141,7 +141,7 @@ public class ContributorServiceTest {
     public void createContributorAlreadyExistsTest() {
         deleteContributor();
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/contributor/create").accept(MediaType.APPLICATION_JSON);
+        client.path("/contributor").accept(MediaType.APPLICATION_JSON);
 
         var userId = createUser();
         var projectId = createProject();
@@ -165,7 +165,7 @@ public class ContributorServiceTest {
     public void createContributorProjectHasOwnerTest() {
         deleteContributor();
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/contributor/create").accept(MediaType.APPLICATION_JSON);
+        client.path("/contributor").accept(MediaType.APPLICATION_JSON);
 
         var userId = createUser();
         var projectId = createProject();
@@ -196,7 +196,7 @@ public class ContributorServiceTest {
         var ctr = createContributor(userId, projectId, "false");
 
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/contributor/update").accept(MediaType.APPLICATION_JSON);
+        client.path("/contributor").accept(MediaType.APPLICATION_JSON);
 
         var form = new Form();
 
@@ -205,7 +205,7 @@ public class ContributorServiceTest {
         form.param("isActive", "true");
         form.param("isOwner", "true");
 
-        var resp = client.post(form);
+        var resp = client.put(form);
         assertEquals(200, resp.getStatus());
 
         ctr = resp.readEntity(Contributor.class);
@@ -222,7 +222,7 @@ public class ContributorServiceTest {
         var ctr = createContributor(userId, projectId, "false");
 
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/contributor/update").accept(MediaType.APPLICATION_JSON);
+        client.path("/contributor",projectId,userId).accept(MediaType.APPLICATION_JSON);
 
         var form = new Form();
 
@@ -231,7 +231,7 @@ public class ContributorServiceTest {
         form.param("isActive", "true");
         form.param("isOwner", "true");
 
-        var resp = client.post(form);
+        var resp = client.put(form);
         assertEquals(404, resp.getStatus());
 
         var msg = resp.readEntity(String.class);
@@ -248,7 +248,7 @@ public class ContributorServiceTest {
         var ctr = createContributor(userId, projectId, "false");
 
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/contributor/update").accept(MediaType.APPLICATION_JSON);
+        client.path("/contributor",projectId,userId).accept(MediaType.APPLICATION_JSON);
 
         var form = new Form();
 
@@ -257,7 +257,7 @@ public class ContributorServiceTest {
         form.param("isActive", "true");
         form.param("isOwner", "true");
 
-        var resp = client.post(form);
+        var resp = client.put(form);
         assertEquals(404, resp.getStatus());
 
         var msg = resp.readEntity(String.class);
@@ -272,7 +272,7 @@ public class ContributorServiceTest {
         deleteContributor();
 
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/contributor/update").accept(MediaType.APPLICATION_JSON);
+        client.path("/contributor").accept(MediaType.APPLICATION_JSON);
 
         var form = new Form();
 
@@ -281,7 +281,7 @@ public class ContributorServiceTest {
         form.param("isActive", "true");
         form.param("isOwner", "true");
 
-        var resp = client.post(form);
+        var resp = client.put(form);
         assertEquals(404, resp.getStatus());
 
         var msg = resp.readEntity(String.class);
@@ -297,7 +297,7 @@ public class ContributorServiceTest {
         createContributor(userId, projectId, "true");
 
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/contributor/update").accept(MediaType.APPLICATION_JSON);
+        client.path("/contributor").accept(MediaType.APPLICATION_JSON);
 
         var form = new Form();
 
@@ -305,7 +305,7 @@ public class ContributorServiceTest {
         form.param("prjId",String.valueOf(projectId));
         form.param("isOwner", "true");
 
-        var resp = client.post(form);
+        var resp = client.put(form);
         assertEquals(302, resp.getStatus());
 
         var msg = resp.readEntity(String.class);
@@ -322,7 +322,7 @@ public class ContributorServiceTest {
         createContributor(userId, projectId, "false");
 
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/contributor/update").accept(MediaType.APPLICATION_JSON);
+        client.path("/contributor").accept(MediaType.APPLICATION_JSON);
 
         var form = new Form();
 
@@ -330,7 +330,7 @@ public class ContributorServiceTest {
         form.param("prjId",String.valueOf(projectId));
         form.param("isOwner", "false");
 
-        var resp = client.post(form);
+        var resp = client.put(form);
         assertEquals(409, resp.getStatus());
 
         var msg = resp.readEntity(String.class);
@@ -348,7 +348,7 @@ public class ContributorServiceTest {
         deactivateContributor(userId,projectId);
 
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/contributor/update").accept(MediaType.APPLICATION_JSON);
+        client.path("/contributor").accept(MediaType.APPLICATION_JSON);
 
         var form = new Form();
 
@@ -356,7 +356,7 @@ public class ContributorServiceTest {
         form.param("prjId",String.valueOf(projectId));
         form.param("isOwner", "true");
 
-        var resp = client.post(form);
+        var resp = client.put(form);
         assertEquals(410, resp.getStatus());
 
         var msg = resp.readEntity(String.class);
@@ -372,7 +372,7 @@ public class ContributorServiceTest {
         var ctr = createContributor(userId, projectId, "true");
 
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/contributor/update").accept(MediaType.APPLICATION_JSON);
+        client.path("/contributor").accept(MediaType.APPLICATION_JSON);
 
         var form = new Form();
 
@@ -380,7 +380,7 @@ public class ContributorServiceTest {
         form.param("prjId",String.valueOf(projectId));
         form.param("isActive", "false");
 
-        var resp = client.post(form);
+        var resp = client.put(form);
         assertEquals(403, resp.getStatus());
 
         var msg = resp.readEntity(String.class);
@@ -395,7 +395,7 @@ public class ContributorServiceTest {
         createContributor(userId, projectId, "true");
 
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/contributor/find_project_owner").accept(MediaType.APPLICATION_JSON).query("projectId", projectId);
+        client.path("/contributor/{projectId}/owner",projectId).accept(MediaType.APPLICATION_JSON);
 
         var resp = client.get();
         assertEquals(200, resp.getStatus());
@@ -416,7 +416,7 @@ public class ContributorServiceTest {
         createContributor(userId, projectId, "false");
 
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/contributor/find_project_owner").accept(MediaType.APPLICATION_JSON).query("projectId", 7);
+        client.path("/contributor/{projectId}/owner",7).accept(MediaType.APPLICATION_JSON);
 
         var resp = client.get();
         assertEquals(404, resp.getStatus());
@@ -435,7 +435,7 @@ public class ContributorServiceTest {
         createContributor(userId, projectId, "false");
 
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/contributor/find_project_owner").accept(MediaType.APPLICATION_JSON).query("projectId", projectId);
+        client.path("/contributor/{projectId}/owner",projectId).accept(MediaType.APPLICATION_JSON);
 
         var resp = client.get();
         assertEquals(204, resp.getStatus());
@@ -452,9 +452,8 @@ public class ContributorServiceTest {
         var ctr = createContributor(userId, projectId, "false");
 
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/contributor/find_project_contributors")
+        client.path("/contributor/{projectId}",projectId)
                 .accept(MediaType.APPLICATION_JSON)
-                .query("projectId", projectId)
                 .query("offset", 0)
                 .query("limit", 2);
 
@@ -471,9 +470,8 @@ public class ContributorServiceTest {
     @Test
     public void countContributorsTest() {
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/contributor/count_project_contributors")
-                .accept(MediaType.APPLICATION_JSON)
-                .query("projectId", 7);
+        client.path("/contributor/{projectId}/count",7)
+                .accept(MediaType.APPLICATION_JSON);
 
         var res = client.get();
         assertEquals(200, res.getStatus());
@@ -491,9 +489,8 @@ public class ContributorServiceTest {
         createContributor(userId, projectId, "false");
 
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/contributor/find_project_contributors")
+        client.path("/contributor/{projectId}",7)
                 .accept(MediaType.APPLICATION_JSON)
-                .query("projectId", 7)
                 .query("offset", 0)
                 .query("limit", 2);
 
@@ -513,9 +510,8 @@ public class ContributorServiceTest {
         createContributor(userId, projectId, "false");
 
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/contributor/find_project_contributors")
+        client.path("/contributor/{projectId}",projectId)
                 .accept(MediaType.APPLICATION_JSON)
-                .query("projectId", projectId)
                 .query("offset", -1)
                 .query("limit", 2);
 
@@ -535,9 +531,8 @@ public class ContributorServiceTest {
         createContributor(userId, projectId, "false");
 
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/contributor/find_project_contributors")
+        client.path("/contributor/{projectId}",projectId)
                 .accept(MediaType.APPLICATION_JSON)
-                .query("projectId", projectId)
                 .query("offset", 7)
                 .query("limit", 2);
 
@@ -554,7 +549,7 @@ public class ContributorServiceTest {
         var ctr = createContributor(userId, projectId, "false");
 
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/contributor/find_contributors_by_user")
+        client.path("/contributor")
                 .accept(MediaType.APPLICATION_JSON)
                 .query("userId", userId)
                 .query("offset", 0)
@@ -576,7 +571,7 @@ public class ContributorServiceTest {
         createContributor(userId, projectId, "false");
 
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/contributor/find_contributors_by_user")
+        client.path("/contributor")
                 .accept(MediaType.APPLICATION_JSON)
                 .query("userId", 7)
                 .query("offset", 0)
@@ -597,7 +592,7 @@ public class ContributorServiceTest {
         createContributor(userId, projectId, "false");
 
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/contributor/find_contributors_by_user")
+        client.path("/contributor")
                 .accept(MediaType.APPLICATION_JSON)
                 .query("userId", userId)
                 .query("offset", 7)
@@ -616,10 +611,8 @@ public class ContributorServiceTest {
         var ctr = createContributor(userId, projectId, "false");
 
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/contributor/find_contributor")
-                .accept(MediaType.APPLICATION_JSON)
-                .query("userId", userId)
-                .query("projectId", projectId);
+        client.path("/contributor/{projectId}/user/{userId}",projectId,userId)
+                .accept(MediaType.APPLICATION_JSON);
 
         var res = client.get();
         assertEquals(200, res.getStatus());
@@ -635,10 +628,8 @@ public class ContributorServiceTest {
         var ctr = createContributor(userId, projectId, "false");
 
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/contributor/find_contributor")
-                .accept(MediaType.APPLICATION_JSON)
-                .query("userId",7)
-                .query("projectId", projectId);
+        client.path("/contributor/{projectId}/user/{userId}",projectId,7)
+                .accept(MediaType.APPLICATION_JSON);
 
         var res = client.get();
         assertEquals(404, res.getStatus());
@@ -654,10 +645,8 @@ public class ContributorServiceTest {
         var ctr = createContributor(userId, projectId, "false");
 
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/contributor/find_contributor")
-                .accept(MediaType.APPLICATION_JSON)
-                .query("userId",userId)
-                .query("projectId", 100);
+        client.path("/contributor/{projectId}/user/{userId}",100,userId)
+                .accept(MediaType.APPLICATION_JSON);
 
         var res = client.get();
         assertEquals(404, res.getStatus());
@@ -674,10 +663,8 @@ public class ContributorServiceTest {
         var ctr = createContributor(userId, projectId, "false");
 
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/contributor/find_contributor_by_login")
-                .accept(MediaType.APPLICATION_JSON)
-                .query("projectId", projectId)
-                .query("login", "login");
+        client.path("/contributor/{projectId}/login/{login}",projectId,"login")
+                .accept(MediaType.APPLICATION_JSON);
 
         var res = client.get();
         assertEquals(200, res.getStatus());
@@ -694,10 +681,8 @@ public class ContributorServiceTest {
         var ctr = createContributor(userId, projectId, "false");
 
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/contributor/find_contributor_by_login")
-                .accept(MediaType.APPLICATION_JSON)
-                .query("projectId", projectId)
-                .query("login", "test");
+        client.path("/contributor/{projectId}/login/{login}",projectId,"test")
+                .accept(MediaType.APPLICATION_JSON);
 
         var res = client.get();
         assertEquals(404, res.getStatus());
@@ -714,10 +699,8 @@ public class ContributorServiceTest {
         var ctr = createContributor(userId, projectId, "false");
 
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/contributor/find_contributor_by_login")
-                .accept(MediaType.APPLICATION_JSON)
-                .query("projectId",100)
-                .query("login", "login");
+        client.path("/contributor/{projectId}/login/{login}",100,"login")
+                .accept(MediaType.APPLICATION_JSON);
 
         var res = client.get();
         assertEquals(404, res.getStatus());
@@ -728,7 +711,7 @@ public class ContributorServiceTest {
 
     private Contributor createContributor(long userId, long projectId, String isOwner) {
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/contributor/create").accept(MediaType.APPLICATION_JSON);
+        client.path("/contributor").accept(MediaType.APPLICATION_JSON);
 
         var form = new Form();
 
@@ -745,7 +728,7 @@ public class ContributorServiceTest {
     private long createUser() {
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
-        client.path("/contributor/create_user").accept(MediaType.APPLICATION_JSON);
+        client.path("/contributor/user").accept(MediaType.APPLICATION_JSON);
 
         var form = new Form();
         form.param("login", "login");
@@ -768,7 +751,7 @@ public class ContributorServiceTest {
         form.param("name", "prjName");
         form.param("startDate", "31/10/1999");
 
-        client.path("/contributor/create_project").accept(MediaType.APPLICATION_JSON);
+        client.path("/contributor/project").accept(MediaType.APPLICATION_JSON);
 
         var res = client.post(form);
         return res.readEntity(Project.class).getId();
@@ -780,20 +763,20 @@ public class ContributorServiceTest {
         var form = new Form();
         form.param("isActive", "false");
 
-        client.path("/contributor/update_project").accept(MediaType.APPLICATION_JSON).post(form);
+        client.path("/contributor/project").accept(MediaType.APPLICATION_JSON).put(form);
     }
 
     private void deleteContributor() {
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
 
-        client.path("/contributor/delete_contributor").accept(MediaType.APPLICATION_JSON).delete();
+        client.path("/contributor").accept(MediaType.APPLICATION_JSON).delete();
     }
 
 
     private void deactivateContributor(long userId,long projectId) {
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/contributor/update").accept(MediaType.APPLICATION_JSON);
+        client.path("/contributor").accept(MediaType.APPLICATION_JSON);
 
         var form = new Form();
 
@@ -801,7 +784,7 @@ public class ContributorServiceTest {
         form.param("prjId",String.valueOf(projectId));
         form.param("isActive", "false");
 
-        client.post(form);
+        client.put(form);
     }
 
 }
