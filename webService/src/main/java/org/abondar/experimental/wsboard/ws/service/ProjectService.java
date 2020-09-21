@@ -12,7 +12,9 @@ import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
@@ -28,7 +30,6 @@ import javax.ws.rs.core.Response;
 public interface ProjectService {
 
     @POST
-    @Path("/create")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(
@@ -44,8 +45,8 @@ public interface ProjectService {
     Response createProject(@FormParam("name") @ApiParam(required = true) String name,
                            @FormParam("startDate") @ApiParam(required = true) String startDate);
 
-    @POST
-    @Path("/update")
+    @PUT
+    @Path("/{id}")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(
@@ -61,7 +62,7 @@ public interface ProjectService {
             @ApiResponse(code = 302, message = "Project with name already exists"),
             @ApiResponse(code = 404, message = "Project not found")
     })
-    Response updateProject(@FormParam("id") @ApiParam(required = true) long id,
+    Response updateProject(@PathParam("id") @ApiParam(required = true) long id,
                            @FormParam("name") @ApiParam String name,
                            @FormParam("repo") @ApiParam String repo,
                            @FormParam("isActive") @ApiParam Boolean isActive,
@@ -69,7 +70,7 @@ public interface ProjectService {
                            @FormParam("description") @ApiParam String description);
 
     @DELETE
-    @Path("/delete")
+    @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(
             value = "Delete",
@@ -79,11 +80,11 @@ public interface ProjectService {
             @ApiResponse(code = 200, message = "Project deleted"),
             @ApiResponse(code = 404, message = "Project with id not exists")
     })
-    Response deleteProject(@QueryParam("id") @ApiParam(required = true) long id);
+    Response deleteProject(@PathParam("id") @ApiParam(required = true) long id);
 
 
     @GET
-    @Path("/find")
+    @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(
             value = "Find",
@@ -93,7 +94,7 @@ public interface ProjectService {
             @ApiResponse(code = 200, message = "Project found", response = Project.class),
             @ApiResponse(code = 404, message = "Project with id not exists")
     })
-    Response findProjectById(@QueryParam("id") @ApiParam(required = true) long id);
+    Response findProjectById(@PathParam("id") @ApiParam(required = true) long id);
 
     @GET
     @Path("/find_user_projects")

@@ -54,7 +54,7 @@ public class ProjectServiceTest {
         form.param("name", projectName);
         form.param("startDate", startDate);
 
-        client.path("/project/create").accept(MediaType.APPLICATION_JSON);
+        client.path("/project").accept(MediaType.APPLICATION_JSON);
 
         var res = client.post(form);
         assertEquals(200, res.getStatus());
@@ -71,7 +71,7 @@ public class ProjectServiceTest {
         form.param("name", "exists");
         form.param("startDate", startDate);
 
-        client.path("/project/create").accept(MediaType.APPLICATION_JSON);
+        client.path("/project").accept(MediaType.APPLICATION_JSON);
 
         var res = client.post(form);
         assertEquals(302, res.getStatus());
@@ -88,7 +88,7 @@ public class ProjectServiceTest {
         form.param("name", "");
         form.param("startDate", startDate);
 
-        client.path("/project/create").accept(MediaType.APPLICATION_JSON);
+        client.path("/project").accept(MediaType.APPLICATION_JSON);
 
         var res = client.post(form);
         assertEquals(206, res.getStatus());
@@ -105,7 +105,7 @@ public class ProjectServiceTest {
         form.param("name", projectName);
         form.param("startDate", "blabla");
 
-        client.path("/project/create").accept(MediaType.APPLICATION_JSON);
+        client.path("/project").accept(MediaType.APPLICATION_JSON);
 
         var res = client.post(form);
         assertEquals(206, res.getStatus());
@@ -121,13 +121,12 @@ public class ProjectServiceTest {
         var prj = createProject();
 
         var form = new Form();
-        form.param("id", String.valueOf(prj.getId()));
         form.param("repo", "test.repo.com");
         form.param("description","descr");
 
-        client.path("/project/update").accept(MediaType.APPLICATION_JSON);
+        client.path("/project/{id}",prj.getId()).accept(MediaType.APPLICATION_JSON);
 
-        var res = client.post(form);
+        var res = client.put(form);
         assertEquals(200, res.getStatus());
 
         prj = res.readEntity(Project.class);
@@ -142,12 +141,11 @@ public class ProjectServiceTest {
         createProject();
 
         var form = new Form();
-        form.param("id", "7");
         form.param("repo", "test.repo.com");
 
-        client.path("/project/update").accept(MediaType.APPLICATION_JSON);
+        client.path("/project/7").accept(MediaType.APPLICATION_JSON);
 
-        var res = client.post(form);
+        var res = client.put(form);
         assertEquals(404, res.getStatus());
 
         var msg = res.readEntity(String.class);
@@ -162,12 +160,11 @@ public class ProjectServiceTest {
         var prj = createProject();
 
         var form = new Form();
-        form.param("id", String.valueOf(prj.getId()));
         form.param("name", prj.getName());
 
-        client.path("/project/update").accept(MediaType.APPLICATION_JSON);
+        client.path("/project/{id}",prj.getId()).accept(MediaType.APPLICATION_JSON);
 
-        var res = client.post(form);
+        var res = client.put(form);
         assertEquals(302, res.getStatus());
 
         var msg = res.readEntity(String.class);
@@ -186,9 +183,9 @@ public class ProjectServiceTest {
         form.param("isActive", "false");
         form.param("endDate", "31/05/2017");
 
-        client.path("/project/update").accept(MediaType.APPLICATION_JSON);
+        client.path("/project/{id}",prj.getId()).accept(MediaType.APPLICATION_JSON);
 
-        var res = client.post(form);
+        var res = client.put(form);
         assertEquals(205, res.getStatus());
 
         var msg = res.readEntity(String.class);
@@ -204,13 +201,12 @@ public class ProjectServiceTest {
         var prj = createProject();
 
         var form = new Form();
-        form.param("id", String.valueOf(prj.getId()));
         form.param("isActive", "false");
         form.param("endDate", "");
 
-        client.path("/project/update").accept(MediaType.APPLICATION_JSON);
+        client.path("/project/{id}",prj.getId()).accept(MediaType.APPLICATION_JSON);
 
-        var res = client.post(form);
+        var res = client.put(form);
         assertEquals(206, res.getStatus());
 
         var msg = res.readEntity(String.class);
@@ -227,12 +223,11 @@ public class ProjectServiceTest {
         prj = updateProject(prj.getId());
 
         var form = new Form();
-        form.param("id", String.valueOf(prj.getId()));
         form.param("isActive", "true");
 
-        client.path("/project/update").accept(MediaType.APPLICATION_JSON);
+        client.path("/project/{id}",prj.getId()).accept(MediaType.APPLICATION_JSON);
 
-        var res = client.post(form);
+        var res = client.put(form);
         assertEquals(301, res.getStatus());
 
         var msg = res.readEntity(String.class);
@@ -246,7 +241,7 @@ public class ProjectServiceTest {
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
         var prj = createProject();
 
-        client.path("/project/delete").query("id", prj.getId()).accept(MediaType.APPLICATION_JSON);
+        client.path("/project/{id}",prj.getId()).accept(MediaType.APPLICATION_JSON);
 
         var res = client.delete();
         assertEquals(200, res.getStatus());
@@ -257,7 +252,7 @@ public class ProjectServiceTest {
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
         createProject();
 
-        client.path("/project/delete").query("id", "1000").accept(MediaType.APPLICATION_JSON);
+        client.path("/project/1000").accept(MediaType.APPLICATION_JSON);
 
         var res = client.delete();
         assertEquals(404, res.getStatus());
@@ -271,7 +266,7 @@ public class ProjectServiceTest {
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
         var prj = createProject();
 
-        client.path("/project/find").query("id", prj.getId()).accept(MediaType.APPLICATION_JSON);
+        client.path("/project/{id}",prj.getId()).accept(MediaType.APPLICATION_JSON);
 
         var res = client.get();
         assertEquals(200, res.getStatus());
@@ -286,7 +281,7 @@ public class ProjectServiceTest {
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
         createProject();
 
-        client.path("/project/find").query("id", "1000").accept(MediaType.APPLICATION_JSON);
+        client.path("/project/7").accept(MediaType.APPLICATION_JSON);
 
         var res = client.get();
         assertEquals(404, res.getStatus());
@@ -334,7 +329,7 @@ public class ProjectServiceTest {
         form.param("name", projectName);
         form.param("startDate", startDate);
 
-        client.path("/project/create").accept(MediaType.APPLICATION_JSON);
+        client.path("/project").accept(MediaType.APPLICATION_JSON);
 
         var res = client.post(form);
         return res.readEntity(Project.class);
@@ -344,13 +339,12 @@ public class ProjectServiceTest {
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
         var form = new Form();
-        form.param("id", String.valueOf(id));
         form.param("isActive", "false");
         form.param("endDate", "31/05/2119");
 
-        client.path("/project/update").accept(MediaType.APPLICATION_JSON);
+        client.path("/project/{id}",id).accept(MediaType.APPLICATION_JSON);
 
-        var res = client.post(form);
+        var res = client.put(form);
 
         return res.readEntity(Project.class);
 

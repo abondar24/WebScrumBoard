@@ -52,7 +52,7 @@ export default {
             form.append('name', projectData.name);
             form.append('startDate', projectData.startDate);
 
-            return getters.authenticatedAxios.post(projectUrl + '/create', form, getters.getFormConfig).then(
+            return getters.authenticatedAxios.post(projectUrl , form, getters.getFormConfig).then(
                 (response) => {
                     commit('setErrorMessage', '');
 
@@ -73,7 +73,6 @@ export default {
         },
         updateProject({commit, getters}, projectData) {
             const form = new URLSearchParams();
-            form.append('id', projectData.id);
             form.append('name', projectData.name);
             form.append('repo', projectData.repository);
             form.append('isActive', projectData.isActive);
@@ -83,7 +82,7 @@ export default {
             }
             form.append('description', projectData.description);
 
-            return getters.authenticatedAxios.post(projectUrl + '/update', form, getters.getFormConfig).then(
+            return getters.authenticatedAxios.put(projectUrl + '/' + projectData.id, form, getters.getFormConfig).then(
                 (response) => {
                     commit('setErrorMessage', '');
                     commit('setProject', response.data);
@@ -93,10 +92,8 @@ export default {
                 });
         },
         deleteProject({commit, getters}, id) {
-            return getters.authenticatedAxios.delete(projectUrl + '/delete', {
-                params: {
-                    id: id
-                },
+            return getters.authenticatedAxios.delete(projectUrl + '/'+id, {
+
                 headers: getters.getLangHeader
             }).then(
                 (response) => {
@@ -108,10 +105,7 @@ export default {
                 });
         },
         findProject({commit, getters}, id) {
-            return getters.authenticatedAxios.get(projectUrl + '/find', {
-                params: {
-                    id: id
-                },
+            return getters.authenticatedAxios.get(projectUrl + '/' + id, {
                 headers: getters.getLangHeader
             }).then(
                 (response) => {
