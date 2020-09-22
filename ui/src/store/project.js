@@ -117,10 +117,7 @@ export default {
                 });
         },
         findUserProjects({commit, getters}, userId) {
-            return getters.authenticatedAxios.get(projectUrl + '/find_user_projects', {
-                params: {
-                    id: userId
-                },
+            return getters.authenticatedAxios.get(projectUrl + '/user/'+userId, {
                 headers: getters.getLangHeader
             }).then(
                 (response) => {
