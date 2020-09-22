@@ -30,6 +30,7 @@ import javax.ws.rs.core.Response;
 public interface ContributorService {
 
     @POST
+    @Path("/user/{usrId}/project/{prjId}")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(
@@ -45,11 +46,12 @@ public interface ContributorService {
             @ApiResponse(code = 409, message = "Project has owner(if isOwner param is set to true)"),
 
     })
-    Response createContributor(@FormParam("userId") @ApiParam(required = true) long userId,
-                               @FormParam("projectId") @ApiParam(required = true) long projectId,
+    Response createContributor(@PathParam("usrId") @ApiParam(required = true) long userId,
+                               @PathParam("prjId") @ApiParam(required = true) long projectId,
                                @FormParam("isOwner") @ApiParam(required = true) boolean isOwner);
 
     @PUT
+    @Path("/user/{usrId}/project/{prjId}")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(
@@ -65,13 +67,13 @@ public interface ContributorService {
             @ApiResponse(code = 409, message = "Project has no owner"),
             @ApiResponse(code = 410, message = "Contributor not active and can't be an owner"),
     })
-    Response updateContributor(@FormParam("usrId") @ApiParam(required = true) long userId,
-                               @FormParam("prjId") @ApiParam(required = true) long projectId,
+    Response updateContributor(@PathParam("usrId") @ApiParam(required = true) long userId,
+                               @PathParam("prjId") @ApiParam(required = true) long projectId,
                                @FormParam("isOwner") @ApiParam Boolean isOwner,
                                @FormParam("isActive") @ApiParam Boolean isActive);
 
     @GET
-    @Path("/{projectId}/owner")
+    @Path("/project/{projectId}/owner")
     @ApiOperation(
             value = "Find Project Owner",
             notes = "Find a user who is a project owner",
@@ -85,7 +87,7 @@ public interface ContributorService {
 
 
     @GET
-    @Path("/{projectId}")
+    @Path("/project/{projectId}")
     @ApiOperation(
             value = "Find Project Contributors",
             notes = "Find a list of project contributors",
@@ -101,7 +103,7 @@ public interface ContributorService {
 
 
     @GET
-    @Path("/{projectId}/count")
+    @Path("/project/{projectId}/count")
     @ApiOperation(
             value = "Count Project Contributors",
             notes = "Counts number of project contributors",
@@ -113,6 +115,7 @@ public interface ContributorService {
     Response countProjectContributors(@PathParam("projectId") @ApiParam(required = true) long projectId);
 
     @GET
+    @Path("/user/{userId}")
     @ApiOperation(
             value = "Find User Contributors",
             notes = "Find a list of contributors related to userId",
@@ -122,12 +125,12 @@ public interface ContributorService {
             @ApiResponse(code = 204, message = "No contributors found"),
             @ApiResponse(code = 404, message = "User not found")
     })
-    Response findContributorsByUserId(@QueryParam("userId") @ApiParam(required = true) long userId,
+    Response findContributorsByUserId(@PathParam("userId") @ApiParam(required = true) long userId,
                                       @QueryParam("offset") @ApiParam(required = true) int offset,
                                       @QueryParam("limit") @ApiParam(required = true) int limit);
 
     @GET
-    @Path("/{projectId}/user/{userId}")
+    @Path("/user/{userId}/project/{projectId}")
     @ApiOperation(
             value = "Find Contributor",
             notes = "Find a single contributor by userId and projectId",
@@ -140,7 +143,7 @@ public interface ContributorService {
                              @PathParam("projectId") @ApiParam(required = true) long projectId);
 
     @GET
-    @Path("/{projectId}/login/{login}")
+    @Path("/login/{login}/project/{projectId}")
     @ApiOperation(
             value = "Find Contributor by name",
             notes = "Find a single contributor by name",

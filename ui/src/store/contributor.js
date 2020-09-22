@@ -58,11 +58,9 @@ export default {
     actions: {
         createContributor({commit, getters}, ctrData) {
             const form = new URLSearchParams();
-            form.append('userId', ctrData.userId);
-            form.append('projectId', ctrData.projectId);
             form.append('isOwner', ctrData.owner);
 
-            return getters.authenticatedAxios.post(contributorUrl , form, getters.getFormConfig).then(
+            return getters.authenticatedAxios.post(contributorUrl +'/user/'+ctrData.userId +'/project/'+ctrData.projectId , form, getters.getFormConfig).then(
                 (response) => {
                     commit('setErrorMessage', '');
 
@@ -76,12 +74,10 @@ export default {
         },
         updateContributor({commit, getters}, ctrData) {
             const form = new URLSearchParams();
-            form.append('usrId', ctrData.userId);
-            form.append('prjId', ctrData.projectId);
             form.append('isOwner', ctrData.owner);
             form.append('isActive', ctrData.active);
 
-            return getters.authenticatedAxios.post(contributorUrl , form, getters.getFormConfig).then(
+            return getters.authenticatedAxios.post(contributorUrl +'/user/'+ctrData.userId +'/project/'+ctrData.projectId , form, getters.getFormConfig).then(
                 (response) => {
                     commit('setErrorMessage', '');
 
@@ -95,7 +91,7 @@ export default {
         },
         findProjectOwner({commit, getters}, projectId) {
 
-            return getters.authenticatedAxios.get(contributorUrl + '/'+projectId+'/owner').then(
+            return getters.authenticatedAxios.get(contributorUrl + '/project/'+projectId+'/owner').then(
                 (response) => {
                     commit('setErrorMessage', '');
 
@@ -111,7 +107,7 @@ export default {
                 });
         },
         findProjectContributors({commit, getters}, queryParams) {
-            return getters.authenticatedAxios.get(contributorUrl + '/'+queryParams.projectId, {
+            return getters.authenticatedAxios.get(contributorUrl + '/project/'+queryParams.projectId, {
                 params: {
                     offset: queryParams.offset,
                     limit: queryParams.limit
@@ -131,7 +127,7 @@ export default {
                 });
         },
         countProjectContributors({commit, getters}, prjId) {
-            return getters.authenticatedAxios.get(contributorUrl + '/'+prjId+'/count', {
+            return getters.authenticatedAxios.get(contributorUrl + '/project/'+prjId+'/count', {
                 headers: getters.getLangHeader
             }).then(
                 (response) => {
@@ -143,7 +139,7 @@ export default {
                 });
         },
         findContributor({commit, getters}, queryParams) {
-            return getters.authenticatedAxios.get(contributorUrl + '/'+queryParams.projectId+'/'+queryParams.user, {
+            return getters.authenticatedAxios.get(contributorUrl + '/user'+queryParams.user+'/project/'+queryParams.projectId, {
 
                 headers: getters.getLangHeader
             }).then(
@@ -156,7 +152,7 @@ export default {
                 });
         },
         findContributorByLogin({commit, getters},login) {
-            return getters.authenticatedAxios.get(contributorUrl + '/'+getters.getProjectId +'/login'+login, {
+            return getters.authenticatedAxios.get(contributorUrl +'/login'+login + '/'+getters.getProjectId , {
                 headers: getters.getLangHeader
             }).then(
                 (response) => {
