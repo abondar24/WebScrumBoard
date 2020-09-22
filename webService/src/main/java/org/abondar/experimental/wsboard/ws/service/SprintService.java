@@ -85,7 +85,7 @@ public interface SprintService {
     Response getSprintById(@PathParam("id") @ApiParam(required = true) long sprintId);
 
     @GET
-    @Path("/current")
+    @Path("/current/project/{prId}")
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(
             value = "Find current",
@@ -96,11 +96,11 @@ public interface SprintService {
             @ApiResponse(code = 204, message = "No active sprints found"),
             @ApiResponse(code = 404, message = "Project not exists")
     })
-    Response getCurrentSprint(@QueryParam("prId") @ApiParam(required = true) long projectId);
+    Response getCurrentSprint(@PathParam("prId") @ApiParam(required = true) long projectId);
 
 
     @GET
-    @Path("/all")
+    @Path("/all/project/{prId}")
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(
             value = "Find sprints",
@@ -112,13 +112,13 @@ public interface SprintService {
             @ApiResponse(code = 404, message = "Project not found")
     })
     Response getSprints(
-            @QueryParam("projectId") @ApiParam(required = true) long projectId,
+            @PathParam("prId") @ApiParam(required = true) long projectId,
             @QueryParam("offset") @ApiParam(required = true) int offset,
             @QueryParam("limit") @ApiParam(required = true) int limit);
 
 
     @GET
-    @Path("/count")
+    @Path("/count/project/{prId}")
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(
             value = "Count sprints",
@@ -128,7 +128,7 @@ public interface SprintService {
             @ApiResponse(code = 200, message = "List of existing sprints", response = Integer.class),
             @ApiResponse(code = 404, message = "Project not found")
     })
-    Response countSprints(@QueryParam("projectId") @ApiParam(required = true) long projectId);
+    Response countSprints(@PathParam("prId") @ApiParam(required = true) long projectId);
 
     @DELETE
     @Path("/{id}")

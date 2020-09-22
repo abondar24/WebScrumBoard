@@ -319,9 +319,7 @@ public class SprintServiceTest {
         updateSprint(sp.getId(),true);
 
 
-        client.path("/sprint/current")
-                .accept(MediaType.APPLICATION_JSON)
-                .query("prId", String.valueOf(pr));
+        client.path("/sprint/current/project/{prId}",pr).accept(MediaType.APPLICATION_JSON);
 
         var res = client.get();
         assertEquals(200, res.getStatus());
@@ -338,9 +336,7 @@ public class SprintServiceTest {
         var pr = createProject();
         createSprint(pr);
 
-        client.path("/sprint/current")
-                .accept(MediaType.APPLICATION_JSON)
-                .query("prId", String.valueOf(pr));
+        client.path("/sprint/current/project/{prId}",pr).accept(MediaType.APPLICATION_JSON);
 
         var res = client.get();
         assertEquals(204, res.getStatus());
@@ -354,9 +350,8 @@ public class SprintServiceTest {
         var prj = createProject();
         var sp = createSprint(prj);
 
-        client.path("/sprint/all")
+        client.path("/sprint/all/project/{prId}",prj)
                 .accept(MediaType.APPLICATION_JSON)
-                .query("projectId",prj)
                 .query("offset", 0)
                 .query("limit", 2);
 
@@ -376,9 +371,8 @@ public class SprintServiceTest {
         var prj = createProject();
         var sp = createSprint(prj);
 
-        client.path("/sprint/all")
+        client.path("/sprint/all/project/{prId}",prj)
                 .accept(MediaType.APPLICATION_JSON)
-                .query("projectId",prj)
                 .query("offset", -1);
 
         var res = client.get();
@@ -396,7 +390,7 @@ public class SprintServiceTest {
 
         createSprint(createProject());
 
-        client.path("/sprint/all")
+        client.path("/sprint/all/project/7")
                 .accept(MediaType.APPLICATION_JSON)
                 .query("offset", 6)
                 .query("limit", 2);
@@ -411,10 +405,7 @@ public class SprintServiceTest {
     @Test
     public void countSprintsTasksTest() {
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/sprint/count")
-                .accept(MediaType.APPLICATION_JSON)
-                .query("projectId", 7);
-
+        client.path("/sprint/count/project/7").accept(MediaType.APPLICATION_JSON);
         var res = client.get();
         assertEquals(200, res.getStatus());
 

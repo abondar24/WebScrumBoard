@@ -112,10 +112,7 @@ export default {
                 });
         },
         findCurrentSprint({commit, getters}, projectId) {
-            return getters.authenticatedAxios.get(sprintUrl + '/current', {
-                params: {
-                    prId: projectId
-                },
+            return getters.authenticatedAxios.get(sprintUrl + '/current/project'+projectId, {
                 headers: getters.getLangHeader
             }).then(
                 (response) => {
@@ -134,8 +131,11 @@ export default {
         },
         findSprints({commit, getters}, queryParams) {
 
-            return getters.authenticatedAxios.get(sprintUrl + '/all', {
-               params:queryParams,
+            return getters.authenticatedAxios.get(sprintUrl + '/all/project/'+queryParams.projectId, {
+               params: {
+                   offset:queryParams.offset,
+                   limit:queryParams.limit
+               },
                 headers: getters.getLangHeader
             }).then(
                 (response) => {
@@ -154,10 +154,7 @@ export default {
                 });
         },
         countSprints({commit, getters}, projectId) {
-            return getters.authenticatedAxios.get(sprintUrl + '/count', {
-                params: {
-                    projectId: projectId,
-                },
+            return getters.authenticatedAxios.get(sprintUrl + '/count/project/'+projectId, {
                 headers: getters.getLangHeader
             }).then(
                 (response) => {
