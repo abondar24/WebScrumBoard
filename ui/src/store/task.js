@@ -72,7 +72,7 @@ export default {
             form.append("taskDescription", taskData.taskDescription);
 
 
-            return getters.authenticatedAxios.post(taskUrl + '/create', form, getters.getFormConfig).then(
+            return getters.authenticatedAxios.post(taskUrl, form, getters.getFormConfig).then(
                 (response) => {
                     commit('setErrorMessage', '');
                 },
@@ -82,8 +82,6 @@ export default {
         },
         updateTask({commit, getters}, taskData) {
             const form = new URLSearchParams();
-
-            form.append("id", taskData.id);
 
             if (taskData.ctrId !== 0) {
                 form.append("ctrId", taskData.ctrId);
@@ -110,7 +108,7 @@ export default {
                 form.append("taskDescription", taskData.taskDescription);
             }
 
-            return getters.authenticatedAxios.post(taskUrl + '/update', form,  getters.getFormConfig).then(
+            return getters.authenticatedAxios.put(taskUrl + '/'+taskData.id, form,  getters.getFormConfig).then(
                 (response) => {
                     commit('setErrorMessage', '');
                 },
@@ -119,10 +117,7 @@ export default {
                 });
         },
         deleteTask({commit, getters}, taskId) {
-            return getters.authenticatedAxios.delete(taskId + '/delete', {
-                params: {
-                    id: taskId
-                },
+            return getters.authenticatedAxios.delete(taskId + '/'+taskId, {
                 headers: getters.getLangHeader
             }).then(
                 (response) => {
@@ -134,12 +129,7 @@ export default {
         },
         updateTaskSprint({commit, getters}, taskData) {
 
-            const form = new URLSearchParams();
-
-            form.append("id",taskData.id);
-            form.append("sprintId",taskData.sprintId);
-
-            return getters.authenticatedAxios.post(taskUrl + '/update_sprint', form, getters.getFormConfig).then(
+            return getters.authenticatedAxios.put(taskUrl +'/'+taskData.id +'/sprint/' + taskData.sprintId, getters.getFormConfig).then(
                 (response) => {
                     commit('setErrorMessage', '');
                 },
@@ -151,10 +141,9 @@ export default {
 
             const form = new URLSearchParams();
 
-            form.append("id",taskData.id);
             form.append("state",taskData.state);
 
-            return getters.authenticatedAxios.post(taskUrl + '/update_state', form, getters.getFormConfig).then(
+            return getters.authenticatedAxios.put(taskUrl +'/'+taskData.id  + '/state', form, getters.getFormConfig).then(
                 (response) => {
                     commit('setErrorMessage', response.data);
                 },
@@ -164,10 +153,9 @@ export default {
         },
 
         updateTasksSprint({commit,getters},params){
-            return getters.authenticatedAxios.put(taskUrl + '/update_tasks_sprints', {
+            return getters.authenticatedAxios.put(taskUrl +'/sprint/' + params.sprintId, {
                 params: {
-                    id: params.ids,
-                    sprintId: params.sprintId
+                    id: params.ids
                 },
                 headers: getters.getLangHeader,
                 paramsSerializer: function (params) {
@@ -182,9 +170,8 @@ export default {
                 });
         },
         findSprintTasks({commit, getters}, queryParams) {
-            return getters.authenticatedAxios.get(taskUrl + '/find_sprint_tasks', {
+            return getters.authenticatedAxios.get(taskUrl + '/sprint'+queryParams.sprintId, {
                 params: {
-                    spId: queryParams.sprintId,
                     offset: queryParams.offset,
                     limit: queryParams.limit
                 },
@@ -203,9 +190,8 @@ export default {
                 });
         },
         findContributorTasks({commit, getters}, queryParams) {
-            return getters.authenticatedAxios.get(taskUrl + '/find_contributor_tasks', {
+            return getters.authenticatedAxios.get(taskUrl + '/contributor/'+queryParams.contributorId, {
                 params: {
-                    ctrId: queryParams.contributorId,
                     offset: queryParams.offset,
                     limit: queryParams.limit
                 },
@@ -224,9 +210,8 @@ export default {
                 });
         },
         findUserTasks({commit, getters}, queryParams) {
-            return getters.authenticatedAxios.get(taskUrl + '/find_user_tasks', {
+            return getters.authenticatedAxios.get(taskUrl + '/user/'+queryParams.userId, {
                 params: {
-                    usrId: queryParams.userId,
                     offset: queryParams.offset,
                     limit: queryParams.limit
                 },
@@ -245,9 +230,8 @@ export default {
                 });
         },
         findProjectTasks({commit, getters}, queryParams) {
-            return getters.authenticatedAxios.get(taskUrl + '/find_project_tasks', {
+            return getters.authenticatedAxios.get(taskUrl + '/project/'+queryParams.prId, {
                 params: {
-                    prId: queryParams.prId,
                     offset: queryParams.offset,
                     limit: queryParams.limit,
                     all: queryParams.all,
@@ -267,10 +251,7 @@ export default {
                 });
         },
         countContributorTasks({commit, getters}, contributorId) {
-            return getters.authenticatedAxios.get(taskUrl + '/count_contributor_tasks', {
-                params: {
-                    contributorId: contributorId,
-                },
+            return getters.authenticatedAxios.get(taskUrl + '/contributor/'+contributorId+'/count', {
                 headers: getters.getLangHeader
             }).then(
                 (response) => {
@@ -286,10 +267,7 @@ export default {
                 });
         },
         countUserTasks({commit, getters}, userId) {
-            return getters.authenticatedAxios.get(taskUrl + '/count_user_tasks', {
-                params: {
-                    userId: userId,
-                },
+            return getters.authenticatedAxios.get(taskUrl + '/user/'+userId+'/count', {
                 headers: getters.getLangHeader
             }).then(
                 (response) => {
@@ -305,10 +283,8 @@ export default {
                 });
         },
         countSprintTasks({commit, getters}, sprintId) {
-            return getters.authenticatedAxios.get(taskUrl + '/count_sprint_tasks', {
-                params: {
-                    sprintId: sprintId,
-                },
+            return getters.authenticatedAxios.get(taskUrl + '/sprint/'+sprintId+'/count', {
+
                 headers: getters.getLangHeader
             }).then(
                 (response) => {

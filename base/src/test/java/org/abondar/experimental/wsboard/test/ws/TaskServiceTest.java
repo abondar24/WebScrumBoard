@@ -61,7 +61,7 @@ public class TaskServiceTest {
     @Test
     public void createTaskTest() {
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/task/create").accept(MediaType.APPLICATION_JSON);
+        client.path("/task").accept(MediaType.APPLICATION_JSON);
 
         createUser();
         createProject();
@@ -85,7 +85,7 @@ public class TaskServiceTest {
     @Test
     public void createTaskWrongDateTest() {
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/task/create").accept(MediaType.APPLICATION_JSON);
+        client.path("/task").accept(MediaType.APPLICATION_JSON);
 
         createUser();
         createProject();
@@ -108,7 +108,7 @@ public class TaskServiceTest {
     @Test
     public void createTaskContributorNotExistsTest() {
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/task/create").accept(MediaType.APPLICATION_JSON);
+        client.path("/task").accept(MediaType.APPLICATION_JSON);
 
 
         var form = new Form();
@@ -133,10 +133,9 @@ public class TaskServiceTest {
         var taskId = createTask(ctrId);
 
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/task/update").accept(MediaType.APPLICATION_JSON);
+        client.path("/task/{id}",taskId).accept(MediaType.APPLICATION_JSON);
 
         var form = new Form();
-        form.param("id", String.valueOf(taskId));
         form.param("ctrId", String.valueOf(ctrId));
         form.param("startDate", "31/12/2119");
         form.param("devOps", "false");
@@ -144,7 +143,7 @@ public class TaskServiceTest {
         form.param("taskName", "newName");
         form.param("taskDescription", "newDescr");
 
-        var resp = client.post(form);
+        var resp = client.put(form);
         assertEquals(200, resp.getStatus());
 
         var res = resp.readEntity(Task.class);
@@ -159,10 +158,9 @@ public class TaskServiceTest {
         createTask(ctrId);
 
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/task/update").accept(MediaType.APPLICATION_JSON);
+        client.path("/task/7").accept(MediaType.APPLICATION_JSON);
 
         var form = new Form();
-        form.param("id", "7");
         form.param("ctrId", String.valueOf(ctrId));
         form.param("startDate", "31/12/2119");
         form.param("devOps", "false");
@@ -170,7 +168,7 @@ public class TaskServiceTest {
         form.param("taskName", "newName");
         form.param("taskDescription", "newDescr");
 
-        var resp = client.post(form);
+        var resp = client.put(form);
         assertEquals(404, resp.getStatus());
 
         var msg = resp.readEntity(String.class);
@@ -185,10 +183,9 @@ public class TaskServiceTest {
         var taskId = createTask(ctrId);
 
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/task/update").accept(MediaType.APPLICATION_JSON);
+        client.path("/task/{id}",taskId).accept(MediaType.APPLICATION_JSON);
 
         var form = new Form();
-        form.param("id", String.valueOf(taskId));
         form.param("ctrId", "7");
         form.param("startDate", "31/12/2119");
         form.param("devOps", "false");
@@ -196,7 +193,7 @@ public class TaskServiceTest {
         form.param("taskName", "newName");
         form.param("taskDescription", "newDescr");
 
-        var resp = client.post(form);
+        var resp = client.put(form);
         assertEquals(404, resp.getStatus());
 
         var msg = resp.readEntity(String.class);
@@ -213,13 +210,10 @@ public class TaskServiceTest {
         var sprintId = createSprint();
 
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/task/update_sprint").accept(MediaType.APPLICATION_JSON);
+        client.path("/task/{id}/sprint/{sprintId}",taskId,sprintId).accept(MediaType.APPLICATION_JSON);
 
-        var form = new Form();
-        form.param("id", String.valueOf(taskId));
-        form.param("sprintId", String.valueOf(sprintId));
 
-        var resp = client.post(form);
+        var resp = client.put(null);
         assertEquals(200, resp.getStatus());
 
         var res = resp.readEntity(Task.class);
@@ -235,11 +229,10 @@ public class TaskServiceTest {
         var sprintId = createSprint();
 
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/task/update_tasks_sprint").accept(MediaType.APPLICATION_JSON)
+        client.path("/task/sprint/{sprintId}",sprintId).accept(MediaType.APPLICATION_JSON)
                 .query("id", taskId)
                 .query("id", 1L)
-                .query("id", 2L)
-                .query("sprintId",sprintId);
+                .query("id", 2L);
 
         var resp = client.put(null);
         assertEquals(200, resp.getStatus());
@@ -254,13 +247,9 @@ public class TaskServiceTest {
         var sprintId = createSprint();
 
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/task/update_sprint").accept(MediaType.APPLICATION_JSON);
+        client.path("/task/7/sprint/{sprintId}",sprintId).accept(MediaType.APPLICATION_JSON);
 
-        var form = new Form();
-        form.param("id", "7");
-        form.param("sprintId", String.valueOf(sprintId));
-
-        var resp = client.post(form);
+        var resp = client.put(null);
         assertEquals(404, resp.getStatus());
 
         var msg = resp.readEntity(String.class);
@@ -277,13 +266,9 @@ public class TaskServiceTest {
         createSprint();
 
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/task/update_sprint").accept(MediaType.APPLICATION_JSON);
+        client.path("/task/{id}/sprint/19",taskId).accept(MediaType.APPLICATION_JSON);
 
-        var form = new Form();
-        form.param("id", String.valueOf(taskId));
-        form.param("sprintId", "19");
-
-        var resp = client.post(form);
+        var resp = client.put(null);
         assertEquals(404, resp.getStatus());
 
         var msg = resp.readEntity(String.class);
@@ -298,13 +283,12 @@ public class TaskServiceTest {
         var taskId = createTask(ctrId);
 
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/task/update_state").accept(MediaType.APPLICATION_JSON);
+        client.path("/task/{id}/state",taskId).accept(MediaType.APPLICATION_JSON);
 
         var form = new Form();
-        form.param("id", String.valueOf(taskId));
         form.param("state", TaskState.IN_DEVELOPMENT.name());
 
-        var resp = client.post(form);
+        var resp = client.put(form);
         assertEquals(200, resp.getStatus());
 
         var res = resp.readEntity(Task.class);
@@ -321,13 +305,12 @@ public class TaskServiceTest {
         createTask(ctrId);
 
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/task/update_state").accept(MediaType.APPLICATION_JSON);
+        client.path("/task/7/state").accept(MediaType.APPLICATION_JSON);
 
         var form = new Form();
-        form.param("id", "7");
         form.param("state", TaskState.IN_DEVELOPMENT.name());
 
-        var resp = client.post(form);
+        var resp = client.put(form);
         assertEquals(404, resp.getStatus());
 
         var msg = resp.readEntity(String.class);
@@ -343,13 +326,12 @@ public class TaskServiceTest {
         var taskId = createTask(ctrId);
 
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/task/update_state").accept(MediaType.APPLICATION_JSON);
+        client.path("/task/{id}/state",taskId).accept(MediaType.APPLICATION_JSON);
 
         var form = new Form();
-        form.param("id", String.valueOf(taskId));
         form.param("state", "test");
 
-        var resp = client.post(form);
+        var resp = client.put(form);
         assertEquals(400, resp.getStatus());
 
         var msg = resp.readEntity(String.class);
@@ -365,13 +347,12 @@ public class TaskServiceTest {
         var taskId = createTask(ctrId);
 
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/task/update_state").accept(MediaType.APPLICATION_JSON);
+        client.path("/task/{id}/state",taskId).accept(MediaType.APPLICATION_JSON);
 
         var form = new Form();
-        form.param("id", String.valueOf(taskId));
         form.param("state", TaskState.CREATED.name());
 
-        var resp = client.post(form);
+        var resp = client.put(form);
         assertEquals(201, resp.getStatus());
 
         var msg = resp.readEntity(String.class);
@@ -387,14 +368,13 @@ public class TaskServiceTest {
         var taskId = createTask(ctrId);
 
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/task/update_state").accept(MediaType.APPLICATION_JSON);
+        client.path("/task/{id}/state",taskId).accept(MediaType.APPLICATION_JSON);
 
         var form = new Form();
-        form.param("id", String.valueOf(taskId));
         form.param("state", TaskState.COMPLETED.name());
 
 
-        var resp = client.post(form);
+        var resp = client.put(form);
         assertEquals(200, resp.getStatus());
 
         var res = resp.readEntity(Task.class);
@@ -411,14 +391,13 @@ public class TaskServiceTest {
         updateTaskState(taskId, TaskState.COMPLETED);
 
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/task/update_state").accept(MediaType.APPLICATION_JSON);
+        client.path("/task/{id}/state",taskId).accept(MediaType.APPLICATION_JSON);
 
         var form = new Form();
-        form.param("id", String.valueOf(taskId));
         form.param("state", TaskState.IN_DEVELOPMENT.name());
 
 
-        var resp = client.post(form);
+        var resp = client.put(form);
         assertEquals(302, resp.getStatus());
 
         var msg = resp.readEntity(String.class);
@@ -434,14 +413,13 @@ public class TaskServiceTest {
         var taskId = createTask(ctrId);
 
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/task/update_state").accept(MediaType.APPLICATION_JSON);
+        client.path("/task/{id}/state",taskId).accept(MediaType.APPLICATION_JSON);
 
         var form = new Form();
-        form.param("id", String.valueOf(taskId));
         form.param("state", TaskState.IN_DEPLOYMENT.name());
 
 
-        var resp = client.post(form);
+        var resp = client.put(form);
         assertEquals(204, resp.getStatus());
 
         var msg = resp.readEntity(String.class);
@@ -459,14 +437,13 @@ public class TaskServiceTest {
 
 
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/task/update_state").accept(MediaType.APPLICATION_JSON);
+        client.path("/task/{id}/state",taskId).accept(MediaType.APPLICATION_JSON);
 
         var form = new Form();
-        form.param("id", String.valueOf(taskId));
         form.param("state", TaskState.IN_TEST.name());
 
 
-        var resp = client.post(form);
+        var resp = client.put(form);
         assertEquals(409, resp.getStatus());
 
         var msg = resp.readEntity(String.class);
@@ -482,14 +459,13 @@ public class TaskServiceTest {
         var taskId = createTask(ctrId);
 
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/task/update_state").accept(MediaType.APPLICATION_JSON);
+        client.path("/task/{id}/state",taskId).accept(MediaType.APPLICATION_JSON);
 
         var form = new Form();
-        form.param("id", String.valueOf(taskId));
         form.param("state", TaskState.IN_CODE_REVIEW.name());
 
 
-        var resp = client.post(form);
+        var resp = client.put(form);
         assertEquals(501, resp.getStatus());
 
         var msg = resp.readEntity(String.class);
@@ -505,14 +481,13 @@ public class TaskServiceTest {
         var taskId = createTask(ctrId);
 
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/task/update_state").accept(MediaType.APPLICATION_JSON);
+        client.path("/task/{id}/state",taskId).accept(MediaType.APPLICATION_JSON);
 
         var form = new Form();
-        form.param("id", String.valueOf(taskId));
         form.param("state", TaskState.IN_TEST.name());
 
 
-        var resp = client.post(form);
+        var resp = client.put(form);
         assertEquals(202, resp.getStatus());
 
         var msg = resp.readEntity(String.class);
@@ -528,7 +503,7 @@ public class TaskServiceTest {
         var taskId = createTask(ctrId);
 
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/task/delete").accept(MediaType.APPLICATION_JSON).query("id", taskId);
+        client.path("/task/{id}",taskId).accept(MediaType.APPLICATION_JSON);
 
         var resp = client.delete();
         assertEquals(200, resp.getStatus());
@@ -543,7 +518,7 @@ public class TaskServiceTest {
         createTask(ctrId);
 
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/task/delete").accept(MediaType.APPLICATION_JSON).query("id", 8);
+        client.path("/task/8").accept(MediaType.APPLICATION_JSON);
 
         var resp = client.delete();
         assertEquals(404, resp.getStatus());
@@ -560,7 +535,7 @@ public class TaskServiceTest {
         var taskId = createTask(ctrId);
 
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/task/find").accept(MediaType.APPLICATION_JSON).query("id", taskId);
+        client.path("/task/{id}",taskId).accept(MediaType.APPLICATION_JSON);
 
         var resp = client.get();
         assertEquals(200, resp.getStatus());
@@ -578,7 +553,7 @@ public class TaskServiceTest {
         createTask(ctrId);
 
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/task/find").accept(MediaType.APPLICATION_JSON).query("id", 8);
+        client.path("/task/8").accept(MediaType.APPLICATION_JSON);
 
         var resp = client.get();
         assertEquals(404, resp.getStatus());
@@ -596,8 +571,7 @@ public class TaskServiceTest {
         var taskId = createTask(ctrId);
 
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/task/find_project_tasks").accept(MediaType.APPLICATION_JSON)
-                .query("prId", prId)
+        client.path("/task/project/{prId}",prId).accept(MediaType.APPLICATION_JSON)
                 .query("offset", 0)
                 .query("limit", 2)
                 .query("all","true");
@@ -618,8 +592,7 @@ public class TaskServiceTest {
         createTask(ctrId);
 
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/task/find_project_tasks").accept(MediaType.APPLICATION_JSON)
-                .query("prId", prId)
+        client.path("/task/project/{prId}",prId).accept(MediaType.APPLICATION_JSON)
                 .query("offset", 1)
                 .query("limit", 1)
                 .query("all","true");
@@ -637,8 +610,7 @@ public class TaskServiceTest {
         createTask(ctrId);
 
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/task/find_project_tasks").accept(MediaType.APPLICATION_JSON)
-                .query("prId", 8)
+        client.path("/task/project/8").accept(MediaType.APPLICATION_JSON)
                 .query("offset", 0)
                 .query("limit", 2)
                 .query("all","true");
@@ -660,8 +632,7 @@ public class TaskServiceTest {
         var taskId = createTask(ctrId);
 
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/task/find_contributor_tasks").accept(MediaType.APPLICATION_JSON)
-                .query("ctrId", ctrId)
+        client.path("/task/contributor/{ctrId}",ctrId).accept(MediaType.APPLICATION_JSON)
                 .query("offset", 0)
                 .query("limit", 2);
 
@@ -681,8 +652,7 @@ public class TaskServiceTest {
         createTask(ctrId);
 
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/task/find_contributor_tasks").accept(MediaType.APPLICATION_JSON)
-                .query("ctrId", ctrId)
+        client.path("/task/contributor/{ctrId}",ctrId).accept(MediaType.APPLICATION_JSON)
                 .query("offset", 1)
                 .query("limit", 1);
 
@@ -698,8 +668,7 @@ public class TaskServiceTest {
         createTask(ctrId);
 
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/task/find_contributor_tasks").accept(MediaType.APPLICATION_JSON)
-                .query("ctrId", 8)
+        client.path("/task/contributor/8").accept(MediaType.APPLICATION_JSON)
                 .query("offset", 0)
                 .query("limit", 2);
 
@@ -719,8 +688,7 @@ public class TaskServiceTest {
         var taskId = createTask(ctrId);
 
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/task/find_user_tasks").accept(MediaType.APPLICATION_JSON)
-                .query("usrId", usrId)
+        client.path("/task/user/{usrId}",usrId).accept(MediaType.APPLICATION_JSON)
                 .query("offset", 0)
                 .query("limit", 2);
 
@@ -740,8 +708,7 @@ public class TaskServiceTest {
         createTask(ctrId);
 
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/task/find_user_tasks").accept(MediaType.APPLICATION_JSON)
-                .query("usrId", usrId)
+        client.path("/task/user/{usrId}",usrId).accept(MediaType.APPLICATION_JSON)
                 .query("offset", 1)
                 .query("limit", 1);
 
@@ -757,8 +724,7 @@ public class TaskServiceTest {
         createTask(ctrId);
 
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/task/find_user_tasks").accept(MediaType.APPLICATION_JSON)
-                .query("usrId", 8)
+        client.path("/task/user/8").accept(MediaType.APPLICATION_JSON)
                 .query("offset", 0)
                 .query("limit", 2);
 
@@ -772,9 +738,7 @@ public class TaskServiceTest {
     @Test
     public void countUserTasksTest() {
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/task/count_user_tasks")
-                .accept(MediaType.APPLICATION_JSON)
-                .query("userId", 7);
+        client.path("/task/user/7/count").accept(MediaType.APPLICATION_JSON);
 
         var res = client.get();
         assertEquals(200, res.getStatus());
@@ -787,9 +751,7 @@ public class TaskServiceTest {
     @Test
     public void countContributorTasksTest() {
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/task/count_contributor_tasks")
-                .accept(MediaType.APPLICATION_JSON)
-                .query("contributorId", 7);
+        client.path("/task/contributor/7/count").accept(MediaType.APPLICATION_JSON);
 
         var res = client.get();
         assertEquals(200, res.getStatus());
@@ -808,8 +770,7 @@ public class TaskServiceTest {
         var spId = createSprint();
 
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/task/find_sprint_tasks").accept(MediaType.APPLICATION_JSON)
-                .query("spId", spId)
+        client.path("/task/sprint/{spId}",spId).accept(MediaType.APPLICATION_JSON)
                 .query("offset", 0)
                 .query("limit", 2);
 
@@ -831,8 +792,7 @@ public class TaskServiceTest {
         var spId = createSprint();
 
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/task/find_sprint_tasks").accept(MediaType.APPLICATION_JSON)
-                .query("spId", spId)
+        client.path("/task/sprint/{spId}",spId).accept(MediaType.APPLICATION_JSON)
                 .query("offset", 1)
                 .query("limit", 1);
 
@@ -848,8 +808,7 @@ public class TaskServiceTest {
         createTask(ctrId);
 
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/task/find_sprint_tasks").accept(MediaType.APPLICATION_JSON)
-                .query("spId", 10)
+        client.path("/task/sprint/10").accept(MediaType.APPLICATION_JSON)
                 .query("offset", 0)
                 .query("limit", 2);
 
@@ -863,9 +822,7 @@ public class TaskServiceTest {
     @Test
     public void countSprintTasksTest() {
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/task/count_sprint_tasks")
-                .accept(MediaType.APPLICATION_JSON)
-                .query("sprintId", 7);
+        client.path("/task/sprint/7/count").accept(MediaType.APPLICATION_JSON);
 
         var res = client.get();
         assertEquals(200, res.getStatus());
@@ -880,7 +837,7 @@ public class TaskServiceTest {
     private long createUser() {
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
-        client.path("/task/create_user").accept(MediaType.APPLICATION_JSON);
+        client.path("/task/user").accept(MediaType.APPLICATION_JSON);
 
         var form = new Form();
         form.param("login", "login");
@@ -903,7 +860,7 @@ public class TaskServiceTest {
         form.param("name", "prjName");
         form.param("startDate", "31/10/1999");
 
-        client.path("/task/create_project").accept(MediaType.APPLICATION_JSON);
+        client.path("/task/project").accept(MediaType.APPLICATION_JSON);
 
         var res = client.post(form);
         return res.readEntity(Project.class).getId();
@@ -912,9 +869,9 @@ public class TaskServiceTest {
 
     private long createContributor() {
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/task/create_contributor").accept(MediaType.APPLICATION_JSON);
+        client.path("/task/contributor").accept(MediaType.APPLICATION_JSON);
 
-        var resp = client.get();
+        var resp = client.post(null);
 
         return resp.readEntity(Contributor.class).getId();
     }
@@ -922,7 +879,7 @@ public class TaskServiceTest {
     private long createTask(long ctrId) {
 
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/task/create").accept(MediaType.APPLICATION_JSON);
+        client.path("/task").accept(MediaType.APPLICATION_JSON);
 
         var form = new Form();
         form.param("ctrId", String.valueOf(ctrId));
@@ -936,22 +893,21 @@ public class TaskServiceTest {
 
     private long createSprint() {
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/task/create_sprint").accept(MediaType.APPLICATION_JSON);
+        client.path("/task/sprint").accept(MediaType.APPLICATION_JSON);
 
-        var resp = client.get();
+        var resp = client.post(null);
 
         return resp.readEntity(Sprint.class).getId();
     }
 
     public void updateTaskState(long taskId, TaskState state) {
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/task/update_state").accept(MediaType.APPLICATION_JSON);
+        client.path("/task/{id}/state",taskId).accept(MediaType.APPLICATION_JSON);
 
         var form = new Form();
-        form.param("id", String.valueOf(taskId));
         form.param("state", state.name());
 
-        client.post(form);
+        client.put(form);
 
         client.close();
     }

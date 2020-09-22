@@ -280,7 +280,7 @@ public class TaskServiceTestImpl implements TaskService {
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/create_user")
+    @Path("/user")
     public Response createUser() {
 
 
@@ -293,7 +293,7 @@ public class TaskServiceTestImpl implements TaskService {
 
 
     @POST
-    @Path("/create_project")
+    @Path("/project")
     @Produces(MediaType.APPLICATION_JSON)
     public Response createProject() {
 
@@ -305,8 +305,8 @@ public class TaskServiceTestImpl implements TaskService {
     }
 
 
-    @GET
-    @Path("/create_contributor")
+    @POST
+    @Path("/contributor")
     @Produces(MediaType.APPLICATION_JSON)
     public Response createContributor() {
 
@@ -317,8 +317,8 @@ public class TaskServiceTestImpl implements TaskService {
     }
 
 
-    @GET
-    @Path("/create_sprint")
+    @POST
+    @Path("/sprint")
     @Produces(MediaType.APPLICATION_JSON)
     public Response createSprint() {
 

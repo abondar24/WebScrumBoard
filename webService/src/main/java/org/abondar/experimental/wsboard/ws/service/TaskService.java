@@ -14,6 +14,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
@@ -30,7 +31,6 @@ import java.util.List;
 public interface TaskService {
 
     @POST
-    @Path("/create")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(
@@ -49,8 +49,8 @@ public interface TaskService {
                         @FormParam("taskName") @ApiParam(required = true) String taskName,
                         @FormParam("taskDescription") @ApiParam(required = true) String taskDescription);
 
-    @POST
-    @Path("/update")
+    @PUT
+    @Path("/{id}")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(
@@ -62,7 +62,7 @@ public interface TaskService {
             @ApiResponse(code = 200, message = "Task updated", response = Task.class),
             @ApiResponse(code = 404, message = "Task or contributor not found")
     })
-    Response updateTask(@FormParam("id") @ApiParam(required = true) long taskId,
+    Response updateTask(@PathParam("id") @ApiParam(required = true) long taskId,
                         @FormParam("ctrId") @ApiParam Long contributorId,
                         @FormParam("devOps") @ApiParam boolean devOpsEnabled,
                         @FormParam("storyPoints") @ApiParam Integer storyPoints,
@@ -70,9 +70,8 @@ public interface TaskService {
                         @FormParam("taskDescription") @ApiParam(required = true) String taskDescription);
 
 
-    @POST
-    @Path("/update_sprint")
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @PUT
+    @Path("/{id}/sprint/{sprintId}")
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(
             value = "Update task sprint",
@@ -83,13 +82,12 @@ public interface TaskService {
             @ApiResponse(code = 200, message = "Task updated", response = Task.class),
             @ApiResponse(code = 404, message = "Task or sprint not found")
     })
-    Response updateTaskSprint(@FormParam("id") @ApiParam(required = true) long taskId,
-                              @FormParam("sprintId") @ApiParam(required = true) long sprintId);
+    Response updateTaskSprint(@PathParam("id") @ApiParam(required = true) long taskId,
+                              @PathParam("sprintId") @ApiParam(required = true) long sprintId);
 
 
     @PUT
-    @Path("/update_tasks_sprint")
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Path("/sprint/{sprintId}")
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(
             value = "Update tasks sprint",
@@ -101,10 +99,10 @@ public interface TaskService {
             @ApiResponse(code = 404, message = "Sprint not found")
     })
     Response updateTasksSprint(@QueryParam("id") @ApiParam(required = true) List<Long> ids,
-                               @QueryParam("sprintId") @ApiParam(required = true) long sprintId);
+                               @PathParam("sprintId") @ApiParam(required = true) long sprintId);
 
-    @POST
-    @Path("/update_state")
+    @PUT
+    @Path("/{id}/state")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(
@@ -123,12 +121,12 @@ public interface TaskService {
             @ApiResponse(code = 409, message = "Task is returned to a wrong state after pause"),
             @ApiResponse(code = 501, message = "Task can't be changed to the state")
     })
-    Response updateTaskState(@FormParam("id") @ApiParam(required = true) long taskId,
+    Response updateTaskState(@PathParam("id") @ApiParam(required = true) long taskId,
                              @FormParam("state") @ApiParam String state);
 
 
     @DELETE
-    @Path("/delete")
+    @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(
             value = "Delete task",
@@ -138,10 +136,10 @@ public interface TaskService {
             @ApiResponse(code = 200, message = "Task deleted"),
             @ApiResponse(code = 404, message = "Task not found")
     })
-    Response deleteTask(@QueryParam("id") @ApiParam(required = true) long id);
+    Response deleteTask(@PathParam("id") @ApiParam(required = true) long id);
 
     @GET
-    @Path("/find")
+    @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(
             value = "Find task",
@@ -151,10 +149,10 @@ public interface TaskService {
             @ApiResponse(code = 200, message = "Task found", response = Task.class),
             @ApiResponse(code = 404, message = "Task  not found")
     })
-    Response getTaskById(@QueryParam("id") @ApiParam(required = true) long taskId);
+    Response getTaskById(@PathParam("id") @ApiParam(required = true) long taskId);
 
     @GET
-    @Path("/find_project_tasks")
+    @Path("/project/{prId}")
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(
             value = "Find project tasks",
@@ -165,13 +163,13 @@ public interface TaskService {
             @ApiResponse(code = 204, message = "No tasks not found"),
             @ApiResponse(code = 404, message = "Project not found")
     })
-    Response getTasksForProject(@QueryParam("prId") @ApiParam(required = true) long projectId,
+    Response getTasksForProject(@PathParam("prId") @ApiParam(required = true) long projectId,
                                 @QueryParam("offset") @ApiParam(required = true) int offset,
                                 @QueryParam("limit") @ApiParam(required = true) int limit,
                                 @QueryParam("all")@ApiParam(required = true) boolean all);
 
     @GET
-    @Path("/find_contributor_tasks")
+    @Path("/contributor/{ctrId}")
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(
             value = "Find contributor tasks",
@@ -182,13 +180,13 @@ public interface TaskService {
             @ApiResponse(code = 204, message = "No tasks not found"),
             @ApiResponse(code = 404, message = "Contributor not found")
     })
-    Response getTasksForContributor(@QueryParam("ctrId") @ApiParam(required = true) long ctrId,
+    Response getTasksForContributor(@PathParam("ctrId") @ApiParam(required = true) long ctrId,
                                     @QueryParam("offset") @ApiParam(required = true) int offset,
                                     @QueryParam("limit") @ApiParam(required = true) int limit);
 
 
     @GET
-    @Path("/count_contributor_tasks")
+    @Path("/contributor/{ctrId}/count")
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(
             value = "Count contributor tasks",
@@ -198,10 +196,10 @@ public interface TaskService {
             @ApiResponse(code = 200, message = "Tasks counted", response = Integer.class),
             @ApiResponse(code = 404, message = "Contributor not found")
     })
-    Response countContributorTasks(@QueryParam("contributorId") @ApiParam(required = true) long ctrId);
+    Response countContributorTasks(@PathParam("ctrId") @ApiParam(required = true) long ctrId);
 
     @GET
-    @Path("/find_user_tasks")
+    @Path("/user/{usrId}")
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(
             value = "Find user tasks",
@@ -212,13 +210,13 @@ public interface TaskService {
             @ApiResponse(code = 204, message = "No tasks not found"),
             @ApiResponse(code = 404, message = "User not found")
     })
-    Response getTasksForUser(@QueryParam("usrId") @ApiParam(required = true) long usrId,
+    Response getTasksForUser(@PathParam("usrId") @ApiParam(required = true) long usrId,
                              @QueryParam("offset") @ApiParam(required = true) int offset,
                              @QueryParam("limit") @ApiParam(required = true) int limit);
 
 
     @GET
-    @Path("/count_user_tasks")
+    @Path("/user/{usrId}/count")
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(
             value = "Count user tasks",
@@ -228,11 +226,11 @@ public interface TaskService {
             @ApiResponse(code = 200, message = "Tasks counted", response = Integer.class),
             @ApiResponse(code = 404, message = "User not found")
     })
-    Response countUserTasks(@QueryParam("userId") @ApiParam(required = true) long ctrId);
+    Response countUserTasks(@PathParam("usrId") @ApiParam(required = true) long ctrId);
 
 
     @GET
-    @Path("/find_sprint_tasks")
+    @Path("/sprint/{spId}")
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(
             value = "Find sprint tasks",
@@ -243,13 +241,13 @@ public interface TaskService {
             @ApiResponse(code = 204, message = "No tasks not found"),
             @ApiResponse(code = 404, message = "Contributor not found")
     })
-    Response getTasksForSprint(@QueryParam("spId") @ApiParam(required = true) long sprintId,
+    Response getTasksForSprint(@PathParam("spId") @ApiParam(required = true) long sprintId,
                                @QueryParam("offset") @ApiParam(required = true) int offset,
                                @QueryParam("limit") @ApiParam(required = true) int limit);
 
 
     @GET
-    @Path("/count_sprint_tasks")
+    @Path("/sprint/{spId}/count")
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(
             value = "Count sprint tasks",
@@ -259,5 +257,5 @@ public interface TaskService {
             @ApiResponse(code = 200, message = "Tasks counted", response = Integer.class),
             @ApiResponse(code = 404, message = "Sprint not found")
     })
-    Response countSprintTasks(@QueryParam("sprintId") @ApiParam(required = true) long spId);
+    Response countSprintTasks(@PathParam("spId") @ApiParam(required = true) long spId);
 }
