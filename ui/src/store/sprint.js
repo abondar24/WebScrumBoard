@@ -84,7 +84,7 @@ export default {
             }
 
 
-            return getters.authenticatedAxios.post(sprintUrl + '/' + sprintData.id, form, getters.getFormConfig).then(
+            return getters.authenticatedAxios.put(sprintUrl + '/' + sprintData.id, form, getters.getFormConfig).then(
                 (response) => {
                     commit('setErrorMessage', '');
 

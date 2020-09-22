@@ -77,7 +77,7 @@ export default {
             form.append('isOwner', ctrData.owner);
             form.append('isActive', ctrData.active);
 
-            return getters.authenticatedAxios.post(contributorUrl +'/user/'+ctrData.userId +'/project/'+ctrData.projectId , form, getters.getFormConfig).then(
+            return getters.authenticatedAxios.put(contributorUrl +'/user/'+ctrData.userId +'/project/'+ctrData.projectId , form, getters.getFormConfig).then(
                 (response) => {
                     commit('setErrorMessage', '');
 
