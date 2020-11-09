@@ -424,26 +424,12 @@
     </select>
 
 
-    <delete id="deleteUsers">
-        DELETE
-        FROM wsuser
-    </delete>
-
-    <delete id="deleteProjects">
-        DELETE
-        FROM project
-    </delete>
-
     <delete id="deleteProject">
         DELETE
         FROM project
         WHERE id = #{id}
     </delete>
 
-    <delete id="deleteContributors">
-        DELETE
-        FROM contributor
-    </delete>
 
     <delete id="deleteProjectContributors">
         DELETE
@@ -451,10 +437,7 @@
         WHERE project_id = #{projectId}
     </delete>
 
-    <delete id="deleteTasks">
-        DELETE
-        FROM task
-    </delete>
+
 
     <delete id="deleteProjectTasks">
         DELETE
@@ -470,10 +453,6 @@
         WHERE id = #{id}
     </delete>
 
-    <delete id="deleteSprints">
-        DELETE
-        FROM sprint
-    </delete>
 
     <delete id="deleteProjectSprints">
         DELETE
@@ -485,11 +464,6 @@
         DELETE
         FROM sprint
         WHERE id = #{id}
-    </delete>
-
-    <delete id="deleteCodes">
-        DELETE
-        FROM security_code
     </delete>
 
     <delete id="deleteCode">

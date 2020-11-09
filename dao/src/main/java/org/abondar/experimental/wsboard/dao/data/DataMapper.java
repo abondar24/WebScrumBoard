@@ -7,8 +7,11 @@ import org.abondar.experimental.wsboard.datamodel.SecurityCode;
 import org.abondar.experimental.wsboard.datamodel.Sprint;
 import org.abondar.experimental.wsboard.datamodel.task.Task;
 import org.abondar.experimental.wsboard.datamodel.user.User;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Update;
+
 
 import java.util.List;
 
@@ -120,16 +123,22 @@ public interface DataMapper {
 
     void deleteCode(@Param("id") long id);
 
+    @Delete("DELETE FROM wsuser")
     void deleteUsers();
 
+    @Delete("DELETE FROM contributor")
     void deleteContributors();
 
+    @Delete("DELETE FROM task")
     void deleteTasks();
 
+    @Delete("DELETE FROM project")
     void deleteProjects();
 
+    @Delete("DELETE FROM sprint")
     void deleteSprints();
 
+    @Delete("DELETE FROM security_code")
     void deleteCodes();
 
 
