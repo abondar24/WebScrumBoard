@@ -2,6 +2,10 @@ package org.abondar.experimental.wsboard.datamodel;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.io.Serializable;
 
@@ -10,6 +14,10 @@ import java.io.Serializable;
  * @author a.bondar
  */
 @ApiModel(value = "Contributor", description = "Project contributor")
+@Getter
+@Setter
+@ToString
+@NoArgsConstructor
 public class Contributor implements Serializable {
 
     private static final long serialVersionUID = -345433L;
@@ -29,7 +37,6 @@ public class Contributor implements Serializable {
     @ApiModelProperty(value = "Is contributor active or not")
     private boolean isActive;
 
-    public Contributor(){}
 
     public Contributor(long userId, long projectId, boolean isOwner) {
         this.userId = userId;
@@ -38,54 +45,5 @@ public class Contributor implements Serializable {
         this.isActive = true;
     }
 
-    public long getId() {
-        return id;
-    }
 
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(long userId) {
-        this.userId = userId;
-    }
-
-    public long getProjectId() {
-        return projectId;
-    }
-
-    public void setProjectId(long projectId) {
-        this.projectId = projectId;
-    }
-
-    public boolean isOwner() {
-        return isOwner;
-    }
-
-    public void setOwner(boolean owner) {
-        isOwner = owner;
-    }
-
-    public boolean isActive() {
-        return isActive;
-    }
-
-    public void setActive(boolean active) {
-        isActive = active;
-    }
-
-    @Override
-    public String toString() {
-        return "Contributor{" +
-                "id=" + id +
-                ", userId=" + userId +
-                ", projectId=" + projectId +
-                ", isOwner=" + isOwner +
-                ", isActive=" + isActive +
-                '}';
-    }
 }

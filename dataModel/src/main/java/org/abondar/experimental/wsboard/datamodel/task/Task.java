@@ -2,6 +2,11 @@ package org.abondar.experimental.wsboard.datamodel.task;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -12,6 +17,10 @@ import java.util.Date;
  * @author a.bondar
  */
 @ApiModel(value = "Task", description = "Project task")
+@Getter
+@Setter
+@ToString
+@NoArgsConstructor
 public class Task implements Serializable {
 
     private static final long serialVersionUID = -1276893L;
@@ -49,8 +58,6 @@ public class Task implements Serializable {
     @ApiModelProperty(value = "Task description")
     private String taskDescription;
 
-    public Task(){}
-
     public Task(long contributorId, Date startDate, boolean devOpsEnabled, String taskName, String taskDescription) {
         this.contributorId = contributorId;
         this.startDate = startDate;
@@ -59,109 +66,5 @@ public class Task implements Serializable {
         this.taskDescription = taskDescription;
     }
 
-    public long getId() {
-        return id;
-    }
 
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public long getContributorId() {
-        return contributorId;
-    }
-
-    public void setContributorId(long contributorId) {
-        this.contributorId = contributorId;
-    }
-
-    public TaskState getTaskState() {
-        return taskState;
-    }
-
-    public void setTaskState(TaskState taskState) {
-        this.taskState = taskState;
-    }
-
-    public int getStoryPoints() {
-        return storyPoints;
-    }
-
-    public void setStoryPoints(int storyPoints) {
-        this.storyPoints = storyPoints;
-    }
-
-    public Date getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(Date startDate) {
-        this.startDate = startDate;
-    }
-
-    public Date getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(Date endDate) {
-        this.endDate = endDate;
-    }
-
-    public long getSprintId() {
-        return sprintId;
-    }
-
-    public void setSprintId(long sprintId) {
-        this.sprintId = sprintId;
-    }
-
-    public TaskState getPrevState() {
-        return prevState;
-    }
-
-    public void setPrevState(TaskState prevState) {
-        this.prevState = prevState;
-    }
-
-
-    public boolean isDevOpsEnabled() {
-        return devOpsEnabled;
-    }
-
-    public void setDevOpsEnabled(boolean devOpsEnabled) {
-        this.devOpsEnabled = devOpsEnabled;
-    }
-
-    public String getTaskName() {
-        return taskName;
-    }
-
-    public void setTaskName(String taskName) {
-        this.taskName = taskName;
-    }
-
-    public String getTaskDescription() {
-        return taskDescription;
-    }
-
-    public void setTaskDescription(String taskDescription) {
-        this.taskDescription = taskDescription;
-    }
-
-    @Override
-    public String toString() {
-        return "Task{" +
-                "id=" + id +
-                ", contributorId=" + contributorId +
-                ", taskState=" + taskState +
-                ", prevState=" + prevState +
-                ", storyPoints=" + storyPoints +
-                ", startDate=" + startDate +
-                ", endDate=" + endDate +
-                ", sprintId=" + sprintId +
-                ", devOpsEnabled=" + devOpsEnabled +
-                ", taskName='" + taskName + '\'' +
-                ", taskDescription='" + taskDescription + '\'' +
-                '}';
-    }
 }

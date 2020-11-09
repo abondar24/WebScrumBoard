@@ -14,6 +14,8 @@
         <junit.version>5.3.2</junit.version>
         <jaxb.version>2.3.1</jaxb.version>
         <camel.version>2.24.1</camel.version>
+        <lombok.version>1.18.16</lombok.version>
+        <jaxws.version>2.3.0</jaxws.version>
         <build-plugin.jacoco.version>0.8.4</build-plugin.jacoco.version>
         <build-plugin.coveralls.version>4.3.0</build-plugin.coveralls.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -51,14 +53,19 @@
         <dependency>
             <groupId>javax.xml.ws</groupId>
             <artifactId>jaxws-api</artifactId>
-            <version>2.3.0</version>
+            <version>${jaxws.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-rt-rs-service-description-swagger</artifactId>
             <version>${cxf.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+            <scope>provided</scope>
+        </dependency>
 
     </dependencies>
 

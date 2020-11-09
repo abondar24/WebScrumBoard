@@ -2,6 +2,10 @@ package org.abondar.experimental.wsboard.datamodel;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -12,6 +16,10 @@ import java.util.Date;
  * @author a.bondar
  */
 @ApiModel(value = "Sprint", description = "Project sprint")
+@Getter
+@Setter
+@ToString
+@NoArgsConstructor
 public class Sprint implements Serializable {
 
     private static final long serialVersionUID = -125433L;
@@ -35,7 +43,6 @@ public class Sprint implements Serializable {
     private boolean isCurrent;
 
 
-    public Sprint(){}
 
     public Sprint(String name, Date startDate, Date endDate, long projectId) {
         this.name = name;
@@ -45,65 +52,5 @@ public class Sprint implements Serializable {
         this.isCurrent = false;
     }
 
-    public long getId() {
-        return id;
-    }
 
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Date getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(Date startDate) {
-        this.startDate = startDate;
-    }
-
-    public Date getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(Date endDate) {
-        this.endDate = endDate;
-    }
-
-
-    public long getProjectId() {
-        return projectId;
-    }
-
-    public void setProjectId(long projectId) {
-        this.projectId = projectId;
-    }
-
-
-    public boolean isCurrent() {
-        return isCurrent;
-    }
-
-    public void setCurrent(boolean current) {
-        isCurrent = current;
-    }
-
-    @Override
-    public String toString() {
-        return "Sprint{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", startDate=" + startDate +
-                ", endDate=" + endDate +
-                ", projectId=" + projectId +
-                ", isCurrent=" + isCurrent +
-                '}';
-    }
 }
