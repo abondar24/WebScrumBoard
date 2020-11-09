@@ -1,0 +1,1 @@
+ALTER TABLE task ADD COLUMN prev_state VARCHAR(255);

@@ -1,0 +1,10 @@
+kind: Service
+metadata:
+  name: wsb-email
+spec:
+  ports:
+    - name: local
+      protocol: TCP
+      port: 25
+      targetPort: 25
+

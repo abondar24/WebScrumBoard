@@ -1,0 +1,1 @@
+ALTER TABLE task ADD column task_type VARCHAR(32) NOT NULL;

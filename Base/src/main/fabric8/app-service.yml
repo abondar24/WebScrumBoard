@@ -1,0 +1,10 @@
+kind: Service
+metadata:
+  name: base
+spec:
+  ports:
+    - protocol: TCP
+      port: 8024
+      targetPort: 8024
+  selector:
+    app: base

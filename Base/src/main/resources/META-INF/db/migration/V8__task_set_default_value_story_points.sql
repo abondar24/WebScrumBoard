@@ -1,0 +1,2 @@
+ALTER TABLE task
+  ALTER COLUMN story_points SET DEFAULT 0;

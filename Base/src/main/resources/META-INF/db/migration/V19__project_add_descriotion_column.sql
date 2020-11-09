@@ -1,0 +1,1 @@
+ALTER TABLE project ADD COLUMN description VARCHAR(2048);

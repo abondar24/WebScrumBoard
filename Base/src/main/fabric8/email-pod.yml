@@ -1,0 +1,29 @@
+kind: Pod
+metadata:
+  name: wsb-email
+spec:
+  containers:
+    - name: wsb-email
+      image: juanluisbaptiste/postfix
+
+      ports:
+
+        - name: smtp
+          containerPort: 25
+
+      env:
+        - name:  SMTP_PORT
+          value: 25
+
+        - name:  SERVER_HOSTNAME
+          value: wsb-email.tk
+
+        - name: SMTP_SERVER
+          value: smtp.gmail.com
+
+        - name:  SMTP_USERNAME
+          value: admin
+
+        - name:  SMTP_PASSWORD
+          value: admin217
+

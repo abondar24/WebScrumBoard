@@ -1,0 +1,1 @@
+ALTER TABLE wsuser ADD COLUMN avatar BYTEA;
