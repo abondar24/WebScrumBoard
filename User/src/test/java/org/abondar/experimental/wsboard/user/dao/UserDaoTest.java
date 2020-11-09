@@ -1,11 +1,22 @@
-package org.abondar.experimental.wsboard.test.dao;
+package org.abondar.experimental.wsboard.user.dao;
 
-import org.abondar.experimental.wsboard.dao.exception.DataCreationException;
-import org.abondar.experimental.wsboard.dao.exception.DataExistenceException;
-import org.abondar.experimental.wsboard.dao.exception.InvalidHashException;
+
+import org.abondar.experimental.wsboard.common.exception.DataCreationException;
+import org.abondar.experimental.wsboard.common.exception.DataExistenceException;
+import org.abondar.experimental.wsboard.common.exception.InvalidHashException;
 import org.abondar.experimental.wsboard.dao.password.PasswordUtil;
-import org.abondar.experimental.wsboard.datamodel.user.UserRole;
+
+import org.abondar.experimental.wsboard.user.data.User;
+import org.abondar.experimental.wsboard.user.data.UserRole;
+import org.apache.tools.ant.types.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+
 
 import java.util.List;
 
@@ -14,11 +25,42 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
-public class UserDaoTest extends BaseDaoTest {
+@SpringBootTest
+@ExtendWith(SpringExtension.class)
+@ActiveProfiles("test")
+public class UserDaoTest  {
+
+    @Autowired
+    @Qualifier("userDao")
+    protected  UserDao userDao;
+
+    protected User createUser() throws Exception {
+        var login = "login";
+        var email = "email@email.com";
+        var password = "pwd";
+        var firstName = "fname";
+        var lastName = "lname";
+        var roles = UserRole.DEVELOPER.name() + ";" + UserRole.DEV_OPS.name();
+
+        return userDao.createUser(login, password, email, firstName, lastName, roles);
+    }
+
+    protected User createUser(String login) throws Exception {
+        if (login.isBlank()){
+            return createUser();
+        }
+        var email = "email@email.com";
+        var password = "pwd";
+        var firstName = "fname";
+        var lastName = "lname";
+        var roles = UserRole.DEVELOPER.name() + ";" + UserRole.DEV_OPS.name();
+
+        return userDao.createUser(login, password, email, firstName, lastName, roles);
+    }
+
 
     @Test
     public void createUserTest() throws Exception {
-        cleanData();
         var usr = createUser();
 
         assertTrue(usr.getId() > 0);
@@ -28,17 +70,13 @@ public class UserDaoTest extends BaseDaoTest {
 
     @Test
     public void createUserLoginExistsTest() throws Exception {
-        cleanData();
-
         createUser();
-
-        assertThrows(DataExistenceException.class, this::createUser);
+       assertThrows(DataExistenceException.class, this::createUser);
 
     }
 
     @Test
     public void createUserBlankDataTest() {
-        cleanData();
         var login = "login";
         var email = "email@email.com";
         var password = "pwd";
@@ -54,7 +92,6 @@ public class UserDaoTest extends BaseDaoTest {
 
     @Test
     public void createUserNonEnglishTest() throws Exception {
-        cleanData();
         var login = "login";
         var email = "email@email.com";
         var password = "pwd";
@@ -65,13 +102,11 @@ public class UserDaoTest extends BaseDaoTest {
         var usr = userDao.createUser(login,email,password,firstName,lastName,roles);
 
 
-        assertTrue(usr.getId() > 0);
 
     }
 
     @Test
     public void updateUserLoginTest() throws Exception {
-        cleanData();
 
         var usr = createUser();
         var id = usr.getId();
@@ -83,10 +118,8 @@ public class UserDaoTest extends BaseDaoTest {
 
     @Test
     public void updateUserLoginExistsTest() throws Exception {
-        cleanData();
 
         var usr = createUser();
-
         assertThrows(DataExistenceException.class, () -> userDao.updateLogin(usr.getLogin(), usr.getId()));
 
     }
@@ -94,14 +127,11 @@ public class UserDaoTest extends BaseDaoTest {
 
     @Test
     public void updateUserLoginNotExistsTest() {
-        cleanData();
-
         assertThrows(DataExistenceException.class, () -> userDao.updateLogin("login", 1));
     }
 
     @Test
     public void updatePasswordTest() throws Exception {
-        cleanData();
 
         var usr = createUser();
         var id = usr.getId();
@@ -113,7 +143,6 @@ public class UserDaoTest extends BaseDaoTest {
 
     @Test
     public void updatePasswordUserNotFoundTest() {
-        cleanData();
 
         assertThrows(DataExistenceException.class, () ->
                 userDao.updatePassword("pwd", "newPwd", 100));
@@ -121,7 +150,6 @@ public class UserDaoTest extends BaseDaoTest {
 
     @Test
     public void updatePasswordUnathorizedTest() throws Exception {
-        cleanData();
 
         var usr = createUser();
 
@@ -132,7 +160,6 @@ public class UserDaoTest extends BaseDaoTest {
 
     @Test
     public void updateUserTest() throws Exception {
-        cleanData();
 
         var usr = createUser();
         var id = usr.getId();
@@ -146,7 +173,6 @@ public class UserDaoTest extends BaseDaoTest {
 
     @Test
     public void updateUserNullFieldTest() throws Exception {
-        cleanData();
 
         var usr = createUser();
         var id = usr.getId();
@@ -158,7 +184,6 @@ public class UserDaoTest extends BaseDaoTest {
 
     @Test
     public void updateUserEmptyFieldTest() throws Exception {
-        cleanData();
 
         var usr = createUser();
         var id = usr.getId();
@@ -170,7 +195,6 @@ public class UserDaoTest extends BaseDaoTest {
 
     @Test
     public void resetPasswordTest() throws Exception {
-        cleanData();
 
         var usr = createUser();
         var id = usr.getId();
@@ -184,15 +208,11 @@ public class UserDaoTest extends BaseDaoTest {
 
     @Test
     public void resetPasswordUserNotFoundTest() throws Exception {
-        cleanData();
-
         assertThrows(DataExistenceException.class, () -> userDao.resetPassword(10));
     }
 
     @Test
     public void findUserByIdTest() throws Exception {
-        cleanData();
-
         var usr = createUser();
         var id = usr.getId();
 
@@ -204,15 +224,12 @@ public class UserDaoTest extends BaseDaoTest {
 
     @Test
     public void findUserNotFoundByIdTest() {
-        cleanData();
-
         assertThrows(DataExistenceException.class, () -> userDao.findUserById(10));
     }
 
 
     @Test
     public void findUserByLoginTest() throws Exception {
-        cleanData();
 
         var usr = createUser();
         var login = usr.getLogin();
@@ -224,14 +241,11 @@ public class UserDaoTest extends BaseDaoTest {
 
     @Test
     public void findUserNotFoundByLoginTest() {
-        cleanData();
-
         assertThrows(DataExistenceException.class, () -> userDao.findUserByLogin("test"));
     }
 
     @Test
     public void findUsersByIdsTest() throws Exception {
-        cleanData();
 
         var usr = createUser();
         var id = usr.getId();
@@ -243,7 +257,6 @@ public class UserDaoTest extends BaseDaoTest {
 
     @Test
     public void findUsersByIdsNotExistingIdsTest() throws Exception {
-        cleanData();
 
         var usr = createUser();
         var id = usr.getId();
@@ -256,7 +269,6 @@ public class UserDaoTest extends BaseDaoTest {
 
     @Test
     public void deleteUserTest() throws Exception {
-        cleanData();
 
         var usr = createUser();
 
@@ -275,7 +287,6 @@ public class UserDaoTest extends BaseDaoTest {
 
     @Test
     public void deleteUserNoContributorsTest() throws Exception {
-        cleanData();
 
         var delUser = userDao.createUser("usr1", "pwd", "ss",
                 "fname", "lname", UserRole.DEVELOPER.name() + ";");
@@ -288,8 +299,6 @@ public class UserDaoTest extends BaseDaoTest {
 
     @Test
     public void deleteUserIsOwnerTest() throws Exception {
-        cleanData();
-
         var usr = createUser();
 
         var project = createProject();
@@ -298,7 +307,6 @@ public class UserDaoTest extends BaseDaoTest {
         assertThrows(DataCreationException.class, () -> userDao.deleteUser(usr.getId()));
 
     }
-
 
 
 }

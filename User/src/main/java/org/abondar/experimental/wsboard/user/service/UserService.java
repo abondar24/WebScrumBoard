@@ -1,11 +1,12 @@
-package org.abondar.experimental.wsboard.ws.service;
+package org.abondar.experimental.wsboard.user.service;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import org.abondar.experimental.wsboard.datamodel.user.User;
+
+import org.abondar.experimental.wsboard.user.data.User;
 import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
 
 import javax.annotation.security.PermitAll;

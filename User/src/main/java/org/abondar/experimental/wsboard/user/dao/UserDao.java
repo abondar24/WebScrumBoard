@@ -1,15 +1,16 @@
-package org.abondar.experimental.wsboard.dao;
+package org.abondar.experimental.wsboard.user.dao;
 
-import org.abondar.experimental.wsboard.dao.data.DataMapper;
-import org.abondar.experimental.wsboard.dao.data.LogMessageUtil;
-import org.abondar.experimental.wsboard.dao.exception.CannotPerformOperationException;
-import org.abondar.experimental.wsboard.dao.exception.DataCreationException;
-import org.abondar.experimental.wsboard.dao.exception.DataExistenceException;
-import org.abondar.experimental.wsboard.dao.exception.InvalidHashException;
+
+import org.abondar.experimental.wsboard.common.exception.CannotPerformOperationException;
+import org.abondar.experimental.wsboard.common.exception.DataCreationException;
+import org.abondar.experimental.wsboard.common.exception.DataExistenceException;
+import org.abondar.experimental.wsboard.common.exception.InvalidHashException;
+import org.abondar.experimental.wsboard.common.util.LogMessageUtil;
 import org.abondar.experimental.wsboard.dao.password.PasswordUtil;
 import org.abondar.experimental.wsboard.datamodel.Contributor;
-import org.abondar.experimental.wsboard.datamodel.user.User;
-import org.abondar.experimental.wsboard.datamodel.user.UserRole;
+import org.abondar.experimental.wsboard.user.data.User;
+import org.abondar.experimental.wsboard.user.data.UserRole;
+import org.abondar.experimental.wsboard.user.mapper.UserMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.TransactionStatus;
@@ -24,16 +25,21 @@ import java.util.List;
  *
  * @author a.bondar
  */
-public class UserDao extends BaseDao {
+public class UserDao {
 
 
     private static Logger logger = LoggerFactory.getLogger(UserDao.class);
 
+    private UserMapper mapper;
+
+    private ContributorMapper ctrMapper;
 
     private JtaTransactionManager transactionManager;
 
-    public UserDao(DataMapper mapper,JtaTransactionManager transactionManager) {
-        super(mapper);
+
+    public UserDao(UserMapper mapper,ContributorMapper ctrMapper JtaTransactionManager transactionManager) {
+        this.mapper = mapper;
+        this.ctrMapper = ctrMapper;
         this.transactionManager = transactionManager;
     }
 
@@ -233,7 +239,7 @@ public class UserDao extends BaseDao {
             throw new DataExistenceException(ex.getMessage());
         }
 
-        var contributors = mapper.getContributorsByUserId(id,-1,0);
+        var contributors = ctrMapper.getContributorsByUserId(id,-1,0);
         if (!contributors.isEmpty()) {
             var isOwnerOnce = contributors.stream().anyMatch(Contributor::isOwner);
             if (isOwnerOnce) {
@@ -242,7 +248,7 @@ public class UserDao extends BaseDao {
                 throw new DataCreationException(LogMessageUtil.USER_IS_PROJECT_OWNER);
             }
 
-            mapper.deactivateUserContributors(usr.getId());
+            ctrMapper.deactivateUserContributors(usr.getId());
         }
 
         usr.setDeleted();

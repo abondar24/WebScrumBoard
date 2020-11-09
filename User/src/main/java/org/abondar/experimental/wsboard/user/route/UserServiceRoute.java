@@ -1,15 +1,16 @@
-package org.abondar.experimental.wsboard.ws.route;
+package org.abondar.experimental.wsboard.user.route;
 
+
+import org.abondar.experimental.wsboard.common.exception.CannotPerformOperationException;
+import org.abondar.experimental.wsboard.common.exception.DataCreationException;
+import org.abondar.experimental.wsboard.common.exception.DataExistenceException;
+import org.abondar.experimental.wsboard.common.exception.InvalidHashException;
+import org.abondar.experimental.wsboard.common.security.AuthService;
+import org.abondar.experimental.wsboard.common.util.I18nKeyUtil;
+import org.abondar.experimental.wsboard.common.util.LogMessageUtil;
 import org.abondar.experimental.wsboard.dao.SecurityCodeDao;
-import org.abondar.experimental.wsboard.dao.UserDao;
-import org.abondar.experimental.wsboard.dao.data.LogMessageUtil;
-import org.abondar.experimental.wsboard.dao.exception.CannotPerformOperationException;
-import org.abondar.experimental.wsboard.dao.exception.DataCreationException;
-import org.abondar.experimental.wsboard.dao.exception.DataExistenceException;
-import org.abondar.experimental.wsboard.dao.exception.InvalidHashException;
-import org.abondar.experimental.wsboard.datamodel.user.User;
-import org.abondar.experimental.wsboard.ws.service.AuthService;
-import org.abondar.experimental.wsboard.ws.util.I18nKeyUtil;
+import org.abondar.experimental.wsboard.user.dao.UserDao;
+import org.abondar.experimental.wsboard.user.data.User;
 import org.apache.camel.LoggingLevel;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
@@ -25,10 +26,10 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
-import static org.abondar.experimental.wsboard.ws.util.RouteConstantUtil.ACCEPT_LANG_HEADER;
-import static org.abondar.experimental.wsboard.ws.util.RouteConstantUtil.EMAIL_TYPE_HEADER;
-import static org.abondar.experimental.wsboard.ws.util.RouteConstantUtil.LOG_HEADERS;
-import static org.abondar.experimental.wsboard.ws.util.RouteConstantUtil.SEND_EMAIL_ENDPOINT;
+import static org.abondar.experimental.wsboard.common.util.RouteConstantUtil.ACCEPT_LANG_HEADER;
+import static org.abondar.experimental.wsboard.common.util.RouteConstantUtil.EMAIL_TYPE_HEADER;
+import static org.abondar.experimental.wsboard.common.util.RouteConstantUtil.LOG_HEADERS;
+import static org.abondar.experimental.wsboard.common.util.RouteConstantUtil.SEND_EMAIL_ENDPOINT;
 
 /**
  * Route for user service events

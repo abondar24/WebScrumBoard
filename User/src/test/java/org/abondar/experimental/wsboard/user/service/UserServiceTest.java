@@ -1,18 +1,17 @@
-package org.abondar.experimental.wsboard.test.ws;
+package org.abondar.experimental.wsboard.user.service;
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
-import org.abondar.experimental.wsboard.base.WebScrumBoardApplication;
-import org.abondar.experimental.wsboard.dao.data.LogMessageUtil;
-import org.abondar.experimental.wsboard.datamodel.user.User;
-import org.abondar.experimental.wsboard.datamodel.user.UserRole;
-import org.abondar.experimental.wsboard.test.ws.impl.AuthServiceTestImpl;
-import org.abondar.experimental.wsboard.test.ws.impl.UserServiceTestImpl;
+
+import org.abondar.experimental.wsboard.common.util.LogMessageUtil;
+import org.abondar.experimental.wsboard.user.data.User;
+import org.abondar.experimental.wsboard.user.data.UserRole;
 import org.apache.cxf.endpoint.Server;
 import org.apache.cxf.jaxrs.JAXRSBindingFactory;
 import org.apache.cxf.jaxrs.JAXRSServerFactoryBean;
 import org.apache.cxf.jaxrs.client.WebClient;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
+import org.apache.tools.ant.types.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,11 +25,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@SpringBootTest(classes = WebScrumBoardApplication.class)
+@SpringBootTest
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
 public class UserServiceTest {

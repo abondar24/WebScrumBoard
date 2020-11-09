@@ -1,15 +1,15 @@
-package org.abondar.experimental.wsboard.test.ws.impl;
+package org.abondar.experimental.wsboard.user.service;
 
-import org.abondar.experimental.wsboard.dao.data.LogMessageUtil;
-import org.abondar.experimental.wsboard.dao.exception.CannotPerformOperationException;
-import org.abondar.experimental.wsboard.dao.exception.DataExistenceException;
-import org.abondar.experimental.wsboard.dao.exception.InvalidHashException;
+import org.abondar.experimental.wsboard.common.exception.CannotPerformOperationException;
+import org.abondar.experimental.wsboard.common.exception.DataExistenceException;
+import org.abondar.experimental.wsboard.common.exception.InvalidHashException;
+import org.abondar.experimental.wsboard.common.security.AuthService;
+import org.abondar.experimental.wsboard.common.util.LogMessageUtil;
 import org.abondar.experimental.wsboard.dao.password.PasswordUtil;
 import org.abondar.experimental.wsboard.datamodel.Contributor;
 import org.abondar.experimental.wsboard.datamodel.SecurityCode;
-import org.abondar.experimental.wsboard.datamodel.user.User;
-import org.abondar.experimental.wsboard.ws.service.AuthService;
-import org.abondar.experimental.wsboard.ws.service.UserService;
+
+import org.abondar.experimental.wsboard.user.data.User;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
 
@@ -22,6 +22,7 @@ import javax.ws.rs.core.Response;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
+
 
 /**
  * Test implementation of user web service

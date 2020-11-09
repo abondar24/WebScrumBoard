@@ -1,6 +1,8 @@
-package org.abondar.experimental.wsboard.test.ws.impl;
+package org.abondar.experimental.wsboard.user.service;
 
-import org.abondar.experimental.wsboard.ws.service.AuthService;
+
+
+import org.abondar.experimental.wsboard.common.security.AuthService;
 
 import java.util.List;
 
