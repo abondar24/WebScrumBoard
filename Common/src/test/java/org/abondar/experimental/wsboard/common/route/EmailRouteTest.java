@@ -1,7 +1,6 @@
-package org.abondar.experimental.wsboard.test.ws.route;
+package org.abondar.experimental.wsboard.common.route;
 
-import org.abondar.experimental.wsboard.base.WebScrumBoardApplication;
-import org.abondar.experimental.wsboard.datamodel.user.User;
+
 import org.apache.camel.EndpointInject;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.component.mock.MockEndpoint;
@@ -16,7 +15,9 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Map;
 
-@SpringBootTest(classes = WebScrumBoardApplication.class)
+
+
+@SpringBootTest
 @RunWith(CamelSpringBootRunner.class)
 @ActiveProfiles("test")
 @MockEndpointsAndSkip
@@ -37,7 +38,7 @@ public class EmailRouteTest {
     @Test
     public void sendEmailRouteTest() throws Exception {
 
-        producerTemplate.sendBodyAndHeaders("direct:sendEmail", new User(),
+        producerTemplate.sendBodyAndHeaders("direct:sendEmail", new Object(),
                 Map.of("emailType", "createUser",
                         "To", "email",
                         "From", "Scrum Admin<" + emailAdmin + "@" + emailFrom + ">",
