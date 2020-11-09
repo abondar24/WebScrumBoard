@@ -1,7 +1,7 @@
 package org.abondar.experimental.wsboard.common.service;
 
 import org.abondar.experimental.wsboard.common.exception.TokenExpiredException;
-import org.abondar.experimental.wsboard.ws.util.I18nKeyUtil;
+import org.abondar.experimental.wsboard.common.util.I18nKeyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 
@@ -14,7 +14,7 @@ import java.util.Locale;
  *
  * @author a.bondar
  */
-public class TokenExpiredMapper implements ExceptionMapper<TokenExpiredException> {
+public class  TokenExpiredMapper implements ExceptionMapper<TokenExpiredException> {
 
     @Autowired
     private MessageSource messageSource;

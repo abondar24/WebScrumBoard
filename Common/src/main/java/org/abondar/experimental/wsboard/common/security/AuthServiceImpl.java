@@ -6,7 +6,7 @@ import org.abondar.experimental.wsboard.dao.exception.CannotPerformOperationExce
 import org.abondar.experimental.wsboard.dao.exception.DataExistenceException;
 import org.abondar.experimental.wsboard.dao.exception.InvalidHashException;
 import org.abondar.experimental.wsboard.dao.exception.InvalidPasswordException;
-import org.abondar.experimental.wsboard.dao.password.PasswordUtil;
+import org.abondar.experimental.wsboard.common.util.PasswordUtil;
 import org.abondar.experimental.wsboard.datamodel.user.User;
 import org.apache.cxf.rs.security.jose.jwa.SignatureAlgorithm;
 import org.apache.cxf.rs.security.jose.jws.HmacJwsSignatureProvider;

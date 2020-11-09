@@ -1,7 +1,6 @@
-package org.abondar.experimental.wsboard.test.dao.data.password;
+package org.abondar.experimental.wsboard.common.util;
 
-import org.abondar.experimental.wsboard.base.WebScrumBoardApplication;
-import org.abondar.experimental.wsboard.dao.password.PasswordUtil;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,10 +10,10 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
-@SpringBootTest(classes = WebScrumBoardApplication.class)
+@SpringBootTest
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
-public class PasswordTest {
+public class PasswordUtilTest {
 
 
     @Test

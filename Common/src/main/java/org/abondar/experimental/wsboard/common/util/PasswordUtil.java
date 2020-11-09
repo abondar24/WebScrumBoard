@@ -1,7 +1,8 @@
-package org.abondar.experimental.wsboard.dao.password;
+package org.abondar.experimental.wsboard.common.util;
 
-import org.abondar.experimental.wsboard.dao.exception.CannotPerformOperationException;
-import org.abondar.experimental.wsboard.dao.exception.InvalidHashException;
+
+import org.abondar.experimental.wsboard.common.exception.CannotPerformOperationException;
+import org.abondar.experimental.wsboard.common.exception.InvalidHashException;
 
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
