@@ -12,7 +12,9 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
@@ -28,7 +30,6 @@ import javax.ws.rs.core.Response;
 public interface ContributorService {
 
     @POST
-    @Path("/create")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(
@@ -48,8 +49,7 @@ public interface ContributorService {
                                @FormParam("projectId") @ApiParam(required = true) long projectId,
                                @FormParam("isOwner") @ApiParam(required = true) boolean isOwner);
 
-    @POST
-    @Path("/update")
+    @PUT
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(
@@ -71,7 +71,7 @@ public interface ContributorService {
                                @FormParam("isActive") @ApiParam Boolean isActive);
 
     @GET
-    @Path("/find_project_owner")
+    @Path("/{projectId}/owner")
     @ApiOperation(
             value = "Find Project Owner",
             notes = "Find a user who is a project owner",
@@ -81,11 +81,11 @@ public interface ContributorService {
             @ApiResponse(code = 204, message = "Project has no owner"),
             @ApiResponse(code = 404, message = "Project not found")})
     @Produces(MediaType.APPLICATION_JSON)
-    Response findProjectOwner(@QueryParam("projectId") @ApiParam(required = true) long projectId);
+    Response findProjectOwner(@PathParam("projectId") @ApiParam(required = true) long projectId);
 
 
     @GET
-    @Path("/find_project_contributors")
+    @Path("/{projectId}")
     @ApiOperation(
             value = "Find Project Contributors",
             notes = "Find a list of project contributors",
@@ -95,13 +95,13 @@ public interface ContributorService {
             @ApiResponse(code = 204, message = "No contributors found"),
             @ApiResponse(code = 404, message = "Project not found")
     })
-    Response findProjectContributors(@QueryParam("projectId") @ApiParam(required = true) long projectId,
+    Response findProjectContributors(@PathParam("projectId") @ApiParam(required = true) long projectId,
                                      @QueryParam("offset") @ApiParam(required = true) int offset,
                                      @QueryParam("limit") @ApiParam(required = true) int limit);
 
 
     @GET
-    @Path("/count_project_contributors")
+    @Path("/{projectId}/count")
     @ApiOperation(
             value = "Count Project Contributors",
             notes = "Counts number of project contributors",
@@ -110,10 +110,9 @@ public interface ContributorService {
             @ApiResponse(code = 200, message = "Project contributors counted", response = Integer.class),
             @ApiResponse(code = 404, message = "Project not found")
     })
-    Response countProjectContributors(@QueryParam("projectId") @ApiParam(required = true) long projectId);
+    Response countProjectContributors(@PathParam("projectId") @ApiParam(required = true) long projectId);
 
     @GET
-    @Path("/find_contributors_by_user")
     @ApiOperation(
             value = "Find User Contributors",
             notes = "Find a list of contributors related to userId",
@@ -128,7 +127,7 @@ public interface ContributorService {
                                       @QueryParam("limit") @ApiParam(required = true) int limit);
 
     @GET
-    @Path("/find_contributor")
+    @Path("/{projectId}/user/{userId}")
     @ApiOperation(
             value = "Find Contributor",
             notes = "Find a single contributor by userId and projectId",
@@ -137,11 +136,11 @@ public interface ContributorService {
             @ApiResponse(code = 200, message = "Project contributors", response = Long.class),
             @ApiResponse(code = 404, message = "User or Project not found")
     })
-    Response findProjectContributor(@QueryParam("userId") @ApiParam(required = true) long userId,
-                             @QueryParam("projectId") @ApiParam(required = true) long projectId);
+    Response findProjectContributor(@PathParam("userId") @ApiParam(required = true) long userId,
+                             @PathParam("projectId") @ApiParam(required = true) long projectId);
 
     @GET
-    @Path("/find_contributor_by_login")
+    @Path("/{projectId}/login/{login}")
     @ApiOperation(
             value = "Find Contributor by name",
             notes = "Find a single contributor by name",
@@ -150,6 +149,6 @@ public interface ContributorService {
             @ApiResponse(code = 200, message = "Project contributor", response = Contributor.class),
             @ApiResponse(code = 404, message = "User or Project not found")
     })
-    Response findContributorByLogin(@QueryParam("projectId") @ApiParam(required = true) long projectId,
-                                   @QueryParam("login") @ApiParam(required = true) String login);
+    Response findContributorByLogin(@PathParam("projectId") @ApiParam(required = true) long projectId,
+                                    @PathParam("login") @ApiParam(required = true) String login);
 }
