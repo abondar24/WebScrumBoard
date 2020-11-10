@@ -2,6 +2,10 @@ package org.abondar.experimental.wsboard.datamodel;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -12,6 +16,10 @@ import java.util.Date;
  * @author a.bondar
  */
 @ApiModel(value = "Project", description = "Scrum project")
+@Getter
+@Setter
+@ToString
+@NoArgsConstructor
 public class Project implements Serializable {
 
     private static final long serialVersionUID = -34556L;
@@ -37,9 +45,6 @@ public class Project implements Serializable {
     @ApiModelProperty(value = "Project description")
     private String description;
 
-    public Project(){
-
-    }
 
     public Project(String name, Date startDate) {
         this.name = name;
@@ -47,73 +52,5 @@ public class Project implements Serializable {
         this.isActive = true;
     }
 
-    public long getId() {
-        return id;
-    }
 
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Date getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(Date startDate) {
-        this.startDate = startDate;
-    }
-
-    public Date getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(Date endDate) {
-        this.endDate = endDate;
-    }
-
-    public String getRepository() {
-        return repository;
-    }
-
-    public void setRepository(String repository) {
-        this.repository = repository;
-    }
-
-    public boolean isActive() {
-        return isActive;
-    }
-
-    public void setActive(boolean active) {
-        isActive = active;
-    }
-
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    @Override
-    public String toString() {
-        return "Project{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", startDate=" + startDate +
-                ", endDate=" + endDate +
-                ", repository='" + repository + '\'' +
-                ", isActive=" + isActive +
-                ", description='" + description + '\'' +
-                '}';
-    }
 }

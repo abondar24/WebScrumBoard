@@ -10,6 +10,15 @@
         <version>1.0</version>
     </parent>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.16</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
     <artifactId>dataModel</artifactId>
     <version>1.0</version>
 
