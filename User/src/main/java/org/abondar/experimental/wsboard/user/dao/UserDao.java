@@ -6,7 +6,7 @@ import org.abondar.experimental.wsboard.common.exception.DataCreationException;
 import org.abondar.experimental.wsboard.common.exception.DataExistenceException;
 import org.abondar.experimental.wsboard.common.exception.InvalidHashException;
 import org.abondar.experimental.wsboard.common.util.LogMessageUtil;
-import org.abondar.experimental.wsboard.dao.password.PasswordUtil;
+import org.abondar.experimental.wsboard.common.util.PasswordUtil;
 import org.abondar.experimental.wsboard.datamodel.Contributor;
 import org.abondar.experimental.wsboard.user.data.User;
 import org.abondar.experimental.wsboard.user.data.UserRole;

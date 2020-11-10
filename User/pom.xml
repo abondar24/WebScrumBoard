@@ -17,6 +17,12 @@
         <version>1.0</version>
         <scope>compile</scope>
     </dependency>
+    <dependency>
+        <groupId>org.abondar.experimental.wsboard</groupId>
+        <artifactId>Project</artifactId>
+        <version>1.0</version>
+        <scope>compile</scope>
+    </dependency>
 </dependencies>
 
 </project>

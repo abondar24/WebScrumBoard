@@ -5,7 +5,7 @@ import org.abondar.experimental.wsboard.common.exception.DataExistenceException;
 import org.abondar.experimental.wsboard.common.exception.InvalidHashException;
 import org.abondar.experimental.wsboard.common.security.AuthService;
 import org.abondar.experimental.wsboard.common.util.LogMessageUtil;
-import org.abondar.experimental.wsboard.dao.password.PasswordUtil;
+import org.abondar.experimental.wsboard.common.util.PasswordUtil;
 import org.abondar.experimental.wsboard.datamodel.Contributor;
 import org.abondar.experimental.wsboard.datamodel.SecurityCode;
 
