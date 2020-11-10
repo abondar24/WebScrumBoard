@@ -131,7 +131,7 @@ public class ProjectServiceTestImpl implements ProjectService {
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/create_user")
+    @Path("/user")
     public Response createUser() {
 
 

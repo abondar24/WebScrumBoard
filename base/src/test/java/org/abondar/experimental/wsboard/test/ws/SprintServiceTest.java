@@ -56,7 +56,7 @@ public class SprintServiceTest {
         form.param("endDate", endDate);
         form.param("projectId",String.valueOf(createProject()));
 
-        client.path("/sprint/create").accept(MediaType.APPLICATION_JSON);
+        client.path("/sprint").accept(MediaType.APPLICATION_JSON);
 
         var res = client.post(form);
         assertEquals(200, res.getStatus());
@@ -76,7 +76,7 @@ public class SprintServiceTest {
         form.param("startDate", startDate);
         form.param("endDate", endDate);
 
-        client.path("/sprint/create").accept(MediaType.APPLICATION_JSON);
+        client.path("/sprint").accept(MediaType.APPLICATION_JSON);
 
         var res = client.post(form);
         assertEquals(302, res.getStatus());
@@ -95,7 +95,7 @@ public class SprintServiceTest {
         form.param("startDate", startDate);
         form.param("endDate", endDate);
 
-        client.path("/sprint/create").accept(MediaType.APPLICATION_JSON);
+        client.path("/sprint").accept(MediaType.APPLICATION_JSON);
 
         var res = client.post(form);
         assertEquals(205, res.getStatus());
@@ -114,7 +114,7 @@ public class SprintServiceTest {
         form.param("startDate", startDate);
         form.param("endDate", "11/08/1109");
 
-        client.path("/sprint/create").accept(MediaType.APPLICATION_JSON);
+        client.path("/sprint").accept(MediaType.APPLICATION_JSON);
 
         var res = client.post(form);
         assertEquals(205, res.getStatus());
@@ -133,7 +133,7 @@ public class SprintServiceTest {
         form.param("startDate", startDate);
         form.param("endDate", "");
 
-        client.path("/sprint/create").accept(MediaType.APPLICATION_JSON);
+        client.path("/sprint").accept(MediaType.APPLICATION_JSON);
 
         var res = client.post(form);
         assertEquals(206, res.getStatus());
@@ -153,7 +153,7 @@ public class SprintServiceTest {
         form.param("endDate", endDate);
         form.param("projectId","7");
 
-        client.path("/sprint/create").accept(MediaType.APPLICATION_JSON);
+        client.path("/sprint").accept(MediaType.APPLICATION_JSON);
 
         var res = client.post(form);
         assertEquals(404, res.getStatus());
@@ -172,12 +172,11 @@ public class SprintServiceTest {
         var sp = createSprint(createProject());
 
         var form = new Form();
-        form.param("id", String.valueOf(sp.getId()));
         form.param("name", "newName");
 
-        client.path("/sprint/update").accept(MediaType.APPLICATION_JSON);
+        client.path("/sprint/{id}",sp.getId()).accept(MediaType.APPLICATION_JSON);
 
-        var res = client.post(form);
+        var res = client.put(form);
         assertEquals(200, res.getStatus());
 
         sp = res.readEntity(Sprint.class);
@@ -192,13 +191,12 @@ public class SprintServiceTest {
         var sp = createSprint(createProject());
 
         var form = new Form();
-        form.param("id", String.valueOf(sp.getId()));
         form.param("name", "newName");
         form.param("startDate", "blabla");
 
-        client.path("/sprint/update").accept(MediaType.APPLICATION_JSON);
+        client.path("/sprint/{id}",sp.getId()).accept(MediaType.APPLICATION_JSON);
 
-        var res = client.post(form);
+        var res = client.put(form);
         assertEquals(204, res.getStatus());
 
         var msg = res.readEntity(String.class);
@@ -212,13 +210,12 @@ public class SprintServiceTest {
         var sp = createSprint(createProject());
 
         var form = new Form();
-        form.param("id", String.valueOf(sp.getId()));
         form.param("name", "newName");
         form.param("endDate", "01/01/1997");
 
-        client.path("/sprint/update").accept(MediaType.APPLICATION_JSON);
+        client.path("/sprint/{id}",sp.getId()).accept(MediaType.APPLICATION_JSON);
 
-        var res = client.post(form);
+        var res = client.put(form);
         assertEquals(205, res.getStatus());
 
         var msg = res.readEntity(String.class);
@@ -233,11 +230,11 @@ public class SprintServiceTest {
         createSprint(createProject());
 
         var form = new Form();
-        form.param("id", "7");
+        form.param("name", "newName");
 
-        client.path("/sprint/update").accept(MediaType.APPLICATION_JSON);
+        client.path("/sprint/7").accept(MediaType.APPLICATION_JSON);
 
-        var res = client.post(form);
+        var res = client.put(form);
         assertEquals(404, res.getStatus());
 
         var msg = res.readEntity(String.class);
@@ -251,12 +248,11 @@ public class SprintServiceTest {
         var sp = createSprint(createProject());
 
         var form = new Form();
-        form.param("id", String.valueOf(sp.getId()));
         form.param("name", sprintName);
 
-        client.path("/sprint/update").accept(MediaType.APPLICATION_JSON);
+        client.path("/sprint/{id}",sp.getId()).accept(MediaType.APPLICATION_JSON);
 
-        var res = client.post(form);
+        var res = client.put(form);
         assertEquals(302, res.getStatus());
 
         var msg = res.readEntity(String.class);
@@ -271,12 +267,11 @@ public class SprintServiceTest {
         updateSprint(sp.getId(),true);
 
         var form = new Form();
-        form.param("id", String.valueOf(sp.getId()));
         form.param("isCurrent","true");
 
-        client.path("/sprint/update").accept(MediaType.APPLICATION_JSON);
+        client.path("/sprint/{id}",sp.getId()).accept(MediaType.APPLICATION_JSON);
 
-        var res = client.post(form);
+        var res = client.put(form);
         assertEquals(409, res.getStatus());
 
         var msg = res.readEntity(String.class);
@@ -291,7 +286,7 @@ public class SprintServiceTest {
 
         var sp = createSprint(createProject());
 
-        client.path("/sprint/find").query("id", sp.getId());
+        client.path("/sprint/{id}",sp.getId()).accept(MediaType.APPLICATION_JSON);
 
         var res = client.get();
         assertEquals(200, res.getStatus());
@@ -306,7 +301,7 @@ public class SprintServiceTest {
 
         createSprint(createProject());
 
-        client.path("/sprint/find").query("id", 7);
+        client.path("/sprint/7").accept(MediaType.APPLICATION_JSON);
 
         var res = client.get();
         assertEquals(404, res.getStatus());
@@ -324,7 +319,7 @@ public class SprintServiceTest {
         updateSprint(sp.getId(),true);
 
 
-        client.path("/sprint/find_current").query("prId", String.valueOf(pr));
+        client.path("/sprint/current/project/{prId}",pr).accept(MediaType.APPLICATION_JSON);
 
         var res = client.get();
         assertEquals(200, res.getStatus());
@@ -341,7 +336,7 @@ public class SprintServiceTest {
         var pr = createProject();
         createSprint(pr);
 
-        client.path("/sprint/find_current").query("prId", String.valueOf(pr));
+        client.path("/sprint/current/project/{prId}",pr).accept(MediaType.APPLICATION_JSON);
 
         var res = client.get();
         assertEquals(204, res.getStatus());
@@ -355,8 +350,8 @@ public class SprintServiceTest {
         var prj = createProject();
         var sp = createSprint(prj);
 
-        client.path("/sprint/find_all")
-                .query("projectId",prj)
+        client.path("/sprint/all/project/{prId}",prj)
+                .accept(MediaType.APPLICATION_JSON)
                 .query("offset", 0)
                 .query("limit", 2);
 
@@ -376,8 +371,8 @@ public class SprintServiceTest {
         var prj = createProject();
         var sp = createSprint(prj);
 
-        client.path("/sprint/find_all")
-                .query("projectId",prj)
+        client.path("/sprint/all/project/{prId}",prj)
+                .accept(MediaType.APPLICATION_JSON)
                 .query("offset", -1);
 
         var res = client.get();
@@ -395,7 +390,8 @@ public class SprintServiceTest {
 
         createSprint(createProject());
 
-        client.path("/sprint/find_all")
+        client.path("/sprint/all/project/7")
+                .accept(MediaType.APPLICATION_JSON)
                 .query("offset", 6)
                 .query("limit", 2);
 
@@ -409,10 +405,7 @@ public class SprintServiceTest {
     @Test
     public void countSprintsTasksTest() {
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/sprint/count")
-                .accept(MediaType.APPLICATION_JSON)
-                .query("projectId", 7);
-
+        client.path("/sprint/count/project/7").accept(MediaType.APPLICATION_JSON);
         var res = client.get();
         assertEquals(200, res.getStatus());
 
@@ -427,7 +420,7 @@ public class SprintServiceTest {
 
         var sp = createSprint(createProject());
 
-        client.path("/sprint/delete").query("id", sp.getId());
+        client.path("/sprint/{id}",sp.getId()).accept(MediaType.APPLICATION_JSON);
 
         var res = client.delete();
         assertEquals(200, res.getStatus());
@@ -440,7 +433,7 @@ public class SprintServiceTest {
 
         createSprint(createProject());
 
-        client.path("/sprint/delete").query("id", 7);
+        client.path("/sprint/{id}",7).accept(MediaType.APPLICATION_JSON);
 
         var res = client.delete();
         assertEquals(404, res.getStatus());
@@ -456,7 +449,7 @@ public class SprintServiceTest {
         form.param("name", "prjName");
         form.param("startDate", "31/10/1999");
 
-        client.path("/sprint/create_project").accept(MediaType.APPLICATION_JSON);
+        client.path("/sprint/project").accept(MediaType.APPLICATION_JSON);
 
         var res = client.post(form);
         return res.readEntity(Project.class).getId();
@@ -472,7 +465,7 @@ public class SprintServiceTest {
         form.param("projectId",String.valueOf(projectId));
 
 
-        client.path("/sprint/create").accept(MediaType.APPLICATION_JSON);
+        client.path("/sprint").accept(MediaType.APPLICATION_JSON);
 
         var res = client.post(form);
         return res.readEntity(Sprint.class);
@@ -483,11 +476,10 @@ public class SprintServiceTest {
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
         var form = new Form();
-        form.param("id", String.valueOf(sprintId));
         form.param("isCurrent", String.valueOf(isCurrent));
 
-        client.path("/sprint/update").accept(MediaType.APPLICATION_JSON);
-        client.post(form);
+        client.path("/sprint/{id}",sprintId).accept(MediaType.APPLICATION_JSON);
+        client.put(form);
 
     }
 }

@@ -296,8 +296,7 @@ public class ProjectServiceTest {
         createProject();
         var usr = createUser();
 
-        client.path("/project/find_user_projects").query("id", String.valueOf(usr))
-                .accept(MediaType.APPLICATION_JSON);
+        client.path("/project/user/{usrId}",usr).accept(MediaType.APPLICATION_JSON);
 
         var res = client.get();
         assertEquals(200, res.getStatus());
@@ -312,8 +311,7 @@ public class ProjectServiceTest {
         createProject();
         createUser();
 
-        client.path("/project/find_user_projects").query("id", "7")
-                .accept(MediaType.APPLICATION_JSON);
+        client.path("/project/user/7").accept(MediaType.APPLICATION_JSON);
 
         var res = client.get();
         assertEquals(404, res.getStatus());
@@ -353,7 +351,7 @@ public class ProjectServiceTest {
     private long createUser() {
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
 
-        client.path("/project/create_user").accept(MediaType.APPLICATION_JSON);
+        client.path("/project/user").accept(MediaType.APPLICATION_JSON);
 
         var form = new Form();
         form.param("login", "login");

@@ -182,7 +182,7 @@ public class SprintServiceTestImpl implements SprintService {
 
 
     @POST
-    @Path("/create_project")
+    @Path("/project")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
     public Response createProject(@FormParam("name") String name,
