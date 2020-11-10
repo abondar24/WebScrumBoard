@@ -97,7 +97,7 @@ public interface ProjectService {
     Response findProjectById(@PathParam("id") @ApiParam(required = true) long id);
 
     @GET
-    @Path("/find_user_projects")
+    @Path("/user/{usrId}")
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(
             value = "Find User Projects",
@@ -108,7 +108,7 @@ public interface ProjectService {
             @ApiResponse(code = 204, message = "No contributors found"),
             @ApiResponse(code = 404, message = "User id not exists")
     })
-    Response findUserProjects(@QueryParam("id") @ApiParam(required = true) long userId);
+    Response findUserProjects(@PathParam("usrId") @ApiParam(required = true) long userId);
 
 
 }

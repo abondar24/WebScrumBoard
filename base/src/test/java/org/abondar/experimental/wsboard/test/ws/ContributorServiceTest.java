@@ -583,7 +583,7 @@ public class ContributorServiceTest {
         var ctr = createContributor(userId, projectId, "false");
 
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/contributor/user/{userId}/project/{projectId}",userId,projectId)
+        client.path("/contributor/project/{projectId}/user/{userId}",projectId,userId)
                 .accept(MediaType.APPLICATION_JSON);
 
         var res = client.get();
@@ -600,7 +600,7 @@ public class ContributorServiceTest {
         createContributor(userId, projectId, "false");
 
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/contributor/user/{userId}/project/{projectId}",7,projectId)
+        client.path("/contributor/project/{projectId}/user/{userId}",projectId,7)
                 .accept(MediaType.APPLICATION_JSON);
 
         var res = client.get();
@@ -617,7 +617,7 @@ public class ContributorServiceTest {
         var ctr = createContributor(userId, projectId, "false");
 
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/contributor/user/{userId}/project/{projectId}",userId,100)
+        client.path("/contributor/project/{projectId}/user/{userId}",100,userId)
                 .accept(MediaType.APPLICATION_JSON);
 
         var res = client.get();
@@ -635,7 +635,7 @@ public class ContributorServiceTest {
         var ctr = createContributor(userId, projectId, "false");
 
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/contributor/login/{login}/project/{projectId}","login",projectId)
+        client.path("/contributor/project/{projectId}/login/{login}",projectId,"login")
                 .accept(MediaType.APPLICATION_JSON);
 
         var res = client.get();
@@ -653,7 +653,7 @@ public class ContributorServiceTest {
         var ctr = createContributor(userId, projectId, "false");
 
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/contributor/login/{login}/project/{projectId}","test",projectId)
+        client.path("/contributor/project/{projectId}/login/{login}",projectId,"test")
                 .accept(MediaType.APPLICATION_JSON);
 
         var res = client.get();
@@ -671,7 +671,7 @@ public class ContributorServiceTest {
         var ctr = createContributor(userId, projectId, "false");
 
         var client = WebClient.create(endpoint, Collections.singletonList(new JacksonJsonProvider()));
-        client.path("/contributor/login/{login}/project/{projectId}","login",100)
+        client.path("/contributor/project/{projectId}/login/{login}",100,"login")
                 .accept(MediaType.APPLICATION_JSON);
 
         var res = client.get();

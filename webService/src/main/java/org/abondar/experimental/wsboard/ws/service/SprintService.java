@@ -118,7 +118,7 @@ public interface SprintService {
 
 
     @GET
-    @Path("/countproject/{prId}")
+    @Path("/count/project/{prId}")
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(
             value = "Count sprints",
