@@ -1,4 +1,4 @@
-package org.abondar.experimental.wsboard.datamodel;
+package org.abondar.experimental.wsboard.project.data;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

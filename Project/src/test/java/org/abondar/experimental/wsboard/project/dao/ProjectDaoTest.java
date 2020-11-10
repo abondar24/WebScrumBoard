@@ -1,27 +1,41 @@
-package org.abondar.experimental.wsboard.test.dao;
+package org.abondar.experimental.wsboard.project.dao;
 
-import org.abondar.experimental.wsboard.dao.exception.DataCreationException;
-import org.abondar.experimental.wsboard.dao.exception.DataExistenceException;
+import junit.framework.TestCase;
+
+import org.abondar.experimental.wsboard.common.exception.DataCreationException;
+import org.abondar.experimental.wsboard.common.exception.DataExistenceException;
 import org.abondar.experimental.wsboard.datamodel.Sprint;
 import org.abondar.experimental.wsboard.datamodel.task.Task;
+import org.abondar.experimental.wsboard.project.data.Project;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Calendar;
 import java.util.Date;
 
 import static junit.framework.TestCase.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
-public class ProjectDaoTest extends BaseDaoTest {
+@SpringBootTest
+@ExtendWith(SpringExtension.class)
+@ActiveProfiles("test")
+public class ProjectDaoTest  {
 
+    @Autowired
+    @Qualifier("projectDao")
+    private ProjectDao projectDao;
 
     @Test
     public void createProjectTest() throws Exception {
-        cleanData();
         var prj = createProject();
 
         assertTrue(prj.getId() > 0);
@@ -31,7 +45,6 @@ public class ProjectDaoTest extends BaseDaoTest {
 
     @Test
     public void createProjectExistsTest() throws Exception {
-        cleanData();
         createProject();
 
         assertThrows(DataExistenceException.class, this::createProject);
@@ -47,7 +60,7 @@ public class ProjectDaoTest extends BaseDaoTest {
 
     @Test
     public void updateProjectTest() throws Exception {
-        cleanData();
+
         var prj = createProject();
         var id = prj.getId();
         prj = projectDao.updateProject(prj.getId(), "newTest", "github.com/aaaa/aaa.git", true,
@@ -59,7 +72,6 @@ public class ProjectDaoTest extends BaseDaoTest {
 
     @Test
     public void updateProjectExistsTest() throws Exception {
-        cleanData();
         var prj = createProject();
 
         assertThrows(DataExistenceException.class, () ->
@@ -69,7 +81,6 @@ public class ProjectDaoTest extends BaseDaoTest {
 
     @Test
     public void updateProjectInactiveTest() throws Exception {
-        cleanData();
         var prj = createProject();
         var id = prj.getId();
 
@@ -81,7 +92,6 @@ public class ProjectDaoTest extends BaseDaoTest {
 
     @Test
     public void updateProjectInactiveNullEndDateTest() throws Exception {
-        cleanData();
         var prj = createProject();
         assertThrows(DataCreationException.class, () -> projectDao.updateProject(prj.getId(), "newTest",
                 "github.com/aaaa/aaa.git", false, null, null));
@@ -90,7 +100,6 @@ public class ProjectDaoTest extends BaseDaoTest {
 
     @Test
     public void updateProjectReactivateTest() throws Exception {
-        cleanData();
         var prj = createProject();
 
         prj = projectDao.updateProject(prj.getId(), "newTest", "github.com/aaaa/aaa.git",
@@ -104,7 +113,6 @@ public class ProjectDaoTest extends BaseDaoTest {
 
     @Test
     public void updateProjectInactiveWrongDateTest() throws Exception {
-        cleanData();
         var prj = createProject();
 
         assertThrows(DataCreationException.class, () -> projectDao.updateProject(prj.getId(), "newTest",
@@ -115,7 +123,6 @@ public class ProjectDaoTest extends BaseDaoTest {
 
     @Test
     public void updateProjectNullTest() throws Exception {
-        cleanData();
         var prj = createProject();
         var id = prj.getId();
 
@@ -128,7 +135,6 @@ public class ProjectDaoTest extends BaseDaoTest {
 
     @Test
     public void deleteProjectTest() throws Exception {
-        cleanData();
         var prj = createProject();
         var res = projectDao.deleteProject(prj.getId());
 
@@ -138,7 +144,6 @@ public class ProjectDaoTest extends BaseDaoTest {
 
     @Test
     public void findProjectByIdTest() throws Exception {
-        cleanData();
         var prj = createProject();
         var res = projectDao.findProjectById(prj.getId());
         assertEquals(prj.getName(), res.getName());
@@ -149,7 +154,6 @@ public class ProjectDaoTest extends BaseDaoTest {
 
     @Test
     public void findProjectNotFoundByIdTest() {
-        cleanData();
         assertThrows(DataExistenceException.class, () -> projectDao.findProjectById(100));
 
     }
@@ -163,7 +167,7 @@ public class ProjectDaoTest extends BaseDaoTest {
         contributorDao.createContributor(usr.getId(), project.getId(), false);
 
         var projects = projectDao.findUserProjects(usr.getId());
-        assertEquals(1, projects.size());
+        Assertions.assertEquals(1, projects.size());
 
         mapper.deleteContributors();
         mapper.deleteUsers();
@@ -173,14 +177,12 @@ public class ProjectDaoTest extends BaseDaoTest {
 
     @Test
     public void findUserProjectsNotFoundTest() {
-        cleanData();
         assertThrows(DataExistenceException.class, () -> projectDao.findUserProjects(7));
     }
 
 
     @Test
     public void deactivateContributorsByProjectTest() throws Exception {
-        cleanData();
         var usr = createUser();
         var prj = createProject();
         var ctr = contributorDao.createContributor(usr.getId(), prj.getId(), false);
@@ -188,14 +190,13 @@ public class ProjectDaoTest extends BaseDaoTest {
         projectDao.updateProject(prj.getId(), "newTest", "github.com/aaaa/aaa.git", false, new Date(), null);
 
         var res = mapper.getContributorById(ctr.getId());
-        assertFalse(res.isActive());
+        Assertions.assertFalse(res.isActive());
 
     }
 
 
     @Test
     public void deleteAllByProjectTest() throws Exception {
-        cleanData();
 
         var usr = createUser();
         var prj = createProject();
@@ -209,9 +210,9 @@ public class ProjectDaoTest extends BaseDaoTest {
 
         projectDao.deleteProject(prj.getId());
 
-        assertNull(mapper.getTaskById(task.getId()));
-        assertNull(mapper.getSprintById(sprint.getId()));
-        assertNull(mapper.getContributorById(contr.getId()));
+        TestCase.assertNull(mapper.getTaskById(task.getId()));
+        TestCase.assertNull(mapper.getSprintById(sprint.getId()));
+        TestCase.assertNull(mapper.getContributorById(contr.getId()));
         assertNull(mapper.getProjectById(prj.getId()));
 
     }
@@ -224,7 +225,12 @@ public class ProjectDaoTest extends BaseDaoTest {
     }
 
 
+    private Project createProject() throws Exception {
+        var name = "test";
+        var startDate = new Date();
 
+        return projectDao.createProject(name, startDate);
+    }
 
 
 }

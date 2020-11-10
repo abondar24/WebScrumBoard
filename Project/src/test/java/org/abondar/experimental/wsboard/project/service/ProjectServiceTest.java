@@ -1,12 +1,11 @@
-package org.abondar.experimental.wsboard.test.ws;
+package org.abondar.experimental.wsboard.project.service;
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
-import org.abondar.experimental.wsboard.base.WebScrumBoardApplication;
-import org.abondar.experimental.wsboard.dao.data.LogMessageUtil;
-import org.abondar.experimental.wsboard.datamodel.Project;
-import org.abondar.experimental.wsboard.datamodel.user.User;
-import org.abondar.experimental.wsboard.datamodel.user.UserRole;
-import org.abondar.experimental.wsboard.test.ws.impl.ProjectServiceTestImpl;
+
+import org.abondar.experimental.wsboard.common.util.LogMessageUtil;
+import org.abondar.experimental.wsboard.project.data.Project;
+import org.abondar.experimental.wsboard.user.data.User;
+import org.abondar.experimental.wsboard.user.data.UserRole;
 import org.apache.cxf.endpoint.Server;
 import org.apache.cxf.jaxrs.JAXRSBindingFactory;
 import org.apache.cxf.jaxrs.JAXRSServerFactoryBean;
@@ -20,12 +19,13 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MediaType;
+
 import java.util.Collection;
 import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@SpringBootTest(classes = WebScrumBoardApplication.class)
+@SpringBootTest
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
 public class ProjectServiceTest {

@@ -1,6 +1,6 @@
-package org.abondar.experimental.wsboard.test.ws.route;
+package org.abondar.experimental.wsboard.project.route;
 
-import org.abondar.experimental.wsboard.base.WebScrumBoardApplication;
+
 import org.apache.camel.EndpointInject;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.component.mock.MockEndpoint;
@@ -15,7 +15,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Map;
 
-@SpringBootTest(classes = WebScrumBoardApplication.class)
+@SpringBootTest
 @RunWith(CamelSpringBootRunner.class)
 @ActiveProfiles("test")
 @MockEndpoints

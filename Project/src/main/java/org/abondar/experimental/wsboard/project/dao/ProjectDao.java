@@ -1,10 +1,13 @@
-package org.abondar.experimental.wsboard.dao;
+package org.abondar.experimental.wsboard.project.dao;
 
-import org.abondar.experimental.wsboard.dao.data.DataMapper;
-import org.abondar.experimental.wsboard.dao.data.LogMessageUtil;
-import org.abondar.experimental.wsboard.dao.exception.DataCreationException;
-import org.abondar.experimental.wsboard.dao.exception.DataExistenceException;
-import org.abondar.experimental.wsboard.datamodel.Project;
+
+
+import org.abondar.experimental.wsboard.common.exception.DataCreationException;
+import org.abondar.experimental.wsboard.common.exception.DataExistenceException;
+import org.abondar.experimental.wsboard.common.util.LogMessageUtil;
+import org.abondar.experimental.wsboard.project.data.Project;
+import org.abondar.experimental.wsboard.project.mapper.ProjectMapper;
+import org.abondar.experimental.wsboard.user.mapper.UserMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.TransactionException;
@@ -21,14 +24,19 @@ import java.util.List;
  *
  * @author a.bondar
  */
-public class ProjectDao extends BaseDao {
+public class ProjectDao  {
 
     private static Logger logger = LoggerFactory.getLogger(ProjectDao.class);
 
     private JtaTransactionManager transactionManager;
 
-    public ProjectDao(DataMapper mapper,JtaTransactionManager transactionManager) {
-        super(mapper);
+    private ProjectMapper mapper;
+
+    private UserMapper userMapper;
+
+    public ProjectDao(ProjectMapper mapper,UserMapper userMapper,JtaTransactionManager transactionManager) {
+        this.mapper = mapper;
+        this.userMapper = userMapper;
         this.transactionManager = transactionManager;
     }
 
@@ -188,7 +196,7 @@ public class ProjectDao extends BaseDao {
     public List<Project> findUserProjects(long userId) throws DataExistenceException{
 
         var msg = "";
-        if (mapper.getUserById(userId) == null){
+        if (userMapper.getUserById(userId) == null){
             msg = String.format(LogMessageUtil.LOG_FORMAT, LogMessageUtil.USER_NOT_EXISTS, userId);
             logger.error(msg);
             throw new DataExistenceException(LogMessageUtil.PROJECT_NOT_EXISTS);

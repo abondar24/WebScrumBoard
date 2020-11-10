@@ -1,10 +1,10 @@
-package org.abondar.experimental.wsboard.test.ws.impl;
+package org.abondar.experimental.wsboard.project.service;
 
-import org.abondar.experimental.wsboard.dao.data.LogMessageUtil;
-import org.abondar.experimental.wsboard.dao.exception.DataCreationException;
-import org.abondar.experimental.wsboard.datamodel.Project;
-import org.abondar.experimental.wsboard.datamodel.user.User;
-import org.abondar.experimental.wsboard.ws.service.ProjectService;
+
+import org.abondar.experimental.wsboard.common.exception.DataCreationException;
+import org.abondar.experimental.wsboard.common.util.LogMessageUtil;
+import org.abondar.experimental.wsboard.project.data.Project;
+import org.abondar.experimental.wsboard.user.data.User;
 
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;

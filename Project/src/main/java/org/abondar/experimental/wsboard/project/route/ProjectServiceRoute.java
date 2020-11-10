@@ -1,10 +1,11 @@
-package org.abondar.experimental.wsboard.ws.route;
+package org.abondar.experimental.wsboard.project.route;
 
-import org.abondar.experimental.wsboard.dao.ProjectDao;
-import org.abondar.experimental.wsboard.dao.data.LogMessageUtil;
-import org.abondar.experimental.wsboard.dao.exception.DataCreationException;
-import org.abondar.experimental.wsboard.dao.exception.DataExistenceException;
-import org.abondar.experimental.wsboard.ws.util.I18nKeyUtil;
+import org.abondar.experimental.wsboard.common.exception.DataCreationException;
+import org.abondar.experimental.wsboard.common.exception.DataExistenceException;
+import org.abondar.experimental.wsboard.common.util.I18nKeyUtil;
+import org.abondar.experimental.wsboard.common.util.LogMessageUtil;
+import org.abondar.experimental.wsboard.project.dao.ProjectDao;
+
 import org.apache.camel.LoggingLevel;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.cxf.message.MessageContentsList;
@@ -18,8 +19,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import static org.abondar.experimental.wsboard.ws.util.RouteConstantUtil.ACCEPT_LANG_HEADER;
-import static org.abondar.experimental.wsboard.ws.util.RouteConstantUtil.LOG_HEADERS;
+import static org.abondar.experimental.wsboard.common.util.RouteConstantUtil.ACCEPT_LANG_HEADER;
+import static org.abondar.experimental.wsboard.common.util.RouteConstantUtil.LOG_HEADERS;
+
 
 /**
  * Route for project service events
