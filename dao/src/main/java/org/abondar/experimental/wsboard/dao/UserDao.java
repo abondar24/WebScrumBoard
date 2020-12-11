@@ -27,10 +27,10 @@ import java.util.List;
 public class UserDao extends BaseDao {
 
 
-    private static Logger logger = LoggerFactory.getLogger(UserDao.class);
+    private static final Logger logger = LoggerFactory.getLogger(UserDao.class);
 
 
-    private JtaTransactionManager transactionManager;
+    private final JtaTransactionManager transactionManager;
 
     public UserDao(DataMapper mapper,JtaTransactionManager transactionManager) {
         super(mapper);
@@ -166,6 +166,8 @@ public class UserDao extends BaseDao {
      * @param email     - user email
      * @param roles     - list of user roles
      * @param avatar    - user avatar
+     * @throws DataExistenceException - user not found
+     * @throws DataCreationException - user can't be updated
      * @return user POJO
      */
     public User updateUser(Long id, String firstName,
@@ -220,6 +222,8 @@ public class UserDao extends BaseDao {
      * Mark user as deleted and set all its data as 'deleted'
      *
      * @param id - user id
+     * @throws DataExistenceException - user not found
+     * @throws DataCreationException - user can't be updated
      * @return user POJO
      */
     public User deleteUser(long id) throws DataExistenceException, DataCreationException {

@@ -23,9 +23,9 @@ import java.util.List;
  */
 public class ProjectDao extends BaseDao {
 
-    private static Logger logger = LoggerFactory.getLogger(ProjectDao.class);
+    private static final Logger logger = LoggerFactory.getLogger(ProjectDao.class);
 
-    private JtaTransactionManager transactionManager;
+    private final JtaTransactionManager transactionManager;
 
     public ProjectDao(DataMapper mapper,JtaTransactionManager transactionManager) {
         super(mapper);
@@ -130,7 +130,7 @@ public class ProjectDao extends BaseDao {
      *
      * @param id - project id
      * @return project id
-     * @throws DataExistenceException
+     * @throws DataExistenceException - project not found
      */
     public long deleteProject(long id) throws DataExistenceException {
         TransactionStatus txStatus =
@@ -162,7 +162,7 @@ public class ProjectDao extends BaseDao {
      *
      * @param id - project id
      * @return project pojo
-     * @throws DataExistenceException
+     * @throws DataExistenceException - project not found
      */
     public Project findProjectById(long id) throws DataExistenceException {
         var prj = mapper.getProjectById(id);
@@ -201,7 +201,7 @@ public class ProjectDao extends BaseDao {
      * Check project with name exists
      *
      * @param name - project name
-     * @throws DataExistenceException
+     * @throws DataExistenceException - project not found
      */
     private void checkProjectExists(String name) throws DataExistenceException {
         var prj = mapper.getProjectByName(name);

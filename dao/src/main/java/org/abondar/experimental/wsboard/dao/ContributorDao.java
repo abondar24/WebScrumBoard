@@ -21,7 +21,7 @@ import java.util.Optional;
  */
 public class ContributorDao extends BaseDao {
 
-    private static Logger logger = LoggerFactory.getLogger(ContributorDao.class);
+    private static final Logger logger = LoggerFactory.getLogger(ContributorDao.class);
 
 
     public ContributorDao(DataMapper mapper) {
@@ -234,7 +234,7 @@ public class ContributorDao extends BaseDao {
      * Find contributor by project and name
      * @param projectId - project id
      * @param login - contributor login
-     * @return
+     * @return found contributor
      * @throws DataExistenceException - project or contributor not found
      */
     public Contributor findContributorByLogin(long projectId, String login) throws DataExistenceException {

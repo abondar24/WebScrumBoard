@@ -19,7 +19,7 @@ import java.util.List;
  */
 public class SprintDao extends BaseDao {
 
-    private static Logger logger = LoggerFactory.getLogger(SprintDao.class);
+    private static final Logger logger = LoggerFactory.getLogger(SprintDao.class);
 
     public SprintDao(DataMapper mapper) {
         super(mapper);
@@ -234,7 +234,6 @@ public class SprintDao extends BaseDao {
      * Delete a sprint
      *
      * @param sprintId - sprint id
-     * @return true if sprint deleted, false if error
      */
     public void deleteSprint(long sprintId) throws DataExistenceException {
 

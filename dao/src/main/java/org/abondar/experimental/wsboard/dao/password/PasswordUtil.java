@@ -39,6 +39,7 @@ public class PasswordUtil {
      * Create password hash
      *
      * @param password - raw password
+     * @throws CannotPerformOperationException - error generating hash
      * @return password hash
      */
     public static String createHash(String password)
