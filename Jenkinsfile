@@ -5,14 +5,11 @@ node {
 
   checkout scm
 
-stages{
 
-     stage('Build'){
-         sh "mvn clean install -DskipTests"
+stage('Build'){
+   sh "mvn clean install -DskipTests"
 
-     }
+  }
 
-
-}
 
 }
