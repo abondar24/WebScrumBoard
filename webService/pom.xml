@@ -5,11 +5,11 @@
     <parent>
         <groupId>org.abondar.experimental.wsboard</groupId>
         <artifactId>WebScrumBoard</artifactId>
-        <version>1.1-SNAPSHOT</version>
+        <version>1.2.2-SNAPSHOT</version>
     </parent>
 
     <artifactId>webService</artifactId>
-    <version>1.1-SNAPSHOT</version>
+    <version>1.2.2-SNAPSHOT</version>
 
     <dependencies>
         <dependency>
@@ -65,7 +65,7 @@
         <dependency>
             <groupId>org.abondar.experimental.wsboard</groupId>
             <artifactId>dao</artifactId>
-            <version>1.1-SNAPSHOT</version>
+            <version>1.2.2-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
