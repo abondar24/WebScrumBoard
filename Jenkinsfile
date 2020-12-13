@@ -19,9 +19,15 @@ stage ('Deploy Snapshot') {
     sh "./mvnw clean deploy -s .mvn/wrapper/settings.xml -Dmaven.test.skip"
 }
 
+if (params.MAKE_RELEASE){
+    stage ('Release') {
 
+       echo  "test"
+    }
 
+ }
 }
+
 
 def archiveTestResults(filePattern){
     junit keepLongStdio: true, testResults: filePattern
