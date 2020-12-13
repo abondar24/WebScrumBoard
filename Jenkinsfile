@@ -15,11 +15,13 @@ stage('Test'){
     archiveTestResults("base/target/surefire-reports/TEST-*.xml")
 }
 
-stage ('Deploy Snapshot') {
-    sh "./mvnw clean deploy -s .mvn/wrapper/settings.xml -Dmaven.test.skip"
-}
-
 if (params.MAKE_RELEASE){
+
+    stage ('Deploy Snapshot') {
+        echo  "test"
+        //sh "./mvnw clean deploy -s .mvn/wrapper/settings.xml -Dmaven.test.skip"
+    }
+
     stage ('Release') {
 
        echo  "test"
