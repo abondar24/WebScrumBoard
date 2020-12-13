@@ -1,5 +1,6 @@
 #!groovy
 
+def mvnCmd = "./mvnw  -s .mvn/wrapper/settings.xml"
 
 node {
 
@@ -7,25 +8,21 @@ node {
 
 
 stage('Build'){
-    sh "./mvnw clean compile"
+    sh ".${mvnCmd} clean compile"
   }
 
 stage('Test'){
-    sh "./mvnw clean test"
+    sh ".${mvnCmd} clean test"
     archiveTestResults("base/target/surefire-reports/TEST-*.xml")
 }
 
 if (params.MAKE_RELEASE){
 
     stage ('Deploy Snapshot') {
-        echo  "test"
-        //sh "./mvnw clean deploy -s .mvn/wrapper/settings.xml -Dmaven.test.skip"
+        sh ".${mvnCmd} -Dmaven.test.skip"
     }
 
-    stage ('Release') {
 
-       echo  "test"
-    }
 
  }
 }
