@@ -19,7 +19,7 @@ stage('Test'){
 if (params.MAKE_RELEASE){
 
     stage ('Deploy Snapshot') {
-        sh "${mvnCmd} -Dmaven.test.skip"
+        sh "${mvnCmd} deploy -Dmaven.test.skip"
     }
 
     stage ('Release') {
