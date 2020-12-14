@@ -43,16 +43,14 @@ if (params.MAKE_RELEASE){
 
     stage ('Deploy'){
       withKubeConfig([credentialsId: 'admin', serverUrl: 'https://127.0.0.1:16443']) {
-          sh "cd base"
-          sh "../${mvnCmd} -Pkube  fabric8:deploy"
-          sh "cd .."
+          sh "../${mvnCmd}  -f base/pom.xml -Pkube -DskipTests fabric8:deploy"
        }
 
     }
 
     stage ('Update development version'){
         sh "${mvnCmd} release:update-versions -DautoVersionSubmodules=true -DdevelopmentVersion=${params.DEV_VERSION}-SNAPSHOT"
-        sh "git commit -a -m 'release ${params.DEV_VERSION}'"
+        sh "git commit -a -m 'bump to ${params.DEV_VERSION}'"
         sh  ${pushCmd}
     }
 
