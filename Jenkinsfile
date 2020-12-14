@@ -1,7 +1,7 @@
 #!groovy
 
 def mvnCmd = "./mvnw  -s .mvn/wrapper/settings.xml"
-def pushCmd =  "git push https://${params.GIT_USERNAME}:${params.GIT_PASSWORD}@github.com/abondar24/WebScrumBoard.git"
+def pushCmd =  "git push"
 node {
 
   checkout scm
@@ -24,15 +24,18 @@ if (params.MAKE_RELEASE){
 
     stage ('Release') {
       try {
-          sh "git checkout -b rc-${params.RELEASE_VERSION}"
-          sh "${pushCmd} rc-${params.RELEASE_VERSION}:rc-${params.RELEASE_VERSION}"
-          sh "${mvnCmd} release:clean"
-          sh "${mvnCmd} release:prepare -Dusername=${params.GIT_USERNAME} -Dpassword=${params.GIT_PASSWORD}  -DreleaseVersion=${params.RELEASE_VERSION}  -Dtag=v.${params.RELEASE_VERSION} -DupdateWorkingCopyVersions=false -DupdateDependencies=false"
-          sh "${mvnCmd} release:perform"
-          sh "git checkout master"
-          sh "git merge git merge rc-${params.RELEASE_VERSION}"
-          sh "git commit -a -m 'release ${params.RELEASE_VERSION}'"
-          sh  ${pushCmd}
+          withCredentials([usernamePassword(credentialsId: 'gitCreds')]) {
+              sh "git checkout -b rc-${params.RELEASE_VERSION}"
+              sh "${pushCmd} origin rc-${params.RELEASE_VERSION}"
+              sh "${mvnCmd} release:clean"
+              sh "${mvnCmd} release:prepare -Dusername=${params.GIT_USERNAME} -Dpassword=${params.GIT_PASSWORD}  -DreleaseVersion=${params.RELEASE_VERSION}  -Dtag=v.${params.RELEASE_VERSION} -DupdateWorkingCopyVersions=false -DupdateDependencies=false"
+              sh "${mvnCmd} release:perform"
+              sh "git checkout master"
+              sh "git merge git merge rc-${params.RELEASE_VERSION}"
+              sh "git commit -a -m 'release ${params.RELEASE_VERSION}'"
+              sh  ${pushCmd}
+          }
+
       } catch (e){
 
           sh "${mvnCmd} release:rollback"
@@ -50,8 +53,11 @@ if (params.MAKE_RELEASE){
 
     stage ('Update development version'){
         sh "${mvnCmd} release:update-versions -DautoVersionSubmodules=true -DdevelopmentVersion=${params.DEV_VERSION}-SNAPSHOT"
-        sh "git commit -a -m 'bump to ${params.DEV_VERSION}'"
-        sh  ${pushCmd}
+        withCredentials([usernamePassword(credentialsId: 'gitCreds')]) {
+            sh "git commit -a -m 'bump to ${params.DEV_VERSION}'"
+            sh  ${pushCmd}
+        }
+
     }
 
  }
