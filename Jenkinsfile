@@ -41,9 +41,12 @@ if (params.MAKE_RELEASE){
     }
 
     stage ('Deploy'){
-        sh "cd base"
-        sh "${mvnCmd} -Pkube  fabric8:deploy"
-        sh "cd .."
+      withKubeConfig([credentialsId: 'admin', serverUrl: 'https://127.0.0.1:16443']) {
+          sh "cd base"
+          sh "${mvnCmd} -Pkube  fabric8:deploy"
+          sh "cd .."
+       }
+
     }
 
     stage ('Update development version'){
