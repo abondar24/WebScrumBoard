@@ -1,7 +1,7 @@
 #!groovy
 
 def mvnCmd = "./mvnw  -s .mvn/wrapper/settings.xml"
-
+def pushCmd =  "git push https://${params.GIT_USERNAME}:${params.GIT_PASSWORD}@github.com/abondar24/WebScrumBoard.git"
 node {
 
   checkout scm
@@ -30,11 +30,26 @@ if (params.MAKE_RELEASE){
           sh "${mvnCmd} release:perform"
           sh "git checkout master"
           sh "git merge git merge rc-${params.RELEASE_VERSION}"
-      } catch (Exception ex){
+          sh "git commit -a -m 'release ${params.RELEASE_VERSION}'"
+          sh  ${pushCmd}
+      } catch (e){
+
           sh "${mvnCmd} release:rollback"
           sh "git checkout master"
       }
 
+    }
+
+    stage ('Deploy'){
+        sh "cd base"
+        sh "${mvnCmd} -Pkube  fabric8:deploy"
+        sh "cd .."
+    }
+
+    stage ('Update development version'){
+        sh "${mvnCmd} release:update-versions -DautoVersionSubmodules=true -DdevelopmentVersion=${params.DEV_VERSION}-SNAPSHOT"
+        sh "git commit -a -m 'release ${params.DEV_VERSION}'"
+        sh  ${pushCmd}
     }
 
  }
