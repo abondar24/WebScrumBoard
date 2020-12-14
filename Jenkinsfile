@@ -25,6 +25,7 @@ if (params.MAKE_RELEASE){
     stage ('Release') {
       try {
           sh "git checkout -b rc-${params.RELEASE_VERSION}"
+          sh "${pushCmd} rc-${params.RELEASE_VERSION}:rc-${params.RELEASE_VERSION}"
           sh "${mvnCmd} release:clean"
           sh "${mvnCmd} release:prepare -Dusername=${params.GIT_USERNAME} -Dpassword=${params.GIT_PASSWORD}  -DreleaseVersion=${params.RELEASE_VERSION}  -Dtag=v.${params.RELEASE_VERSION} -DupdateWorkingCopyVersions=false -DupdateDependencies=false"
           sh "${mvnCmd} release:perform"
