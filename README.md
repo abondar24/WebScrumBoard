@@ -44,22 +44,19 @@ Users can have one or serveral roles from the list:
 ```yaml
 mvn clean install
  
-cd base/
-mvn spring-boot:run
+mvn -f base/pom.xml spring-boot:run
 
 or 
 
-java -jar base-<ver>.jar
+mvn -f base/pom.xml java -jar base-<ver>.jar
 ```
 
 ### Docker-Compose
 
 ```yaml
 mvn clean install
- 
-cd base/
 
-mvn clean install -Pdocker
+mvn -f base/pom.xml clean install -Pdocker
 
 docker-compose up
 ```
@@ -80,9 +77,7 @@ The app was tested in with microk8s on ubuntu.
 ```yaml
 mvn clean install
  
-cd base/
-
-mvn clean install -DskipTests -Pkube  fabric8:deploy
+mvn -f base/pom.xml clean install -DskipTests -Pkube  fabric8:deploy
 
 ```
 
