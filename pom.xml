@@ -16,6 +16,11 @@
         <jaxws.version>2.3.1</jaxws.version>
         <camel.version>2.25.3</camel.version>
         <swagger.version>3.38.0</swagger.version>
+        <jackson.version>2.9.8</jackson.version>
+        <servlet.version>4.0.1</servlet.version>
+        <annotation.version>1.3.2</annotation.version>
+        <mybatis.version>2.1.4</mybatis.version>
+        <mybatis.cache.version>1.2.1</mybatis.cache.version>
         <build-plugin.jacoco.version>0.8.6</build-plugin.jacoco.version>
         <build-plugin.coveralls.version>4.3.0</build-plugin.coveralls.version>
         <deploy.plugin.version>2.8.2</deploy.plugin.version>
