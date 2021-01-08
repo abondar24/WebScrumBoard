@@ -1,7 +1,7 @@
 package org.abondar.experimental.wsboard.password;
 
-import org.abondar.experimental.wsboard.base.WebScrumBoardApplication;
-import org.abondar.experimental.wsboard.base.util.PasswordUtil;
+import org.abondar.experimental.wsboard.server.WebScrumBoardApplication;
+import org.abondar.experimental.wsboard.server.util.PasswordUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;

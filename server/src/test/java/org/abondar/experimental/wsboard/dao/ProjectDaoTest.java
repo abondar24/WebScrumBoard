@@ -1,15 +1,17 @@
 package org.abondar.experimental.wsboard.dao;
 
-import org.abondar.experimental.wsboard.dao.exception.DataCreationException;
-import org.abondar.experimental.wsboard.dao.exception.DataExistenceException;
-import org.abondar.experimental.wsboard.datamodel.Sprint;
-import org.abondar.experimental.wsboard.datamodel.task.Task;
+import junit.framework.TestCase;
+import org.abondar.experimental.wsboard.server.datamodel.Sprint;
+import org.abondar.experimental.wsboard.server.datamodel.task.Task;
+
+import org.abondar.experimental.wsboard.server.exception.DataCreationException;
+import org.abondar.experimental.wsboard.server.exception.DataExistenceException;
 import org.junit.jupiter.api.Test;
 
 import java.util.Calendar;
 import java.util.Date;
 
-import static junit.framework.TestCase.assertNull;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -209,10 +211,10 @@ public class ProjectDaoTest extends BaseDaoTest {
 
         projectDao.deleteProject(prj.getId());
 
-        assertNull(mapper.getTaskById(task.getId()));
-        assertNull(mapper.getSprintById(sprint.getId()));
-        assertNull(mapper.getContributorById(contr.getId()));
-        assertNull(mapper.getProjectById(prj.getId()));
+        TestCase.assertNull(mapper.getTaskById(task.getId()));
+        TestCase.assertNull(mapper.getSprintById(sprint.getId()));
+        TestCase.assertNull(mapper.getContributorById(contr.getId()));
+        TestCase.assertNull(mapper.getProjectById(prj.getId()));
 
     }
 

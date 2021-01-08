@@ -1,13 +1,14 @@
 package org.abondar.experimental.wsboard.dao;
 
-import org.abondar.experimental.wsboard.base.dao.ContributorDao;
-import org.abondar.experimental.wsboard.base.dao.ProjectDao;
-import org.abondar.experimental.wsboard.base.dao.UserDao;
-import org.abondar.experimental.wsboard.base.config.DaoConfig;
-import org.abondar.experimental.wsboard.base.mapper.DataMapper;
-import org.abondar.experimental.wsboard.datamodel.Project;
-import org.abondar.experimental.wsboard.datamodel.user.User;
-import org.abondar.experimental.wsboard.datamodel.user.UserRole;
+
+import org.abondar.experimental.wsboard.server.config.DaoConfig;
+import org.abondar.experimental.wsboard.server.dao.ContributorDao;
+import org.abondar.experimental.wsboard.server.dao.ProjectDao;
+import org.abondar.experimental.wsboard.server.dao.UserDao;
+import org.abondar.experimental.wsboard.server.mapper.DataMapper;
+import org.abondar.experimental.wsboard.server.datamodel.Project;
+import org.abondar.experimental.wsboard.server.datamodel.user.User;
+import org.abondar.experimental.wsboard.server.datamodel.user.UserRole;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -29,15 +30,15 @@ public class BaseDaoTest {
 
     @Autowired
     @Qualifier("contributorDao")
-    protected  ContributorDao contributorDao;
+    protected ContributorDao contributorDao;
 
     @Autowired
     @Qualifier("userDao")
-    protected  UserDao userDao;
+    protected UserDao userDao;
 
     @Autowired
     @Qualifier("projectDao")
-    protected  ProjectDao projectDao;
+    protected ProjectDao projectDao;
 
 
     protected User createUser() throws Exception {

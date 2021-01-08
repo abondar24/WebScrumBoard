@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="org.abondar.experimental.wsboard.base.mapper.DataMapper">
+<mapper namespace="org.abondar.experimental.wsboard.server.mapper.DataMapper">
 
     <cache type="org.mybatis.caches.ehcache.EhcacheCache">
         <property name="timeToIdleSeconds" value="500"/>

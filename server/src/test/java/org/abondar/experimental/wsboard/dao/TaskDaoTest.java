@@ -1,11 +1,12 @@
 package org.abondar.experimental.wsboard.dao;
 
-import org.abondar.experimental.wsboard.base.dao.SprintDao;
-import org.abondar.experimental.wsboard.base.dao.TaskDao;
-import org.abondar.experimental.wsboard.dao.exception.DataCreationException;
-import org.abondar.experimental.wsboard.dao.exception.DataExistenceException;
-import org.abondar.experimental.wsboard.datamodel.task.TaskState;
-import org.abondar.experimental.wsboard.datamodel.user.UserRole;
+
+import org.abondar.experimental.wsboard.server.dao.SprintDao;
+import org.abondar.experimental.wsboard.server.dao.TaskDao;
+import org.abondar.experimental.wsboard.server.datamodel.task.TaskState;
+import org.abondar.experimental.wsboard.server.datamodel.user.UserRole;
+import org.abondar.experimental.wsboard.server.exception.DataCreationException;
+import org.abondar.experimental.wsboard.server.exception.DataExistenceException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

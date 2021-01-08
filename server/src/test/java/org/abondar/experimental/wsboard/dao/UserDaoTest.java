@@ -1,10 +1,11 @@
 package org.abondar.experimental.wsboard.dao;
 
-import org.abondar.experimental.wsboard.dao.exception.DataCreationException;
-import org.abondar.experimental.wsboard.dao.exception.DataExistenceException;
-import org.abondar.experimental.wsboard.dao.exception.InvalidHashException;
-import org.abondar.experimental.wsboard.base.util.PasswordUtil;
-import org.abondar.experimental.wsboard.datamodel.user.UserRole;
+
+import org.abondar.experimental.wsboard.server.exception.DataCreationException;
+import org.abondar.experimental.wsboard.server.exception.DataExistenceException;
+import org.abondar.experimental.wsboard.server.exception.InvalidHashException;
+import org.abondar.experimental.wsboard.server.util.PasswordUtil;
+import org.abondar.experimental.wsboard.server.datamodel.user.UserRole;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

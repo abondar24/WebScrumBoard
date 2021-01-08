@@ -1,9 +1,10 @@
 package org.abondar.experimental.wsboard.dao;
 
 
-import org.abondar.experimental.wsboard.base.dao.SprintDao;
-import org.abondar.experimental.wsboard.dao.exception.DataCreationException;
-import org.abondar.experimental.wsboard.dao.exception.DataExistenceException;
+
+import org.abondar.experimental.wsboard.server.dao.SprintDao;
+import org.abondar.experimental.wsboard.server.exception.DataCreationException;
+import org.abondar.experimental.wsboard.server.exception.DataExistenceException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
