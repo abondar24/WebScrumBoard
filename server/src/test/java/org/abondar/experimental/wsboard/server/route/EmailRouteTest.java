@@ -1,6 +1,7 @@
 package org.abondar.experimental.wsboard.server.route;
 
 
+import org.abondar.experimental.wsboard.server.config.CxfConfig;
 import org.abondar.experimental.wsboard.server.config.RouteConfig;
 import org.abondar.experimental.wsboard.server.datamodel.user.User;
 import org.apache.camel.EndpointInject;
@@ -17,7 +18,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Map;
 
-@SpringBootTest(classes = RouteConfig.class)
+@SpringBootTest
 @RunWith(CamelSpringBootRunner.class)
 @ActiveProfiles("test")
 @MockEndpointsAndSkip
@@ -26,11 +27,8 @@ public class EmailRouteTest {
     @Autowired
     private ProducerTemplate producerTemplate;
 
-    @Value("${email.admin}")
-    private String emailAdmin;
-
-    @Value("${email.from}")
-    private String emailFrom;
+    @Autowired
+    private EmailProperties emailProperties;
 
     @EndpointInject(uri = "mock:{{email.server}}")
     private MockEndpoint mockEndpoint;
@@ -41,7 +39,7 @@ public class EmailRouteTest {
         producerTemplate.sendBodyAndHeaders("direct:sendEmail", new User(),
                 Map.of("emailType", "createUser",
                         "To", "email",
-                        "From", "Scrum Admin<" + emailAdmin + "@" + emailFrom + ">",
+                        "From", "Scrum Admin<" + emailProperties.getAdmin() + "@" +emailProperties.getFrom() + ">",
                         "contentType", "text/html"));
         mockEndpoint.assertIsSatisfied();
         mockEndpoint.expectedBodiesReceived();

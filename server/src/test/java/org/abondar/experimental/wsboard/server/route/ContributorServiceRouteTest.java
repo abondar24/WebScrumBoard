@@ -1,8 +1,6 @@
 package org.abondar.experimental.wsboard.server.route;
 
 
-import org.abondar.experimental.wsboard.server.config.CxfConfig;
-import org.abondar.experimental.wsboard.server.config.RouteConfig;
 import org.apache.camel.EndpointInject;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.component.mock.MockEndpoint;
@@ -17,11 +15,12 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Map;
 
-@SpringBootTest(classes = {RouteConfig.class})
+@SpringBootTest
 @RunWith(CamelSpringBootRunner.class)
 @ActiveProfiles("test")
 @MockEndpoints
 public class ContributorServiceRouteTest {
+
 
     @Autowired
     private ProducerTemplate producerTemplate;
@@ -29,9 +28,9 @@ public class ContributorServiceRouteTest {
     @EndpointInject(uri = "mock:sendEmail")
     private MockEndpoint mockEndpoint;
 
-    private final long someId = 7L;
-    private final boolean someState = true;
-    private final int somePagination = 0;
+    private long someId = 7L;
+    private boolean someState = true;
+    private int somePagination = 0;
 
     @Test
     public void createContributorRouteTest() throws Exception {

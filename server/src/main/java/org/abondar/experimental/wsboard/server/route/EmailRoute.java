@@ -5,7 +5,7 @@ import org.abondar.experimental.wsboard.server.util.RouteConstantUtil;
 import org.apache.camel.LoggingLevel;
 import org.apache.camel.builder.RouteBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+
 import org.springframework.context.MessageSource;
 
 import java.util.Locale;
@@ -19,24 +19,18 @@ import java.util.Locale;
  */
 public class EmailRoute extends RouteBuilder {
 
-    @Value("${email.server:localhost}")
-    private String emailServer;
-
-    @Value("${email.admin:admin}")
-    private String emailAdmin;
-
-    @Value("${email.from:admin@wsb}")
-    private String emailFrom;
-
-
 
     private final MessageSource messageSource;
 
     private Locale locale;
 
+
+    private EmailProperties properties;
+
     @Autowired
-    public EmailRoute(MessageSource messageSource) {
+    public EmailRoute(MessageSource messageSource,EmailProperties properties) {
         this.messageSource = messageSource;
+        this.properties = properties;
     }
 
     @Override
@@ -44,7 +38,7 @@ public class EmailRoute extends RouteBuilder {
 
         from("direct:sendEmail").routeId("sendEmail")
                 .transform().body((bdy, hdrs) -> {
-            hdrs.put("From", "Scrum Admin<" + emailAdmin + "@" + emailFrom + ">");
+            hdrs.put("From", "Scrum Admin<" + properties.getAdmin() + "@" + properties.getFrom() + ">");
             hdrs.put("contentType", "text/html");
 
             locale = new Locale.Builder()
@@ -126,7 +120,7 @@ public class EmailRoute extends RouteBuilder {
                 .removeHeader("id")
                 .end()
                 .doTry()
-                .to(emailServer)
+                .to(properties.getServer())
                 .doCatch(Exception.class)
                 .log(LoggingLevel.ERROR, "${exception}")
                 .endDoTry();

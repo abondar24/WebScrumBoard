@@ -7,6 +7,7 @@ import org.abondar.experimental.wsboard.server.dao.SprintDao;
 import org.abondar.experimental.wsboard.server.dao.TaskDao;
 import org.abondar.experimental.wsboard.server.dao.UserDao;
 import org.abondar.experimental.wsboard.server.route.ContributorRoute;
+import org.abondar.experimental.wsboard.server.route.EmailProperties;
 import org.abondar.experimental.wsboard.server.route.EmailRoute;
 import org.abondar.experimental.wsboard.server.route.ProjectRoute;
 import org.abondar.experimental.wsboard.server.route.RestRoute;
@@ -28,7 +29,7 @@ import org.springframework.context.annotation.Import;
  */
 @Configuration
 @Import({CxfConfig.class,ContributorDao.class, UserDao.class, AuthServiceImpl.class,
-        SecurityCodeDao.class, ProjectDao.class, TaskDao.class, SprintDao.class})
+        SecurityCodeDao.class, ProjectDao.class, TaskDao.class, SprintDao.class,EmailProperties.class})
 public class RouteConfig {
 
     @Autowired
@@ -55,6 +56,9 @@ public class RouteConfig {
     @Autowired
     TaskDao taskDao;
 
+    @Autowired
+    EmailProperties emailProperties;
+
     @Bean
     public RouteBuilder restServiceRoute() {
         return new RestRoute(messageSource);
@@ -67,7 +71,7 @@ public class RouteConfig {
 
     @Bean
     public RouteBuilder emailRoute() {
-        return new EmailRoute(messageSource);
+        return new EmailRoute(messageSource,emailProperties);
     }
 
     @Bean
