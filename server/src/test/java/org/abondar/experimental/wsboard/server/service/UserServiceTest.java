@@ -1,12 +1,12 @@
 package org.abondar.experimental.wsboard.server.service;
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
-import org.abondar.experimental.wsboard.dao.data.LogMessageUtil;
-import org.abondar.experimental.wsboard.datamodel.user.user.User;
-import org.abondar.experimental.wsboard.datamodel.user.user.UserRole;
 
-import org.abondar.experimental.wsboard.ws.service.impl.AuthServiceTestImpl;
-import org.abondar.experimental.wsboard.ws.service.impl.UserServiceTestImpl;
+import org.abondar.experimental.wsboard.server.datamodel.user.User;
+import org.abondar.experimental.wsboard.server.datamodel.user.UserRole;
+import org.abondar.experimental.wsboard.server.service.impl.AuthServiceTestImpl;
+import org.abondar.experimental.wsboard.server.service.impl.UserServiceTestImpl;
+import org.abondar.experimental.wsboard.server.util.LogMessageUtil;
 import org.apache.cxf.endpoint.Server;
 import org.apache.cxf.jaxrs.JAXRSBindingFactory;
 import org.apache.cxf.jaxrs.JAXRSServerFactoryBean;
