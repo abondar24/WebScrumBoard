@@ -13,7 +13,7 @@ node {
 
     stage('Test') {
         sh "${mvnCmd} clean test"
-        archiveTestResults("base/target/surefire-reports/TEST-*.xml")
+        archiveTestResults("server/target/surefire-reports/TEST-*.xml")
     }
 
     if (params.MAKE_RELEASE) {
@@ -46,7 +46,7 @@ node {
 
         stage('Deploy') {
             withKubeConfig([credentialsId: 'admin', serverUrl: 'https://127.0.0.1:16443']) {
-                sh "../${mvnCmd}  -f base/pom.xml -Pkube -DskipTests fabric8:deploy"
+                sh "../${mvnCmd}  -f server/pom.xml -Pkube -DskipTests fabric8:deploy"
             }
 
         }
