@@ -19,14 +19,15 @@ import java.util.Locale;
  */
 public class EmailRoute extends RouteBuilder {
 
-    @Value("${email.server}")
+    @Value("${email.server:localhost}")
     private String emailServer;
 
-    @Value("${email.admin}")
+    @Value("${email.admin:admin}")
     private String emailAdmin;
 
-    @Value("${email.from}")
+    @Value("${email.from:admin@wsb}")
     private String emailFrom;
+
 
 
     private final MessageSource messageSource;

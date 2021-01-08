@@ -1,4 +1,4 @@
-package org.abondar.experimental.wsboard.password;
+package org.abondar.experimental.wsboard.server.password;
 
 import org.abondar.experimental.wsboard.server.WebScrumBoardApplication;
 import org.abondar.experimental.wsboard.server.util.PasswordUtil;
@@ -11,7 +11,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
-@SpringBootTest(classes = WebScrumBoardApplication.class)
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
 public class PasswordTest {

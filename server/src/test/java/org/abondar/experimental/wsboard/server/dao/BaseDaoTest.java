@@ -1,43 +1,40 @@
-package org.abondar.experimental.wsboard.dao;
+package org.abondar.experimental.wsboard.server.dao;
 
 
-import org.abondar.experimental.wsboard.server.config.DaoConfig;
-import org.abondar.experimental.wsboard.server.dao.ContributorDao;
-import org.abondar.experimental.wsboard.server.dao.ProjectDao;
-import org.abondar.experimental.wsboard.server.dao.UserDao;
+import org.abondar.experimental.wsboard.server.config.TransactionConfig;
 import org.abondar.experimental.wsboard.server.mapper.DataMapper;
 import org.abondar.experimental.wsboard.server.datamodel.Project;
 import org.abondar.experimental.wsboard.server.datamodel.user.User;
 import org.abondar.experimental.wsboard.server.datamodel.user.UserRole;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Date;
 
-@SpringBootTest(classes = DaoConfig.class)
+@MybatisTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
+@Import({ContributorDao.class,UserDao.class,ProjectDao.class})
 public class BaseDaoTest {
 
 
     @Autowired
     protected DataMapper mapper;
 
-
     @Autowired
-    @Qualifier("contributorDao")
     protected ContributorDao contributorDao;
 
     @Autowired
-    @Qualifier("userDao")
     protected UserDao userDao;
 
     @Autowired
-    @Qualifier("projectDao")
     protected ProjectDao projectDao;
 
 

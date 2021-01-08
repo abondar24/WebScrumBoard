@@ -1,7 +1,5 @@
 package org.abondar.experimental.wsboard.server.mapper;
 
-import org.abondar.experimental.wsboard.server.WebScrumBoardApplication;
-import org.abondar.experimental.wsboard.server.config.MapperConfig;
 import org.abondar.experimental.wsboard.server.datamodel.Contributor;
 import org.abondar.experimental.wsboard.server.datamodel.Project;
 import org.abondar.experimental.wsboard.server.datamodel.SecurityCode;
@@ -10,26 +8,29 @@ import org.abondar.experimental.wsboard.server.datamodel.task.Task;
 import org.abondar.experimental.wsboard.server.datamodel.task.TaskState;
 import org.abondar.experimental.wsboard.server.datamodel.user.User;
 import org.abondar.experimental.wsboard.server.datamodel.user.UserRole;
+import org.apache.ibatis.session.SqlSession;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Date;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
-@SpringBootTest(classes = MapperConfig.class)
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
+@MybatisTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class MapperTest {
 
     @Autowired
@@ -302,15 +303,15 @@ public class MapperTest {
     }
 
     @Test
-    public void getContributorByNameTest(){
+    public void getContributorByNameTest() {
         cleanData();
 
         var user = createUser();
         var project = createProject();
         var ctr = createContributor(user.getId(), project.getId(), true);
 
-        var res = mapper.getContributorByLogin(project.getId(),user.getLogin());
-        assertEquals(ctr.getId(),res.getId());
+        var res = mapper.getContributorByLogin(project.getId(), user.getLogin());
+        assertEquals(ctr.getId(), res.getId());
     }
 
     @Test
@@ -457,7 +458,7 @@ public class MapperTest {
         var sprint = createSprint(project.getId());
         var task = createTask(contributor.getId());
 
-        mapper.updateTaskSprint(task.getId(),sprint.getId());
+        mapper.updateTaskSprint(task.getId(), sprint.getId());
         var res = mapper.countSprintTasks(sprint.getId());
 
         assertEquals(Integer.valueOf(1), res);
@@ -509,13 +510,13 @@ public class MapperTest {
         createSprint(prId);
         createSprint(prId);
 
-        var sprints = mapper.getSprints(prId, 0,null);
+        var sprints = mapper.getSprints(prId, 0, null);
         assertEquals(3, sprints.size());
 
     }
 
     @Test
-    public void getCurrentSprintTest(){
+    public void getCurrentSprintTest() {
         cleanData();
         var prId = createProject().getId();
         var sprint = createSprint(prId);
@@ -526,7 +527,7 @@ public class MapperTest {
         var res = mapper.getCurrentSprint(prId);
 
         assertTrue(res.isCurrent());
-        assertEquals(sprint.getId(),res.getId());
+        assertEquals(sprint.getId(), res.getId());
     }
 
 
@@ -701,6 +702,7 @@ public class MapperTest {
                 "test", "test", "12345", roles);
 
         mapper.insertUser(user);
+
         return user;
     }
 

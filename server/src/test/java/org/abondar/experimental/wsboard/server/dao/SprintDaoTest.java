@@ -1,13 +1,13 @@
-package org.abondar.experimental.wsboard.dao;
+package org.abondar.experimental.wsboard.server.dao;
 
 
 
-import org.abondar.experimental.wsboard.server.dao.SprintDao;
 import org.abondar.experimental.wsboard.server.exception.DataCreationException;
 import org.abondar.experimental.wsboard.server.exception.DataExistenceException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Import;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -18,11 +18,11 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
+@Import({SprintDao.class})
 public class SprintDaoTest extends BaseDaoTest {
 
 
     @Autowired
-    @Qualifier("sprintDao")
     private SprintDao sprintDao;
 
     @Test

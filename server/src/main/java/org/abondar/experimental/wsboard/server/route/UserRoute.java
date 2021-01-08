@@ -18,7 +18,6 @@ import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
 import org.apache.cxf.message.MessageContentsList;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
 
 import javax.ws.rs.core.Response;
@@ -35,19 +34,21 @@ import java.util.Locale;
  */
 public class UserRoute extends RouteBuilder {
 
-    @Autowired
-    @Qualifier("userDao")
-    private UserDao dao;
+    private final UserDao dao;
+
+    private final SecurityCodeDao codeDao;
+
+    private final AuthService authService;
+
+    private final MessageSource messageSource;
 
     @Autowired
-    @Qualifier("codeDao")
-    private SecurityCodeDao codeDao;
-
-    @Autowired
-    private AuthService authService;
-
-    @Autowired
-    private MessageSource messageSource;
+    public UserRoute(UserDao dao, SecurityCodeDao codeDao, AuthService authService, MessageSource messageSource) {
+        this.dao = dao;
+        this.codeDao = codeDao;
+        this.authService = authService;
+        this.messageSource = messageSource;
+    }
 
     @Override
     public void configure() throws Exception {

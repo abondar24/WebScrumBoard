@@ -8,11 +8,11 @@ import org.abondar.experimental.wsboard.server.util.I18nKeyUtil;
 import org.abondar.experimental.wsboard.server.util.LogMessageUtil;
 import org.abondar.experimental.wsboard.server.util.RouteConstantUtil;
 
+import org.apache.camel.CamelContext;
 import org.apache.camel.LoggingLevel;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.cxf.message.MessageContentsList;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
 
 import javax.ws.rs.core.Response;
@@ -29,12 +29,17 @@ import java.util.Locale;
  */
 public class ProjectRoute extends RouteBuilder {
 
-    @Autowired
-    @Qualifier("projectDao")
-    private ProjectDao projectDao;
+    private final ProjectDao projectDao;
 
-    @Autowired
-    private MessageSource messageSource;
+    private final MessageSource messageSource;
+
+   @Autowired
+    public ProjectRoute(ProjectDao projectDao, MessageSource messageSource) {
+        this.projectDao = projectDao;
+        this.messageSource = messageSource;
+    }
+
+
 
     @Override
     public void configure() throws Exception {

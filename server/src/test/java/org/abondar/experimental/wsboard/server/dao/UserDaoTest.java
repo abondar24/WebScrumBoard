@@ -1,4 +1,4 @@
-package org.abondar.experimental.wsboard.dao;
+package org.abondar.experimental.wsboard.server.dao;
 
 
 import org.abondar.experimental.wsboard.server.exception.DataCreationException;

@@ -1,8 +1,6 @@
-package org.abondar.experimental.wsboard.dao;
+package org.abondar.experimental.wsboard.server.dao;
 
 
-import org.abondar.experimental.wsboard.server.dao.SprintDao;
-import org.abondar.experimental.wsboard.server.dao.TaskDao;
 import org.abondar.experimental.wsboard.server.datamodel.task.TaskState;
 import org.abondar.experimental.wsboard.server.datamodel.user.UserRole;
 import org.abondar.experimental.wsboard.server.exception.DataCreationException;
@@ -11,6 +9,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Import;
 
 import java.util.Date;
 import java.util.List;
@@ -20,16 +19,14 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-
+@Import({TaskDao.class,SprintDao.class})
 public class TaskDaoTest  extends BaseDaoTest{
 
 
     @Autowired
-    @Qualifier("taskDao")
     private TaskDao dao;
 
     @Autowired
-    @Qualifier("sprintDao")
     private SprintDao sprintDao;
 
 

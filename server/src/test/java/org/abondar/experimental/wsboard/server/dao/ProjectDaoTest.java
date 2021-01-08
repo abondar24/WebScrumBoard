@@ -1,4 +1,4 @@
-package org.abondar.experimental.wsboard.dao;
+package org.abondar.experimental.wsboard.server.dao;
 
 import junit.framework.TestCase;
 import org.abondar.experimental.wsboard.server.datamodel.Sprint;

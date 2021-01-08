@@ -26,7 +26,6 @@ import java.util.List;
  *
  * @author a.bondar
  */
-@Component
 public class AuthServiceImpl implements AuthService {
     private static final Long EXPIRY_PERIOD = 604800L;
     private static final String TOKEN_ISSUER = "borscht";

@@ -30,12 +30,15 @@ import java.util.Locale;
  */
 public class TaskRoute extends RouteBuilder {
 
-    @Autowired
-    @Qualifier("taskDao")
-    private TaskDao taskDao;
+    private final TaskDao taskDao;
+
+    private final MessageSource messageSource;
 
     @Autowired
-    private MessageSource messageSource;
+    public TaskRoute(TaskDao taskDao,MessageSource messageSource) {
+        this.taskDao = taskDao;
+        this.messageSource = messageSource;
+    }
 
     @Override
     public void configure() throws Exception {

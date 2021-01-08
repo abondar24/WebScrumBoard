@@ -1,12 +1,10 @@
 package org.abondar.experimental.wsboard.server.config;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
-
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import org.abondar.experimental.wsboard.server.mapper.DataMapper;
 import org.abondar.experimental.wsboard.server.mapper.TokenExpiredMapper;
 import org.abondar.experimental.wsboard.server.security.TokenRenewalFilter;
-
 import org.abondar.experimental.wsboard.server.service.AuthService;
 import org.abondar.experimental.wsboard.server.service.AuthServiceImpl;
 import org.abondar.experimental.wsboard.server.service.ContributorService;
@@ -16,25 +14,21 @@ import org.abondar.experimental.wsboard.server.service.TaskService;
 import org.abondar.experimental.wsboard.server.service.UserService;
 import org.apache.cxf.Bus;
 import org.apache.cxf.bus.spring.SpringBus;
-
 import org.apache.cxf.interceptor.LoggingInInterceptor;
 import org.apache.cxf.interceptor.LoggingOutInterceptor;
 import org.apache.cxf.jaxrs.JAXRSServerFactoryBean;
 import org.apache.cxf.jaxrs.swagger.Swagger2Feature;
-
 import org.apache.cxf.rs.security.jose.jwa.SignatureAlgorithm;
 import org.apache.cxf.rs.security.jose.jws.HmacJwsSignatureVerifier;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.PreferencesPlaceholderConfigurer;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
 
 import java.util.HashMap;
 import java.util.List;
@@ -47,12 +41,11 @@ import java.util.Map;
  */
 @Configuration
 @Component
-@Import(DaoConfig.class)
-public class CxfConfig implements WebMvcConfigurer {
+public class  CxfConfig implements WebMvcConfigurer {
 
     @Autowired
-    @Qualifier("dataMapper")
-   private DataMapper dataMapper;
+    private DataMapper dataMapper;
+
 
     @Bean(name = Bus.DEFAULT_BUS_ID)
     public SpringBus springBus() {
@@ -80,7 +73,7 @@ public class CxfConfig implements WebMvcConfigurer {
                 TaskService.class, SprintService.class));
 
 
-        factory.setProviders(List.of(jsonProvider, authenticationFilter(),expiredMapper()));
+        factory.setProviders(List.of(jsonProvider, authenticationFilter(), expiredMapper()));
         factory.setInInterceptors(List.of(new LoggingInInterceptor()));
         factory.setOutInterceptors(List.of(new LoggingOutInterceptor()));
 
@@ -146,7 +139,7 @@ public class CxfConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    MessageSource messageSource(){
+    MessageSource messageSource() {
 
         var msgSrc = new ResourceBundleMessageSource();
         msgSrc.setBasenames("messages");
@@ -157,7 +150,6 @@ public class CxfConfig implements WebMvcConfigurer {
     public TokenExpiredMapper expiredMapper() {
         return new TokenExpiredMapper(messageSource());
     }
-
 
 
 }

@@ -1,20 +1,18 @@
-package org.abondar.experimental.wsboard.dao;
+package org.abondar.experimental.wsboard.server.dao;
 
 
-import org.abondar.experimental.wsboard.server.dao.SecurityCodeDao;
 import org.abondar.experimental.wsboard.server.exception.DataExistenceException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Import;
 
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-
+@Import({SecurityCodeDao.class})
 public class SecurityCodeDaoTest extends BaseDaoTest {
     @Autowired
-    @Qualifier("codeDao")
     private SecurityCodeDao codeDao;
 
 
