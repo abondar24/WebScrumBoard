@@ -13,7 +13,7 @@
     </cache>
 
 
-    <resultMap id="userMap" type="User">
+    <resultMap id="userMap" type="org.abondar.experimental.wsboard.server.datamodel.user.User">
         <id column="id" property="id"/>
         <result column="login" property="login"/>
         <result column="email" property="email"/>
@@ -24,7 +24,7 @@
         <result column="avatar" property="avatar"/>
     </resultMap>
 
-    <resultMap id="projectMap" type="Project">
+    <resultMap id="projectMap" type="org.abondar.experimental.wsboard.server.datamodel.Project">
         <id column="id" property="id"/>
         <result column="name" property="name"/>
         <result column="start_date" property="startDate"/>
@@ -34,7 +34,7 @@
         <result column="description" property="description"/>
     </resultMap>
 
-    <resultMap id="contributorMap" type="Contributor">
+    <resultMap id="contributorMap" type="org.abondar.experimental.wsboard.server.datamodel.Contributor">
         <id column="id" property="id"/>
         <result column="user_id" property="userId"/>
         <result column="project_id" property="projectId"/>
@@ -42,7 +42,7 @@
         <result column="is_active" property="isActive"/>
     </resultMap>
 
-    <resultMap id="taskMap" type="Task">
+    <resultMap id="taskMap" type="org.abondar.experimental.wsboard.server.datamodel.task.Task">
         <id column="id" property="id"/>
         <result column="contributor_id" property="contributorId"/>
         <result column="task_state" property="taskState"/>
@@ -57,7 +57,7 @@
 
     </resultMap>
 
-    <resultMap id="sprintMap" type="Sprint">
+    <resultMap id="sprintMap" type="org.abondar.experimental.wsboard.server.datamodel.Sprint">
         <id column="id" property="id"/>
         <result column="name" property="name"/>
         <result column="start_date" property="startDate"/>
@@ -67,7 +67,7 @@
 
     </resultMap>
 
-    <resultMap id="securityCodeMap" type="SecurityCode">
+    <resultMap id="securityCodeMap" type="org.abondar.experimental.wsboard.server.datamodel.SecurityCode">
         <id column="id" property="id"/>
         <result column="code" property="code"/>
         <result column="user_id" property="userId"/>

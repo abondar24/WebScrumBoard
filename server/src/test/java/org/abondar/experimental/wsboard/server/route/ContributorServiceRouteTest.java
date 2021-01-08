@@ -17,7 +17,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Map;
 
-@SpringBootTest(classes = {CxfConfig.class, RouteConfig.class})
+@SpringBootTest(classes = {RouteConfig.class})
 @RunWith(CamelSpringBootRunner.class)
 @ActiveProfiles("test")
 @MockEndpoints

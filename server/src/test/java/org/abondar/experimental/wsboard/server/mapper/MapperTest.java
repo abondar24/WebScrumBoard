@@ -1,6 +1,7 @@
 package org.abondar.experimental.wsboard.server.mapper;
 
 import org.abondar.experimental.wsboard.server.WebScrumBoardApplication;
+import org.abondar.experimental.wsboard.server.config.MapperConfig;
 import org.abondar.experimental.wsboard.server.datamodel.Contributor;
 import org.abondar.experimental.wsboard.server.datamodel.Project;
 import org.abondar.experimental.wsboard.server.datamodel.SecurityCode;
@@ -26,7 +27,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 
-@SpringBootTest(classes = WebScrumBoardApplication.class)
+@SpringBootTest(classes = MapperConfig.class)
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
 public class MapperTest {

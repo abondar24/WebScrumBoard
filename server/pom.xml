@@ -6,7 +6,7 @@
         <artifactId>WebScrumBoard</artifactId>
         <version>1.2.4-SNAPSHOT</version>
     </parent>
-    <artifactId>base</artifactId>
+    <artifactId>server</artifactId>
     <version>${project.version}</version>
 
     <dependencies>
