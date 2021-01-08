@@ -1,0 +1,478 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.abondar.experimental.wsboard.base.mapper.DataMapper">
+
+    <cache type="org.mybatis.caches.ehcache.EhcacheCache">
+        <property name="timeToIdleSeconds" value="500"/>
+        <property name="timeToLiveSeconds" value="500"/>
+        <property name="maxEntriesLocalHeap" value="1000"/>
+        <property name="maxEntriesLocalDisk" value="10000"/>
+        <property name="memoryStoreEvictionPolicy" value="LRU"/>
+    </cache>
+
+
+    <resultMap id="userMap" type="User">
+        <id column="id" property="id"/>
+        <result column="login" property="login"/>
+        <result column="email" property="email"/>
+        <result column="first_name" property="firstName"/>
+        <result column="last_name" property="lastName"/>
+        <result column="password" property="password"/>
+        <result column="roles" property="roles"/>
+        <result column="avatar" property="avatar"/>
+    </resultMap>
+
+    <resultMap id="projectMap" type="Project">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="start_date" property="startDate"/>
+        <result column="end_date" property="endDate"/>
+        <result column="repository" property="repository"/>
+        <result column="is_active" property="isActive"/>
+        <result column="description" property="description"/>
+    </resultMap>
+
+    <resultMap id="contributorMap" type="Contributor">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="project_id" property="projectId"/>
+        <result column="is_owner" property="isOwner"/>
+        <result column="is_active" property="isActive"/>
+    </resultMap>
+
+    <resultMap id="taskMap" type="Task">
+        <id column="id" property="id"/>
+        <result column="contributor_id" property="contributorId"/>
+        <result column="task_state" property="taskState"/>
+        <result column="prev_state" property="prevState"/>
+        <result column="start_date" property="startDate"/>
+        <result column="end_date" property="endDate"/>
+        <result column="story_points" property="storyPoints"/>
+        <result column="sprint_id" property="sprintId"/>
+        <result column="dev_ops_enabled" property="devOpsEnabled"/>
+        <result column="task_name" property="taskName"/>
+        <result column="task_description" property="taskDescription"/>
+
+    </resultMap>
+
+    <resultMap id="sprintMap" type="Sprint">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="start_date" property="startDate"/>
+        <result column="end_date" property="endDate"/>
+        <result column="project_id" property="projectId"/>
+        <result column="is_current" property="isCurrent"/>
+
+    </resultMap>
+
+    <resultMap id="securityCodeMap" type="SecurityCode">
+        <id column="id" property="id"/>
+        <result column="code" property="code"/>
+        <result column="user_id" property="userId"/>
+    </resultMap>
+
+
+    <insert id="insertUser" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+        INSERT INTO wsuser (login, email, first_name, last_name, password, roles)
+        VALUES (#{user.login},
+                #{user.email},
+                #{user.firstName},
+                #{user.lastName},
+                #{user.password},
+                #{user.roles})
+        ON CONFLICT (id) DO NOTHING;
+    </insert>
+
+    <insert id="insertProject" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+        INSERT INTO project (name, start_date, end_date, repository, is_active)
+        VALUES (#{project.name},
+                #{project.startDate},
+                #{project.endDate},
+                #{project.repository},
+                #{project.isActive})
+        ON CONFLICT (id) DO NOTHING;
+    </insert>
+
+    <insert id="insertContributor" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+        INSERT INTO contributor (user_id, project_id, is_owner, is_active)
+        VALUES (#{contributor.userId},
+                #{contributor.projectId},
+                #{contributor.isOwner},
+                #{contributor.isActive})
+        ON CONFLICT (id) DO NOTHING;
+    </insert>
+
+
+    <insert id="insertTask" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+        INSERT INTO task (contributor_id, start_date, dev_ops_enabled, task_name, task_description)
+        VALUES (#{task.contributorId},
+                #{task.startDate},
+                #{task.devOpsEnabled},
+                #{task.taskName},
+                #{task.taskDescription})
+        ON CONFLICT (id) DO NOTHING;
+    </insert>
+
+    <insert id="insertSprint" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+        INSERT INTO sprint (name, start_date, end_date, project_id)
+        VALUES (#{sprint.name},
+                #{sprint.startDate},
+                #{sprint.endDate},
+                #{sprint.projectId})
+        ON CONFLICT (id) DO NOTHING;
+    </insert>
+
+    <insert id="insertCode" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+        INSERT INTO security_code (code, user_id)
+        VALUES (#{securityCode.code},
+                #{securityCode.userId})
+        ON CONFLICT (id) DO NOTHING;
+    </insert>
+
+
+    <update id="updateUser">
+        UPDATE wsuser
+        SET login      = #{user.login},
+            email      = #{user.email},
+            first_name = #{user.firstName},
+            last_name  = #{user.lastName},
+            password   = #{user.password},
+            roles      = #{user.roles},
+            avatar     = #{user.avatar}
+        WHERE id = #{user.id}
+    </update>
+
+    <update id="updateProject">
+        UPDATE project
+        SET name        = #{project.name},
+            start_date  = #{project.startDate},
+            end_date    = #{project.endDate},
+            repository  = #{project.repository},
+            description = #{project.description},
+            is_active   = #{project.isActive}
+        WHERE id = #{project.id}
+    </update>
+
+    <update id="updateContributor">
+        UPDATE contributor
+        SET user_id    = #{contributor.userId},
+            project_id = #{contributor.projectId},
+            is_owner   = #{contributor.isOwner},
+            is_active  = #{contributor.isActive}
+        WHERE id = #{contributor.id}
+    </update>
+
+    <update id="updateSprint">
+        UPDATE sprint
+        SET name       = #{sprint.name},
+            start_date = #{sprint.startDate},
+            end_date   = #{sprint.endDate},
+            is_current = #{sprint.isCurrent}
+        WHERE id = #{sprint.id}
+    </update>
+
+    <update id="updateTask" useGeneratedKeys="true" keyColumn="id">
+        UPDATE task
+        SET contributor_id   = #{task.contributorId},
+            dev_ops_enabled  = #{task.devOpsEnabled},
+            story_points     = #{task.storyPoints},
+            end_date         = #{task.endDate},
+            task_state       = #{task.taskState},
+            prev_state       = #{task.prevState},
+            task_name        = #{task.taskName},
+            task_description = #{task.taskDescription}
+        WHERE id = #{task.id}
+    </update>
+
+    <update id="updateTaskSprint">
+        UPDATE task
+        SET sprint_id = #{sprintId}
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateTasksSprint">
+        UPDATE task
+        SET sprint_id = #{sprintId}
+        WHERE id IN
+        <foreach item='id' index='index' collection='idList' open='(' separator=',' close=')'>
+            #{id}
+        </foreach>
+    </update>
+
+
+    <update id="deactivateUserContributors">
+        UPDATE contributor
+        SET is_active = false
+        WHERE user_id = #{userId}
+    </update>
+
+    <update id="deactivateProjectContributors">
+        UPDATE contributor
+        SET is_active = false
+        WHERE project_id = #{projectId}
+    </update>
+
+    <select id="getUserByLogin" resultMap="userMap" useCache="true">
+        SELECT *
+        FROM wsuser
+        WHERE login = #{login}
+    </select>
+
+    <select id="getUserById" resultMap="userMap">
+        SELECT *
+        FROM wsuser
+        WHERE id = #{id}
+    </select>
+
+    <select id="getUsersByIds" resultMap="userMap">
+        SELECT * FROM wsuser WHERE id IN
+        <foreach item='id' index='index' collection='idList' open='(' separator=',' close=')'>
+            #{id}
+        </foreach>
+    </select>
+
+    <select id="getProjectById" resultMap="projectMap">
+        SELECT *
+        FROM project
+        WHERE id = #{id}
+    </select>
+
+    <select id="getProjectByName" resultMap="projectMap">
+        SELECT *
+        FROM project
+        WHERE name = #{name}
+    </select>
+
+    <select id="getUserProjects" resultMap="projectMap" useCache="true">
+        SELECT *
+        FROM project prj
+                 JOIN contributor ctr ON ctr.project_id = prj.id
+        WHERE ctr.user_id = #{userId}
+    </select>
+
+
+    <select id="getProjectOwner" resultMap="userMap">
+        SELECT *
+        FROM wsuser usr
+                 JOIN contributor ctr ON ctr.user_id = usr.id
+                 JOIN project prj on ctr.project_id = prj.id
+        WHERE prj.id = #{projectId}
+          and ctr.is_owner = true
+    </select>
+
+    <select id="getContributorById" resultMap="contributorMap">
+        SELECT *
+        FROM contributor
+        WHERE id = #{id}
+    </select>
+
+    <select id="getContributorByUserAndProject" resultMap="contributorMap">
+        SELECT *
+        FROM contributor
+        WHERE user_id = #{userId}
+          AND project_id = #{projectId}
+    </select>
+
+
+    <select id="getContributorsByUserId" resultMap="contributorMap" useCache="true">
+        SELECT *
+        FROM contributor
+        WHERE user_id = #{userId}
+    </select>
+
+    <select id="getContributorsForProject" resultMap="userMap" useCache="true">
+        SELECT *
+        FROM wsuser usr
+                 JOIN contributor ctr ON ctr.user_id = usr.id
+        WHERE ctr.project_id = #{projectId}
+          and ctr.is_active = true
+        ORDER BY ctr.id
+            OFFSET #{offset}
+        LIMIT #{limit}
+    </select>
+
+    <select id="getContributorByLogin" resultMap="contributorMap" useCache="true">
+        SELECT *
+        FROM contributor ctr
+                 JOIN wsuser usr ON ctr.user_id = usr.id
+        WHERE ctr.project_id = #{projectId}
+          AND usr.login = #{login}
+</select>
+
+
+    <select id="countProjectContributors" resultType="integer" useCache="true">
+        SELECT count(id)
+        FROM contributor
+        WHERE project_id = #{projectId}
+          and is_active = true
+    </select>
+
+    <select id="getTaskById" resultMap="taskMap">
+        SELECT *
+        FROM task
+        WHERE id = #{id}
+    </select>
+
+    <select id="getTasksForProject" resultMap="taskMap" useCache="true">
+        SELECT *
+        FROM task ts
+                 JOIN contributor ctr ON ctr.id = ts.contributor_id
+        WHERE ctr.project_id = #{projectId}
+        ORDER BY ts.id
+            OFFSET #{offset}
+        LIMIT #{limit}
+    </select>
+
+    <select id="getTasksForContributor" resultMap="taskMap" useCache="true">
+        SELECT *
+        FROM task ts
+                 JOIN contributor ctr ON ctr.id = ts.contributor_id
+        WHERE ctr.id = #{contributorId}
+        ORDER BY ts.id
+            OFFSET #{offset}
+        LIMIT #{limit}
+    </select>
+
+    <select id="getTasksForUser" resultMap="taskMap" useCache="true">
+        SELECT *
+        FROM task ts
+                 JOIN contributor ctr ON ctr.id = ts.contributor_id
+                 JOIN wsuser usr on ctr.user_id = usr.id
+        WHERE usr.id = #{userId}
+        ORDER BY ts.id
+            OFFSET #{offset}
+        LIMIT #{limit}
+    </select>
+
+    <select id="getTasksForSprint" resultMap="taskMap" useCache="true">
+        SELECT *
+        FROM task
+        WHERE sprint_id = #{sprintId}
+        ORDER BY id
+            OFFSET #{offset}
+        LIMIT #{limit}
+    </select>
+
+    <select id="countUserTasks" resultType="integer" useCache="true">
+        SELECT count(ts.id)
+        FROM task ts
+                 JOIN contributor ctr on ts.contributor_id = ctr.id
+        WHERE ctr.user_id = #{userId};
+    </select>
+
+    <select id="countContributorTasks" resultType="integer" useCache="true">
+        SELECT count(id)
+        FROM task
+        WHERE contributor_id = #{ctrId};
+    </select>
+
+    <select id="countSprintTasks" resultType="Integer">
+        SELECT count(id)
+        FROM task
+        WHERE sprint_id = #{spId};
+    </select>
+
+
+    <select id="countSprints" resultType="integer" useCache="true">
+        SELECT count(id)
+        FROM sprint
+        WHERE project_id = #{prjId};
+    </select>
+
+
+    <select id="getSprintById" resultMap="sprintMap">
+        SELECT *
+        FROM sprint
+        WHERE id = #{id}
+    </select>
+
+    <select id="getSprintByName" resultMap="sprintMap">
+        SELECT *
+        FROM sprint
+        WHERE name = #{name}
+    </select>
+
+    <select id="getCurrentSprint" resultMap="sprintMap">
+        SELECT *
+        FROM sprint
+        WHERE project_id = #{prId}
+          AND is_current = true;
+    </select>
+
+    <select id="getSprints" resultMap="sprintMap" useCache="true">
+        SELECT *
+        FROM sprint
+        WHERE project_id = #{projectId}
+            OFFSET #{offset}
+        LIMIT #{limit}
+    </select>
+
+
+    <select id="getCodeByUserId" resultMap="securityCodeMap">
+        SELECT *
+        FROM security_code
+        WHERE user_id = #{id}
+    </select>
+
+    <select id="checkCodeExists" resultType="Integer">
+        SELECT 1
+        FROM security_code
+        WHERE code = #{code}
+        LIMIT 1
+    </select>
+
+
+
+    <delete id="deleteProject">
+        DELETE
+        FROM project
+        WHERE id = #{id}
+    </delete>
+
+
+    <delete id="deleteProjectContributors">
+        DELETE
+        FROM contributor
+        WHERE project_id = #{projectId}
+    </delete>
+
+
+    <delete id="deleteProjectTasks">
+        DELETE
+        FROM task ts
+            USING contributor ctr
+        WHERE ts.contributor_id = ctr.id
+          AND ctr.project_id = #{projectId}
+    </delete>
+
+    <delete id="deleteTask">
+        DELETE
+        FROM task
+        WHERE id = #{id}
+    </delete>
+
+
+
+    <delete id="deleteProjectSprints">
+        DELETE
+        FROM sprint
+        WHERE project_id = #{projectId}
+    </delete>
+
+    <delete id="deleteSprint">
+        DELETE
+        FROM sprint
+        WHERE id = #{id}
+    </delete>
+
+
+    <delete id="deleteCode">
+        DELETE
+        FROM security_code
+        WHERE id = #{id}
+    </delete>
+
+
+</mapper>
