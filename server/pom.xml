@@ -4,22 +4,17 @@
     <parent>
         <groupId>org.abondar.experimental.wsboard</groupId>
         <artifactId>WebScrumBoard</artifactId>
-        <version>1.2.4-SNAPSHOT</version>
+        <version>${project.version}</version>
     </parent>
     <artifactId>base</artifactId>
-    <version>1.2.4-SNAPSHOT</version>
+    <version>${project.version}</version>
 
     <dependencies>
         <dependency>
             <groupId>org.abondar.experimental.wsboard</groupId>
             <artifactId>ui</artifactId>
-            <version>1.2.4-SNAPSHOT</version>
+            <version>${project.version}</version>
             <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.mybatis.caches</groupId>
-            <artifactId>mybatis-ehcache</artifactId>
-            <version>1.1.0</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -29,7 +24,7 @@
         <dependency>
             <groupId>javax.xml.ws</groupId>
             <artifactId>jaxws-api</artifactId>
-            <version>2.3.0</version>
+            <version>${jaxws.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.cxf</groupId>
@@ -39,7 +34,7 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.2.5</version>
+            <version>${postgres.version}</version>
         </dependency>
         <dependency>
             <groupId>org.flywaydb</groupId>
@@ -68,7 +63,7 @@
         <dependency>
             <groupId>org.webjars</groupId>
             <artifactId>swagger-ui</artifactId>
-            <version>3.22.2</version>
+            <version>${swagger.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.cxf</groupId>
@@ -185,10 +180,6 @@
             <version>${camel.version}</version>
             <scope>test</scope>
         </dependency>
-
-
-
-
 
     </dependencies>
     <build>
