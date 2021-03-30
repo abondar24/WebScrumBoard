@@ -294,9 +294,9 @@
             <build>
                 <plugins>
                     <plugin>
-                        <groupId>io.fabric8</groupId>
-                        <artifactId>fabric8-maven-plugin</artifactId>
-                        <version>4.3.1</version>
+                        <groupId>org.eclipse.jkube</groupId>
+                        <artifactId>kubernetes-maven-plugin</artifactId>
+                        <version>1.1.1</version>
                         <configuration>
                             <verbose>true</verbose>
                             <generator>
@@ -317,8 +317,10 @@
                                         <maintainer>Alex Bondar'abondar1992@gmail.com'</maintainer>
                                         <from>fabric8/java-centos-openjdk11-jre</from>
                                         <assembly>
-                                            <basedir>/deployments</basedir>
-                                            <descriptorRef>artifact</descriptorRef>
+                                            <inline>
+                                                <baseDirectory>/deployments</baseDirectory>
+                                            </inline>
+
                                         </assembly>
                                     </build>
                                 </image>

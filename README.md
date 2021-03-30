@@ -51,6 +51,8 @@ or
 mvn -f server/pom.xml java -jar base-<ver>.jar
 ```
 
+Access via localhost:8024
+
 ### Docker-Compose
 
 ```yaml
@@ -69,6 +71,7 @@ In web_server dir
 ```yaml
 docker compose build . -t <image tag>
 ```
+Access via localhost:8024
 
 ### Kubernetes
 
@@ -80,25 +83,10 @@ mvn clean install
 mvn -f server/pom.xml clean install -DskipTests -Pkube
 
 ```
+Access via localhost/scrum-board
 
-Note 1: For minikube/production kubectl must be installed and set for the remote cluster. 
-
-Note 2: For microk8s.kubectl usage with Fabric8 certificate must be set via command below
-
-```yaml
-kubectl config set-cluster microk8s-cluster 
-  --certificate-authority=/var/snap/microk8s/current/certs/ca.crt 
-  --embed-certs=true 
-  --server=https://127.0.0.1:10443
-```
-
-Fabric8 requires kubectl config present in /home/username/.kube/config file. After setting certificate do
-```yaml
-kubectl config view
-```
-and save to /.kube/config 
-
-Note 3: In microk8s used default nginx-ingress controler in cloud 
+Note 1: jKube plugin works with kubectl. How to use kubectl with microk8s check [here](https://microk8s.io/docs/working-with-kubectl) 
+Note 2: In microk8s used default nginx-ingress controler in cloud 
 nginxinx/kubernetes-ingress controller is suggested for usage. In ingress.yaml host must be set.
 
 
