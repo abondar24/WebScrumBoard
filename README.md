@@ -44,11 +44,11 @@ Users can have one or serveral roles from the list:
 ```yaml
 mvn clean install
  
-mvn -f base/pom.xml spring-boot:run
+mvn -f server/pom.xml spring-boot:run
 
 or 
 
-mvn -f base/pom.xml java -jar base-<ver>.jar
+mvn -f server/pom.xml java -jar base-<ver>.jar
 ```
 
 ### Docker-Compose
@@ -56,7 +56,7 @@ mvn -f base/pom.xml java -jar base-<ver>.jar
 ```yaml
 mvn clean install
 
-mvn -f base/pom.xml clean install -Pdocker
+mvn -f server/pom.xml clean install -Pdocker
 
 docker-compose up
 ```
@@ -77,7 +77,7 @@ The app was tested in with microk8s on ubuntu.
 ```yaml
 mvn clean install
  
-mvn -f base/pom.xml clean install -DskipTests -Pkube  fabric8:deploy
+mvn -f server/pom.xml clean install -DskipTests -Pkube
 
 ```
 
@@ -89,11 +89,10 @@ Note 2: For microk8s.kubectl usage with Fabric8 certificate must be set via comm
 kubectl config set-cluster microk8s-cluster 
   --certificate-authority=/var/snap/microk8s/current/certs/ca.crt 
   --embed-certs=true 
-  --server=https://127.0.0.1:16443
+  --server=https://127.0.0.1:10443
 ```
 
-Fabric8 requires kubectl config present in /.kube/config file. After setting certificate do
-
+Fabric8 requires kubectl config present in /home/username/.kube/config file. After setting certificate do
 ```yaml
 kubectl config view
 ```

@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: base
+  name: server
 spec:
   rules:
      #for nginxinc controller host should be set
@@ -9,5 +9,5 @@ spec:
         paths:
           - path: /
             backend:
-              serviceName: base
+              serviceName: server
               servicePort: 8024
