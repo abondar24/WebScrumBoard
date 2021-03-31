@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: db
+spec:
+  ports:
+    - port: 5432
+  selector:
+    app: db
+  clusterIP: None
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db
+spec:
+  selector:
+    matchLabels:
+      app: db
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: db
+    spec:
+      containers:
+        - image: postgres:9.6
+          name: db
+          env:
+            - name: POSTGRES_USER
+              value: admin
+
+            - name: POSTGRES_PASSWORD
+              value: admin217
+
+            - name: POSTGRES_DB
+              value: wsboard
+
+          ports:
+            - containerPort: 5432
+              name: db
+
