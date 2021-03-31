@@ -58,18 +58,18 @@ Access via localhost:8024
 ```yaml
 mvn clean install
 
-mvn -f server/pom.xml clean install -Pdocker
+mvn -f server/pom.xml clean install -DskipTests -Pdocker
 
 docker-compose up
 ```
 
-NOTE: docker image with nginx must be used. In dicrectory web_server dockerfile and config files are stored.
+NOTE: docker image with nginx must be used. In directory web_server dockerfile and config files are stored.
 
 By default image abondar/wsb-srv is used. For your own image replace in docker-compose.yaml
 
 In web_server dir
 ```yaml
-docker compose build . -t <image tag>
+docker build . -t <image tag>
 ```
 Access via localhost:8024
 
