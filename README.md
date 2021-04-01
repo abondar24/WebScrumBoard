@@ -84,7 +84,7 @@ kubectl apply -f pods/email-service.yml
 mvn clean install
  
 mvn -f server/pom.xml clean install -DskipTests -Pkube
-kubectl expose deployment server --type=NodePort --name=server --port=8024
+kubectl expose deployment server --type=LoadBalancer --name=server --port=8024
 kubectl apply -f pods/ingress.yml
 
 ```
