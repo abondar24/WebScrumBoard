@@ -78,12 +78,17 @@ Access via localhost:8024
 The app was tested in with microk8s on ubuntu.
 
 ```yaml
+kubectl apply -f pods/db.yml
+kubectl apply -f pods/email-service.yml
+
 mvn clean install
  
 mvn -f server/pom.xml clean install -DskipTests -Pkube
+kubectl expose deployment server --type=NodePort --name=server --port=8024
+kubectl apply -f pods/ingress.yml
 
 ```
-Access via localhost/scrum-board
+Access via localhost/
 
 Note 1: jKube plugin works with kubectl. How to use kubectl with microk8s check [here](https://microk8s.io/docs/working-with-kubectl) 
 Note 2: In microk8s used default nginx-ingress controler in cloud 
