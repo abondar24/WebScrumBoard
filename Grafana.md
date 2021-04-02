@@ -1,4 +1,4 @@
-#Grafana
+# Grafana
 
 A short guide to set up Grafana and Loki in Kubernetes cluster.
 
