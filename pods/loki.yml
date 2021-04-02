@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: loki
+spec:
+  ports:
+    - port: 3100
+  selector:
+    app: loki
+  clusterIP: None
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: loki
+spec:
+  selector:
+    matchLabels:
+      app: loki
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: loki
+    spec:
+      containers:
+        - image: grafana/loki:latest
+          name: loki
+
+
+          ports:
+            - containerPort: 3100
+              name: loki
+

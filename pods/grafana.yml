@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: grafana
+spec:
+  ports:
+    - port: 3000
+  selector:
+    app: grafana
+  clusterIP: None
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grafana
+spec:
+  selector:
+    matchLabels:
+      app: grafana
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: grafana
+    spec:
+      containers:
+        - image: grafana/grafana:master
+          name: grafana
+
+
+          ports:
+            - containerPort: 3000
+              name: grafana
+

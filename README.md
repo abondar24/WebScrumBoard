@@ -91,8 +91,19 @@ kubectl apply -f pods/ingress.yml
 Access via localhost/
 
 Note 1: jKube plugin works with kubectl. How to use kubectl with microk8s check [here](https://microk8s.io/docs/working-with-kubectl) 
+
 Note 2: In microk8s used default nginx-ingress controler in cloud 
 nginxinx/kubernetes-ingress controller is suggested for usage. In ingress.yaml host must be set.
 
+Note3: There is a wierd issue with server service after restarting the cluster. Check the steps to restart the server app
+
+```yaml
+kubectl delete service server
+kubectl rollout restart deployment server
+kubectl expose deployment server --type=LoadBalancer --name=server --port=8024
+
+```
+
+Note4: Grafana and loki setup check [here](Grafana.md)
 
 PS: frontend is very bad and contains some bugs
