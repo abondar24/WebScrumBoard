@@ -15,7 +15,7 @@ spec:
                 port:
                   number: 8024
                   
-           - path: /grafana
+          - path: /grafana
             pathType: Prefix
             backend:
               service:
