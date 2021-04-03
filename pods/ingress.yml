@@ -14,4 +14,12 @@ spec:
                 name: server
                 port:
                   number: 8024
+                  
+           - path: /grafana
+            pathType: Prefix
+            backend:
+              service:
+                name: grafana
+                port:
+                  number: 3000       
 
