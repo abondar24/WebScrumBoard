@@ -7,7 +7,7 @@ spec:
      #for nginxinc controller host should be set
     - http:
         paths:
-          - path: /
+          - path: /board
             pathType: Prefix
             backend:
               service:

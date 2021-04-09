@@ -20,10 +20,7 @@ kubectl apply -f pods/loki.yml
 3. Install Promtail
 
 ```
-helm repo add loki https://grafana.github.io/loki/charts
-
-
-helm upgrade --install promtail loki/promtail --set "loki.serviceName=loki"
+kubectl apply -f pods/promtail.yml
 ```
 
 4. Enter Grafana (pod-ip:3000) with default credentials admin/admin. 
