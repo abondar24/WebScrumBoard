@@ -48,7 +48,7 @@ mvn -f server/pom.xml spring-boot:run
 
 or 
 
-mvn -f server/pom.xml java -jar base-<ver>.jar
+mvn -f server/pom.xml java -jar server-<ver>.jar
 ```
 
 Access via localhost:8024
