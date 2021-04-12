@@ -88,7 +88,7 @@ kubectl expose deployment server --type=LoadBalancer --name=server --port=8024
 kubectl apply -f pods/ingress.yml
 
 ```
-Access via localhost/
+Access via localhost/board
 
 Note 1: jKube plugin works with kubectl. How to use kubectl with microk8s check [here](https://microk8s.io/docs/working-with-kubectl) 
 
