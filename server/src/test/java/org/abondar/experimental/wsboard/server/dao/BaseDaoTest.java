@@ -2,6 +2,7 @@ package org.abondar.experimental.wsboard.server.dao;
 
 import org.abondar.experimental.wsboard.server.datamodel.Contributor;
 import org.abondar.experimental.wsboard.server.datamodel.Project;
+import org.abondar.experimental.wsboard.server.datamodel.Sprint;
 import org.abondar.experimental.wsboard.server.datamodel.user.User;
 import org.abondar.experimental.wsboard.server.datamodel.user.UserRole;
 import org.abondar.experimental.wsboard.server.mapper.DataMapper;
@@ -47,11 +48,14 @@ public class BaseDaoTest {
 
     protected Contributor ctr;
 
+    protected Sprint sp;
+
     @BeforeEach
     public void init() {
         usr = createUser();
         prj = createProject();
-        ctr = new Contributor(usr.getId(), prj.getId(), false);
+        ctr = createContributor(usr.getId(), prj.getId());
+        sp = createSprint(prj.getId());
 
     }
 
@@ -94,9 +98,17 @@ public class BaseDaoTest {
         return new Project(name, startDate);
     }
 
+    private Contributor createContributor(long usrId, long prjId) {
+        return new Contributor(usrId, prjId, false);
+    }
+
+    private Sprint createSprint(long prjId) {
+        return new Sprint("test", new Date(), new Date(), prjId);
+    }
+
+
     protected void cleanData() {
         mapper.deleteTasks();
-        mapper.deleteSprints();
         mapper.deleteContributors();
     }
 }

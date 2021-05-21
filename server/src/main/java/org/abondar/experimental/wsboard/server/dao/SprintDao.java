@@ -1,11 +1,10 @@
 package org.abondar.experimental.wsboard.server.dao;
 
+import org.abondar.experimental.wsboard.server.datamodel.Sprint;
 import org.abondar.experimental.wsboard.server.exception.DataCreationException;
 import org.abondar.experimental.wsboard.server.exception.DataExistenceException;
-import org.abondar.experimental.wsboard.server.util.LogMessageUtil;
 import org.abondar.experimental.wsboard.server.mapper.DataMapper;
-
-import org.abondar.experimental.wsboard.server.datamodel.Sprint;
+import org.abondar.experimental.wsboard.server.util.LogMessageUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,12 +44,7 @@ public class SprintDao extends BaseDao {
     public Sprint createSprint(String name, Date startDate, Date endDate, long projectId) throws DataExistenceException, DataCreationException {
 
 
-        var sprint = mapper.getSprintByName(name);
-        if (sprint != null) {
-            logger.error(LogMessageUtil.SPRINT_EXISTS);
-            throw new DataExistenceException(LogMessageUtil.SPRINT_EXISTS);
-
-        }
+        checkSprintByName(name);
 
         if (mapper.getProjectById(projectId) == null) {
             logger.error(LogMessageUtil.PROJECT_NOT_EXISTS);
@@ -68,7 +62,7 @@ public class SprintDao extends BaseDao {
             throw new DataCreationException(LogMessageUtil.WRONG_END_DATE);
         }
 
-        sprint = new Sprint(name, startDate, endDate, projectId);
+        var sprint = new Sprint(name, startDate, endDate, projectId);
 
         mapper.insertSprint(sprint);
 
@@ -160,26 +154,21 @@ public class SprintDao extends BaseDao {
 
     /**
      * Get current sprint for project
+     *
      * @param projectId - project id to look for
      * @return current sprint of project
      * @throws DataExistenceException - project not found
      */
     public Sprint getCurrentSprint(long projectId) throws DataExistenceException {
 
-        var msg = "";
-        if (mapper.getProjectById(projectId) == null) {
-            msg = String.format(LogMessageUtil.LOG_FORMAT, LogMessageUtil.PROJECT_NOT_EXISTS, projectId);
-            logger.error(msg);
-
-            throw new DataExistenceException(LogMessageUtil.PROJECT_NOT_EXISTS);
-        }
+        checkProject(projectId);
 
         var sprint = mapper.getCurrentSprint(projectId);
         if (sprint == null) {
             logger.info("Project has no active sprints");
             return null;
         } else {
-            msg = String.format(LogMessageUtil.LOG_FORMAT, "Found sprint ", sprint.getId());
+            var msg = String.format(LogMessageUtil.LOG_FORMAT, "Found sprint ", sprint.getId());
             logger.info(msg);
             return sprint;
         }
@@ -196,16 +185,11 @@ public class SprintDao extends BaseDao {
      */
     public List<Sprint> getSprints(long projectId, int offset, Integer limit) throws DataExistenceException {
 
-        String msg;
-        if (mapper.getProjectById(projectId) == null) {
-            msg = String.format(LogMessageUtil.LOG_FORMAT, LogMessageUtil.PROJECT_NOT_EXISTS, projectId);
-            logger.error(msg);
-            throw new DataExistenceException(LogMessageUtil.PROJECT_NOT_EXISTS);
-        }
+        checkProject(projectId);
 
         var sprints = mapper.getSprints(projectId, offset, limit);
 
-        msg = String.format("%s %d", "Found sprints: ", sprints.size());
+        var msg = String.format("%s %d", "Found sprints: ", sprints.size());
         logger.info(msg);
 
         return sprints;
@@ -220,15 +204,10 @@ public class SprintDao extends BaseDao {
      */
     public Integer countSprints(Long prjId) throws DataExistenceException {
 
-        String msg;
-        if (mapper.getProjectById(prjId) == null) {
-            msg = String.format(LogMessageUtil.LOG_FORMAT, LogMessageUtil.PROJECT_NOT_EXISTS, prjId);
-            logger.error(msg);
-            throw new DataExistenceException(LogMessageUtil.PROJECT_NOT_EXISTS);
-        }
+        checkProject(prjId);
 
         var res = mapper.countSprints(prjId);
-        msg = String.format(LogMessageUtil.LOG_COUNT_FORMAT, "Counted tasks for user ", prjId, res);
+        var msg = String.format(LogMessageUtil.LOG_COUNT_FORMAT, "Counted tasks for user ", prjId, res);
         logger.info(msg);
 
         return res;
@@ -251,4 +230,20 @@ public class SprintDao extends BaseDao {
 
     }
 
+    private void checkProject(long prjId) throws DataExistenceException {
+        if (mapper.getProjectById(prjId) == null) {
+            var msg = String.format(LogMessageUtil.LOG_FORMAT, LogMessageUtil.PROJECT_NOT_EXISTS, prjId);
+            logger.error(msg);
+            throw new DataExistenceException(LogMessageUtil.PROJECT_NOT_EXISTS);
+        }
+    }
+
+    private void checkSprintByName(String name) throws DataExistenceException {
+        if (mapper.getSprintByName(name) != null) {
+            logger.error(LogMessageUtil.SPRINT_EXISTS);
+            throw new DataExistenceException(LogMessageUtil.SPRINT_EXISTS);
+
+        }
+
+    }
 }
