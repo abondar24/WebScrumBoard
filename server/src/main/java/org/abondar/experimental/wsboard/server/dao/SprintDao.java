@@ -230,6 +230,11 @@ public class SprintDao extends BaseDao {
 
     }
 
+    /**
+     * Check if project exists
+     * @param prjId - project id
+     * @throws DataExistenceException - project not found
+     */
     private void checkProject(long prjId) throws DataExistenceException {
         if (mapper.getProjectById(prjId) == null) {
             var msg = String.format(LogMessageUtil.LOG_FORMAT, LogMessageUtil.PROJECT_NOT_EXISTS, prjId);
@@ -238,6 +243,11 @@ public class SprintDao extends BaseDao {
         }
     }
 
+    /**
+     * Check sprint exists
+     * @param name - sprint name
+     * @throws DataExistenceException - sprint not found
+     */
     private void checkSprintByName(String name) throws DataExistenceException {
         if (mapper.getSprintByName(name) != null) {
             logger.error(LogMessageUtil.SPRINT_EXISTS);
