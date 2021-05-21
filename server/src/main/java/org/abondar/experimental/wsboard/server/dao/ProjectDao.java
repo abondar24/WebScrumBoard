@@ -1,18 +1,17 @@
 package org.abondar.experimental.wsboard.server.dao;
 
+import org.abondar.experimental.wsboard.server.datamodel.Project;
 import org.abondar.experimental.wsboard.server.exception.DataCreationException;
 import org.abondar.experimental.wsboard.server.exception.DataExistenceException;
-import org.abondar.experimental.wsboard.server.util.LogMessageUtil;
 import org.abondar.experimental.wsboard.server.mapper.DataMapper;
-
-import org.abondar.experimental.wsboard.server.datamodel.Project;
+import org.abondar.experimental.wsboard.server.util.LogMessageUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionException;
 import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.jta.JtaTransactionManager;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import java.util.Date;
@@ -30,8 +29,8 @@ public class ProjectDao extends BaseDao {
     private static final Logger logger = LoggerFactory.getLogger(ProjectDao.class);
 
     @Autowired
-    public ProjectDao(DataMapper mapper,JtaTransactionManager transactionManager) {
-        super(mapper,transactionManager);
+    public ProjectDao(DataMapper mapper, PlatformTransactionManager transactionManager) {
+        super(mapper, transactionManager);
     }
 
 
@@ -69,18 +68,18 @@ public class ProjectDao extends BaseDao {
     /**
      * Update an existing project
      *
-     * @param id       - project id
-     * @param name     - project name
-     * @param repo     - project git repository
-     * @param isActive - project currently active
-     * @param endDate  - project end date
+     * @param id          - project id
+     * @param name        - project name
+     * @param repo        - project git repository
+     * @param isActive    - project currently active
+     * @param endDate     - project end date
      * @param description - project description
      * @return project POJO
      * @throws DataExistenceException - project not exists
-     * @throws DataCreationException - project activation or end date issue
+     * @throws DataCreationException  - project activation or end date issue
      */
     public Project updateProject(long id, String name, String repo,
-                                 Boolean isActive, Date endDate,String description)
+                                 Boolean isActive, Date endDate, String description)
             throws DataExistenceException, DataCreationException {
 
         var prj = findProjectById(id);
@@ -101,26 +100,26 @@ public class ProjectDao extends BaseDao {
         TransactionStatus txStatus =
                 transactionManager.getTransaction(new DefaultTransactionDefinition());
         try {
-        if (isActive != null) {
-           if (!isActive) {
-                mapper.deactivateProjectContributors(prj.getId());
-                if (endDate != null && !prj.getStartDate().after(endDate)) {
-                    prj.setEndDate(endDate);
-                } else {
-                    throw new DataCreationException(LogMessageUtil.WRONG_END_DATE);
+            if (isActive != null) {
+                if (!isActive) {
+                    mapper.deactivateProjectContributors(prj.getId());
+                    if (endDate != null && !prj.getStartDate().after(endDate)) {
+                        prj.setEndDate(endDate);
+                    } else {
+                        throw new DataCreationException(LogMessageUtil.WRONG_END_DATE);
+                    }
+                } else if (!prj.isActive()) {
+                    throw new DataCreationException(LogMessageUtil.PROJECT_CANNOT_BE_REACTIVATED);
                 }
-            } else if (!prj.isActive()){
-                throw new DataCreationException(LogMessageUtil.PROJECT_CANNOT_BE_REACTIVATED);
+
+                prj.setActive(isActive);
+
             }
 
-            prj.setActive(isActive);
-
-        }
-
-        mapper.updateProject(prj);
-        } catch (TransactionException ex){
+            mapper.updateProject(prj);
+        } catch (TransactionException ex) {
             transactionManager.rollback(txStatus);
-            throw  new DataExistenceException(ex.getMessage());
+            throw new DataExistenceException(ex.getMessage());
         }
         logger.info("Project successfully updated");
 
@@ -151,9 +150,9 @@ public class ProjectDao extends BaseDao {
 
             transactionManager.commit(txStatus);
             return id;
-        } catch (DataExistenceException | TransactionException ex){
+        } catch (DataExistenceException | TransactionException ex) {
             transactionManager.rollback(txStatus);
-            throw  new DataExistenceException(ex.getMessage());
+            throw new DataExistenceException(ex.getMessage());
         }
 
     }
@@ -183,14 +182,15 @@ public class ProjectDao extends BaseDao {
 
     /**
      * Returns all projects where has contributed
+     *
      * @param userId - user id
      * @return - list of projects related to user
      * @throws DataExistenceException - user not exists
      */
-    public List<Project> findUserProjects(long userId) throws DataExistenceException{
+    public List<Project> findUserProjects(long userId) throws DataExistenceException {
 
         var msg = "";
-        if (mapper.getUserById(userId) == null){
+        if (mapper.getUserById(userId) == null) {
             msg = String.format(LogMessageUtil.LOG_FORMAT, LogMessageUtil.USER_NOT_EXISTS, userId);
             logger.error(msg);
             throw new DataExistenceException(LogMessageUtil.PROJECT_NOT_EXISTS);

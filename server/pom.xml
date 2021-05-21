@@ -25,6 +25,8 @@
         <annotation.version>1.3.2</annotation.version>
         <mybatis.version>2.1.4</mybatis.version>
         <mybatis.cache.version>1.2.1</mybatis.cache.version>
+        <mockito.version>3.10.0</mockito.version>
+        <mockito.junit.version>2.23.0</mockito.junit.version>
 
 
     </properties>
@@ -217,6 +219,19 @@
             <version>${mybatis.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>${mockito.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <version>${mockito.junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
     <build>
         <resources>

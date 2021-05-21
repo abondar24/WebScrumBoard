@@ -1,22 +1,21 @@
 package org.abondar.experimental.wsboard.server.dao;
 
+import org.abondar.experimental.wsboard.server.datamodel.Contributor;
 import org.abondar.experimental.wsboard.server.datamodel.user.User;
 import org.abondar.experimental.wsboard.server.datamodel.user.UserRole;
 import org.abondar.experimental.wsboard.server.exception.CannotPerformOperationException;
 import org.abondar.experimental.wsboard.server.exception.DataCreationException;
 import org.abondar.experimental.wsboard.server.exception.DataExistenceException;
 import org.abondar.experimental.wsboard.server.exception.InvalidHashException;
+import org.abondar.experimental.wsboard.server.mapper.DataMapper;
 import org.abondar.experimental.wsboard.server.util.LogMessageUtil;
 import org.abondar.experimental.wsboard.server.util.PasswordUtil;
-import org.abondar.experimental.wsboard.server.mapper.DataMapper;
-
-import org.abondar.experimental.wsboard.server.datamodel.Contributor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.jta.JtaTransactionManager;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import java.util.List;
@@ -34,8 +33,8 @@ public class UserDao extends BaseDao {
     private static final Logger logger = LoggerFactory.getLogger(UserDao.class);
 
     @Autowired
-    public UserDao(DataMapper mapper,JtaTransactionManager transactionManager) {
-        super(mapper,transactionManager);
+    public UserDao(DataMapper mapper, PlatformTransactionManager transactionManager) {
+        super(mapper, transactionManager);
     }
 
     /**
@@ -146,9 +145,9 @@ public class UserDao extends BaseDao {
 
         var usr = findUserById(userId);
 
-       if(!PasswordUtil.verifyPassword(oldPassword, usr.getPassword())){
-           throw  new InvalidHashException(LogMessageUtil.WRONG_PWD);
-       }
+        if (!PasswordUtil.verifyPassword(oldPassword, usr.getPassword())) {
+            throw new InvalidHashException(LogMessageUtil.WRONG_PWD);
+        }
         usr.setPassword(PasswordUtil.createHash(newPassword));
         mapper.updateUser(usr);
 
@@ -167,9 +166,9 @@ public class UserDao extends BaseDao {
      * @param email     - user email
      * @param roles     - list of user roles
      * @param avatar    - user avatar
-     * @throws DataExistenceException - user not found
-     * @throws DataCreationException - user can't be updated
      * @return user POJO
+     * @throws DataExistenceException - user not found
+     * @throws DataCreationException  - user can't be updated
      */
     public User updateUser(Long id, String firstName,
                            String lastName, String email,
@@ -203,7 +202,7 @@ public class UserDao extends BaseDao {
         return usr;
     }
 
-    public void resetPassword(long id) throws DataExistenceException,CannotPerformOperationException {
+    public void resetPassword(long id) throws DataExistenceException, CannotPerformOperationException {
         var usr = mapper.getUserById(id);
         if (usr == null) {
             var msg = String.format(LogMessageUtil.LOG_FORMAT, LogMessageUtil.USER_NOT_EXISTS, id);
@@ -223,9 +222,9 @@ public class UserDao extends BaseDao {
      * Mark user as deleted and set all its data as 'deleted'
      *
      * @param id - user id
-     * @throws DataExistenceException - user not found
-     * @throws DataCreationException - user can't be updated
      * @return user POJO
+     * @throws DataExistenceException - user not found
+     * @throws DataCreationException  - user can't be updated
      */
     public User deleteUser(long id) throws DataExistenceException, DataCreationException {
         TransactionStatus txStatus =
@@ -233,12 +232,12 @@ public class UserDao extends BaseDao {
         User usr;
         try {
             usr = findUserById(id);
-        } catch (DataExistenceException ex){
+        } catch (DataExistenceException ex) {
             transactionManager.rollback(txStatus);
             throw new DataExistenceException(ex.getMessage());
         }
 
-        var contributors = mapper.getContributorsByUserId(id,-1,0);
+        var contributors = mapper.getContributorsByUserId(id, -1, 0);
         if (!contributors.isEmpty()) {
             var isOwnerOnce = contributors.stream().anyMatch(Contributor::isOwner);
             if (isOwnerOnce) {
@@ -266,8 +265,8 @@ public class UserDao extends BaseDao {
      * Find user By Id
      *
      * @param id - user id
-     * @throws DataExistenceException - user not found
      * @return user with id
+     * @throws DataExistenceException - user not found
      */
     public User findUserById(long id) throws DataExistenceException {
 
@@ -279,7 +278,7 @@ public class UserDao extends BaseDao {
             throw new DataExistenceException(LogMessageUtil.USER_NOT_EXISTS);
         }
 
-        if (usr.getFirstName().equals("deleted")){
+        if (usr.getFirstName().equals("deleted")) {
             throw new DataExistenceException(LogMessageUtil.USER_NOT_EXISTS);
         }
 
@@ -288,12 +287,14 @@ public class UserDao extends BaseDao {
 
         return usr;
     }
+
     /**
      * Get users by ids
+     *
      * @param ids - user ids
      * @return - list of users
      */
-    public List<User> findUsersByIds(List<Long> ids){
+    public List<User> findUsersByIds(List<Long> ids) {
         return mapper.getUsersByIds(ids);
     }
 
@@ -306,7 +307,7 @@ public class UserDao extends BaseDao {
      */
     public User findUserByLogin(String login) throws DataExistenceException {
 
-        if (login.equals("deleted")){
+        if (login.equals("deleted")) {
             throw new DataExistenceException(LogMessageUtil.USER_NOT_EXISTS);
         }
 

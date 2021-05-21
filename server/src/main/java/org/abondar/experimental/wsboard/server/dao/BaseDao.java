@@ -1,7 +1,7 @@
 package org.abondar.experimental.wsboard.server.dao;
 
 import org.abondar.experimental.wsboard.server.mapper.DataMapper;
-import org.springframework.transaction.jta.JtaTransactionManager;
+import org.springframework.transaction.PlatformTransactionManager;
 
 /**
  * Base data access object class
@@ -13,10 +13,10 @@ public class BaseDao {
 
     protected DataMapper mapper;
 
-    protected JtaTransactionManager transactionManager;
+    protected PlatformTransactionManager transactionManager;
 
 
-    public BaseDao(DataMapper mapper, JtaTransactionManager transactionManager) {
+    public BaseDao(DataMapper mapper, PlatformTransactionManager transactionManager) {
         this.mapper = mapper;
         this.transactionManager = transactionManager;
     }
