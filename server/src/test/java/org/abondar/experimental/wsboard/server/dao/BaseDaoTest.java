@@ -109,6 +109,5 @@ public class BaseDaoTest {
 
     protected void cleanData() {
         mapper.deleteTasks();
-        mapper.deleteContributors();
     }
 }

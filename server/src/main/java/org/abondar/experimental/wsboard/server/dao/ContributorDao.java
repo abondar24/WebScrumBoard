@@ -46,11 +46,7 @@ public class ContributorDao extends BaseDao {
             throws DataExistenceException, DataCreationException {
 
         var msg = "";
-        if (mapper.getUserById(userId) == null) {
-            msg = String.format(LogMessageUtil.LOG_FORMAT, LogMessageUtil.USER_NOT_EXISTS, userId);
-            logger.error(msg);
-            throw new DataExistenceException(LogMessageUtil.USER_NOT_EXISTS);
-        }
+        checkUser(userId);
 
 
         var prj = findProjectById(projectId);
@@ -106,13 +102,9 @@ public class ContributorDao extends BaseDao {
     public Contributor updateContributor(long userId, long projectId, Boolean isOwner, Boolean isActive)
             throws DataExistenceException, DataCreationException {
 
-        if (mapper.getUserById(userId)==null){
-            throw new DataExistenceException(LogMessageUtil.USER_NOT_EXISTS);
-        }
+        checkUser(userId);
 
-        if (mapper.getProjectById(projectId)==null){
-            throw new DataExistenceException(LogMessageUtil.PROJECT_NOT_EXISTS);
-        }
+        findProjectById(projectId);
 
         var msg = "";
         var ctr = mapper.getContributorByUserAndProject(userId, projectId);
@@ -125,8 +117,6 @@ public class ContributorDao extends BaseDao {
 
         if (isOwner != null) {
             var ownr = mapper.getProjectOwner(ctr.getProjectId());
-
-
             if (isOwner) {
                 if (ctr.isOwner()) {
                     logger.error(LogMessageUtil.CONTRIBUTOR_IS_ALREADY_OWNER);
@@ -175,13 +165,9 @@ public class ContributorDao extends BaseDao {
     }
 
      public Optional<Long> findContributorByUserAndProject(long userId, long projectId) throws DataExistenceException{
-         if (mapper.getUserById(userId)==null){
-             throw new DataExistenceException(LogMessageUtil.USER_NOT_EXISTS);
-         }
+          checkUser(userId);
 
-         if (mapper.getProjectById(projectId)==null){
-             throw new DataExistenceException(LogMessageUtil.PROJECT_NOT_EXISTS);
-         }
+          findProjectById(projectId);
 
          var ctrId = mapper.getContributorByUserAndProject(userId,projectId).getId();
 
@@ -285,9 +271,7 @@ public class ContributorDao extends BaseDao {
     public List<Contributor> findContributorsByUserId(long userId, int offset, int limit)
             throws DataExistenceException {
 
-        if (mapper.getUserById(userId) == null) {
-            throw new DataExistenceException(LogMessageUtil.USER_NOT_EXISTS);
-        }
+       checkUser(userId);
 
         return mapper.getContributorsByUserId(userId, offset, limit);
     }
@@ -325,6 +309,19 @@ public class ContributorDao extends BaseDao {
         if (owner != null && owner.getId() == userId) {
             logger.error(LogMessageUtil.CONTRIBUTOR_IS_ALREADY_OWNER);
             throw new DataCreationException(LogMessageUtil.CONTRIBUTOR_IS_ALREADY_OWNER);
+        }
+    }
+
+    /**
+     * Check if user exists
+     * @param userId - user id
+     * @throws DataExistenceException - user not found
+     */
+    private void checkUser(long userId) throws DataExistenceException {
+        if (mapper.getUserById(userId) == null) {
+            var msg = String.format(LogMessageUtil.LOG_FORMAT, LogMessageUtil.USER_NOT_EXISTS, userId);
+            logger.error(msg);
+            throw new DataExistenceException(LogMessageUtil.USER_NOT_EXISTS);
         }
     }
 }
