@@ -1,7 +1,5 @@
 package org.abondar.experimental.wsboard.server.dao;
 
-import net.sf.ehcache.transaction.local.JtaLocalTransactionStore;
-import org.abondar.experimental.wsboard.server.config.TransactionConfig;
 import org.abondar.experimental.wsboard.server.datamodel.Contributor;
 import org.abondar.experimental.wsboard.server.datamodel.Project;
 import org.abondar.experimental.wsboard.server.datamodel.user.User;
@@ -11,13 +9,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.TransactionManager;
-import org.springframework.transaction.jta.JtaTransactionManager;
 
 import java.util.Date;
 
@@ -58,8 +51,7 @@ public class BaseDaoTest {
     public void init() {
         usr = createUser();
         prj = createProject();
-        ctr = new Contributor(usr.getId(),prj.getId(),false);
-
+        ctr = new Contributor(usr.getId(), prj.getId(), false);
 
     }
 
@@ -87,7 +79,7 @@ public class BaseDaoTest {
 
     protected Project createProject(boolean isActive) {
 
-        var prj =  createProject();
+        var prj = createProject();
         if (isActive) {
             prj.setActive(isActive);
         }
@@ -95,15 +87,14 @@ public class BaseDaoTest {
         return prj;
     }
 
-    protected Project createProject()  {
+    protected Project createProject() {
         var name = "test";
         var startDate = new Date();
 
-        return new Project(name,startDate);
+        return new Project(name, startDate);
     }
 
     protected void cleanData() {
-        mapper.deleteCodes();
         mapper.deleteTasks();
         mapper.deleteSprints();
         mapper.deleteContributors();
