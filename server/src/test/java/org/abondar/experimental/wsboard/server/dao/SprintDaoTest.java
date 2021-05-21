@@ -18,12 +18,9 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
-@Import({SprintDao.class})
+
 public class SprintDaoTest extends BaseDaoTest {
 
-
-    @Autowired
-    private SprintDao sprintDao;
 
     @Test
     public void createSprintTest() throws Exception {

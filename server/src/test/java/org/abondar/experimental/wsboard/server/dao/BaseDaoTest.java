@@ -1,44 +1,66 @@
 package org.abondar.experimental.wsboard.server.dao;
 
-
+import net.sf.ehcache.transaction.local.JtaLocalTransactionStore;
 import org.abondar.experimental.wsboard.server.config.TransactionConfig;
-import org.abondar.experimental.wsboard.server.mapper.DataMapper;
 import org.abondar.experimental.wsboard.server.datamodel.Project;
 import org.abondar.experimental.wsboard.server.datamodel.user.User;
 import org.abondar.experimental.wsboard.server.datamodel.user.UserRole;
+import org.abondar.experimental.wsboard.server.mapper.DataMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.transaction.TransactionManager;
+import org.springframework.transaction.jta.JtaTransactionManager;
 
 import java.util.Date;
 
-@MybatisTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@ExtendWith(SpringExtension.class)
+
+@ExtendWith({MockitoExtension.class})
 @ActiveProfiles("test")
-@Import({ContributorDao.class,UserDao.class,ProjectDao.class})
 public class BaseDaoTest {
 
 
-    @Autowired
+    @Mock
     protected DataMapper mapper;
 
-    @Autowired
+    @InjectMocks
     protected ContributorDao contributorDao;
 
-    @Autowired
+    @InjectMocks
     protected UserDao userDao;
 
-    @Autowired
+    @InjectMocks
     protected ProjectDao projectDao;
 
+    @InjectMocks
+    protected SecurityCodeDao codeDao;
 
-    protected User createUser() throws Exception {
+    @InjectMocks
+    protected TaskDao taskDao;
+
+    @InjectMocks
+    protected SprintDao sprintDao;
+
+    protected User usr;
+
+    protected Project prj;
+
+    @BeforeEach
+    public void init() {
+        usr = createUser();
+        prj = createProject();
+
+
+    }
+
+
+    protected User createUser() {
         var login = "login";
         var email = "email@email.com";
         var password = "pwd";
@@ -46,39 +68,34 @@ public class BaseDaoTest {
         var lastName = "lname";
         var roles = UserRole.DEVELOPER.name() + ";" + UserRole.DEV_OPS.name();
 
-        return userDao.createUser(login, password, email, firstName, lastName, roles);
+        return new User(login, password, email, firstName, lastName, roles);
     }
 
     protected User createUser(String login) throws Exception {
-        if (login.isBlank()){
-           return createUser();
+        var usr = createUser();
+        if (!login.isBlank()) {
+            usr.setLogin(login);
         }
-        var email = "email@email.com";
-        var password = "pwd";
-        var firstName = "fname";
-        var lastName = "lname";
-        var roles = UserRole.DEVELOPER.name() + ";" + UserRole.DEV_OPS.name();
 
-        return userDao.createUser(login, password, email, firstName, lastName, roles);
+        return usr;
     }
 
-    protected Project createProject(boolean isActive) throws Exception {
-        var name = "test";
-        var startDate = new Date();
 
-        var prj = projectDao.createProject(name, startDate);
+    protected Project createProject(boolean isActive) {
+
+        var prj =  createProject();
         if (isActive) {
-            prj = projectDao.updateProject(prj.getId(), null, null, true, null,null);
+            prj.setActive(isActive);
         }
 
         return prj;
     }
 
-    protected Project createProject() throws Exception {
+    protected Project createProject()  {
         var name = "test";
         var startDate = new Date();
 
-        return projectDao.createProject(name, startDate);
+        return new Project(name,startDate);
     }
 
     protected void cleanData() {
@@ -86,7 +103,6 @@ public class BaseDaoTest {
         mapper.deleteTasks();
         mapper.deleteSprints();
         mapper.deleteContributors();
-        mapper.deleteUsers();
         mapper.deleteProjects();
     }
 }

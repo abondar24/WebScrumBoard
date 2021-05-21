@@ -1,131 +1,126 @@
 package org.abondar.experimental.wsboard.server.dao;
 
 
+import org.abondar.experimental.wsboard.server.datamodel.Contributor;
+import org.abondar.experimental.wsboard.server.datamodel.user.User;
+import org.abondar.experimental.wsboard.server.datamodel.user.UserRole;
 import org.abondar.experimental.wsboard.server.exception.DataCreationException;
 import org.abondar.experimental.wsboard.server.exception.DataExistenceException;
 import org.abondar.experimental.wsboard.server.exception.InvalidHashException;
 import org.abondar.experimental.wsboard.server.util.PasswordUtil;
-import org.abondar.experimental.wsboard.server.datamodel.user.UserRole;
 import org.junit.jupiter.api.Test;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 
-
+@Transactional
 public class UserDaoTest extends BaseDaoTest {
 
     @Test
     public void createUserTest() throws Exception {
-        cleanData();
-        var usr = createUser();
+        when(mapper.getUserByLogin(usr.getLogin())).thenReturn(null);
+        doNothing().when(mapper).insertUser(any(User.class));
 
-        assertTrue(usr.getId() > 0);
+        var res = userDao.createUser(usr.getLogin(), usr.getPassword(), usr.getEmail(), usr.getFirstName(), usr.getLastName(), usr.getRoles());
+        assertEquals(res.getLogin(), usr.getLogin());
 
     }
 
 
     @Test
-    public void createUserLoginExistsTest() throws Exception {
-        cleanData();
-
-        createUser();
-
-        assertThrows(DataExistenceException.class, this::createUser);
+    public void createUserLoginExistsTest() {
+        assertThrows(DataExistenceException.class, () -> {
+            when(mapper.getUserByLogin(usr.getLogin())).thenReturn(new User());
+            userDao.createUser(usr.getLogin(), usr.getPassword(), usr.getEmail(), usr.getFirstName(), usr.getLastName(), usr.getRoles());
+        });
 
     }
 
     @Test
     public void createUserBlankDataTest() {
-        cleanData();
-        var login = "login";
-        var email = "email@email.com";
-        var password = "pwd";
-        var firstName = "fname";
-        var lastName = "lname";
-        var roles = "";
-
+        when(mapper.getUserByLogin(usr.getLogin())).thenReturn(null);
 
         assertThrows(DataCreationException.class, () ->
-                userDao.createUser(login, password, email, firstName, lastName, roles));
+                userDao.createUser(usr.getLogin(), usr.getPassword(), usr.getEmail(), usr.getFirstName(), usr.getLastName(), ""));
 
     }
 
     @Test
     public void createUserNonEnglishTest() throws Exception {
-        cleanData();
-        var login = "login";
-        var email = "email@email.com";
-        var password = "pwd";
         var firstName = "Иван";
         var lastName = "Иванов";
-        var roles = UserRole.DEVELOPER.name();
 
-        var usr = userDao.createUser(login,email,password,firstName,lastName,roles);
+        when(mapper.getUserByLogin(usr.getLogin())).thenReturn(null);
+        var res = userDao.createUser(usr.getLogin(), usr.getPassword(), usr.getEmail(), firstName, lastName, usr.getRoles());
 
 
-        assertTrue(usr.getId() > 0);
+        assertEquals(res.getFirstName(), firstName);
 
     }
 
     @Test
     public void updateUserLoginTest() throws Exception {
-        cleanData();
+        var newLogin = "login1";
 
-        var usr = createUser();
-        var id = usr.getId();
-        usr = userDao.updateLogin("login1", usr.getId());
+        when(mapper.getUserByLogin(anyString())).thenReturn(null);
+        when(mapper.getUserById(usr.getId())).thenReturn(usr);
+        doNothing().when(mapper).updateUser(any(User.class));
 
-        assertEquals(id, usr.getId());
+        var res = userDao.updateLogin(newLogin, usr.getId());
+
+        assertEquals(newLogin, res.getLogin());
 
     }
 
     @Test
-    public void updateUserLoginExistsTest() throws Exception {
-        cleanData();
-
-        var usr = createUser();
-
+    public void updateUserLoginExistsTest() {
+        when(mapper.getUserByLogin(usr.getLogin())).thenReturn(usr);
         assertThrows(DataExistenceException.class, () -> userDao.updateLogin(usr.getLogin(), usr.getId()));
 
     }
 
 
     @Test
-    public void updateUserLoginNotExistsTest() {
-        cleanData();
-
+    public void updateUserUserNotExistsTest() {
+        when(mapper.getUserById(1)).thenReturn(null);
         assertThrows(DataExistenceException.class, () -> userDao.updateLogin("login", 1));
     }
 
     @Test
     public void updatePasswordTest() throws Exception {
-        cleanData();
-
-        var usr = createUser();
+        var oldPwd = usr.getPassword();
+        var pwd = PasswordUtil.createHash(usr.getPassword());
+        usr.setPassword(pwd);
         var id = usr.getId();
-        usr = userDao.updatePassword("pwd", "newPwd", usr.getId());
 
-        assertEquals(id, usr.getId());
+        when(mapper.getUserById(id)).thenReturn(usr);
+        doNothing().when(mapper).updateUser(any(User.class));
+
+        var res = userDao.updatePassword(oldPwd, "newPwd", usr.getId());
+
+        assertEquals(id, res.getId());
 
     }
 
     @Test
     public void updatePasswordUserNotFoundTest() {
-        cleanData();
-
+        when(mapper.getUserById(anyLong())).thenReturn(null);
         assertThrows(DataExistenceException.class, () ->
                 userDao.updatePassword("pwd", "newPwd", 100));
     }
 
     @Test
-    public void updatePasswordUnathorizedTest() throws Exception {
-        cleanData();
-
-        var usr = createUser();
-
+    public void updatePasswordUnathorizedTest() {
+        when(mapper.getUserById(anyLong())).thenReturn(usr);
         assertThrows(InvalidHashException.class, () ->
                 userDao.updatePassword("randomPwd", "newPed", usr.getId()));
 
@@ -133,109 +128,103 @@ public class UserDaoTest extends BaseDaoTest {
 
     @Test
     public void updateUserTest() throws Exception {
-        cleanData();
-
-        var usr = createUser();
         var id = usr.getId();
-        usr = userDao.updateUser(usr.getId(), "name1", "name2",
+
+        when(mapper.getUserById(anyLong())).thenReturn(usr);
+        doNothing().when(mapper).updateUser(any(User.class));
+
+        var res = userDao.updateUser(usr.getId(), "name1", "name2",
                 "email1@email.com", UserRole.DEVELOPER.name() + ";", "data;base64");
 
-        assertEquals(id, usr.getId());
+        assertEquals(id, res.getId());
 
     }
 
 
     @Test
     public void updateUserNullFieldTest() throws Exception {
-        cleanData();
-
-        var usr = createUser();
         var id = usr.getId();
-        usr = userDao.updateUser(usr.getId(), null, null, null, null, null);
 
-        assertEquals(id, usr.getId());
+        when(mapper.getUserById(anyLong())).thenReturn(usr);
+        doNothing().when(mapper).updateUser(any(User.class));
+
+        var res = userDao.updateUser(usr.getId(), null, null, null, null, null);
+
+        assertEquals(id, res.getId());
 
     }
 
     @Test
     public void updateUserEmptyFieldTest() throws Exception {
-        cleanData();
-
-        var usr = createUser();
         var id = usr.getId();
 
-        usr = userDao.updateUser(usr.getId(), null, "", null, null, null);
-        assertEquals(id, usr.getId());
+        when(mapper.getUserById(anyLong())).thenReturn(usr);
+        doNothing().when(mapper).updateUser(any(User.class));
+
+        var res = userDao.updateUser(usr.getId(), null, "", null, null, null);
+        assertEquals(id, res.getId());
 
     }
 
     @Test
     public void resetPasswordTest() throws Exception {
-        cleanData();
-
-        var usr = createUser();
         var id = usr.getId();
 
+        when(mapper.getUserById(anyLong())).thenReturn(usr);
+        doNothing().when(mapper).updateUser(any(User.class));
         userDao.resetPassword(id);
 
-        usr = userDao.findUserById(id);
         assertTrue(PasswordUtil.verifyPassword("reset", usr.getPassword()));
 
     }
 
     @Test
-    public void resetPasswordUserNotFoundTest() throws Exception {
-        cleanData();
-
+    public void resetPasswordUserNotFoundTest() {
+        when(mapper.getUserById(anyLong())).thenReturn(null);
         assertThrows(DataExistenceException.class, () -> userDao.resetPassword(10));
     }
 
     @Test
     public void findUserByIdTest() throws Exception {
-        cleanData();
-
-        var usr = createUser();
         var id = usr.getId();
 
-        usr = userDao.findUserById(id);
-        assertEquals(id, usr.getId());
+        when(mapper.getUserById(anyLong())).thenReturn(usr);
+        var res = userDao.findUserById(id);
+
+        assertEquals(id, res.getId());
 
     }
 
 
     @Test
     public void findUserNotFoundByIdTest() {
-        cleanData();
-
+        when(mapper.getUserById(anyLong())).thenReturn(null);
         assertThrows(DataExistenceException.class, () -> userDao.findUserById(10));
     }
 
 
     @Test
     public void findUserByLoginTest() throws Exception {
-        cleanData();
-
-        var usr = createUser();
         var login = usr.getLogin();
 
-        usr = userDao.findUserByLogin(login);
-        assertEquals(login, usr.getLogin());
+        when(mapper.getUserByLogin(anyString())).thenReturn(usr);
+
+        var res = userDao.findUserByLogin(login);
+        assertEquals(login, res.getLogin());
     }
 
 
     @Test
     public void findUserNotFoundByLoginTest() {
-        cleanData();
+        when(mapper.getUserByLogin(anyString())).thenReturn(null);
 
         assertThrows(DataExistenceException.class, () -> userDao.findUserByLogin("test"));
     }
 
     @Test
-    public void findUsersByIdsTest() throws Exception {
-        cleanData();
-
-        var usr = createUser();
+    public void findUsersByIdsTest() {
         var id = usr.getId();
+        when(mapper.getUsersByIds(List.of(usr.getId()))).thenReturn(List.of(usr));
 
         var res = userDao.findUsersByIds(List.of(id));
         assertEquals(1, res.size());
@@ -243,32 +232,16 @@ public class UserDaoTest extends BaseDaoTest {
     }
 
     @Test
-    public void findUsersByIdsNotExistingIdsTest() throws Exception {
-        cleanData();
-
-        var usr = createUser();
-        var id = usr.getId();
-
-        var res = userDao.findUsersByIds(List.of(id, 7L, 3L));
-        assertEquals(1, res.size());
-
-    }
-
-
-    @Test
     public void deleteUserTest() throws Exception {
-        cleanData();
+        userDao = new UserDao(mapper, new MockTransactionManager());
 
-        var usr = createUser();
+        when(mapper.getUserById(anyLong())).thenReturn(usr);
+        when(mapper.getContributorsByUserId(usr.getId(), -1, 0)).thenReturn(List.of(new Contributor()));
+        doNothing().when(mapper)
+                .deactivateUserContributors(anyLong());
 
-        var project = createProject();
-        contributorDao.createContributor(usr.getId(), project.getId(), true);
 
-        var delUser = userDao.createUser("usr1", "pwd", "ss",
-                "fname", "lname", UserRole.DEVELOPER.name() + ";");
-        contributorDao.createContributor(delUser.getId(), project.getId(), false);
-
-        delUser = userDao.deleteUser(delUser.getId());
+        var delUser = userDao.deleteUser(usr.getId());
 
         assertEquals("deleted", delUser.getLogin());
 
@@ -276,30 +249,30 @@ public class UserDaoTest extends BaseDaoTest {
 
     @Test
     public void deleteUserNoContributorsTest() throws Exception {
-        cleanData();
+        userDao = new UserDao(mapper, new MockTransactionManager());
+        when(mapper.getUserById(anyLong())).thenReturn(usr);
+        when(mapper.getContributorsByUserId(usr.getId(), -1, 0)).thenReturn(List.of());
 
-        var delUser = userDao.createUser("usr1", "pwd", "ss",
-                "fname", "lname", UserRole.DEVELOPER.name() + ";");
-
-        delUser = userDao.deleteUser(delUser.getId());
+        var delUser = userDao.deleteUser(usr.getId());
 
         assertEquals("deleted", delUser.getLogin());
 
     }
 
     @Test
-    public void deleteUserIsOwnerTest() throws Exception {
-        cleanData();
+    public void deleteUserIsOwnerTest() {
+        userDao = new UserDao(mapper, new MockTransactionManager());
+        when(mapper.getUserById(anyLong())).thenReturn(usr);
 
-        var usr = createUser();
-
-        var project = createProject();
-        contributorDao.createContributor(usr.getId(), project.getId(), true);
+        var ctr = new Contributor();
+        ctr.setUserId(usr.getId());
+        ctr.setProjectId(prj.getId());
+        ctr.setOwner(true);
+        when(mapper.getContributorsByUserId(usr.getId(), -1, 0)).thenReturn(List.of(ctr));
 
         assertThrows(DataCreationException.class, () -> userDao.deleteUser(usr.getId()));
 
     }
-
 
 
 }

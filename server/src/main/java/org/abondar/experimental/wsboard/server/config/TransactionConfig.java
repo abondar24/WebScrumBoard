@@ -6,6 +6,7 @@ import com.atomikos.icatch.jta.UserTransactionManager;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.jta.JtaTransactionManager;
 /**
  * Data access objects configuration class
@@ -17,7 +18,7 @@ public class TransactionConfig {
 
     @Bean
     @Qualifier("transactionManager")
-    public JtaTransactionManager txManager() {
+    public PlatformTransactionManager txManager() {
         var txManager = new UserTransactionManager();
         var transaction = new UserTransactionImp();
         return new JtaTransactionManager(transaction,txManager);
