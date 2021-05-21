@@ -2,6 +2,7 @@ package org.abondar.experimental.wsboard.server.dao;
 
 import net.sf.ehcache.transaction.local.JtaLocalTransactionStore;
 import org.abondar.experimental.wsboard.server.config.TransactionConfig;
+import org.abondar.experimental.wsboard.server.datamodel.Contributor;
 import org.abondar.experimental.wsboard.server.datamodel.Project;
 import org.abondar.experimental.wsboard.server.datamodel.user.User;
 import org.abondar.experimental.wsboard.server.datamodel.user.UserRole;
@@ -51,10 +52,13 @@ public class BaseDaoTest {
 
     protected Project prj;
 
+    protected Contributor ctr;
+
     @BeforeEach
     public void init() {
         usr = createUser();
         prj = createProject();
+        ctr = new Contributor(usr.getId(),prj.getId(),false);
 
 
     }
@@ -103,6 +107,5 @@ public class BaseDaoTest {
         mapper.deleteTasks();
         mapper.deleteSprints();
         mapper.deleteContributors();
-        mapper.deleteProjects();
     }
 }
