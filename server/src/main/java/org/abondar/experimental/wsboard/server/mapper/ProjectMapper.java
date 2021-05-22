@@ -10,6 +10,7 @@ import java.util.List;
 
 /**
  * Interface for mybatis mapper for project queries
+ * @author a.bondar
  */
 @Mapper
 @Qualifier("projectMapper")

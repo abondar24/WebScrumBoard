@@ -8,6 +8,10 @@ import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.List;
 
+/**
+ * Interface for contributor mapper
+ * @author a.bondar
+ */
 @Mapper
 @Qualifier("contributorMapper")
 public interface ContributorMapper {

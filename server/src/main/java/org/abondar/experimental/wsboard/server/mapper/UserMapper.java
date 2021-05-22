@@ -11,6 +11,7 @@ import java.util.List;
 
 /**
  * Interface for mybatis mapper for user queries
+ * @author a.bondar
  */
 @Mapper
 @Qualifier("userMapper")
