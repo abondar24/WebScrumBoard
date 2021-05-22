@@ -4,6 +4,7 @@ import org.abondar.experimental.wsboard.server.datamodel.Contributor;
 import org.abondar.experimental.wsboard.server.datamodel.Project;
 import org.abondar.experimental.wsboard.server.datamodel.Sprint;
 import org.abondar.experimental.wsboard.server.datamodel.task.Task;
+import org.abondar.experimental.wsboard.server.datamodel.task.TaskState;
 import org.abondar.experimental.wsboard.server.datamodel.user.User;
 import org.abondar.experimental.wsboard.server.datamodel.user.UserRole;
 import org.abondar.experimental.wsboard.server.mapper.DataMapper;
@@ -54,25 +55,6 @@ public class BaseDaoTest {
         return new User(login, password, email, firstName, lastName, roles);
     }
 
-    protected User createUser(String login) throws Exception {
-        var usr = createUser();
-        if (!login.isBlank()) {
-            usr.setLogin(login);
-        }
-
-        return usr;
-    }
-
-
-    protected Project createProject(boolean isActive) {
-
-        var prj = createProject();
-        if (isActive) {
-            prj.setActive(isActive);
-        }
-
-        return prj;
-    }
 
     private Project createProject() {
         var name = "test";
@@ -90,11 +72,10 @@ public class BaseDaoTest {
     }
 
     private Task createTask(long ctrId){
-        return new Task(ctrId, new Date(), false, "name", "descr");
+        var tsk = new Task(ctrId, new Date(), false, "name", "descr");
+        tsk.setTaskState(TaskState.CREATED);
+        return tsk;
     }
 
 
-    protected void cleanData() {
-
-    }
 }
