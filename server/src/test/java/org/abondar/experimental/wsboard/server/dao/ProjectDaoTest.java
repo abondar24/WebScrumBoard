@@ -54,7 +54,8 @@ public class ProjectDaoTest extends DaoTest {
     @Test
     public void updateProjectTest() throws Exception {
         var id = prj.getId();
-        projectDao = new ProjectDao(userMapper, projectMapper,contributorMapper,sprintMapper,new MockTransactionManager());
+        projectDao = new ProjectDao(userMapper, projectMapper,contributorMapper,
+                sprintMapper,taskMapper,new MockTransactionManager());
 
         when(projectMapper.getProjectById(anyLong())).thenReturn(prj);
         when(projectMapper.getProjectByName(anyString())).thenReturn(null);
@@ -69,7 +70,8 @@ public class ProjectDaoTest extends DaoTest {
 
     @Test
     public void updateProjectExistsTest() throws Exception {
-        projectDao = new ProjectDao(userMapper, projectMapper,contributorMapper,sprintMapper,new MockTransactionManager());
+        projectDao = new ProjectDao(userMapper, projectMapper,contributorMapper,sprintMapper,
+                taskMapper,new MockTransactionManager());
 
         when(projectMapper.getProjectById(anyLong())).thenReturn(prj);
         when(projectMapper.getProjectByName(anyString())).thenReturn(prj);
@@ -82,7 +84,8 @@ public class ProjectDaoTest extends DaoTest {
     @Test
     public void updateProjectInactiveTest() throws Exception {
         var id = prj.getId();
-        projectDao = new ProjectDao(userMapper, projectMapper,contributorMapper,sprintMapper,new MockTransactionManager());
+        projectDao = new ProjectDao(userMapper, projectMapper,contributorMapper,sprintMapper,
+                taskMapper,new MockTransactionManager());
 
         when(projectMapper.getProjectById(anyLong())).thenReturn(prj);
         when(projectMapper.getProjectByName(anyString())).thenReturn(null);
@@ -97,7 +100,8 @@ public class ProjectDaoTest extends DaoTest {
 
     @Test
     public void updateProjectInactiveNullEndDateTest() {
-        projectDao = new ProjectDao(userMapper, projectMapper,contributorMapper,sprintMapper,new MockTransactionManager());
+        projectDao = new ProjectDao(userMapper, projectMapper,contributorMapper,sprintMapper,
+                taskMapper,new MockTransactionManager());
 
         when(projectMapper.getProjectById(anyLong())).thenReturn(prj);
         when(projectMapper.getProjectByName(anyString())).thenReturn(null);
@@ -110,7 +114,8 @@ public class ProjectDaoTest extends DaoTest {
 
     @Test
     public void updateProjectReactivateTest() throws Exception {
-        projectDao = new ProjectDao(userMapper, projectMapper,contributorMapper,sprintMapper,new MockTransactionManager());
+        projectDao = new ProjectDao(userMapper, projectMapper,contributorMapper,
+                sprintMapper,taskMapper,new MockTransactionManager());
 
         when(projectMapper.getProjectById(anyLong())).thenReturn(prj);
         when(projectMapper.getProjectByName(anyString())).thenReturn(null);
@@ -128,7 +133,8 @@ public class ProjectDaoTest extends DaoTest {
 
     @Test
     public void updateProjectInactiveWrongDateTest() {
-        projectDao = new ProjectDao(userMapper, projectMapper,contributorMapper,sprintMapper,new MockTransactionManager());
+        projectDao = new ProjectDao(userMapper, projectMapper,contributorMapper,sprintMapper,
+                taskMapper,new MockTransactionManager());
 
         when(projectMapper.getProjectById(anyLong())).thenReturn(prj);
         when(projectMapper.getProjectByName(anyString())).thenReturn(null);
@@ -142,7 +148,8 @@ public class ProjectDaoTest extends DaoTest {
 
     @Test
     public void updateProjectNullTest() throws Exception {
-        projectDao = new ProjectDao(userMapper, projectMapper,contributorMapper,sprintMapper,new MockTransactionManager());
+        projectDao = new ProjectDao(userMapper, projectMapper,contributorMapper,sprintMapper,
+                taskMapper,new MockTransactionManager());
 
         when(projectMapper.getProjectById(anyLong())).thenReturn(prj);
         var res = projectDao.updateProject(prj.getId(), null, null, null, null, null);
@@ -154,10 +161,10 @@ public class ProjectDaoTest extends DaoTest {
 
     @Test
     public void deleteProjectTest() throws Exception {
-        projectDao = new ProjectDao(userMapper, projectMapper,contributorMapper,sprintMapper,new MockTransactionManager());
+        projectDao = new ProjectDao(userMapper, projectMapper,contributorMapper,sprintMapper,taskMapper,new MockTransactionManager());
 
         when(projectMapper.getProjectById(anyLong())).thenReturn(prj);
-        doNothing().when(mapper).deleteProjectTasks(anyLong());
+        doNothing().when(taskMapper).deleteProjectTasks(anyLong());
         doNothing().when(sprintMapper).deleteProjectSprints(anyLong());
         doNothing().when(contributorMapper).deleteProjectContributors(anyLong());
         doNothing().when(projectMapper).deleteProject(anyLong());

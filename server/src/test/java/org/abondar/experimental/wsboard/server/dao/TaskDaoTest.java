@@ -30,7 +30,7 @@ public class TaskDaoTest extends DaoTest {
     @Test
     public void createTaskTest() throws Exception {
         when(contributorMapper.getContributorById(anyLong())).thenReturn(ctr);
-        doNothing().when(mapper).insertTask(any(Task.class));
+        doNothing().when(taskMapper).insertTask(any(Task.class));
 
         var task = taskDao.createTask(ctr.getId(), tsk.getStartDate(), tsk.isDevOpsEnabled(),
                 tsk.getTaskName(), tsk.getTaskDescription());
@@ -65,9 +65,9 @@ public class TaskDaoTest extends DaoTest {
     public void updateTaskContributorTest() throws Exception {
         var ctr1 = new Contributor(1, prj.getId(), false);
 
-        when(mapper.getTaskById(anyLong())).thenReturn(tsk);
+        when(taskMapper.getTaskById(anyLong())).thenReturn(tsk);
         when(contributorMapper.getContributorById(anyLong())).thenReturn(ctr1);
-        doNothing().when(mapper).updateTask(tsk);
+        doNothing().when(taskMapper).updateTask(tsk);
 
         var res = taskDao.updateTask(tsk.getId(), ctr1.getId(), true,
                 null, null, null);
@@ -79,7 +79,7 @@ public class TaskDaoTest extends DaoTest {
 
     @Test
     public void updateTaskNotExistsTest() {
-        when(mapper.getTaskById(anyLong())).thenReturn(null);
+        when(taskMapper.getTaskById(anyLong())).thenReturn(null);
 
         assertThrows(DataExistenceException.class, () ->
                 taskDao.updateTask(100, 100L, null, null, null, null));
@@ -87,7 +87,7 @@ public class TaskDaoTest extends DaoTest {
 
     @Test
     public void updateTaskContributorNotExistsTest() {
-        when(mapper.getTaskById(anyLong())).thenReturn(tsk);
+        when(taskMapper.getTaskById(anyLong())).thenReturn(tsk);
         when(contributorMapper.getContributorById(anyLong())).thenReturn(null);
 
         assertThrows(DataExistenceException.class, () ->
@@ -98,8 +98,8 @@ public class TaskDaoTest extends DaoTest {
 
     @Test
     public void updateTaskStoryPointsTest() throws Exception {
-        when(mapper.getTaskById(anyLong())).thenReturn(tsk);
-        doNothing().when(mapper).updateTask(tsk);
+        when(taskMapper.getTaskById(anyLong())).thenReturn(tsk);
+        doNothing().when(taskMapper).updateTask(tsk);
 
 
         int storyPoints = 2;
@@ -112,8 +112,8 @@ public class TaskDaoTest extends DaoTest {
 
     @Test
     public void updateTaskNameTest() throws Exception {
-        when(mapper.getTaskById(anyLong())).thenReturn(tsk);
-        doNothing().when(mapper).updateTask(tsk);
+        when(taskMapper.getTaskById(anyLong())).thenReturn(tsk);
+        doNothing().when(taskMapper).updateTask(tsk);
 
         var taskName = "new name";
         var res = taskDao.updateTask(tsk.getId(), null,
@@ -125,8 +125,8 @@ public class TaskDaoTest extends DaoTest {
 
     @Test
     public void updateTaskDescriptionTest() throws Exception {
-        when(mapper.getTaskById(anyLong())).thenReturn(tsk);
-        doNothing().when(mapper).updateTask(tsk);
+        when(taskMapper.getTaskById(anyLong())).thenReturn(tsk);
+        doNothing().when(taskMapper).updateTask(tsk);
 
         var descr = "newDescr";
         var res = taskDao.updateTask(tsk.getId(), null,
@@ -139,9 +139,9 @@ public class TaskDaoTest extends DaoTest {
 
     @Test
     public void updateTaskSprintTest() throws Exception {
-        when(mapper.getTaskById(anyLong())).thenReturn(tsk);
+        when(taskMapper.getTaskById(anyLong())).thenReturn(tsk);
         when(sprintMapper.getSprintById(anyLong())).thenReturn(sp);
-        doNothing().when(mapper).updateTaskSprint(anyLong(), anyLong());
+        doNothing().when(taskMapper).updateTaskSprint(anyLong(), anyLong());
 
         var res = taskDao.updateTaskSprint(tsk.getId(), sp.getId());
 
@@ -154,8 +154,8 @@ public class TaskDaoTest extends DaoTest {
         var tasks = List.of(tsk.getId(), 1L);
 
         when(sprintMapper.getSprintById(anyLong())).thenReturn(sp);
-        doNothing().when(mapper).updateTasksSprint(tasks, sp.getId());
-        when(mapper.getTaskById(anyLong())).thenReturn(tsk);
+        doNothing().when(taskMapper).updateTasksSprint(tasks, sp.getId());
+        when(taskMapper.getTaskById(anyLong())).thenReturn(tsk);
 
         taskDao.updateTasksSprint(tasks, sp.getId());
 
@@ -167,10 +167,10 @@ public class TaskDaoTest extends DaoTest {
 
     @Test
     public void updateTaskStateTest() throws Exception {
-        when(mapper.getTaskById(anyLong())).thenReturn(tsk);
+        when(taskMapper.getTaskById(anyLong())).thenReturn(tsk);
         when(userMapper.getUserById(anyLong())).thenReturn(usr);
         when(contributorMapper.getContributorById(anyLong())).thenReturn(ctr);
-        doNothing().when(mapper).updateTask(tsk);
+        doNothing().when(taskMapper).updateTask(tsk);
 
         var res = taskDao.updateTaskState(tsk.getId(), TaskState.IN_DEVELOPMENT.name());
 
@@ -189,7 +189,7 @@ public class TaskDaoTest extends DaoTest {
 
     @Test
     public void updateTaskStateNotExistsTest() {
-        when(mapper.getTaskById(anyLong())).thenReturn(null);
+        when(taskMapper.getTaskById(anyLong())).thenReturn(null);
 
         assertThrows(DataExistenceException.class, () ->
                 taskDao.updateTaskState(100, TaskState.IN_DEPLOYMENT.name()));
@@ -199,7 +199,7 @@ public class TaskDaoTest extends DaoTest {
     @Test
     public void updateTaskStateAlreadyCompletedTest() {
         tsk.setTaskState(TaskState.COMPLETED);
-        when(mapper.getTaskById(anyLong())).thenReturn(tsk);
+        when(taskMapper.getTaskById(anyLong())).thenReturn(tsk);
 
         assertThrows(DataCreationException.class, () ->
                 taskDao.updateTaskState(tsk.getId(), TaskState.IN_DEVELOPMENT.name()));
@@ -208,7 +208,7 @@ public class TaskDaoTest extends DaoTest {
 
     @Test
     public void updateTaskStateAlreadyCreatedTest() {
-        when(mapper.getTaskById(anyLong())).thenReturn(tsk);
+        when(taskMapper.getTaskById(anyLong())).thenReturn(tsk);
 
         assertThrows(DataCreationException.class, () ->
                 taskDao.updateTaskState(tsk.getId(), TaskState.CREATED.name()));
@@ -218,7 +218,7 @@ public class TaskDaoTest extends DaoTest {
     @Test
     public void updateTaskStatePausedTest() {
         tsk.setTaskState(TaskState.PAUSED);
-        when(mapper.getTaskById(anyLong())).thenReturn(tsk);
+        when(taskMapper.getTaskById(anyLong())).thenReturn(tsk);
 
         assertThrows(DataCreationException.class, () ->
                 taskDao.updateTaskState(tsk.getId(), TaskState.IN_DEVELOPMENT.name()));
@@ -228,7 +228,7 @@ public class TaskDaoTest extends DaoTest {
 
     @Test
     public void updateTaskStateNoDevOpsTest() {
-        when(mapper.getTaskById(anyLong())).thenReturn(tsk);
+        when(taskMapper.getTaskById(anyLong())).thenReturn(tsk);
 
         assertThrows(DataCreationException.class, () ->
                 taskDao.updateTaskState(tsk.getId(), TaskState.IN_DEPLOYMENT.name()));
@@ -237,7 +237,7 @@ public class TaskDaoTest extends DaoTest {
 
     @Test
     public void updateTaskStateNoMovesTest() {
-        when(mapper.getTaskById(anyLong())).thenReturn(tsk);
+        when(taskMapper.getTaskById(anyLong())).thenReturn(tsk);
         when(userMapper.getUserById(anyLong())).thenReturn(usr);
         when(contributorMapper.getContributorById(anyLong())).thenReturn(ctr);
 
@@ -250,7 +250,7 @@ public class TaskDaoTest extends DaoTest {
     public void updateTaskStateRoleUpdateNeededTest() {
         tsk.setTaskState(TaskState.IN_CODE_REVIEW);
 
-        when(mapper.getTaskById(anyLong())).thenReturn(tsk);
+        when(taskMapper.getTaskById(anyLong())).thenReturn(tsk);
         when(userMapper.getUserById(anyLong())).thenReturn(usr);
         when(contributorMapper.getContributorById(anyLong())).thenReturn(ctr);
 
@@ -263,10 +263,10 @@ public class TaskDaoTest extends DaoTest {
     public void updateTaskStateCompletedEndDateTest() throws Exception {
         tsk.setTaskState(TaskState.IN_TEST);
 
-        when(mapper.getTaskById(anyLong())).thenReturn(tsk);
+        when(taskMapper.getTaskById(anyLong())).thenReturn(tsk);
         when(userMapper.getUserById(anyLong())).thenReturn(usr);
         when(contributorMapper.getContributorById(anyLong())).thenReturn(ctr);
-        doNothing().when(mapper).updateTask(tsk);
+        doNothing().when(taskMapper).updateTask(tsk);
 
         var res = taskDao.updateTaskState(tsk.getId(), TaskState.COMPLETED.name());
 
@@ -277,8 +277,8 @@ public class TaskDaoTest extends DaoTest {
 
     @Test
     public void deleteTaskTest() {
-        when(mapper.getTaskById(anyLong())).thenReturn(tsk);
-        doNothing().when(mapper).deleteTask(anyLong());
+        when(taskMapper.getTaskById(anyLong())).thenReturn(tsk);
+        doNothing().when(taskMapper).deleteTask(anyLong());
 
         var res = taskDao.deleteTask(tsk.getId());
 
@@ -289,7 +289,7 @@ public class TaskDaoTest extends DaoTest {
 
     @Test
     public void deleteTaskNoExistsTest() {
-        when(mapper.getTaskById(anyLong())).thenReturn(null);
+        when(taskMapper.getTaskById(anyLong())).thenReturn(null);
 
         var res = taskDao.deleteTask(100);
 
@@ -300,7 +300,7 @@ public class TaskDaoTest extends DaoTest {
     public void deleteTaskInSprintTest(){
         tsk.setSprintId(sp.getId());
 
-        when(mapper.getTaskById(anyLong())).thenReturn(tsk);
+        when(taskMapper.getTaskById(anyLong())).thenReturn(tsk);
 
         var res = taskDao.deleteTask(tsk.getId());
 
@@ -311,7 +311,7 @@ public class TaskDaoTest extends DaoTest {
 
     @Test
     public void getTaskByIdTest() throws Exception {
-        when(mapper.getTaskById(anyLong())).thenReturn(tsk);
+        when(taskMapper.getTaskById(anyLong())).thenReturn(tsk);
 
         var res = taskDao.getTaskById(tsk.getId());
 
@@ -322,7 +322,7 @@ public class TaskDaoTest extends DaoTest {
     @Test
     public void getTasksForProjectTest() throws Exception {
         when(projectMapper.getProjectById(anyLong())).thenReturn(prj);
-        when(mapper.getTasksForProject(prj.getId(),0,1)).thenReturn(List.of(tsk));
+        when(taskMapper.getTasksForProject(prj.getId(),0,1)).thenReturn(List.of(tsk));
 
         var res = taskDao.getTasksForProject(prj.getId(), 0, 1);
 
@@ -334,7 +334,7 @@ public class TaskDaoTest extends DaoTest {
     @Test
     public void getNonSprintTasksForProjectTest() throws Exception {
         when(projectMapper.getProjectById(anyLong())).thenReturn(prj);
-        when(mapper.getTasksForProject(prj.getId(),0,null)).thenReturn(List.of(tsk));
+        when(taskMapper.getTasksForProject(prj.getId(),0,null)).thenReturn(List.of(tsk));
 
         var res = taskDao.getNonSprintTasksForProject(prj.getId());
 
@@ -346,7 +346,7 @@ public class TaskDaoTest extends DaoTest {
     @Test
     public void getTasksForContributorTest() throws Exception {
         when(contributorMapper.getContributorById(anyLong())).thenReturn(ctr);
-        when(mapper.getTasksForContributor(ctr.getId(),0,1)).thenReturn(List.of(tsk));
+        when(taskMapper.getTasksForContributor(ctr.getId(),0,1)).thenReturn(List.of(tsk));
 
         var res = taskDao.getTasksForContributor(ctr.getId(), 0, 1);
 
@@ -359,7 +359,7 @@ public class TaskDaoTest extends DaoTest {
     @Test
     public void countContributorTasksTest() throws Exception {
         when(contributorMapper.getContributorById(anyLong())).thenReturn(ctr);
-        when(mapper.countContributorTasks(anyLong())).thenReturn(1);
+        when(taskMapper.countContributorTasks(anyLong())).thenReturn(1);
 
         var res = taskDao.countContributorTasks(ctr.getId());
 
@@ -372,7 +372,7 @@ public class TaskDaoTest extends DaoTest {
         tsk.setSprintId(sp.getId());
 
         when(sprintMapper.getSprintById(anyLong())).thenReturn(sp);
-        when(mapper.countSprintTasks(anyLong())).thenReturn(1);
+        when(taskMapper.countSprintTasks(anyLong())).thenReturn(1);
 
         var res = taskDao.countSprintTasks(sp.getId());
 
@@ -400,7 +400,7 @@ public class TaskDaoTest extends DaoTest {
     @Test
     public void getTasksForUserTest() throws Exception {
         when(userMapper.getUserById(anyLong())).thenReturn(usr);
-        when(mapper.getTasksForUser(usr.getId(),0,1)).thenReturn(List.of(tsk));
+        when(taskMapper.getTasksForUser(usr.getId(),0,1)).thenReturn(List.of(tsk));
 
         var res = taskDao.getTasksForUser(usr.getId(), 0, 1);
 
@@ -412,7 +412,7 @@ public class TaskDaoTest extends DaoTest {
     @Test
     public void countUserTasks() throws Exception {
         when(userMapper.getUserById(anyLong())).thenReturn(usr);
-        when(mapper.countUserTasks(anyLong())).thenReturn(1);
+        when(taskMapper.countUserTasks(anyLong())).thenReturn(1);
 
         var res = taskDao.countUserTasks(usr.getId());
 
@@ -432,7 +432,7 @@ public class TaskDaoTest extends DaoTest {
         tsk.setSprintId(sp.getId());
 
         when(sprintMapper.getSprintById(anyLong())).thenReturn(sp);
-        when(mapper.getTasksForSprint(sp.getId(),0,1)).thenReturn(List.of(tsk));
+        when(taskMapper.getTasksForSprint(sp.getId(),0,1)).thenReturn(List.of(tsk));
 
         var res = taskDao.getTasksForSprint(sp.getId(), 0, 1);
 

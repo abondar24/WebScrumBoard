@@ -38,9 +38,7 @@ public class ProjectDao{
 
     private final PlatformTransactionManager transactionManager;
 
-    //TODO: replace with sprint and task mapper
-    @Autowired
-    private TaskMapper mapper;
+    private final TaskMapper taskMapperr;
 
     private final SprintMapper sprintMapper;
 
@@ -48,12 +46,13 @@ public class ProjectDao{
 
     @Autowired
     public ProjectDao(UserMapper userMapper,ProjectMapper projectMapper,
-                      ContributorMapper contributorMapper,SprintMapper sprintMapper,PlatformTransactionManager transactionManager) {
+                      ContributorMapper contributorMapper,SprintMapper sprintMapper,TaskMapper taskMapper,PlatformTransactionManager transactionManager) {
 
        this.userMapper = userMapper;
        this.projectMapper = projectMapper;
        this.contributorMapper = contributorMapper;
        this.sprintMapper = sprintMapper;
+       this.taskMapperr = taskMapper;
        this.transactionManager = transactionManager;
     }
 
@@ -164,7 +163,7 @@ public class ProjectDao{
         try {
             findProjectById(id);
 
-            mapper.deleteProjectTasks(id);
+            taskMapperr.deleteProjectTasks(id);
             sprintMapper.deleteProjectSprints(id);
             contributorMapper.deleteProjectContributors(id);
             projectMapper.deleteProject(id);

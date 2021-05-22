@@ -27,9 +27,6 @@ import java.util.Date;
 public class DaoTest {
 
     @Mock
-    protected TaskMapper mapper;
-
-    @Mock
     protected UserMapper userMapper;
 
     @Mock
@@ -44,6 +41,8 @@ public class DaoTest {
     @Mock
     protected SprintMapper sprintMapper;
 
+    @Mock
+    protected TaskMapper taskMapper;
 
     protected User usr;
 
