@@ -6,6 +6,7 @@ import org.abondar.experimental.wsboard.server.exception.DataExistenceException;
 import org.abondar.experimental.wsboard.server.mapper.ContributorMapper;
 import org.abondar.experimental.wsboard.server.mapper.DataMapper;
 import org.abondar.experimental.wsboard.server.mapper.ProjectMapper;
+import org.abondar.experimental.wsboard.server.mapper.SprintMapper;
 import org.abondar.experimental.wsboard.server.mapper.UserMapper;
 import org.abondar.experimental.wsboard.server.util.LogMessageUtil;
 import org.slf4j.Logger;
@@ -41,15 +42,18 @@ public class ProjectDao{
     @Autowired
     private DataMapper mapper;
 
+    private final SprintMapper sprintMapper;
+
     private final ContributorMapper contributorMapper;
 
     @Autowired
     public ProjectDao(UserMapper userMapper,ProjectMapper projectMapper,
-                      ContributorMapper contributorMapper,PlatformTransactionManager transactionManager) {
+                      ContributorMapper contributorMapper,SprintMapper sprintMapper,PlatformTransactionManager transactionManager) {
 
        this.userMapper = userMapper;
        this.projectMapper = projectMapper;
        this.contributorMapper = contributorMapper;
+       this.sprintMapper = sprintMapper;
        this.transactionManager = transactionManager;
     }
 
@@ -161,7 +165,7 @@ public class ProjectDao{
             findProjectById(id);
 
             mapper.deleteProjectTasks(id);
-            mapper.deleteProjectSprints(id);
+            sprintMapper.deleteProjectSprints(id);
             contributorMapper.deleteProjectContributors(id);
             projectMapper.deleteProject(id);
 

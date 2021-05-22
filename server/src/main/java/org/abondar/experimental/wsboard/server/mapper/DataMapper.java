@@ -20,19 +20,13 @@ public interface DataMapper {
 
     void insertTask(@Param("task") Task task);
 
-    void insertSprint(@Param("sprint") Sprint sprint);
-
     void updateTask(@Param("task") Task task);
-
-    void updateSprint(@Param("sprint") Sprint sprint);
 
     void updateTaskSprint(@Param("id") Long id, @Param("sprintId") long sprintId);
 
     void updateTasksSprint(@Param("idList") List<Long> idList, @Param("sprintId") long sprintId);
 
-
     Task getTaskById(@Param("id") long id);
-
 
     List<Task> getTasksForProject(@Param("projectId") long projectId, @Param("offset") int offset, @Param("limit") Integer limit);
 
@@ -48,24 +42,9 @@ public interface DataMapper {
 
     Integer countSprintTasks(@Param("spId") long spId);
 
-    Sprint getSprintByName(@Param("name") String name);
-
-    Sprint getSprintById(@Param("id") long id);
-
-    Sprint getCurrentSprint(@Param("prId") long prId);
-
-    List<Sprint> getSprints(@Param("projectId") long projectId, @Param("offset") int offset, @Param("limit") Integer limit);
-
-    Integer countSprints(@Param("prjId") long prjId);
-
     void deleteProjectTasks(@Param("projectId") long projectId);
 
-    void deleteProjectSprints(@Param("projectId") long projectId);
-
     void deleteTask(@Param("id") long id);
-
-    void deleteSprint(@Param("id") long id);
-
 
     @Delete("DELETE FROM task")
     void deleteTasks();

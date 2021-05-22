@@ -29,9 +29,9 @@ public class SprintDaoTest extends DaoTest {
 
     @Test
     public void createSprintTest() throws Exception {
-        when(mapper.getSprintByName(anyString())).thenReturn(null);
+        when(sprintMapper.getSprintByName(anyString())).thenReturn(null);
         when(projectMapper.getProjectById(anyLong())).thenReturn(prj);
-        doNothing().when(mapper).insertSprint(any(Sprint.class));
+        doNothing().when(sprintMapper).insertSprint(any(Sprint.class));
 
         var res = sprintDao.createSprint(sp.getName(), sp.getStartDate(), sp.getEndDate(), sp.getProjectId());
 
@@ -41,7 +41,7 @@ public class SprintDaoTest extends DaoTest {
 
     @Test
     public void createSprintWrongEndDateTest() {
-        when(mapper.getSprintByName(anyString())).thenReturn(null);
+        when(sprintMapper.getSprintByName(anyString())).thenReturn(null);
         when(projectMapper.getProjectById(anyLong())).thenReturn(prj);
         assertThrows(DataCreationException.class, () -> sprintDao.createSprint(sp.getName(), sp.getStartDate(),
                 yesterday(), sp.getProjectId()));
@@ -51,7 +51,7 @@ public class SprintDaoTest extends DaoTest {
 
     @Test
     public void createSprintAlreadyExistsTest() {
-        when(mapper.getSprintByName(anyString())).thenReturn(sp);
+        when(sprintMapper.getSprintByName(anyString())).thenReturn(sp);
         assertThrows(DataExistenceException.class, () ->
                 sprintDao.createSprint(sp.getName(), sp.getStartDate(), sp.getEndDate(), sp.getProjectId()));
 
@@ -67,7 +67,7 @@ public class SprintDaoTest extends DaoTest {
 
     @Test
     public void createSprintBlankDataTest() {
-        when(mapper.getSprintByName(null)).thenReturn(null);
+        when(sprintMapper.getSprintByName(null)).thenReturn(null);
         when(projectMapper.getProjectById(anyLong())).thenReturn(prj);
         assertThrows(DataCreationException.class, () ->
                 sprintDao.createSprint(null, sp.getStartDate(), sp.getEndDate(), sp.getProjectId()));
@@ -81,9 +81,9 @@ public class SprintDaoTest extends DaoTest {
         var startDate = new Date();
         var endDate = new Date();
 
-        when(mapper.getSprintById(anyLong())).thenReturn(sp);
-        when(mapper.getCurrentSprint(sp.getProjectId())).thenReturn(null);
-        doNothing().when(mapper).updateSprint(any(Sprint.class));
+        when(sprintMapper.getSprintById(anyLong())).thenReturn(sp);
+        when(sprintMapper.getCurrentSprint(sp.getProjectId())).thenReturn(null);
+        doNothing().when(sprintMapper).updateSprint(any(Sprint.class));
 
         var res = sprintDao.updateSprint(id, null, startDate, endDate, true);
 
@@ -96,15 +96,15 @@ public class SprintDaoTest extends DaoTest {
 
     @Test
     public void updateSprintNotFoundTest() {
-        when(mapper.getSprintById(anyLong())).thenReturn(null);
+        when(sprintMapper.getSprintById(anyLong())).thenReturn(null);
         assertThrows(DataExistenceException.class, () ->
                 sprintDao.updateSprint(100, null, null, null, null));
     }
 
     @Test
     public void updateSprintNameExistsTest()  {
-        when(mapper.getSprintById(anyLong())).thenReturn(sp);
-        when(mapper.getSprintByName(sp.getName())).thenReturn(sp);
+        when(sprintMapper.getSprintById(anyLong())).thenReturn(sp);
+        when(sprintMapper.getSprintByName(sp.getName())).thenReturn(sp);
         assertThrows(DataExistenceException.class, () ->
                 sprintDao.updateSprint(sp.getId(), sp.getName(), null, null, null));
 
@@ -112,7 +112,7 @@ public class SprintDaoTest extends DaoTest {
 
     @Test
     public void updateSprintWrongEndDateTest() {
-        when(mapper.getSprintById(anyLong())).thenReturn(sp);
+        when(sprintMapper.getSprintById(anyLong())).thenReturn(sp);
         assertThrows(DataCreationException.class, () ->
                 sprintDao.updateSprint(sp.getId(), null, new Date(), yesterday(), null));
 
@@ -122,8 +122,8 @@ public class SprintDaoTest extends DaoTest {
     public void updateSprintActiveExistsTest() throws Exception {
         sp.setCurrent(true);
 
-        when(mapper.getSprintById(anyLong())).thenReturn(sp);
-        when(mapper.getCurrentSprint(anyLong())).thenReturn(sp);
+        when(sprintMapper.getSprintById(anyLong())).thenReturn(sp);
+        when(sprintMapper.getCurrentSprint(anyLong())).thenReturn(sp);
 
         assertThrows(DataExistenceException.class, () ->
                 sprintDao.updateSprint(sp.getId(), null, null, null, true));
@@ -132,7 +132,7 @@ public class SprintDaoTest extends DaoTest {
 
     @Test
     public void getSprintByIdTest() throws Exception {
-        when(mapper.getSprintById(anyLong())).thenReturn(sp);
+        when(sprintMapper.getSprintById(anyLong())).thenReturn(sp);
         var res = sprintDao.getSprintById(sp.getId());
 
         assertEquals(sp.getName(), res.getName());
@@ -143,7 +143,7 @@ public class SprintDaoTest extends DaoTest {
     @Test
     public void getSprintsTest() throws Exception {
         when(projectMapper.getProjectById(anyLong())).thenReturn(prj);
-        when(mapper.getSprints(sp.getProjectId(),0,1)).thenReturn(List.of(sp));
+        when(sprintMapper.getSprints(sp.getProjectId(),0,1)).thenReturn(List.of(sp));
 
         var res = sprintDao.getSprints(prj.getId(), 0, 1);
 
@@ -156,7 +156,7 @@ public class SprintDaoTest extends DaoTest {
     public void getCurrentSprintTest() throws Exception {
         sp.setCurrent(true);
         when(projectMapper.getProjectById(anyLong())).thenReturn(prj);
-        when(mapper.getCurrentSprint(anyLong())).thenReturn(sp);
+        when(sprintMapper.getCurrentSprint(anyLong())).thenReturn(sp);
 
         var res = sprintDao.getCurrentSprint(prj.getId());
 
@@ -174,7 +174,7 @@ public class SprintDaoTest extends DaoTest {
     @Test
     public void getCurrentSprintNullTest() throws Exception {
         when(projectMapper.getProjectById(anyLong())).thenReturn(prj);
-        when(mapper.getCurrentSprint(anyLong())).thenReturn(null);
+        when(sprintMapper.getCurrentSprint(anyLong())).thenReturn(null);
         var res = sprintDao.getCurrentSprint(prj.getId());
 
         assertNull(res);
@@ -184,7 +184,7 @@ public class SprintDaoTest extends DaoTest {
     @Test
     public void countSprintsTest() throws Exception {
         when(projectMapper.getProjectById(anyLong())).thenReturn(prj);
-        when(mapper.countSprints(prj.getId())).thenReturn(1);
+        when(sprintMapper.countSprints(prj.getId())).thenReturn(1);
         var res = sprintDao.countSprints(prj.getId());
 
         assertEquals(Integer.valueOf(1), res);
@@ -210,11 +210,11 @@ public class SprintDaoTest extends DaoTest {
 
     @Test
     public void deleteSprintTest() throws Exception {
-        when(mapper.getSprintById(anyLong())).thenReturn(sp);
-        doNothing().when(mapper).deleteSprint(anyLong());
+        when(sprintMapper.getSprintById(anyLong())).thenReturn(sp);
+        doNothing().when(sprintMapper).deleteSprint(anyLong());
         sprintDao.deleteSprint(sp.getId());
 
-        when(mapper.getSprintById(anyLong())).thenReturn(null);
+        when(sprintMapper.getSprintById(anyLong())).thenReturn(null);
         assertThrows(DataExistenceException.class, () -> sprintDao.getSprintById(sp.getId()));
 
     }

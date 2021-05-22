@@ -27,18 +27,6 @@
 
     </resultMap>
 
-    <resultMap id="sprintMap" type="org.abondar.experimental.wsboard.server.datamodel.Sprint">
-        <id column="id" property="id"/>
-        <result column="name" property="name"/>
-        <result column="start_date" property="startDate"/>
-        <result column="end_date" property="endDate"/>
-        <result column="project_id" property="projectId"/>
-        <result column="is_current" property="isCurrent"/>
-
-    </resultMap>
-
-
-
     <insert id="insertTask" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
         INSERT INTO task (contributor_id, start_date, dev_ops_enabled, task_name, task_description)
         VALUES (#{task.contributorId},
@@ -48,25 +36,6 @@
                 #{task.taskDescription})
         ON CONFLICT (id) DO NOTHING;
     </insert>
-
-    <insert id="insertSprint" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
-        INSERT INTO sprint (name, start_date, end_date, project_id)
-        VALUES (#{sprint.name},
-                #{sprint.startDate},
-                #{sprint.endDate},
-                #{sprint.projectId})
-        ON CONFLICT (id) DO NOTHING;
-    </insert>
-
-
-    <update id="updateSprint">
-        UPDATE sprint
-        SET name       = #{sprint.name},
-            start_date = #{sprint.startDate},
-            end_date   = #{sprint.endDate},
-            is_current = #{sprint.isCurrent}
-        WHERE id = #{sprint.id}
-    </update>
 
     <update id="updateTask" useGeneratedKeys="true" keyColumn="id">
         UPDATE task
@@ -161,42 +130,6 @@
         WHERE sprint_id = #{spId};
     </select>
 
-
-    <select id="countSprints" resultType="integer" useCache="true">
-        SELECT count(id)
-        FROM sprint
-        WHERE project_id = #{prjId};
-    </select>
-
-
-    <select id="getSprintById" resultMap="sprintMap">
-        SELECT *
-        FROM sprint
-        WHERE id = #{id}
-    </select>
-
-    <select id="getSprintByName" resultMap="sprintMap">
-        SELECT *
-        FROM sprint
-        WHERE name = #{name}
-    </select>
-
-    <select id="getCurrentSprint" resultMap="sprintMap">
-        SELECT *
-        FROM sprint
-        WHERE project_id = #{prId}
-          AND is_current = true;
-    </select>
-
-    <select id="getSprints" resultMap="sprintMap" useCache="true">
-        SELECT *
-        FROM sprint
-        WHERE project_id = #{projectId}
-            OFFSET #{offset}
-        LIMIT #{limit}
-    </select>
-
-
     <delete id="deleteProjectTasks">
         DELETE
         FROM task ts
@@ -208,18 +141,6 @@
     <delete id="deleteTask">
         DELETE
         FROM task
-        WHERE id = #{id}
-    </delete>
-
-    <delete id="deleteProjectSprints">
-        DELETE
-        FROM sprint
-        WHERE project_id = #{projectId}
-    </delete>
-
-    <delete id="deleteSprint">
-        DELETE
-        FROM sprint
         WHERE id = #{id}
     </delete>
 

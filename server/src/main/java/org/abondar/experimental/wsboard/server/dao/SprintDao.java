@@ -3,8 +3,8 @@ package org.abondar.experimental.wsboard.server.dao;
 import org.abondar.experimental.wsboard.server.datamodel.Sprint;
 import org.abondar.experimental.wsboard.server.exception.DataCreationException;
 import org.abondar.experimental.wsboard.server.exception.DataExistenceException;
-import org.abondar.experimental.wsboard.server.mapper.DataMapper;
 import org.abondar.experimental.wsboard.server.mapper.ProjectMapper;
+import org.abondar.experimental.wsboard.server.mapper.SprintMapper;
 import org.abondar.experimental.wsboard.server.util.LogMessageUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,19 +21,19 @@ import java.util.List;
  * @author a.bondar
  */
 @Component
-public class SprintDao extends BaseDao {
+public class SprintDao{
 
     private static final Logger logger = LoggerFactory.getLogger(SprintDao.class);
 
-    //TODO: move to constructor near sprint mapper
-    @Autowired
-    private ProjectMapper projectMapper;
+    private final ProjectMapper projectMapper;
+
+    private final SprintMapper sprintMapper;
 
     @Autowired
-    public SprintDao(DataMapper mapper) {
-        super(mapper);
+    public SprintDao(ProjectMapper projectMapper, SprintMapper sprintMapper) {
+        this.projectMapper = projectMapper;
+        this.sprintMapper = sprintMapper;
     }
-
 
     /**
      * Create a new sprint
@@ -69,7 +69,7 @@ public class SprintDao extends BaseDao {
 
         var sprint = new Sprint(name, startDate, endDate, projectId);
 
-        mapper.insertSprint(sprint);
+        sprintMapper.insertSprint(sprint);
 
         var msg = String.format(LogMessageUtil.LOG_FORMAT, "Created sprint ", sprint.getId());
         logger.info(msg);
@@ -96,7 +96,7 @@ public class SprintDao extends BaseDao {
         var sprint = getSprintById(sprintId);
 
         if (name != null && !name.isBlank()) {
-            if (mapper.getSprintByName(name) != null) {
+            if (sprintMapper.getSprintByName(name) != null) {
                 logger.error(LogMessageUtil.SPRINT_EXISTS);
                 throw new DataExistenceException(LogMessageUtil.SPRINT_EXISTS);
 
@@ -120,14 +120,14 @@ public class SprintDao extends BaseDao {
         }
 
         if (isCurrent != null) {
-            if (isCurrent && mapper.getCurrentSprint(sprint.getProjectId()) != null) {
+            if (isCurrent && sprintMapper.getCurrentSprint(sprint.getProjectId()) != null) {
                 throw new DataExistenceException(LogMessageUtil.SPRINT_ACTIVE_EXISTS);
             }
 
             sprint.setCurrent(isCurrent);
         }
 
-        mapper.updateSprint(sprint);
+        sprintMapper.updateSprint(sprint);
 
         var msg = String.format(LogMessageUtil.LOG_FORMAT, "Updated sprint ", sprint.getId());
         logger.info(msg);
@@ -144,7 +144,7 @@ public class SprintDao extends BaseDao {
      */
     public Sprint getSprintById(long sprintId) throws DataExistenceException {
 
-        var sprint = mapper.getSprintById(sprintId);
+        var sprint = sprintMapper.getSprintById(sprintId);
         if (sprint == null) {
             logger.error(LogMessageUtil.SPRINT_NOT_EXISTS);
             throw new DataExistenceException(LogMessageUtil.SPRINT_NOT_EXISTS);
@@ -168,7 +168,7 @@ public class SprintDao extends BaseDao {
 
         checkProject(projectId);
 
-        var sprint = mapper.getCurrentSprint(projectId);
+        var sprint = sprintMapper.getCurrentSprint(projectId);
         if (sprint == null) {
             logger.info("Project has no active sprints");
             return null;
@@ -192,7 +192,7 @@ public class SprintDao extends BaseDao {
 
         checkProject(projectId);
 
-        var sprints = mapper.getSprints(projectId, offset, limit);
+        var sprints = sprintMapper.getSprints(projectId, offset, limit);
 
         var msg = String.format("%s %d", "Found sprints: ", sprints.size());
         logger.info(msg);
@@ -211,7 +211,7 @@ public class SprintDao extends BaseDao {
 
         checkProject(prjId);
 
-        var res = mapper.countSprints(prjId);
+        var res = sprintMapper.countSprints(prjId);
         var msg = String.format(LogMessageUtil.LOG_COUNT_FORMAT, "Counted tasks for user ", prjId, res);
         logger.info(msg);
 
@@ -228,7 +228,7 @@ public class SprintDao extends BaseDao {
 
         var sprint = getSprintById(sprintId);
 
-        mapper.deleteSprint(sprintId);
+        sprintMapper.deleteSprint(sprintId);
 
         var msg = String.format(LogMessageUtil.LOG_FORMAT, "Deleted sprint ", sprint.getId());
         logger.info(msg);
@@ -254,7 +254,7 @@ public class SprintDao extends BaseDao {
      * @throws DataExistenceException - sprint not found
      */
     private void checkSprintByName(String name) throws DataExistenceException {
-        if (mapper.getSprintByName(name) != null) {
+        if (sprintMapper.getSprintByName(name) != null) {
             logger.error(LogMessageUtil.SPRINT_EXISTS);
             throw new DataExistenceException(LogMessageUtil.SPRINT_EXISTS);
 

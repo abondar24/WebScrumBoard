@@ -36,9 +36,11 @@ public class MapperTest {
     protected ProjectMapper projectMapper;
     @Autowired
     protected ContributorMapper contributorMapper;
-
     @Autowired
     protected SecurityCodeMapper securityCodeMapper;
+
+    @Autowired
+    protected SprintMapper sprintMapper;
 
     @Autowired
     private DataMapper mapper;
@@ -53,8 +55,6 @@ public class MapperTest {
 
         assertTrue(task.getId() > 0);
     }
-
-
 
     @Test
     public void getTaskByIdTest() {
@@ -139,7 +139,6 @@ public class MapperTest {
 
     }
 
-
     @Test
     public void countSprintTasksTest() {
         cleanData();
@@ -162,65 +161,6 @@ public class MapperTest {
         var sprint = createSprint(createProject().getId());
         assertTrue(sprint.getId() > 0);
     }
-
-    @Test
-    public void getSprintByIdTest() {
-        cleanData();
-        var sprint = createSprint(createProject().getId());
-        var res = mapper.getSprintById(sprint.getId());
-        assertEquals(sprint.getName(), res.getName());
-    }
-
-    @Test
-    public void getSprintByNameTest() {
-        cleanData();
-        var sprint = createSprint(createProject().getId());
-        var res = mapper.getSprintByName(sprint.getName());
-        assertEquals(sprint.getName(), res.getName());
-
-    }
-
-    @Test
-    public void getSprintsTest() {
-        cleanData();
-        var prId = createProject().getId();
-        createSprint(prId);
-        createSprint(prId);
-        createSprint(prId);
-
-        var sprints = mapper.getSprints(prId, 0, 3);
-        assertEquals(3, sprints.size());
-
-    }
-
-    @Test
-    public void getSprintsNullLimitTest() {
-        cleanData();
-        var prId = createProject().getId();
-        createSprint(prId);
-        createSprint(prId);
-        createSprint(prId);
-
-        var sprints = mapper.getSprints(prId, 0, null);
-        assertEquals(3, sprints.size());
-
-    }
-
-    @Test
-    public void getCurrentSprintTest() {
-        cleanData();
-        var prId = createProject().getId();
-        var sprint = createSprint(prId);
-
-        sprint.setCurrent(true);
-        mapper.updateSprint(sprint);
-
-        var res = mapper.getCurrentSprint(prId);
-
-        assertTrue(res.isCurrent());
-        assertEquals(sprint.getId(), res.getId());
-    }
-
 
     @Test
     public void updateTaskTest() {
@@ -296,19 +236,6 @@ public class MapperTest {
     }
 
     @Test
-    public void countSprintsTest() {
-        cleanData();
-        var prId = createProject().getId();
-        createSprint(prId);
-
-        var res = mapper.countSprints(prId);
-
-        assertEquals(Integer.valueOf(1), res);
-
-    }
-
-
-    @Test
     public void deleteTaskTest() {
         cleanData();
         var user = createUser();
@@ -323,17 +250,6 @@ public class MapperTest {
 
     }
 
-    @Test
-    public void deleteSprintTest() {
-        cleanData();
-        var sprint = createSprint(createProject().getId());
-
-        mapper.deleteSprint(sprint.getId());
-
-        var res = mapper.getSprintById(sprint.getId());
-        assertNull(res);
-
-    }
 
     @Test
     public void deleteProjectTasks() {
@@ -346,19 +262,6 @@ public class MapperTest {
         mapper.deleteProjectTasks(project.getId());
 
         var res = mapper.getTaskById(task.getId());
-        assertNull(res);
-
-    }
-
-    @Test
-    public void deleteProjectSprints() {
-        cleanData();
-        var project = createProject();
-        var sprint = createSprint(project.getId());
-
-        mapper.deleteProjectSprints(project.getId());
-
-        var res = mapper.getSprintById(sprint.getId());
         assertNull(res);
 
     }
@@ -392,9 +295,9 @@ public class MapperTest {
         return task;
     }
 
-    private Sprint createSprint(long projectId) {
+    protected Sprint createSprint(long projectId) {
         var sprint = new Sprint("test", new Date(), new Date(), projectId);
-        mapper.insertSprint(sprint);
+        sprintMapper.insertSprint(sprint);
         return sprint;
     }
 

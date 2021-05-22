@@ -11,6 +11,7 @@ import org.abondar.experimental.wsboard.server.mapper.ContributorMapper;
 import org.abondar.experimental.wsboard.server.mapper.DataMapper;
 import org.abondar.experimental.wsboard.server.mapper.ProjectMapper;
 import org.abondar.experimental.wsboard.server.mapper.SecurityCodeMapper;
+import org.abondar.experimental.wsboard.server.mapper.SprintMapper;
 import org.abondar.experimental.wsboard.server.mapper.UserMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -39,6 +40,9 @@ public class DaoTest {
 
     @Mock
     protected SecurityCodeMapper codeMapper;
+
+    @Mock
+    protected SprintMapper sprintMapper;
 
 
     protected User usr;

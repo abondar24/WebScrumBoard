@@ -7,6 +7,7 @@ import org.abondar.experimental.wsboard.server.exception.DataCreationException;
 import org.abondar.experimental.wsboard.server.exception.DataExistenceException;
 import org.abondar.experimental.wsboard.server.mapper.ContributorMapper;
 import org.abondar.experimental.wsboard.server.mapper.ProjectMapper;
+import org.abondar.experimental.wsboard.server.mapper.SprintMapper;
 import org.abondar.experimental.wsboard.server.mapper.UserMapper;
 import org.abondar.experimental.wsboard.server.util.LogMessageUtil;
 import org.abondar.experimental.wsboard.server.mapper.DataMapper;
@@ -46,6 +47,9 @@ public class TaskDao extends BaseDao{
 
     @Autowired
     private ContributorMapper contributorMapper;
+
+    @Autowired
+    private SprintMapper sprintMapper;
 
     @Autowired
     public TaskDao(DataMapper mapper) {
@@ -564,7 +568,7 @@ public class TaskDao extends BaseDao{
      * @throws DataExistenceException - sprint not found
      */
     private void checkSprint(long sprintId) throws DataExistenceException {
-        var sprint = mapper.getSprintById(sprintId);
+        var sprint = sprintMapper.getSprintById(sprintId);
         if (sprint == null) {
             var msg = String.format(LogMessageUtil.LOG_FORMAT, LogMessageUtil.SPRINT_NOT_EXISTS, sprintId);
             logger.info(msg);

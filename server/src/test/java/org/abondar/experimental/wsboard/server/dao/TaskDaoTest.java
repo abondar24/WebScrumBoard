@@ -140,7 +140,7 @@ public class TaskDaoTest extends DaoTest {
     @Test
     public void updateTaskSprintTest() throws Exception {
         when(mapper.getTaskById(anyLong())).thenReturn(tsk);
-        when(mapper.getSprintById(anyLong())).thenReturn(sp);
+        when(sprintMapper.getSprintById(anyLong())).thenReturn(sp);
         doNothing().when(mapper).updateTaskSprint(anyLong(), anyLong());
 
         var res = taskDao.updateTaskSprint(tsk.getId(), sp.getId());
@@ -153,7 +153,7 @@ public class TaskDaoTest extends DaoTest {
     public void updateTasksSprintTest() throws Exception {
         var tasks = List.of(tsk.getId(), 1L);
 
-        when(mapper.getSprintById(anyLong())).thenReturn(sp);
+        when(sprintMapper.getSprintById(anyLong())).thenReturn(sp);
         doNothing().when(mapper).updateTasksSprint(tasks, sp.getId());
         when(mapper.getTaskById(anyLong())).thenReturn(tsk);
 
@@ -371,7 +371,7 @@ public class TaskDaoTest extends DaoTest {
     public void countSprintTasksTest() throws Exception {
         tsk.setSprintId(sp.getId());
 
-        when(mapper.getSprintById(anyLong())).thenReturn(sp);
+        when(sprintMapper.getSprintById(anyLong())).thenReturn(sp);
         when(mapper.countSprintTasks(anyLong())).thenReturn(1);
 
         var res = taskDao.countSprintTasks(sp.getId());
@@ -382,7 +382,7 @@ public class TaskDaoTest extends DaoTest {
 
     @Test
     public void countSprintNotFoundTasksTest() {
-        when(mapper.getSprintById(anyLong())).thenReturn(null);
+        when(sprintMapper.getSprintById(anyLong())).thenReturn(null);
 
         assertThrows(DataExistenceException.class, () -> {
             taskDao.countSprintTasks(100L);
@@ -431,7 +431,7 @@ public class TaskDaoTest extends DaoTest {
     public void getTasksForSprintTest() throws Exception {
         tsk.setSprintId(sp.getId());
 
-        when(mapper.getSprintById(anyLong())).thenReturn(sp);
+        when(sprintMapper.getSprintById(anyLong())).thenReturn(sp);
         when(mapper.getTasksForSprint(sp.getId(),0,1)).thenReturn(List.of(tsk));
 
         var res = taskDao.getTasksForSprint(sp.getId(), 0, 1);
