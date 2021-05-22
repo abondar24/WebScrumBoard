@@ -5,8 +5,10 @@ import org.abondar.experimental.wsboard.server.datamodel.task.Task;
 import org.abondar.experimental.wsboard.server.datamodel.task.TaskState;
 import org.abondar.experimental.wsboard.server.exception.DataCreationException;
 import org.abondar.experimental.wsboard.server.exception.DataExistenceException;
+import org.abondar.experimental.wsboard.server.mapper.UserMapper;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 
 import java.util.List;
 
@@ -25,6 +27,8 @@ public class TaskDaoTest extends BaseDaoTest {
 
     @InjectMocks
     private TaskDao taskDao;
+
+
 
     @Test
     public void createTaskTest() throws Exception {
@@ -167,7 +171,7 @@ public class TaskDaoTest extends BaseDaoTest {
     @Test
     public void updateTaskStateTest() throws Exception {
         when(mapper.getTaskById(anyLong())).thenReturn(tsk);
-        when(mapper.getUserById(anyLong())).thenReturn(usr);
+        when(userMapper.getUserById(anyLong())).thenReturn(usr);
         when(mapper.getContributorById(anyLong())).thenReturn(ctr);
         doNothing().when(mapper).updateTask(tsk);
 
@@ -237,7 +241,7 @@ public class TaskDaoTest extends BaseDaoTest {
     @Test
     public void updateTaskStateNoMovesTest() {
         when(mapper.getTaskById(anyLong())).thenReturn(tsk);
-        when(mapper.getUserById(anyLong())).thenReturn(usr);
+        when(userMapper.getUserById(anyLong())).thenReturn(usr);
         when(mapper.getContributorById(anyLong())).thenReturn(ctr);
 
         assertThrows(DataCreationException.class, () ->
@@ -250,7 +254,7 @@ public class TaskDaoTest extends BaseDaoTest {
         tsk.setTaskState(TaskState.IN_CODE_REVIEW);
 
         when(mapper.getTaskById(anyLong())).thenReturn(tsk);
-        when(mapper.getUserById(anyLong())).thenReturn(usr);
+        when(userMapper.getUserById(anyLong())).thenReturn(usr);
         when(mapper.getContributorById(anyLong())).thenReturn(ctr);
 
         assertThrows(DataCreationException.class, () ->
@@ -263,7 +267,7 @@ public class TaskDaoTest extends BaseDaoTest {
         tsk.setTaskState(TaskState.IN_TEST);
 
         when(mapper.getTaskById(anyLong())).thenReturn(tsk);
-        when(mapper.getUserById(anyLong())).thenReturn(usr);
+        when(userMapper.getUserById(anyLong())).thenReturn(usr);
         when(mapper.getContributorById(anyLong())).thenReturn(ctr);
         doNothing().when(mapper).updateTask(tsk);
 
@@ -398,7 +402,7 @@ public class TaskDaoTest extends BaseDaoTest {
 
     @Test
     public void getTasksForUserTest() throws Exception {
-        when(mapper.getUserById(anyLong())).thenReturn(usr);
+        when(userMapper.getUserById(anyLong())).thenReturn(usr);
         when(mapper.getTasksForUser(usr.getId(),0,1)).thenReturn(List.of(tsk));
 
         var res = taskDao.getTasksForUser(usr.getId(), 0, 1);
@@ -410,7 +414,7 @@ public class TaskDaoTest extends BaseDaoTest {
 
     @Test
     public void countUserTasks() throws Exception {
-        when(mapper.getUserById(anyLong())).thenReturn(usr);
+        when(userMapper.getUserById(anyLong())).thenReturn(usr);
         when(mapper.countUserTasks(anyLong())).thenReturn(1);
 
         var res = taskDao.countUserTasks(usr.getId());
@@ -421,7 +425,7 @@ public class TaskDaoTest extends BaseDaoTest {
 
     @Test
     public void countUserNotFoundTasks() {
-        when(mapper.getUserById(anyLong())).thenReturn(null);
+        when(userMapper.getUserById(anyLong())).thenReturn(null);
 
         assertThrows(DataExistenceException.class, () -> taskDao.countUserTasks(100L));
     }

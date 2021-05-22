@@ -6,7 +6,7 @@ import org.abondar.experimental.wsboard.server.exception.CannotPerformOperationE
 import org.abondar.experimental.wsboard.server.exception.DataExistenceException;
 import org.abondar.experimental.wsboard.server.exception.InvalidHashException;
 import org.abondar.experimental.wsboard.server.exception.InvalidPasswordException;
-import org.abondar.experimental.wsboard.server.mapper.DataMapper;
+import org.abondar.experimental.wsboard.server.mapper.UserMapper;
 import org.abondar.experimental.wsboard.server.util.LogMessageUtil;
 import org.abondar.experimental.wsboard.server.util.PasswordUtil;
 import org.apache.cxf.rs.security.jose.jwa.SignatureAlgorithm;
@@ -16,7 +16,6 @@ import org.apache.cxf.rs.security.jose.jws.JwsHeaders;
 import org.apache.cxf.rs.security.jose.jws.JwsJwtCompactProducer;
 import org.apache.cxf.rs.security.jose.jwt.JwtClaims;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.util.Calendar;
 import java.util.List;
@@ -30,11 +29,11 @@ public class AuthServiceImpl implements AuthService {
     private static final Long EXPIRY_PERIOD = 604800L;
     private static final String TOKEN_ISSUER = "borscht";
 
-    private final DataMapper dataMapper;
+    private final UserMapper userMapper;
 
     @Autowired
-    public AuthServiceImpl(DataMapper dataMapper) {
-        this.dataMapper = dataMapper;
+    public AuthServiceImpl(UserMapper userMapper) {
+        this.userMapper = userMapper;
     }
 
     @Override
@@ -55,7 +54,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public boolean validateUser(String login, String password) throws DataExistenceException {
-        User user = dataMapper.getUserByLogin(login);
+        User user = userMapper.getUserByLogin(login);
         if (user == null){
             throw new DataExistenceException(LogMessageUtil.USER_NOT_EXISTS);
         }

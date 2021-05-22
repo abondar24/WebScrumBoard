@@ -7,7 +7,7 @@ import org.abondar.experimental.wsboard.server.exception.CannotPerformOperationE
 import org.abondar.experimental.wsboard.server.exception.DataCreationException;
 import org.abondar.experimental.wsboard.server.exception.DataExistenceException;
 import org.abondar.experimental.wsboard.server.exception.InvalidHashException;
-import org.abondar.experimental.wsboard.server.mapper.DataMapper;
+import org.abondar.experimental.wsboard.server.mapper.UserMapper;
 import org.abondar.experimental.wsboard.server.util.LogMessageUtil;
 import org.abondar.experimental.wsboard.server.util.PasswordUtil;
 import org.slf4j.Logger;
@@ -27,14 +27,20 @@ import java.util.List;
  * @author a.bondar
  */
 @Component
-public class UserDao extends BaseDao {
+public class UserDao {
+
+    private PlatformTransactionManager transactionManager;
+
+    private UserMapper mapper;
+
 
 
     private static final Logger logger = LoggerFactory.getLogger(UserDao.class);
 
     @Autowired
-    public UserDao(DataMapper mapper, PlatformTransactionManager transactionManager) {
-        super(mapper, transactionManager);
+    public UserDao(UserMapper mapper, PlatformTransactionManager transactionManager) {
+        this.mapper = mapper;
+        this.transactionManager = transactionManager;
     }
 
     /**
@@ -237,17 +243,18 @@ public class UserDao extends BaseDao {
             throw new DataExistenceException(ex.getMessage());
         }
 
-        var contributors = mapper.getContributorsByUserId(id, -1, 0);
-        if (!contributors.isEmpty()) {
-            var isOwnerOnce = contributors.stream().anyMatch(Contributor::isOwner);
-            if (isOwnerOnce) {
-                logger.error(LogMessageUtil.USER_IS_PROJECT_OWNER);
-                transactionManager.rollback(txStatus);
-                throw new DataCreationException(LogMessageUtil.USER_IS_PROJECT_OWNER);
-            }
-
-            mapper.deactivateUserContributors(usr.getId());
-        }
+        //TODO: uncomment when ctr mapper will be added
+//        var contributors = mapper.getContributorsByUserId(id, -1, 0);
+//        if (!contributors.isEmpty()) {
+//            var isOwnerOnce = contributors.stream().anyMatch(Contributor::isOwner);
+//            if (isOwnerOnce) {
+//                logger.error(LogMessageUtil.USER_IS_PROJECT_OWNER);
+//                transactionManager.rollback(txStatus);
+//                throw new DataCreationException(LogMessageUtil.USER_IS_PROJECT_OWNER);
+//            }
+//
+//            mapper.deactivateUserContributors(usr.getId());
+     //   }
 
         usr.setDeleted();
 

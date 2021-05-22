@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.abondar.experimental.wsboard.server.mapper.UserMapper" >
+
+    <cache type="org.mybatis.caches.ehcache.EhcacheCache">
+        <property name="timeToIdleSeconds" value="500"/>
+        <property name="timeToLiveSeconds" value="500"/>
+        <property name="maxEntriesLocalHeap" value="1000"/>
+        <property name="maxEntriesLocalDisk" value="10000"/>
+        <property name="memoryStoreEvictionPolicy" value="LRU"/>
+    </cache>
+
+
+    <resultMap id="userMap" type="org.abondar.experimental.wsboard.server.datamodel.user.User">
+        <id column="id" property="id"/>
+        <result column="login" property="login"/>
+        <result column="email" property="email"/>
+        <result column="first_name" property="firstName"/>
+        <result column="last_name" property="lastName"/>
+        <result column="password" property="password"/>
+        <result column="roles" property="roles"/>
+        <result column="avatar" property="avatar"/>
+    </resultMap>
+
+    <insert id="insertUser" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+        INSERT INTO wsuser (login, email, first_name, last_name, password, roles)
+        VALUES (#{user.login},
+                #{user.email},
+                #{user.firstName},
+                #{user.lastName},
+                #{user.password},
+                #{user.roles})
+            ON CONFLICT (id) DO NOTHING;
+    </insert>
+
+
+    <update id="updateUser">
+        UPDATE wsuser
+        SET login      = #{user.login},
+            email      = #{user.email},
+            first_name = #{user.firstName},
+            last_name  = #{user.lastName},
+            password   = #{user.password},
+            roles      = #{user.roles},
+            avatar     = #{user.avatar}
+        WHERE id = #{user.id}
+    </update>
+
+    <select id="getUserByLogin" resultMap="userMap" useCache="true">
+        SELECT *
+        FROM wsuser
+        WHERE login = #{login}
+    </select>
+
+    <select id="getUserById" resultMap="userMap">
+        SELECT *
+        FROM wsuser
+        WHERE id = #{id}
+    </select>
+
+    <select id="getUsersByIds" resultMap="userMap">
+        SELECT * FROM wsuser WHERE id IN
+        <foreach item='id' index='index' collection='idList' open='(' separator=',' close=')'>
+            #{id}
+        </foreach>
+    </select>
+
+
+    <select id="getProjectOwner" resultMap="userMap">
+        SELECT *
+        FROM wsuser usr
+                 JOIN contributor ctr ON ctr.user_id = usr.id
+                 JOIN project prj on ctr.project_id = prj.id
+        WHERE prj.id = #{projectId}
+          and ctr.is_owner = true
+    </select>
+
+    <select id="getContributorsForProject" resultMap="userMap" useCache="true">
+        SELECT *
+        FROM wsuser usr
+                 JOIN contributor ctr ON ctr.user_id = usr.id
+        WHERE ctr.project_id = #{projectId}
+          and ctr.is_active = true
+        ORDER BY ctr.id
+        OFFSET #{offset}
+            LIMIT #{limit}
+    </select>
+
+
+</mapper>

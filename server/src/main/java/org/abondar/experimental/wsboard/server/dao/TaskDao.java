@@ -5,6 +5,7 @@ import org.abondar.experimental.wsboard.server.datamodel.task.TaskState;
 import org.abondar.experimental.wsboard.server.datamodel.user.UserRole;
 import org.abondar.experimental.wsboard.server.exception.DataCreationException;
 import org.abondar.experimental.wsboard.server.exception.DataExistenceException;
+import org.abondar.experimental.wsboard.server.mapper.UserMapper;
 import org.abondar.experimental.wsboard.server.util.LogMessageUtil;
 import org.abondar.experimental.wsboard.server.mapper.DataMapper;
 
@@ -33,6 +34,10 @@ public class TaskDao extends BaseDao{
 
 
     private final Map<TaskState, List<TaskState>> stateMoves;
+
+    //TODO: move to constructor after base dao removal
+    @Autowired
+    private UserMapper userMapper;
 
     @Autowired
     public TaskDao(DataMapper mapper) {
@@ -196,7 +201,7 @@ public class TaskDao extends BaseDao{
 
 
         var ctr = mapper.getContributorById(task.getContributorId());
-        var usr = mapper.getUserById(ctr.getUserId());
+        var usr = userMapper.getUserById(ctr.getUserId());
 
         if (!ctr.isOwner()) {
 
@@ -565,7 +570,7 @@ public class TaskDao extends BaseDao{
      * @throws DataExistenceException - user not found
      */
     public void checkUser(long usrId) throws DataExistenceException {
-        var usr = mapper.getUserById(usrId);
+        var usr = userMapper.getUserById(usrId);
         if (usr == null) {
             var msg = String.format(LogMessageUtil.LOG_FORMAT, LogMessageUtil.USER_NOT_EXISTS, usrId);
             logger.info(msg);

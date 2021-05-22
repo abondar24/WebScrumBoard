@@ -21,7 +21,7 @@ public class SecurityCodeDaoTest extends BaseDaoTest {
 
     @Test
     public void insertCodeTest() throws Exception {
-        when(mapper.getUserById(anyLong())).thenReturn(usr);
+        when(userMapper.getUserById(anyLong())).thenReturn(usr);
         when(mapper.getCodeByUserId(anyLong())).thenReturn(null);
         doNothing().when(mapper).insertCode(any(SecurityCode.class));
 
@@ -33,7 +33,7 @@ public class SecurityCodeDaoTest extends BaseDaoTest {
 
     @Test
     public void insertCodeUserNotFoundTest() {
-        when(mapper.getUserById(anyLong())).thenReturn(null);
+        when(userMapper.getUserById(anyLong())).thenReturn(null);
         assertThrows(DataExistenceException.class, () -> codeDao.insertCode(7));
 
     }
@@ -41,7 +41,7 @@ public class SecurityCodeDaoTest extends BaseDaoTest {
 
     @Test
     public void enterCodeTest() throws Exception {
-        when(mapper.getUserById(anyLong())).thenReturn(usr);
+        when(userMapper.getUserById(anyLong())).thenReturn(usr);
         when(mapper.getCodeByUserId(anyLong())).thenReturn(null);
 
         doNothing().when(mapper).insertCode(any(SecurityCode.class));
@@ -55,13 +55,13 @@ public class SecurityCodeDaoTest extends BaseDaoTest {
 
     @Test
     public void enterCodeUserNotFoundTest() {
-        when(mapper.getUserById(anyLong())).thenReturn(null);
+        when(userMapper.getUserById(anyLong())).thenReturn(null);
         assertThrows(DataExistenceException.class, () -> codeDao.enterCode(7, 123));
     }
 
     @Test
     public void enterCodeNotFoundTest() throws Exception {
-        when(mapper.getUserById(anyLong())).thenReturn(usr);
+        when(userMapper.getUserById(anyLong())).thenReturn(usr);
         when(mapper.getCodeByUserId(anyLong())).thenReturn(null);
         assertThrows(DataExistenceException.class, () -> codeDao.enterCode(usr.getId(), 123));
 
@@ -69,7 +69,7 @@ public class SecurityCodeDaoTest extends BaseDaoTest {
 
     @Test
     public void enterCodeNotMatchesTest() throws Exception {
-        when(mapper.getUserById(anyLong())).thenReturn(usr);
+        when(userMapper.getUserById(anyLong())).thenReturn(usr);
         when(mapper.getCodeByUserId(anyLong())).thenReturn(null);
 
         doNothing().when(mapper).insertCode(any(SecurityCode.class));

@@ -2,8 +2,8 @@ package org.abondar.experimental.wsboard.server.config;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
-import org.abondar.experimental.wsboard.server.mapper.DataMapper;
 import org.abondar.experimental.wsboard.server.mapper.TokenExpiredMapper;
+import org.abondar.experimental.wsboard.server.mapper.UserMapper;
 import org.abondar.experimental.wsboard.server.security.TokenRenewalFilter;
 import org.abondar.experimental.wsboard.server.service.AuthService;
 import org.abondar.experimental.wsboard.server.service.AuthServiceImpl;
@@ -43,7 +43,7 @@ import java.util.Map;
 public class  CxfConfig implements WebMvcConfigurer {
 
     @Autowired
-    private DataMapper dataMapper;
+    private UserMapper userMapper;
 
 
     @Bean(name = Bus.DEFAULT_BUS_ID)
@@ -59,7 +59,7 @@ public class  CxfConfig implements WebMvcConfigurer {
 
     @Bean
     public AuthService authService() {
-        return new AuthServiceImpl(dataMapper);
+        return new AuthServiceImpl(userMapper);
     }
 
 

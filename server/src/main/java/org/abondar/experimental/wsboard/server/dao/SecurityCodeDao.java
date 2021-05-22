@@ -2,6 +2,7 @@ package org.abondar.experimental.wsboard.server.dao;
 
 import org.abondar.experimental.wsboard.server.exception.DataExistenceException;
 import org.abondar.experimental.wsboard.server.mapper.DataMapper;
+import org.abondar.experimental.wsboard.server.mapper.UserMapper;
 import org.abondar.experimental.wsboard.server.util.LogMessageUtil;
 
 import org.abondar.experimental.wsboard.server.datamodel.SecurityCode;
@@ -18,6 +19,10 @@ import java.util.Random;
 public class SecurityCodeDao extends BaseDao {
 
     private static final Logger logger = LoggerFactory.getLogger(SecurityCodeDao.class);
+
+    //TODO: move to constructor after base dao removal
+    @Autowired
+    private UserMapper userMapper;
 
     @Autowired
     public SecurityCodeDao(DataMapper mapper) {
@@ -78,7 +83,7 @@ public class SecurityCodeDao extends BaseDao {
 
 
     private void checkUser(long userId) throws DataExistenceException {
-        var usr = mapper.getUserById(userId);
+        var usr = userMapper.getUserById(userId);
         if (usr == null) {
             logger.error(LogMessageUtil.USER_NOT_EXISTS);
 

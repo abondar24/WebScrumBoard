@@ -188,7 +188,7 @@ public class ProjectDaoTest extends BaseDaoTest {
 
     @Test
     public void findUserProjectsTest() throws Exception {
-        when(mapper.getUserById(anyLong())).thenReturn(usr);
+        when(userMapper.getUserById(anyLong())).thenReturn(usr);
         when(mapper.getUserProjects(anyLong())).thenReturn(List.of(prj));
 
         var projects = projectDao.findUserProjects(usr.getId());
@@ -198,7 +198,7 @@ public class ProjectDaoTest extends BaseDaoTest {
 
     @Test
     public void findUserProjectsNotFoundTest() {
-        when(mapper.getUserById(anyLong())).thenReturn(null);
+        when(userMapper.getUserById(anyLong())).thenReturn(null);
         assertThrows(DataExistenceException.class, () -> projectDao.findUserProjects(7));
     }
 

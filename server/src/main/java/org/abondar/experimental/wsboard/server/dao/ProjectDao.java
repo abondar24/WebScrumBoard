@@ -4,6 +4,7 @@ import org.abondar.experimental.wsboard.server.datamodel.Project;
 import org.abondar.experimental.wsboard.server.exception.DataCreationException;
 import org.abondar.experimental.wsboard.server.exception.DataExistenceException;
 import org.abondar.experimental.wsboard.server.mapper.DataMapper;
+import org.abondar.experimental.wsboard.server.mapper.UserMapper;
 import org.abondar.experimental.wsboard.server.util.LogMessageUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +28,10 @@ import java.util.List;
 public class ProjectDao extends BaseDao {
 
     private static final Logger logger = LoggerFactory.getLogger(ProjectDao.class);
+
+    //TODO: move to constructor after base dao removal
+    @Autowired
+    private UserMapper userMapper;
 
     @Autowired
     public ProjectDao(DataMapper mapper, PlatformTransactionManager transactionManager) {
@@ -190,7 +195,7 @@ public class ProjectDao extends BaseDao {
     public List<Project> findUserProjects(long userId) throws DataExistenceException {
 
         var msg = "";
-        if (mapper.getUserById(userId) == null) {
+        if (userMapper.getUserById(userId) == null) {
             msg = String.format(LogMessageUtil.LOG_FORMAT, LogMessageUtil.USER_NOT_EXISTS, userId);
             logger.error(msg);
             throw new DataExistenceException(LogMessageUtil.PROJECT_NOT_EXISTS);

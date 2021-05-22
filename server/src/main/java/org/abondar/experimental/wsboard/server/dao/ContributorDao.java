@@ -4,6 +4,7 @@ import org.abondar.experimental.wsboard.server.datamodel.user.User;
 import org.abondar.experimental.wsboard.server.exception.DataCreationException;
 import org.abondar.experimental.wsboard.server.exception.DataExistenceException;
 import org.abondar.experimental.wsboard.server.mapper.DataMapper;
+import org.abondar.experimental.wsboard.server.mapper.UserMapper;
 import org.abondar.experimental.wsboard.server.util.LogMessageUtil;
 
 import org.abondar.experimental.wsboard.server.datamodel.Contributor;
@@ -26,6 +27,10 @@ import java.util.Optional;
 public class ContributorDao extends BaseDao {
 
     private static final Logger logger = LoggerFactory.getLogger(ContributorDao.class);
+
+    //TODO: move to constructor after base dao removal
+    @Autowired
+    private UserMapper userMapper;
 
     @Autowired
     public ContributorDao(DataMapper mapper) {
@@ -115,8 +120,9 @@ public class ContributorDao extends BaseDao {
 
         }
 
+
         if (isOwner != null) {
-            var ownr = mapper.getProjectOwner(ctr.getProjectId());
+            var ownr = userMapper.getProjectOwner(ctr.getProjectId());
             if (isOwner) {
                 if (ctr.isOwner()) {
                     logger.error(LogMessageUtil.CONTRIBUTOR_IS_ALREADY_OWNER);
@@ -189,7 +195,7 @@ public class ContributorDao extends BaseDao {
 
         findProjectById(projectId);
 
-        var ownr = mapper.getProjectOwner(projectId);
+        var ownr = userMapper.getProjectOwner(projectId);
         if (ownr == null) {
             logger.error(LogMessageUtil.PROJECT_HAS_NO_OWNER);
             throw new DataCreationException(LogMessageUtil.PROJECT_HAS_NO_OWNER);
@@ -211,7 +217,7 @@ public class ContributorDao extends BaseDao {
 
         findProjectById(projectId);
 
-        var contrs = mapper.getContributorsForProject(projectId, offset, limit);
+        var contrs = userMapper.getContributorsForProject(projectId, offset, limit);
 
         var  msg = String.format(LogMessageUtil.LOG_FORMAT, "Number contributors for project  ", contrs.size());
         logger.info(msg);
@@ -305,7 +311,7 @@ public class ContributorDao extends BaseDao {
      * @throws DataCreationException
      */
     private void checkUserIsOwner(long projectId, long userId) throws DataCreationException {
-        var owner = mapper.getProjectOwner(projectId);
+        var owner = userMapper.getProjectOwner(projectId);
         if (owner != null && owner.getId() == userId) {
             logger.error(LogMessageUtil.CONTRIBUTOR_IS_ALREADY_OWNER);
             throw new DataCreationException(LogMessageUtil.CONTRIBUTOR_IS_ALREADY_OWNER);
@@ -318,7 +324,7 @@ public class ContributorDao extends BaseDao {
      * @throws DataExistenceException - user not found
      */
     private void checkUser(long userId) throws DataExistenceException {
-        if (mapper.getUserById(userId) == null) {
+        if (userMapper.getUserById(userId) == null) {
             var msg = String.format(LogMessageUtil.LOG_FORMAT, LogMessageUtil.USER_NOT_EXISTS, userId);
             logger.error(msg);
             throw new DataExistenceException(LogMessageUtil.USER_NOT_EXISTS);

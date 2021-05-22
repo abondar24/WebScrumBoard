@@ -10,6 +10,7 @@ import org.abondar.experimental.wsboard.server.datamodel.Sprint;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.List;
 
@@ -19,9 +20,8 @@ import java.util.List;
  * @author a.bondar
  */
 @Mapper
+@Qualifier("dataMapper")
 public interface DataMapper {
-
-    void insertUser(@Param("user") User user);
 
     void insertProject(@Param("project") Project project);
 
@@ -33,7 +33,7 @@ public interface DataMapper {
 
     void insertCode(@Param("securityCode") SecurityCode code);
 
-    void updateUser(@Param("user") User user);
+
 
     void updateProject(@Param("project") Project project);
 
@@ -47,11 +47,7 @@ public interface DataMapper {
 
     void updateTasksSprint(@Param("idList") List<Long> idList,@Param("sprintId") long sprintId);
 
-    User getUserByLogin(@Param("login") String login);
 
-    User getUserById(@Param("id") long id);
-
-    List<User> getUsersByIds(@Param("idList") List<Long> idList);
 
     Project getProjectById(@Param("id") long id);
 
@@ -59,9 +55,7 @@ public interface DataMapper {
 
     List<Project> getUserProjects(@Param("userId") long userId);
 
-    User getProjectOwner(@Param("projectId") Long projectId);
 
-    List<User> getContributorsForProject(@Param("projectId") long projectId, @Param("offset") int offset, @Param("limit") int limit);
 
     Contributor getContributorById(@Param("id") long id);
 
@@ -121,8 +115,6 @@ public interface DataMapper {
 
     void deleteCode(@Param("id") long id);
 
-    @Delete("DELETE FROM wsuser")
-    void deleteUsers();
 
     @Delete("DELETE FROM contributor")
     void deleteContributors();

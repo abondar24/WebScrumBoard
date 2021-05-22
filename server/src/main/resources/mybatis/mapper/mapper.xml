@@ -13,17 +13,6 @@
     </cache>
 
 
-    <resultMap id="userMap" type="org.abondar.experimental.wsboard.server.datamodel.user.User">
-        <id column="id" property="id"/>
-        <result column="login" property="login"/>
-        <result column="email" property="email"/>
-        <result column="first_name" property="firstName"/>
-        <result column="last_name" property="lastName"/>
-        <result column="password" property="password"/>
-        <result column="roles" property="roles"/>
-        <result column="avatar" property="avatar"/>
-    </resultMap>
-
     <resultMap id="projectMap" type="org.abondar.experimental.wsboard.server.datamodel.Project">
         <id column="id" property="id"/>
         <result column="name" property="name"/>
@@ -74,16 +63,6 @@
     </resultMap>
 
 
-    <insert id="insertUser" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
-        INSERT INTO wsuser (login, email, first_name, last_name, password, roles)
-        VALUES (#{user.login},
-                #{user.email},
-                #{user.firstName},
-                #{user.lastName},
-                #{user.password},
-                #{user.roles})
-        ON CONFLICT (id) DO NOTHING;
-    </insert>
 
     <insert id="insertProject" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
         INSERT INTO project (name, start_date, end_date, repository, is_active)
@@ -131,18 +110,6 @@
         ON CONFLICT (id) DO NOTHING;
     </insert>
 
-
-    <update id="updateUser">
-        UPDATE wsuser
-        SET login      = #{user.login},
-            email      = #{user.email},
-            first_name = #{user.firstName},
-            last_name  = #{user.lastName},
-            password   = #{user.password},
-            roles      = #{user.roles},
-            avatar     = #{user.avatar}
-        WHERE id = #{user.id}
-    </update>
 
     <update id="updateProject">
         UPDATE project
@@ -214,24 +181,7 @@
         WHERE project_id = #{projectId}
     </update>
 
-    <select id="getUserByLogin" resultMap="userMap" useCache="true">
-        SELECT *
-        FROM wsuser
-        WHERE login = #{login}
-    </select>
 
-    <select id="getUserById" resultMap="userMap">
-        SELECT *
-        FROM wsuser
-        WHERE id = #{id}
-    </select>
-
-    <select id="getUsersByIds" resultMap="userMap">
-        SELECT * FROM wsuser WHERE id IN
-        <foreach item='id' index='index' collection='idList' open='(' separator=',' close=')'>
-            #{id}
-        </foreach>
-    </select>
 
     <select id="getProjectById" resultMap="projectMap">
         SELECT *
@@ -253,14 +203,6 @@
     </select>
 
 
-    <select id="getProjectOwner" resultMap="userMap">
-        SELECT *
-        FROM wsuser usr
-                 JOIN contributor ctr ON ctr.user_id = usr.id
-                 JOIN project prj on ctr.project_id = prj.id
-        WHERE prj.id = #{projectId}
-          and ctr.is_owner = true
-    </select>
 
     <select id="getContributorById" resultMap="contributorMap">
         SELECT *
@@ -282,16 +224,7 @@
         WHERE user_id = #{userId}
     </select>
 
-    <select id="getContributorsForProject" resultMap="userMap" useCache="true">
-        SELECT *
-        FROM wsuser usr
-                 JOIN contributor ctr ON ctr.user_id = usr.id
-        WHERE ctr.project_id = #{projectId}
-          and ctr.is_active = true
-        ORDER BY ctr.id
-            OFFSET #{offset}
-        LIMIT #{limit}
-    </select>
+
 
     <select id="getContributorByLogin" resultMap="contributorMap" useCache="true">
         SELECT *
