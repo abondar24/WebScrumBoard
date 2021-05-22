@@ -9,6 +9,7 @@ import org.abondar.experimental.wsboard.server.exception.DataExistenceException;
 import org.abondar.experimental.wsboard.server.exception.InvalidHashException;
 import org.abondar.experimental.wsboard.server.util.PasswordUtil;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -22,8 +23,11 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
-@Transactional
+
 public class UserDaoTest extends BaseDaoTest {
+
+    @InjectMocks
+    private UserDao userDao;
 
     @Test
     public void createUserTest() throws Exception {

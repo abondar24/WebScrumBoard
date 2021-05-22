@@ -1,21 +1,17 @@
 package org.abondar.experimental.wsboard.server.dao;
 
 import org.abondar.experimental.wsboard.server.datamodel.Project;
-
 import org.abondar.experimental.wsboard.server.exception.DataCreationException;
 import org.abondar.experimental.wsboard.server.exception.DataExistenceException;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
 
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -25,13 +21,15 @@ import static org.mockito.Mockito.when;
 
 public class ProjectDaoTest extends BaseDaoTest {
 
+    @InjectMocks
+    private ProjectDao projectDao;
 
     @Test
     public void createProjectTest() throws Exception {
         when(mapper.getProjectByName(prj.getName())).thenReturn(null);
         doNothing().when(mapper).insertProject(any(Project.class));
 
-        var res = projectDao.createProject(prj.getName(),prj.getStartDate());
+        var res = projectDao.createProject(prj.getName(), prj.getStartDate());
         assertEquals(0, prj.getId());
 
     }
@@ -40,8 +38,8 @@ public class ProjectDaoTest extends BaseDaoTest {
     @Test
     public void createProjectExistsTest() {
         when(mapper.getProjectByName(prj.getName())).thenReturn(prj);
-        assertThrows(DataExistenceException.class, ()->{
-            projectDao.createProject(prj.getName(),prj.getStartDate());
+        assertThrows(DataExistenceException.class, () -> {
+            projectDao.createProject(prj.getName(), prj.getStartDate());
         });
     }
 
@@ -56,7 +54,7 @@ public class ProjectDaoTest extends BaseDaoTest {
     @Test
     public void updateProjectTest() throws Exception {
         var id = prj.getId();
-        projectDao = new ProjectDao(mapper,new MockTransactionManager());
+        projectDao = new ProjectDao(mapper, new MockTransactionManager());
 
         when(mapper.getProjectById(anyLong())).thenReturn(prj);
         when(mapper.getProjectByName(anyString())).thenReturn(null);
@@ -71,7 +69,7 @@ public class ProjectDaoTest extends BaseDaoTest {
 
     @Test
     public void updateProjectExistsTest() throws Exception {
-        projectDao = new ProjectDao(mapper,new MockTransactionManager());
+        projectDao = new ProjectDao(mapper, new MockTransactionManager());
 
         when(mapper.getProjectById(anyLong())).thenReturn(prj);
         when(mapper.getProjectByName(anyString())).thenReturn(prj);
@@ -84,7 +82,7 @@ public class ProjectDaoTest extends BaseDaoTest {
     @Test
     public void updateProjectInactiveTest() throws Exception {
         var id = prj.getId();
-        projectDao = new ProjectDao(mapper,new MockTransactionManager());
+        projectDao = new ProjectDao(mapper, new MockTransactionManager());
 
         when(mapper.getProjectById(anyLong())).thenReturn(prj);
         when(mapper.getProjectByName(anyString())).thenReturn(null);
@@ -99,7 +97,7 @@ public class ProjectDaoTest extends BaseDaoTest {
 
     @Test
     public void updateProjectInactiveNullEndDateTest() {
-        projectDao = new ProjectDao(mapper,new MockTransactionManager());
+        projectDao = new ProjectDao(mapper, new MockTransactionManager());
 
         when(mapper.getProjectById(anyLong())).thenReturn(prj);
         when(mapper.getProjectByName(anyString())).thenReturn(null);
@@ -112,7 +110,7 @@ public class ProjectDaoTest extends BaseDaoTest {
 
     @Test
     public void updateProjectReactivateTest() throws Exception {
-        projectDao = new ProjectDao(mapper,new MockTransactionManager());
+        projectDao = new ProjectDao(mapper, new MockTransactionManager());
 
         when(mapper.getProjectById(anyLong())).thenReturn(prj);
         when(mapper.getProjectByName(anyString())).thenReturn(null);
@@ -129,8 +127,8 @@ public class ProjectDaoTest extends BaseDaoTest {
     }
 
     @Test
-    public void updateProjectInactiveWrongDateTest()  {
-        projectDao = new ProjectDao(mapper,new MockTransactionManager());
+    public void updateProjectInactiveWrongDateTest() {
+        projectDao = new ProjectDao(mapper, new MockTransactionManager());
 
         when(mapper.getProjectById(anyLong())).thenReturn(prj);
         when(mapper.getProjectByName(anyString())).thenReturn(null);
@@ -144,7 +142,7 @@ public class ProjectDaoTest extends BaseDaoTest {
 
     @Test
     public void updateProjectNullTest() throws Exception {
-        projectDao = new ProjectDao(mapper,new MockTransactionManager());
+        projectDao = new ProjectDao(mapper, new MockTransactionManager());
 
         when(mapper.getProjectById(anyLong())).thenReturn(prj);
         var res = projectDao.updateProject(prj.getId(), null, null, null, null, null);
@@ -156,7 +154,7 @@ public class ProjectDaoTest extends BaseDaoTest {
 
     @Test
     public void deleteProjectTest() throws Exception {
-        projectDao = new ProjectDao(mapper,new MockTransactionManager());
+        projectDao = new ProjectDao(mapper, new MockTransactionManager());
 
         when(mapper.getProjectById(anyLong())).thenReturn(prj);
         doNothing().when(mapper).deleteProjectTasks(anyLong());
@@ -210,9 +208,6 @@ public class ProjectDaoTest extends BaseDaoTest {
         cal.add(Calendar.DATE, -1);
         return cal.getTime();
     }
-
-
-
 
 
 }

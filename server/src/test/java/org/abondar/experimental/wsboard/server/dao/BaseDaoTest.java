@@ -3,12 +3,12 @@ package org.abondar.experimental.wsboard.server.dao;
 import org.abondar.experimental.wsboard.server.datamodel.Contributor;
 import org.abondar.experimental.wsboard.server.datamodel.Project;
 import org.abondar.experimental.wsboard.server.datamodel.Sprint;
+import org.abondar.experimental.wsboard.server.datamodel.task.Task;
 import org.abondar.experimental.wsboard.server.datamodel.user.User;
 import org.abondar.experimental.wsboard.server.datamodel.user.UserRole;
 import org.abondar.experimental.wsboard.server.mapper.DataMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.ActiveProfiles;
@@ -24,24 +24,6 @@ public class BaseDaoTest {
     @Mock
     protected DataMapper mapper;
 
-    @InjectMocks
-    protected ContributorDao contributorDao;
-
-    @InjectMocks
-    protected UserDao userDao;
-
-    @InjectMocks
-    protected ProjectDao projectDao;
-
-    @InjectMocks
-    protected SecurityCodeDao codeDao;
-
-    @InjectMocks
-    protected TaskDao taskDao;
-
-    @InjectMocks
-    protected SprintDao sprintDao;
-
     protected User usr;
 
     protected Project prj;
@@ -50,17 +32,18 @@ public class BaseDaoTest {
 
     protected Sprint sp;
 
+    protected Task tsk;
+
     @BeforeEach
     public void init() {
         usr = createUser();
         prj = createProject();
         ctr = createContributor(usr.getId(), prj.getId());
         sp = createSprint(prj.getId());
-
+        tsk = createTask(ctr.getId());
     }
 
-
-    protected User createUser() {
+    private User createUser() {
         var login = "login";
         var email = "email@email.com";
         var password = "pwd";
@@ -91,7 +74,7 @@ public class BaseDaoTest {
         return prj;
     }
 
-    protected Project createProject() {
+    private Project createProject() {
         var name = "test";
         var startDate = new Date();
 
@@ -106,8 +89,12 @@ public class BaseDaoTest {
         return new Sprint("test", new Date(), new Date(), prjId);
     }
 
+    private Task createTask(long ctrId){
+        return new Task(ctrId, new Date(), false, "name", "descr");
+    }
+
 
     protected void cleanData() {
-        mapper.deleteTasks();
+
     }
 }

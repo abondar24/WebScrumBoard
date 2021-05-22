@@ -4,6 +4,7 @@ package org.abondar.experimental.wsboard.server.dao;
 import org.abondar.experimental.wsboard.server.datamodel.SecurityCode;
 import org.abondar.experimental.wsboard.server.exception.DataExistenceException;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -15,6 +16,8 @@ import static org.mockito.Mockito.when;
 
 public class SecurityCodeDaoTest extends BaseDaoTest {
 
+    @InjectMocks
+    private SecurityCodeDao codeDao;
 
     @Test
     public void insertCodeTest() throws Exception {

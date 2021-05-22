@@ -7,6 +7,7 @@ import org.abondar.experimental.wsboard.server.datamodel.user.UserRole;
 import org.abondar.experimental.wsboard.server.exception.DataCreationException;
 import org.abondar.experimental.wsboard.server.exception.DataExistenceException;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
 
 import java.util.List;
 
@@ -24,6 +25,8 @@ import static org.mockito.Mockito.when;
 
 public class ContributorDaoTest extends BaseDaoTest {
 
+    @InjectMocks
+    private ContributorDao contributorDao;
 
     @Test
     public void createContributorTest() throws Exception {

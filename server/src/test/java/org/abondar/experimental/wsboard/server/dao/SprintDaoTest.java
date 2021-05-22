@@ -5,6 +5,7 @@ import org.abondar.experimental.wsboard.server.datamodel.Sprint;
 import org.abondar.experimental.wsboard.server.exception.DataCreationException;
 import org.abondar.experimental.wsboard.server.exception.DataExistenceException;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -21,6 +22,9 @@ import static org.mockito.Mockito.when;
 
 
 public class SprintDaoTest extends BaseDaoTest {
+
+    @InjectMocks
+    private SprintDao sprintDao;
 
 
     @Test
