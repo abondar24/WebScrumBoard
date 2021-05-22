@@ -4,6 +4,7 @@ import org.abondar.experimental.wsboard.server.datamodel.Sprint;
 import org.abondar.experimental.wsboard.server.exception.DataCreationException;
 import org.abondar.experimental.wsboard.server.exception.DataExistenceException;
 import org.abondar.experimental.wsboard.server.mapper.DataMapper;
+import org.abondar.experimental.wsboard.server.mapper.ProjectMapper;
 import org.abondar.experimental.wsboard.server.util.LogMessageUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +24,10 @@ import java.util.List;
 public class SprintDao extends BaseDao {
 
     private static final Logger logger = LoggerFactory.getLogger(SprintDao.class);
+
+    //TODO: move to constructor near sprint mapper
+    @Autowired
+    private ProjectMapper projectMapper;
 
     @Autowired
     public SprintDao(DataMapper mapper) {
@@ -46,7 +51,7 @@ public class SprintDao extends BaseDao {
 
         checkSprintByName(name);
 
-        if (mapper.getProjectById(projectId) == null) {
+        if (projectMapper.getProjectById(projectId) == null) {
             logger.error(LogMessageUtil.PROJECT_NOT_EXISTS);
             throw new DataExistenceException(LogMessageUtil.PROJECT_NOT_EXISTS);
         }
@@ -236,7 +241,7 @@ public class SprintDao extends BaseDao {
      * @throws DataExistenceException - project not found
      */
     private void checkProject(long prjId) throws DataExistenceException {
-        if (mapper.getProjectById(prjId) == null) {
+        if (projectMapper.getProjectById(prjId) == null) {
             var msg = String.format(LogMessageUtil.LOG_FORMAT, LogMessageUtil.PROJECT_NOT_EXISTS, prjId);
             logger.error(msg);
             throw new DataExistenceException(LogMessageUtil.PROJECT_NOT_EXISTS);

@@ -29,9 +29,9 @@ import java.util.List;
 @Component
 public class UserDao {
 
-    private PlatformTransactionManager transactionManager;
+    private final PlatformTransactionManager transactionManager;
 
-    private UserMapper mapper;
+    private final UserMapper mapper;
 
 
 

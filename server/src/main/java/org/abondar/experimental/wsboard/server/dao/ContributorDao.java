@@ -4,6 +4,7 @@ import org.abondar.experimental.wsboard.server.datamodel.user.User;
 import org.abondar.experimental.wsboard.server.exception.DataCreationException;
 import org.abondar.experimental.wsboard.server.exception.DataExistenceException;
 import org.abondar.experimental.wsboard.server.mapper.DataMapper;
+import org.abondar.experimental.wsboard.server.mapper.ProjectMapper;
 import org.abondar.experimental.wsboard.server.mapper.UserMapper;
 import org.abondar.experimental.wsboard.server.util.LogMessageUtil;
 
@@ -31,6 +32,10 @@ public class ContributorDao extends BaseDao {
     //TODO: move to constructor after base dao removal
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private ProjectMapper projectMapper;
+
 
     @Autowired
     public ContributorDao(DataMapper mapper) {
@@ -291,7 +296,7 @@ public class ContributorDao extends BaseDao {
      * @throws DataExistenceException
      */
     private Project findProjectById(long projectId) throws DataExistenceException {
-        var prj = mapper.getProjectById(projectId);
+        var prj = projectMapper.getProjectById(projectId);
 
         if (prj == null) {
             var msg = String.format(LogMessageUtil.LOG_FORMAT, LogMessageUtil.PROJECT_NOT_EXISTS, projectId);

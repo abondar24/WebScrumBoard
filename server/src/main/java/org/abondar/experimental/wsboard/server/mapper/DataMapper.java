@@ -3,8 +3,6 @@ package org.abondar.experimental.wsboard.server.mapper;
 
 import org.abondar.experimental.wsboard.server.datamodel.Contributor;
 import org.abondar.experimental.wsboard.server.datamodel.task.Task;
-import org.abondar.experimental.wsboard.server.datamodel.user.User;
-import org.abondar.experimental.wsboard.server.datamodel.Project;
 import org.abondar.experimental.wsboard.server.datamodel.SecurityCode;
 import org.abondar.experimental.wsboard.server.datamodel.Sprint;
 import org.apache.ibatis.annotations.Delete;
@@ -23,8 +21,6 @@ import java.util.List;
 @Qualifier("dataMapper")
 public interface DataMapper {
 
-    void insertProject(@Param("project") Project project);
-
     void insertTask(@Param("task") Task task);
 
     void insertContributor(@Param("contributor") Contributor contributor);
@@ -32,10 +28,6 @@ public interface DataMapper {
     void insertSprint(@Param("sprint") Sprint sprint);
 
     void insertCode(@Param("securityCode") SecurityCode code);
-
-
-
-    void updateProject(@Param("project") Project project);
 
     void updateContributor(@Param("contributor") Contributor contributor);
 
@@ -46,16 +38,6 @@ public interface DataMapper {
     void updateTaskSprint(@Param("id")Long id,@Param("sprintId") long sprintId);
 
     void updateTasksSprint(@Param("idList") List<Long> idList,@Param("sprintId") long sprintId);
-
-
-
-    Project getProjectById(@Param("id") long id);
-
-    Project getProjectByName(@Param("name") String name);
-
-    List<Project> getUserProjects(@Param("userId") long userId);
-
-
 
     Contributor getContributorById(@Param("id") long id);
 
@@ -108,8 +90,6 @@ public interface DataMapper {
     void deleteProjectContributors(@Param("projectId") long projectId);
 
     void deleteTask(@Param("id") long id);
-
-    void deleteProject(@Param("id") long id);
 
     void deleteSprint(@Param("id") long id);
 

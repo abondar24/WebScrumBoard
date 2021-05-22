@@ -26,8 +26,8 @@ public class ProjectDaoTest extends BaseDaoTest {
 
     @Test
     public void createProjectTest() throws Exception {
-        when(mapper.getProjectByName(prj.getName())).thenReturn(null);
-        doNothing().when(mapper).insertProject(any(Project.class));
+        when(projectMapper.getProjectByName(prj.getName())).thenReturn(null);
+        doNothing().when(projectMapper).insertProject(any(Project.class));
 
         var res = projectDao.createProject(prj.getName(), prj.getStartDate());
         assertEquals(0, prj.getId());
@@ -37,7 +37,7 @@ public class ProjectDaoTest extends BaseDaoTest {
 
     @Test
     public void createProjectExistsTest() {
-        when(mapper.getProjectByName(prj.getName())).thenReturn(prj);
+        when(projectMapper.getProjectByName(prj.getName())).thenReturn(prj);
         assertThrows(DataExistenceException.class, () -> {
             projectDao.createProject(prj.getName(), prj.getStartDate());
         });
@@ -45,7 +45,7 @@ public class ProjectDaoTest extends BaseDaoTest {
 
     @Test
     public void createProjectBlankDataTest() {
-        when(mapper.getProjectByName(prj.getName())).thenReturn(null);
+        when(projectMapper.getProjectByName(prj.getName())).thenReturn(null);
         assertThrows(DataCreationException.class, () -> projectDao.createProject("", prj.getStartDate()));
         assertThrows(DataCreationException.class, () -> projectDao.createProject(prj.getName(), null));
 
@@ -54,11 +54,11 @@ public class ProjectDaoTest extends BaseDaoTest {
     @Test
     public void updateProjectTest() throws Exception {
         var id = prj.getId();
-        projectDao = new ProjectDao(mapper, new MockTransactionManager());
+        projectDao = new ProjectDao(userMapper, projectMapper,new MockTransactionManager());
 
-        when(mapper.getProjectById(anyLong())).thenReturn(prj);
-        when(mapper.getProjectByName(anyString())).thenReturn(null);
-        doNothing().when(mapper).updateProject(any(Project.class));
+        when(projectMapper.getProjectById(anyLong())).thenReturn(prj);
+        when(projectMapper.getProjectByName(anyString())).thenReturn(null);
+        doNothing().when(projectMapper).updateProject(any(Project.class));
 
         var res = projectDao.updateProject(prj.getId(), "newTest", "github.com/aaaa/aaa.git", true,
                 null, "test");
@@ -69,10 +69,10 @@ public class ProjectDaoTest extends BaseDaoTest {
 
     @Test
     public void updateProjectExistsTest() throws Exception {
-        projectDao = new ProjectDao(mapper, new MockTransactionManager());
+        projectDao = new ProjectDao(userMapper, projectMapper,new MockTransactionManager());
 
-        when(mapper.getProjectById(anyLong())).thenReturn(prj);
-        when(mapper.getProjectByName(anyString())).thenReturn(prj);
+        when(projectMapper.getProjectById(anyLong())).thenReturn(prj);
+        when(projectMapper.getProjectByName(anyString())).thenReturn(prj);
 
         assertThrows(DataExistenceException.class, () ->
                 projectDao.updateProject(prj.getId(), prj.getName(), null, true, null, null));
@@ -82,12 +82,12 @@ public class ProjectDaoTest extends BaseDaoTest {
     @Test
     public void updateProjectInactiveTest() throws Exception {
         var id = prj.getId();
-        projectDao = new ProjectDao(mapper, new MockTransactionManager());
+        projectDao = new ProjectDao(userMapper, projectMapper,new MockTransactionManager());
 
-        when(mapper.getProjectById(anyLong())).thenReturn(prj);
-        when(mapper.getProjectByName(anyString())).thenReturn(null);
+        when(projectMapper.getProjectById(anyLong())).thenReturn(prj);
+        when(projectMapper.getProjectByName(anyString())).thenReturn(null);
         doNothing().when(mapper).deactivateProjectContributors(anyLong());
-        doNothing().when(mapper).updateProject(any(Project.class));
+        doNothing().when(projectMapper).updateProject(any(Project.class));
 
         var res = projectDao.updateProject(prj.getId(), "newTest", "github.com/aaaa/aaa.git", false, new Date(), null);
 
@@ -97,10 +97,10 @@ public class ProjectDaoTest extends BaseDaoTest {
 
     @Test
     public void updateProjectInactiveNullEndDateTest() {
-        projectDao = new ProjectDao(mapper, new MockTransactionManager());
+        projectDao = new ProjectDao(userMapper, projectMapper,new MockTransactionManager());
 
-        when(mapper.getProjectById(anyLong())).thenReturn(prj);
-        when(mapper.getProjectByName(anyString())).thenReturn(null);
+        when(projectMapper.getProjectById(anyLong())).thenReturn(prj);
+        when(projectMapper.getProjectByName(anyString())).thenReturn(null);
         doNothing().when(mapper).deactivateProjectContributors(anyLong());
 
         assertThrows(DataCreationException.class, () -> projectDao.updateProject(prj.getId(), "newTest",
@@ -110,12 +110,12 @@ public class ProjectDaoTest extends BaseDaoTest {
 
     @Test
     public void updateProjectReactivateTest() throws Exception {
-        projectDao = new ProjectDao(mapper, new MockTransactionManager());
+        projectDao = new ProjectDao(userMapper, projectMapper,new MockTransactionManager());
 
-        when(mapper.getProjectById(anyLong())).thenReturn(prj);
-        when(mapper.getProjectByName(anyString())).thenReturn(null);
+        when(projectMapper.getProjectById(anyLong())).thenReturn(prj);
+        when(projectMapper.getProjectByName(anyString())).thenReturn(null);
         doNothing().when(mapper).deactivateProjectContributors(anyLong());
-        doNothing().when(mapper).updateProject(any(Project.class));
+        doNothing().when(projectMapper).updateProject(any(Project.class));
 
         var upd = projectDao.updateProject(prj.getId(), "newTest", "github.com/aaaa/aaa.git",
                 false, new Date(), null);
@@ -128,10 +128,10 @@ public class ProjectDaoTest extends BaseDaoTest {
 
     @Test
     public void updateProjectInactiveWrongDateTest() {
-        projectDao = new ProjectDao(mapper, new MockTransactionManager());
+        projectDao = new ProjectDao(userMapper, projectMapper,new MockTransactionManager());
 
-        when(mapper.getProjectById(anyLong())).thenReturn(prj);
-        when(mapper.getProjectByName(anyString())).thenReturn(null);
+        when(projectMapper.getProjectById(anyLong())).thenReturn(prj);
+        when(projectMapper.getProjectByName(anyString())).thenReturn(null);
         doNothing().when(mapper).deactivateProjectContributors(anyLong());
 
         assertThrows(DataCreationException.class, () -> projectDao.updateProject(prj.getId(), "newTest",
@@ -142,9 +142,9 @@ public class ProjectDaoTest extends BaseDaoTest {
 
     @Test
     public void updateProjectNullTest() throws Exception {
-        projectDao = new ProjectDao(mapper, new MockTransactionManager());
+        projectDao = new ProjectDao(userMapper, projectMapper,new MockTransactionManager());
 
-        when(mapper.getProjectById(anyLong())).thenReturn(prj);
+        when(projectMapper.getProjectById(anyLong())).thenReturn(prj);
         var res = projectDao.updateProject(prj.getId(), null, null, null, null, null);
 
         assertEquals(prj.getId(), res.getId());
@@ -154,13 +154,13 @@ public class ProjectDaoTest extends BaseDaoTest {
 
     @Test
     public void deleteProjectTest() throws Exception {
-        projectDao = new ProjectDao(mapper, new MockTransactionManager());
+        projectDao = new ProjectDao(userMapper, projectMapper,new MockTransactionManager());
 
-        when(mapper.getProjectById(anyLong())).thenReturn(prj);
+        when(projectMapper.getProjectById(anyLong())).thenReturn(prj);
         doNothing().when(mapper).deleteProjectTasks(anyLong());
         doNothing().when(mapper).deleteProjectSprints(anyLong());
         doNothing().when(mapper).deleteProjectContributors(anyLong());
-        doNothing().when(mapper).deleteProject(anyLong());
+        doNothing().when(projectMapper).deleteProject(anyLong());
 
         var res = projectDao.deleteProject(prj.getId());
 
@@ -170,7 +170,7 @@ public class ProjectDaoTest extends BaseDaoTest {
 
     @Test
     public void findProjectByIdTest() throws Exception {
-        when(mapper.getProjectById(anyLong())).thenReturn(prj);
+        when(projectMapper.getProjectById(anyLong())).thenReturn(prj);
 
         var res = projectDao.findProjectById(prj.getId());
         assertEquals(prj.getName(), res.getName());
@@ -181,7 +181,7 @@ public class ProjectDaoTest extends BaseDaoTest {
 
     @Test
     public void findProjectNotFoundByIdTest() {
-        when(mapper.getProjectById(anyLong())).thenReturn(null);
+        when(projectMapper.getProjectById(anyLong())).thenReturn(null);
         assertThrows(DataExistenceException.class, () -> projectDao.findProjectById(100));
 
     }
@@ -189,7 +189,7 @@ public class ProjectDaoTest extends BaseDaoTest {
     @Test
     public void findUserProjectsTest() throws Exception {
         when(userMapper.getUserById(anyLong())).thenReturn(usr);
-        when(mapper.getUserProjects(anyLong())).thenReturn(List.of(prj));
+        when(projectMapper.getUserProjects(anyLong())).thenReturn(List.of(prj));
 
         var projects = projectDao.findUserProjects(usr.getId());
         assertEquals(1, projects.size());

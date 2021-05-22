@@ -324,7 +324,7 @@ public class TaskDaoTest extends BaseDaoTest {
 
     @Test
     public void getTasksForProjectTest() throws Exception {
-        when(mapper.getProjectById(anyLong())).thenReturn(prj);
+        when(projectMapper.getProjectById(anyLong())).thenReturn(prj);
         when(mapper.getTasksForProject(prj.getId(),0,1)).thenReturn(List.of(tsk));
 
         var res = taskDao.getTasksForProject(prj.getId(), 0, 1);
@@ -336,7 +336,7 @@ public class TaskDaoTest extends BaseDaoTest {
 
     @Test
     public void getNonSprintTasksForProjectTest() throws Exception {
-        when(mapper.getProjectById(anyLong())).thenReturn(prj);
+        when(projectMapper.getProjectById(anyLong())).thenReturn(prj);
         when(mapper.getTasksForProject(prj.getId(),0,null)).thenReturn(List.of(tsk));
 
         var res = taskDao.getNonSprintTasksForProject(prj.getId());

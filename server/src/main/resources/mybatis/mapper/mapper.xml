@@ -13,16 +13,6 @@
     </cache>
 
 
-    <resultMap id="projectMap" type="org.abondar.experimental.wsboard.server.datamodel.Project">
-        <id column="id" property="id"/>
-        <result column="name" property="name"/>
-        <result column="start_date" property="startDate"/>
-        <result column="end_date" property="endDate"/>
-        <result column="repository" property="repository"/>
-        <result column="is_active" property="isActive"/>
-        <result column="description" property="description"/>
-    </resultMap>
-
     <resultMap id="contributorMap" type="org.abondar.experimental.wsboard.server.datamodel.Contributor">
         <id column="id" property="id"/>
         <result column="user_id" property="userId"/>
@@ -64,16 +54,6 @@
 
 
 
-    <insert id="insertProject" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
-        INSERT INTO project (name, start_date, end_date, repository, is_active)
-        VALUES (#{project.name},
-                #{project.startDate},
-                #{project.endDate},
-                #{project.repository},
-                #{project.isActive})
-        ON CONFLICT (id) DO NOTHING;
-    </insert>
-
     <insert id="insertContributor" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
         INSERT INTO contributor (user_id, project_id, is_owner, is_active)
         VALUES (#{contributor.userId},
@@ -111,16 +91,6 @@
     </insert>
 
 
-    <update id="updateProject">
-        UPDATE project
-        SET name        = #{project.name},
-            start_date  = #{project.startDate},
-            end_date    = #{project.endDate},
-            repository  = #{project.repository},
-            description = #{project.description},
-            is_active   = #{project.isActive}
-        WHERE id = #{project.id}
-    </update>
 
     <update id="updateContributor">
         UPDATE contributor
@@ -180,28 +150,6 @@
         SET is_active = false
         WHERE project_id = #{projectId}
     </update>
-
-
-
-    <select id="getProjectById" resultMap="projectMap">
-        SELECT *
-        FROM project
-        WHERE id = #{id}
-    </select>
-
-    <select id="getProjectByName" resultMap="projectMap">
-        SELECT *
-        FROM project
-        WHERE name = #{name}
-    </select>
-
-    <select id="getUserProjects" resultMap="projectMap" useCache="true">
-        SELECT *
-        FROM project prj
-                 JOIN contributor ctr ON ctr.project_id = prj.id
-        WHERE ctr.user_id = #{userId}
-    </select>
-
 
 
     <select id="getContributorById" resultMap="contributorMap">
@@ -358,11 +306,6 @@
 
 
 
-    <delete id="deleteProject">
-        DELETE
-        FROM project
-        WHERE id = #{id}
-    </delete>
 
 
     <delete id="deleteProjectContributors">

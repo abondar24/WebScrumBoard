@@ -9,6 +9,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.List;
 
+/**
+ * Interface for mybatis mapper for user queries
+ */
 @Mapper
 @Qualifier("userMapper")
 public interface UserMapper  {

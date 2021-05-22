@@ -5,6 +5,7 @@ import org.abondar.experimental.wsboard.server.datamodel.task.TaskState;
 import org.abondar.experimental.wsboard.server.datamodel.user.UserRole;
 import org.abondar.experimental.wsboard.server.exception.DataCreationException;
 import org.abondar.experimental.wsboard.server.exception.DataExistenceException;
+import org.abondar.experimental.wsboard.server.mapper.ProjectMapper;
 import org.abondar.experimental.wsboard.server.mapper.UserMapper;
 import org.abondar.experimental.wsboard.server.util.LogMessageUtil;
 import org.abondar.experimental.wsboard.server.mapper.DataMapper;
@@ -38,6 +39,9 @@ public class TaskDao extends BaseDao{
     //TODO: move to constructor after base dao removal
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private ProjectMapper projectMapper;
 
     @Autowired
     public TaskDao(DataMapper mapper) {
@@ -525,7 +529,7 @@ public class TaskDao extends BaseDao{
      * @throws DataExistenceException - project not found
      */
     private void checkProject(long projectId) throws DataExistenceException {
-        var prj = mapper.getProjectById(projectId);
+        var prj = projectMapper.getProjectById(projectId);
         if (prj == null) {
             var msg = String.format(LogMessageUtil.LOG_FORMAT, LogMessageUtil.PROJECT_NOT_EXISTS, projectId);
             logger.info(msg);

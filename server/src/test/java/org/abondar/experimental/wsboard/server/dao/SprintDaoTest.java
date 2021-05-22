@@ -30,7 +30,7 @@ public class SprintDaoTest extends BaseDaoTest {
     @Test
     public void createSprintTest() throws Exception {
         when(mapper.getSprintByName(anyString())).thenReturn(null);
-        when(mapper.getProjectById(anyLong())).thenReturn(prj);
+        when(projectMapper.getProjectById(anyLong())).thenReturn(prj);
         doNothing().when(mapper).insertSprint(any(Sprint.class));
 
         var res = sprintDao.createSprint(sp.getName(), sp.getStartDate(), sp.getEndDate(), sp.getProjectId());
@@ -42,7 +42,7 @@ public class SprintDaoTest extends BaseDaoTest {
     @Test
     public void createSprintWrongEndDateTest() {
         when(mapper.getSprintByName(anyString())).thenReturn(null);
-        when(mapper.getProjectById(anyLong())).thenReturn(prj);
+        when(projectMapper.getProjectById(anyLong())).thenReturn(prj);
         assertThrows(DataCreationException.class, () -> sprintDao.createSprint(sp.getName(), sp.getStartDate(),
                 yesterday(), sp.getProjectId()));
 
@@ -59,7 +59,7 @@ public class SprintDaoTest extends BaseDaoTest {
 
     @Test
     public void createSprintProjectNotExistsTest() throws Exception {
-        when(mapper.getProjectById(anyLong())).thenReturn(null);
+        when(projectMapper.getProjectById(anyLong())).thenReturn(null);
         assertThrows(DataExistenceException.class, () ->
                 sprintDao.createSprint(sp.getName(), sp.getStartDate(), sp.getEndDate(), 7));
 
@@ -68,7 +68,7 @@ public class SprintDaoTest extends BaseDaoTest {
     @Test
     public void createSprintBlankDataTest() {
         when(mapper.getSprintByName(null)).thenReturn(null);
-        when(mapper.getProjectById(anyLong())).thenReturn(prj);
+        when(projectMapper.getProjectById(anyLong())).thenReturn(prj);
         assertThrows(DataCreationException.class, () ->
                 sprintDao.createSprint(null, sp.getStartDate(), sp.getEndDate(), sp.getProjectId()));
 
@@ -142,7 +142,7 @@ public class SprintDaoTest extends BaseDaoTest {
 
     @Test
     public void getSprintsTest() throws Exception {
-        when(mapper.getProjectById(anyLong())).thenReturn(prj);
+        when(projectMapper.getProjectById(anyLong())).thenReturn(prj);
         when(mapper.getSprints(sp.getProjectId(),0,1)).thenReturn(List.of(sp));
 
         var res = sprintDao.getSprints(prj.getId(), 0, 1);
@@ -155,7 +155,7 @@ public class SprintDaoTest extends BaseDaoTest {
     @Test
     public void getCurrentSprintTest() throws Exception {
         sp.setCurrent(true);
-        when(mapper.getProjectById(anyLong())).thenReturn(prj);
+        when(projectMapper.getProjectById(anyLong())).thenReturn(prj);
         when(mapper.getCurrentSprint(anyLong())).thenReturn(sp);
 
         var res = sprintDao.getCurrentSprint(prj.getId());
@@ -166,14 +166,14 @@ public class SprintDaoTest extends BaseDaoTest {
 
     @Test
     public void getCurrentSprintProjectNotExistsTest() throws Exception {
-        when(mapper.getProjectById(anyLong())).thenReturn(null);
+        when(projectMapper.getProjectById(anyLong())).thenReturn(null);
         assertThrows(DataExistenceException.class, () -> sprintDao.getCurrentSprint(100));
 
     }
 
     @Test
     public void getCurrentSprintNullTest() throws Exception {
-        when(mapper.getProjectById(anyLong())).thenReturn(prj);
+        when(projectMapper.getProjectById(anyLong())).thenReturn(prj);
         when(mapper.getCurrentSprint(anyLong())).thenReturn(null);
         var res = sprintDao.getCurrentSprint(prj.getId());
 
@@ -183,7 +183,7 @@ public class SprintDaoTest extends BaseDaoTest {
 
     @Test
     public void countSprintsTest() throws Exception {
-        when(mapper.getProjectById(anyLong())).thenReturn(prj);
+        when(projectMapper.getProjectById(anyLong())).thenReturn(prj);
         when(mapper.countSprints(prj.getId())).thenReturn(1);
         var res = sprintDao.countSprints(prj.getId());
 
@@ -193,7 +193,7 @@ public class SprintDaoTest extends BaseDaoTest {
 
     @Test
     public void countSprintsProjectNotTest() {
-        when(mapper.getProjectById(anyLong())).thenReturn(null);
+        when(projectMapper.getProjectById(anyLong())).thenReturn(null);
         assertThrows(DataExistenceException.class, () -> {
             sprintDao.countSprints(100L);
         });
@@ -201,7 +201,7 @@ public class SprintDaoTest extends BaseDaoTest {
 
     @Test
     public void getSprintsProjectNotFoundTest() throws Exception {
-        when(mapper.getProjectById(anyLong())).thenReturn(null);
+        when(projectMapper.getProjectById(anyLong())).thenReturn(null);
 
         assertThrows(DataExistenceException.class, () -> sprintDao.getSprints(7, 0, 1));
 

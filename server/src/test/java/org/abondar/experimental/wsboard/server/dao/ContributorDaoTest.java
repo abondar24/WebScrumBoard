@@ -31,7 +31,7 @@ public class ContributorDaoTest extends BaseDaoTest {
     @Test
     public void createContributorTest() throws Exception {
         when(userMapper.getUserById(anyLong())).thenReturn(usr);
-        when(mapper.getProjectById(anyLong())).thenReturn(prj);
+        when(projectMapper.getProjectById(anyLong())).thenReturn(prj);
         when(userMapper.getProjectOwner(anyLong())).thenReturn(null);
         when(mapper.getContributorByUserAndProject(anyLong(), anyLong())).thenReturn(null);
         doNothing().when(mapper).insertContributor(any(Contributor.class));
@@ -44,7 +44,7 @@ public class ContributorDaoTest extends BaseDaoTest {
     @Test
     public void createContributorAlreadyExistsTest() throws Exception {
         when(userMapper.getUserById(anyLong())).thenReturn(usr);
-        when(mapper.getProjectById(anyLong())).thenReturn(prj);
+        when(projectMapper.getProjectById(anyLong())).thenReturn(prj);
         when(mapper.getContributorByUserAndProject(anyLong(), anyLong())).thenReturn(ctr);
 
         assertThrows(DataExistenceException.class, () -> contributorDao.createContributor(usr.getId(), prj.getId(), false));
@@ -57,7 +57,7 @@ public class ContributorDaoTest extends BaseDaoTest {
         ctr.setActive(false);
 
         when(userMapper.getUserById(anyLong())).thenReturn(usr);
-        when(mapper.getProjectById(anyLong())).thenReturn(prj);
+        when(projectMapper.getProjectById(anyLong())).thenReturn(prj);
         when(mapper.getContributorByUserAndProject(anyLong(), anyLong())).thenReturn(ctr);
         doNothing().when(mapper).updateContributor(any(Contributor.class));
 
@@ -75,7 +75,7 @@ public class ContributorDaoTest extends BaseDaoTest {
         ctr.setActive(false);
 
         when(userMapper.getUserById(anyLong())).thenReturn(usr);
-        when(mapper.getProjectById(anyLong())).thenReturn(prj);
+        when(projectMapper.getProjectById(anyLong())).thenReturn(prj);
         when(mapper.getContributorByUserAndProject(anyLong(), anyLong())).thenReturn(ctr);
         when(userMapper.getProjectOwner(anyLong())).thenReturn(null);
         doNothing().when(mapper).updateContributor(any(Contributor.class));
@@ -94,7 +94,7 @@ public class ContributorDaoTest extends BaseDaoTest {
         ctr.setActive(false);
 
         when(userMapper.getUserById(anyLong())).thenReturn(usr);
-        when(mapper.getProjectById(anyLong())).thenReturn(prj);
+        when(projectMapper.getProjectById(anyLong())).thenReturn(prj);
         when(mapper.getContributorByUserAndProject(anyLong(), anyLong())).thenReturn(ctr);
         doNothing().when(mapper).updateContributor(any(Contributor.class));
 
@@ -110,7 +110,7 @@ public class ContributorDaoTest extends BaseDaoTest {
         prj.setActive(false);
 
         when(userMapper.getUserById(anyLong())).thenReturn(usr);
-        when(mapper.getProjectById(anyLong())).thenReturn(prj);
+        when(projectMapper.getProjectById(anyLong())).thenReturn(prj);
 
         assertThrows(DataCreationException.class, () ->
                 contributorDao.createContributor(usr.getId(), prj.getId(), false));
@@ -122,7 +122,7 @@ public class ContributorDaoTest extends BaseDaoTest {
         ctr.setOwner(true);
 
         when(userMapper.getUserById(anyLong())).thenReturn(usr);
-        when(mapper.getProjectById(anyLong())).thenReturn(prj);
+        when(projectMapper.getProjectById(anyLong())).thenReturn(prj);
         when(userMapper.getProjectOwner(anyLong())).thenReturn(usr);
 
         assertThrows(DataCreationException.class, () ->
@@ -136,7 +136,7 @@ public class ContributorDaoTest extends BaseDaoTest {
         var id = ctr.getId();
 
         when(userMapper.getUserById(anyLong())).thenReturn(usr);
-        when(mapper.getProjectById(anyLong())).thenReturn(prj);
+        when(projectMapper.getProjectById(anyLong())).thenReturn(prj);
         when(mapper.getContributorByUserAndProject(anyLong(), anyLong())).thenReturn(ctr);
         when(userMapper.getProjectOwner(prj.getId())).thenReturn(usr);
         when(mapper.getContributorByUserAndProject(usr.getId(),prj.getId())).thenReturn(ctr);
@@ -158,7 +158,7 @@ public class ContributorDaoTest extends BaseDaoTest {
         var ctr1 = new Contributor(usr1.getId(), prj.getId(), false);
 
         when(userMapper.getUserById(anyLong())).thenReturn(usr1);
-        when(mapper.getProjectById(anyLong())).thenReturn(prj);
+        when(projectMapper.getProjectById(anyLong())).thenReturn(prj);
         when(mapper.getContributorByUserAndProject(usr1.getId(), prj.getId())).thenReturn(ctr1);
         when(mapper.getContributorByUserAndProject(usr.getId(), prj.getId())).thenReturn(ctr);
         when(userMapper.getProjectOwner(anyLong())).thenReturn(usr);
@@ -191,7 +191,7 @@ public class ContributorDaoTest extends BaseDaoTest {
     @Test
     public void updateContributorNoProjectTest() throws Exception {
         when(userMapper.getUserById(anyLong())).thenReturn(usr);
-        when(mapper.getProjectById(anyLong())).thenReturn(null);
+        when(projectMapper.getProjectById(anyLong())).thenReturn(null);
         assertThrows(DataExistenceException.class,
                 () -> contributorDao.updateContributor(usr.getId(), 100, true, null));
 
@@ -203,7 +203,7 @@ public class ContributorDaoTest extends BaseDaoTest {
         ctr.setActive(false);
 
         when(userMapper.getUserById(anyLong())).thenReturn(usr);
-        when(mapper.getProjectById(anyLong())).thenReturn(prj);
+        when(projectMapper.getProjectById(anyLong())).thenReturn(prj);
         when(mapper.getContributorByUserAndProject(usr.getId(), prj.getId())).thenReturn(ctr);
         when(userMapper.getProjectOwner(anyLong())).thenReturn(usr);
 
@@ -217,7 +217,7 @@ public class ContributorDaoTest extends BaseDaoTest {
         ctr.setOwner(true);
 
         when(userMapper.getUserById(anyLong())).thenReturn(usr);
-        when(mapper.getProjectById(anyLong())).thenReturn(prj);
+        when(projectMapper.getProjectById(anyLong())).thenReturn(prj);
         when(mapper.getContributorByUserAndProject(usr.getId(), prj.getId())).thenReturn(ctr);
 
         assertThrows(DataCreationException.class,
@@ -229,7 +229,7 @@ public class ContributorDaoTest extends BaseDaoTest {
     @Test
     public void updateContributorAsOwnerContributorNotExistsTest() {
         when(userMapper.getUserById(anyLong())).thenReturn(usr);
-        when(mapper.getProjectById(anyLong())).thenReturn(prj);
+        when(projectMapper.getProjectById(anyLong())).thenReturn(prj);
         when(mapper.getContributorByUserAndProject(anyLong(),anyLong())).thenReturn(null);
 
         assertThrows(DataExistenceException.class, () ->
@@ -241,7 +241,7 @@ public class ContributorDaoTest extends BaseDaoTest {
     public void updateContributorAlreadyOwnerTest() {
         ctr.setOwner(true);
         when(userMapper.getUserById(anyLong())).thenReturn(usr);
-        when(mapper.getProjectById(anyLong())).thenReturn(prj);
+        when(projectMapper.getProjectById(anyLong())).thenReturn(prj);
         when(mapper.getContributorByUserAndProject(anyLong(),anyLong())).thenReturn(ctr);
         when(userMapper.getProjectOwner(anyLong())).thenReturn(usr);
 
@@ -253,7 +253,7 @@ public class ContributorDaoTest extends BaseDaoTest {
     @Test
     public void updateContributorProjectHasNoOwnerTest()  {
         when(userMapper.getUserById(anyLong())).thenReturn(usr);
-        when(mapper.getProjectById(anyLong())).thenReturn(prj);
+        when(projectMapper.getProjectById(anyLong())).thenReturn(prj);
         when(mapper.getContributorByUserAndProject(anyLong(),anyLong())).thenReturn(ctr);
         when(userMapper.getProjectOwner(anyLong())).thenReturn(null);
 
@@ -265,7 +265,7 @@ public class ContributorDaoTest extends BaseDaoTest {
     @Test
     public void updateContributorNullTest() throws Exception {
         when(userMapper.getUserById(anyLong())).thenReturn(usr);
-        when(mapper.getProjectById(anyLong())).thenReturn(prj);
+        when(projectMapper.getProjectById(anyLong())).thenReturn(prj);
         when(mapper.getContributorByUserAndProject(anyLong(),anyLong())).thenReturn(ctr);
         doNothing().when(mapper).updateContributor(ctr);
 
@@ -280,7 +280,7 @@ public class ContributorDaoTest extends BaseDaoTest {
     public void findProjectOwnerTest() throws Exception {
         ctr.setOwner(true);
 
-        when(mapper.getProjectById(anyLong())).thenReturn(prj);
+        when(projectMapper.getProjectById(anyLong())).thenReturn(prj);
         when(userMapper.getProjectOwner(anyLong())).thenReturn(usr);
 
         var ownr = contributorDao.findProjectOwner(prj.getId());
@@ -291,7 +291,7 @@ public class ContributorDaoTest extends BaseDaoTest {
 
     @Test
     public void findProjectContributorsTest() throws Exception {
-        when(mapper.getProjectById(anyLong())).thenReturn(prj);
+        when(projectMapper.getProjectById(anyLong())).thenReturn(prj);
         when(userMapper.getContributorsForProject(prj.getId(),0,1)).thenReturn(List.of(usr));
 
         var contrs = contributorDao.findProjectContributors(prj.getId(), 0, 1);
@@ -302,7 +302,7 @@ public class ContributorDaoTest extends BaseDaoTest {
 
     @Test
     public void findContributorByLoginTest() throws Exception {
-        when(mapper.getProjectById(anyLong())).thenReturn(prj);
+        when(projectMapper.getProjectById(anyLong())).thenReturn(prj);
         when(mapper.getContributorByLogin(anyLong(),anyString())).thenReturn(ctr);
 
         var res = contributorDao.findContributorByLogin(prj.getId(), usr.getLogin());
@@ -312,7 +312,7 @@ public class ContributorDaoTest extends BaseDaoTest {
 
     @Test
     public void findContributorNotExistsByLoginTest()  {
-        when(mapper.getProjectById(anyLong())).thenReturn(prj);
+        when(projectMapper.getProjectById(anyLong())).thenReturn(prj);
         when(mapper.getContributorByLogin(anyLong(),anyString())).thenReturn(null);
 
         assertThrows(DataExistenceException.class, () ->
@@ -321,7 +321,7 @@ public class ContributorDaoTest extends BaseDaoTest {
 
     @Test
     public void findContributorByLoginProjectNotExistsTest()  {
-        when(mapper.getProjectById(anyLong())).thenReturn(null);
+        when(projectMapper.getProjectById(anyLong())).thenReturn(null);
 
         assertThrows(DataExistenceException.class, () ->
                 contributorDao.findContributorByLogin(100, usr.getLogin()));
@@ -329,7 +329,7 @@ public class ContributorDaoTest extends BaseDaoTest {
 
     @Test
     public void countProjectContributorsTest() throws Exception {
-        when(mapper.getProjectById(anyLong())).thenReturn(prj);
+        when(projectMapper.getProjectById(anyLong())).thenReturn(prj);
         when(mapper.countProjectContributors(anyLong())).thenReturn(1);
 
         var res = contributorDao.countProjectContributors(prj.getId());
@@ -339,7 +339,7 @@ public class ContributorDaoTest extends BaseDaoTest {
 
     @Test
     public void countContributorsForProjectNotFoundTest() {
-        when(mapper.getProjectById(anyLong())).thenReturn(null);
+        when(projectMapper.getProjectById(anyLong())).thenReturn(null);
         assertThrows(DataExistenceException.class, () -> contributorDao.countProjectContributors(100L));
     }
 
@@ -366,7 +366,7 @@ public class ContributorDaoTest extends BaseDaoTest {
     @Test
     public void findContributorByUserAndProjectTest() throws Exception {
         when(userMapper.getUserById(anyLong())).thenReturn(usr);
-        when(mapper.getProjectById(anyLong())).thenReturn(prj);
+        when(projectMapper.getProjectById(anyLong())).thenReturn(prj);
         when(mapper.getContributorByUserAndProject(anyLong(),anyLong())).thenReturn(ctr);
 
         var res = contributorDao.findContributorByUserAndProject(usr.getId(), prj.getId());
@@ -388,7 +388,7 @@ public class ContributorDaoTest extends BaseDaoTest {
     @Test
     public void findContributorByUserAndProjectNotFoundTest() {
         when(userMapper.getUserById(anyLong())).thenReturn(usr);
-        when(mapper.getProjectById(anyLong())).thenReturn(null);
+        when(projectMapper.getProjectById(anyLong())).thenReturn(null);
         assertThrows(DataExistenceException.class,
                 () -> contributorDao.findContributorByUserAndProject(7, 7));
 

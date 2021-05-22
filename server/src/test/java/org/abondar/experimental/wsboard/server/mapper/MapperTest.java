@@ -40,7 +40,8 @@ public class MapperTest {
     @Autowired
     protected UserMapper userMapper;
 
-
+    @Autowired
+    protected ProjectMapper projectMapper;
 
     @Test
     public void insertProjectTest() {
@@ -71,45 +72,6 @@ public class MapperTest {
         assertTrue(task.getId() > 0);
     }
 
-
-
-    @Test
-    public void updateProjectTest() {
-        cleanData();
-        var project = createProject();
-        var newName = "name1";
-        project.setName(newName);
-
-        mapper.updateProject(project);
-
-        project = mapper.getProjectById(project.getId());
-
-        assertEquals(newName, project.getName());
-
-    }
-
-
-
-
-    @Test
-    public void getProjectByIdTest() {
-        cleanData();
-        var project = createProject();
-
-        var res = mapper.getProjectById(project.getId());
-        assertEquals(project.getId(), res.getId());
-    }
-
-    @Test
-    public void getProjectByNameTest() {
-        cleanData();
-        var project = createProject();
-
-        var res = mapper.getProjectByName(project.getName());
-        assertEquals(project.getId(), res.getId());
-
-    }
-
     //TODO: move to ctr mapper test
     @Test
     @Ignore
@@ -119,24 +81,12 @@ public class MapperTest {
         var project = createProject();
         createContributor(user.getId(), project.getId(), true);
 
-        //var res = mapper.getProjectOwner(project.getId());
-       // assertEquals(user.getId(), res.getId());
+        var res = userMapper.getProjectOwner(project.getId());
+        assertEquals(user.getId(), res.getId());
 
     }
 
-    @Test
-    public void getUserProjectTest() {
-        cleanData();
-        var user = createUser();
-        var project = createProject();
-        var project1 = createProject();
-        createContributor(user.getId(), project.getId(), true);
-        createContributor(user.getId(), project1.getId(), true);
 
-        var res = mapper.getUserProjects(user.getId());
-        assertEquals(2, res.size());
-
-    }
 
     @Test
     public void getContributorByIdTest() {
@@ -245,9 +195,9 @@ public class MapperTest {
         inactiveCtr.setActive(false);
         mapper.insertContributor(inactiveCtr);
 
-       // var res = mapper.getContributorsForProject(project.getId(), 0, 1);
-       // assertEquals(1, res.size());
-       // assertEquals(user.getId(), res.get(0).getId());
+        var res = userMapper.getContributorsForProject(project.getId(), 0, 1);
+        assertEquals(1, res.size());
+        assertEquals(user.getId(), res.get(0).getId());
 
     }
 
@@ -565,16 +515,7 @@ public class MapperTest {
 
     }
 
-    @Test
-    public void deleteProjectTest() {
-        cleanData();
-        var project = createProject();
 
-        mapper.deleteProject(project.getId());
-
-        var res = mapper.getProjectById(project.getId());
-        assertNull(res);
-    }
 
     @Test
     public void deleteTaskTest() {
@@ -655,13 +596,13 @@ public class MapperTest {
         return user;
     }
 
-    private Project createProject() {
+    protected Project createProject() {
         var project = new Project("test", new Date());
-        mapper.insertProject(project);
+        projectMapper.insertProject(project);
         return project;
     }
 
-    private Contributor createContributor(long userId, long projectId, boolean isOwner) {
+    protected Contributor createContributor(long userId, long projectId, boolean isOwner) {
         var contributor = new Contributor(userId, projectId, isOwner);
         mapper.insertContributor(contributor);
         return contributor;

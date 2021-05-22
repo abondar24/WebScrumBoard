@@ -4,6 +4,7 @@ import org.abondar.experimental.wsboard.server.datamodel.Project;
 import org.abondar.experimental.wsboard.server.exception.DataCreationException;
 import org.abondar.experimental.wsboard.server.exception.DataExistenceException;
 import org.abondar.experimental.wsboard.server.mapper.DataMapper;
+import org.abondar.experimental.wsboard.server.mapper.ProjectMapper;
 import org.abondar.experimental.wsboard.server.mapper.UserMapper;
 import org.abondar.experimental.wsboard.server.util.LogMessageUtil;
 import org.slf4j.Logger;
@@ -25,17 +26,27 @@ import java.util.List;
  * @author a.bondar
  */
 @Component
-public class ProjectDao extends BaseDao {
+public class ProjectDao{
 
     private static final Logger logger = LoggerFactory.getLogger(ProjectDao.class);
 
-    //TODO: move to constructor after base dao removal
+    private final UserMapper userMapper;
+
+    private final ProjectMapper projectMapper;
+
+    private final PlatformTransactionManager transactionManager;
+
+    //TODO: replace with ctr mapper
     @Autowired
-    private UserMapper userMapper;
+    private DataMapper mapper;
 
     @Autowired
-    public ProjectDao(DataMapper mapper, PlatformTransactionManager transactionManager) {
-        super(mapper, transactionManager);
+    public ProjectDao(UserMapper userMapper,ProjectMapper projectMapper,
+                      PlatformTransactionManager transactionManager) {
+
+       this.userMapper = userMapper;
+       this.projectMapper = projectMapper;
+       this.transactionManager = transactionManager;
     }
 
 
@@ -63,7 +74,7 @@ public class ProjectDao extends BaseDao {
         }
 
         var prj = new Project(name, startDate);
-        mapper.insertProject(prj);
+        projectMapper.insertProject(prj);
 
         var msg = String.format(LogMessageUtil.LOG_FORMAT, "Project successfully created ", prj.getId());
         logger.info(msg);
@@ -121,7 +132,7 @@ public class ProjectDao extends BaseDao {
 
             }
 
-            mapper.updateProject(prj);
+            projectMapper.updateProject(prj);
         } catch (TransactionException ex) {
             transactionManager.rollback(txStatus);
             throw new DataExistenceException(ex.getMessage());
@@ -148,7 +159,7 @@ public class ProjectDao extends BaseDao {
             mapper.deleteProjectTasks(id);
             mapper.deleteProjectSprints(id);
             mapper.deleteProjectContributors(id);
-            mapper.deleteProject(id);
+            projectMapper.deleteProject(id);
 
             var msg = String.format(LogMessageUtil.LOG_FORMAT + " %s", "Project ", id, " successfully updated");
             logger.info(msg);
@@ -171,7 +182,7 @@ public class ProjectDao extends BaseDao {
      * @throws DataExistenceException - project not found
      */
     public Project findProjectById(long id) throws DataExistenceException {
-        var prj = mapper.getProjectById(id);
+        var prj = projectMapper.getProjectById(id);
 
         var msg = "";
         if (prj == null) {
@@ -201,7 +212,7 @@ public class ProjectDao extends BaseDao {
             throw new DataExistenceException(LogMessageUtil.PROJECT_NOT_EXISTS);
         }
 
-        return mapper.getUserProjects(userId);
+        return projectMapper.getUserProjects(userId);
     }
 
     /**
@@ -211,7 +222,7 @@ public class ProjectDao extends BaseDao {
      * @throws DataExistenceException - project not found
      */
     private void checkProjectExists(String name) throws DataExistenceException {
-        var prj = mapper.getProjectByName(name);
+        var prj = projectMapper.getProjectByName(name);
 
         if (prj != null) {
             logger.error(LogMessageUtil.PROJECT_EXISTS);
