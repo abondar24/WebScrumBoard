@@ -23,7 +23,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 
-public class UserDaoTest extends BaseDaoTest {
+public class UserDaoTest extends DaoTest {
 
     @InjectMocks
     private UserDao userDao;
@@ -236,12 +236,11 @@ public class UserDaoTest extends BaseDaoTest {
 
     @Test
     public void deleteUserTest() throws Exception {
-        userDao = new UserDao(userMapper, new MockTransactionManager());
+        userDao = new UserDao(userMapper, contributorMapper,new MockTransactionManager());
 
         when(userMapper.getUserById(anyLong())).thenReturn(usr);
-        when(mapper.getContributorsByUserId(usr.getId(), -1, 0)).thenReturn(List.of(new Contributor()));
-        doNothing().when(mapper)
-                .deactivateUserContributors(anyLong());
+        when(contributorMapper.getContributorsByUserId(usr.getId(), -1, 0)).thenReturn(List.of(new Contributor()));
+        doNothing().when(contributorMapper).deactivateUserContributors(anyLong());
 
 
         var delUser = userDao.deleteUser(usr.getId());
@@ -252,9 +251,9 @@ public class UserDaoTest extends BaseDaoTest {
 
     @Test
     public void deleteUserNoContributorsTest() throws Exception {
-        userDao = new UserDao(userMapper, new MockTransactionManager());
+        userDao = new UserDao(userMapper, contributorMapper,new MockTransactionManager());
         when(userMapper.getUserById(anyLong())).thenReturn(usr);
-        when(mapper.getContributorsByUserId(usr.getId(), -1, 0)).thenReturn(List.of());
+        when(contributorMapper.getContributorsByUserId(usr.getId(), -1, 0)).thenReturn(List.of());
 
         var delUser = userDao.deleteUser(usr.getId());
 
@@ -264,14 +263,14 @@ public class UserDaoTest extends BaseDaoTest {
 
     @Test
     public void deleteUserIsOwnerTest() {
-        userDao = new UserDao(userMapper, new MockTransactionManager());
+        userDao = new UserDao(userMapper,contributorMapper, new MockTransactionManager());
         when(userMapper.getUserById(anyLong())).thenReturn(usr);
 
         var ctr = new Contributor();
         ctr.setUserId(usr.getId());
         ctr.setProjectId(prj.getId());
         ctr.setOwner(true);
-        when(mapper.getContributorsByUserId(usr.getId(), -1, 0)).thenReturn(List.of(ctr));
+        when(contributorMapper.getContributorsByUserId(usr.getId(), -1, 0)).thenReturn(List.of(ctr));
 
         assertThrows(DataCreationException.class, () -> userDao.deleteUser(usr.getId()));
 

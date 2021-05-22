@@ -21,7 +21,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 
-public class SprintDaoTest extends BaseDaoTest {
+public class SprintDaoTest extends DaoTest {
 
     @InjectMocks
     private SprintDao sprintDao;

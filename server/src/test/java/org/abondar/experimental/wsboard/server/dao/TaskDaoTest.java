@@ -5,10 +5,8 @@ import org.abondar.experimental.wsboard.server.datamodel.task.Task;
 import org.abondar.experimental.wsboard.server.datamodel.task.TaskState;
 import org.abondar.experimental.wsboard.server.exception.DataCreationException;
 import org.abondar.experimental.wsboard.server.exception.DataExistenceException;
-import org.abondar.experimental.wsboard.server.mapper.UserMapper;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 
 import java.util.List;
 
@@ -23,16 +21,15 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 
-public class TaskDaoTest extends BaseDaoTest {
+public class TaskDaoTest extends DaoTest {
 
     @InjectMocks
     private TaskDao taskDao;
 
 
-
     @Test
     public void createTaskTest() throws Exception {
-        when(mapper.getContributorById(anyLong())).thenReturn(ctr);
+        when(contributorMapper.getContributorById(anyLong())).thenReturn(ctr);
         doNothing().when(mapper).insertTask(any(Task.class));
 
         var task = taskDao.createTask(ctr.getId(), tsk.getStartDate(), tsk.isDevOpsEnabled(),
@@ -45,7 +42,7 @@ public class TaskDaoTest extends BaseDaoTest {
 
     @Test
     public void createTaskNoContributorTest() {
-        when(mapper.getContributorById(anyLong())).thenReturn(null);
+        when(contributorMapper.getContributorById(anyLong())).thenReturn(null);
         assertThrows(DataExistenceException.class, () ->
                 taskDao.createTask(100, tsk.getStartDate(), tsk.isDevOpsEnabled(),
                         tsk.getTaskName(), tsk.getTaskDescription()));
@@ -56,7 +53,7 @@ public class TaskDaoTest extends BaseDaoTest {
     @Test
     public void createTaskInactiveContributorTest() {
         ctr.setActive(false);
-        when(mapper.getContributorById(anyLong())).thenReturn(ctr);
+        when(contributorMapper.getContributorById(anyLong())).thenReturn(ctr);
         assertThrows(DataExistenceException.class, () ->
                 taskDao.createTask(ctr.getId(), tsk.getStartDate(), tsk.isDevOpsEnabled(),
                         tsk.getTaskName(), tsk.getTaskDescription()));
@@ -69,7 +66,7 @@ public class TaskDaoTest extends BaseDaoTest {
         var ctr1 = new Contributor(1, prj.getId(), false);
 
         when(mapper.getTaskById(anyLong())).thenReturn(tsk);
-        when(mapper.getContributorById(anyLong())).thenReturn(ctr1);
+        when(contributorMapper.getContributorById(anyLong())).thenReturn(ctr1);
         doNothing().when(mapper).updateTask(tsk);
 
         var res = taskDao.updateTask(tsk.getId(), ctr1.getId(), true,
@@ -91,7 +88,7 @@ public class TaskDaoTest extends BaseDaoTest {
     @Test
     public void updateTaskContributorNotExistsTest() {
         when(mapper.getTaskById(anyLong())).thenReturn(tsk);
-        when(mapper.getContributorById(anyLong())).thenReturn(null);
+        when(contributorMapper.getContributorById(anyLong())).thenReturn(null);
 
         assertThrows(DataExistenceException.class, () ->
                 taskDao.updateTask(tsk.getId(), 100L, null, null, null, null));
@@ -172,7 +169,7 @@ public class TaskDaoTest extends BaseDaoTest {
     public void updateTaskStateTest() throws Exception {
         when(mapper.getTaskById(anyLong())).thenReturn(tsk);
         when(userMapper.getUserById(anyLong())).thenReturn(usr);
-        when(mapper.getContributorById(anyLong())).thenReturn(ctr);
+        when(contributorMapper.getContributorById(anyLong())).thenReturn(ctr);
         doNothing().when(mapper).updateTask(tsk);
 
         var res = taskDao.updateTaskState(tsk.getId(), TaskState.IN_DEVELOPMENT.name());
@@ -242,7 +239,7 @@ public class TaskDaoTest extends BaseDaoTest {
     public void updateTaskStateNoMovesTest() {
         when(mapper.getTaskById(anyLong())).thenReturn(tsk);
         when(userMapper.getUserById(anyLong())).thenReturn(usr);
-        when(mapper.getContributorById(anyLong())).thenReturn(ctr);
+        when(contributorMapper.getContributorById(anyLong())).thenReturn(ctr);
 
         assertThrows(DataCreationException.class, () ->
                 taskDao.updateTaskState(tsk.getId(), TaskState.IN_CODE_REVIEW.name()));
@@ -255,7 +252,7 @@ public class TaskDaoTest extends BaseDaoTest {
 
         when(mapper.getTaskById(anyLong())).thenReturn(tsk);
         when(userMapper.getUserById(anyLong())).thenReturn(usr);
-        when(mapper.getContributorById(anyLong())).thenReturn(ctr);
+        when(contributorMapper.getContributorById(anyLong())).thenReturn(ctr);
 
         assertThrows(DataCreationException.class, () ->
                 taskDao.updateTaskState(tsk.getId(), TaskState.IN_TEST.name()));
@@ -268,7 +265,7 @@ public class TaskDaoTest extends BaseDaoTest {
 
         when(mapper.getTaskById(anyLong())).thenReturn(tsk);
         when(userMapper.getUserById(anyLong())).thenReturn(usr);
-        when(mapper.getContributorById(anyLong())).thenReturn(ctr);
+        when(contributorMapper.getContributorById(anyLong())).thenReturn(ctr);
         doNothing().when(mapper).updateTask(tsk);
 
         var res = taskDao.updateTaskState(tsk.getId(), TaskState.COMPLETED.name());
@@ -348,7 +345,7 @@ public class TaskDaoTest extends BaseDaoTest {
 
     @Test
     public void getTasksForContributorTest() throws Exception {
-        when(mapper.getContributorById(anyLong())).thenReturn(ctr);
+        when(contributorMapper.getContributorById(anyLong())).thenReturn(ctr);
         when(mapper.getTasksForContributor(ctr.getId(),0,1)).thenReturn(List.of(tsk));
 
         var res = taskDao.getTasksForContributor(ctr.getId(), 0, 1);
@@ -361,7 +358,7 @@ public class TaskDaoTest extends BaseDaoTest {
 
     @Test
     public void countContributorTasksTest() throws Exception {
-        when(mapper.getContributorById(anyLong())).thenReturn(ctr);
+        when(contributorMapper.getContributorById(anyLong())).thenReturn(ctr);
         when(mapper.countContributorTasks(anyLong())).thenReturn(1);
 
         var res = taskDao.countContributorTasks(ctr.getId());
@@ -395,7 +392,7 @@ public class TaskDaoTest extends BaseDaoTest {
 
     @Test
     public void countContributorNotFoundTasks() {
-        when(mapper.getContributorById(anyLong())).thenReturn(null);
+        when(contributorMapper.getContributorById(anyLong())).thenReturn(null);
         assertThrows(DataExistenceException.class, () -> taskDao.countContributorTasks(100L));
     }
 

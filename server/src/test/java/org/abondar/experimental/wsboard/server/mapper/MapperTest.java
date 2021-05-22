@@ -8,7 +8,6 @@ import org.abondar.experimental.wsboard.server.datamodel.task.Task;
 import org.abondar.experimental.wsboard.server.datamodel.task.TaskState;
 import org.abondar.experimental.wsboard.server.datamodel.user.User;
 import org.abondar.experimental.wsboard.server.datamodel.user.UserRole;
-import org.apache.ibatis.session.SqlSession;
 import org.junit.Ignore;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -43,26 +42,13 @@ public class MapperTest {
     @Autowired
     protected ProjectMapper projectMapper;
 
-    @Test
-    public void insertProjectTest() {
-        cleanData();
-        var project = createProject();
-        assertTrue(project.getId() > 0);
-    }
+    @Autowired
+    protected ContributorMapper contributorMapper;
+
 
 
     @Test
-    public void insertUpdateContributorTest() {
-        cleanData();
-        var user = createUser();
-        var project = createProject();
-
-        var contributor = createContributor(user.getId(), project.getId(), false);
-        assertTrue(contributor.getId() > 0);
-    }
-
-    @Test
-    public void insertUpdateTaskTest() {
+    public void insertTaskTest() {
         cleanData();
         var user = createUser();
         var project = createProject();
@@ -72,45 +58,7 @@ public class MapperTest {
         assertTrue(task.getId() > 0);
     }
 
-    //TODO: move to ctr mapper test
-    @Test
-    @Ignore
-    public void getProjectOwnerTest() {
-        cleanData();
-        var user = createUser();
-        var project = createProject();
-        createContributor(user.getId(), project.getId(), true);
 
-        var res = userMapper.getProjectOwner(project.getId());
-        assertEquals(user.getId(), res.getId());
-
-    }
-
-
-
-    @Test
-    public void getContributorByIdTest() {
-
-        cleanData();
-        var user = createUser();
-        var project = createProject();
-        var ctr = createContributor(user.getId(), project.getId(), true);
-
-
-        var res = mapper.getContributorById(ctr.getId());
-        assertEquals(ctr.getId(), res.getId());
-    }
-
-    @Test
-    public void insertContributorTest() {
-        cleanData();
-        var user = createUser();
-        var project = createProject();
-        var ctr = createContributor(user.getId(), project.getId(), true);
-
-        assertTrue(ctr.getId() > 0);
-
-    }
 
     @Test
     public void insertCodeTest() {
@@ -152,117 +100,6 @@ public class MapperTest {
         assertEquals(Integer.valueOf(1), exists);
 
     }
-
-
-    @Test
-    public void updateContributorTest() {
-        cleanData();
-        var user = createUser();
-        var project = createProject();
-        var ctr = createContributor(user.getId(), project.getId(), true);
-
-        ctr.setActive(false);
-        mapper.updateContributor(ctr);
-
-        var res = mapper.getContributorById(ctr.getId());
-
-        assertFalse(res.isActive());
-    }
-
-    @Test
-    public void getContributorByUserAndProjectTest() {
-        cleanData();
-        var user = createUser();
-        var project = createProject();
-        var ctr = createContributor(user.getId(), project.getId(), true);
-
-        var res = mapper.getContributorByUserAndProject(user.getId(), project.getId());
-        assertEquals(ctr.getId(), res.getId());
-
-    }
-
-    //TODO: move to ctr mapper test
-    @Test
-    @Ignore
-    public void getContributorsForProjectTest() {
-        cleanData();
-        var user = createUser();
-        var project = createProject();
-        createContributor(user.getId(), project.getId(), true);
-
-        var project1 = createProject();
-        var inactiveCtr = createContributor(user.getId(), project1.getId(), false);
-        inactiveCtr.setActive(false);
-        mapper.insertContributor(inactiveCtr);
-
-        var res = userMapper.getContributorsForProject(project.getId(), 0, 1);
-        assertEquals(1, res.size());
-        assertEquals(user.getId(), res.get(0).getId());
-
-    }
-
-    @Test
-    public void getContributorByNameTest() {
-        cleanData();
-
-        var user = createUser();
-        var project = createProject();
-        var ctr = createContributor(user.getId(), project.getId(), true);
-
-        var res = mapper.getContributorByLogin(project.getId(), user.getLogin());
-        assertEquals(ctr.getId(), res.getId());
-    }
-
-    @Test
-    public void countProjectContributorsTest() {
-        cleanData();
-        var user = createUser();
-        var project = createProject();
-        createContributor(user.getId(), project.getId(), true);
-
-        var res = mapper.countProjectContributors(project.getId());
-        assertEquals(Integer.valueOf(1), res);
-
-    }
-
-    @Test
-    public void getContributorsByUserId() {
-        cleanData();
-        var user = createUser();
-        var project = createProject();
-        createContributor(user.getId(), project.getId(), true);
-
-        var res = mapper.getContributorsByUserId(user.getId(), 0, 1);
-
-        assertEquals(1, res.size());
-        assertEquals(user.getId(), res.get(0).getUserId());
-
-    }
-
-    @Test
-    public void deactivateUserContributorsTest() {
-        cleanData();
-        var user = createUser();
-        var project = createProject();
-        var ctr = createContributor(user.getId(), project.getId(), false);
-
-        mapper.deactivateUserContributors(user.getId());
-        var res = mapper.getContributorById(ctr.getId());
-        assertFalse(res.isActive());
-    }
-
-    @Test
-    public void deactivateProjectContributorsTest() {
-        cleanData();
-        var user = createUser();
-        var project = createProject();
-        var ctr = createContributor(user.getId(), project.getId(), false);
-
-        mapper.deactivateProjectContributors(project.getId());
-        var res = mapper.getContributorById(ctr.getId());
-        assertFalse(res.isActive());
-    }
-
 
     @Test
     public void getTaskByIdTest() {
@@ -572,19 +409,7 @@ public class MapperTest {
 
     }
 
-    @Test
-    public void deleteProjectContributors() {
-        cleanData();
-        var user = createUser();
-        var project = createProject();
-        var contributor = createContributor(user.getId(), project.getId(), false);
 
-        mapper.deleteProjectContributors(project.getId());
-
-        var res = mapper.getContributorById(contributor.getId());
-        assertNull(res);
-
-    }
 
     protected User createUser() {
         var roles = UserRole.DEVELOPER + ":" + UserRole.QA;
@@ -604,7 +429,7 @@ public class MapperTest {
 
     protected Contributor createContributor(long userId, long projectId, boolean isOwner) {
         var contributor = new Contributor(userId, projectId, isOwner);
-        mapper.insertContributor(contributor);
+        contributorMapper.insertContributor(contributor);
         return contributor;
     }
 
@@ -623,9 +448,9 @@ public class MapperTest {
     protected void cleanData() {
         mapper.deleteTasks();
         mapper.deleteSprints();
-        mapper.deleteContributors();
+        contributorMapper.deleteContributors();
         mapper.deleteCodes();
         userMapper.deleteUsers();
-        mapper.deleteProjects();
+        projectMapper.deleteProjects();
     }
 }

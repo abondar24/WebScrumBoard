@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.abondar.experimental.wsboard.server.mapper.ContributorMapper">
+
+    <cache type="org.mybatis.caches.ehcache.EhcacheCache">
+        <property name="timeToIdleSeconds" value="500"/>
+        <property name="timeToLiveSeconds" value="500"/>
+        <property name="maxEntriesLocalHeap" value="1000"/>
+        <property name="maxEntriesLocalDisk" value="10000"/>
+        <property name="memoryStoreEvictionPolicy" value="LRU"/>
+    </cache>
+
+    <resultMap id="contributorMap" type="org.abondar.experimental.wsboard.server.datamodel.Contributor">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="project_id" property="projectId"/>
+        <result column="is_owner" property="isOwner"/>
+        <result column="is_active" property="isActive"/>
+    </resultMap>
+
+    <insert id="insertContributor" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+        INSERT INTO contributor (user_id, project_id, is_owner, is_active)
+        VALUES (#{contributor.userId},
+                #{contributor.projectId},
+                #{contributor.isOwner},
+                #{contributor.isActive})
+            ON CONFLICT (id) DO NOTHING;
+    </insert>
+
+
+
+    <update id="updateContributor">
+        UPDATE contributor
+        SET user_id    = #{contributor.userId},
+            project_id = #{contributor.projectId},
+            is_owner   = #{contributor.isOwner},
+            is_active  = #{contributor.isActive}
+        WHERE id = #{contributor.id}
+    </update>
+
+    <update id="deactivateUserContributors">
+        UPDATE contributor
+        SET is_active = false
+        WHERE user_id = #{userId}
+    </update>
+
+    <update id="deactivateProjectContributors">
+        UPDATE contributor
+        SET is_active = false
+        WHERE project_id = #{projectId}
+    </update>
+
+
+    <select id="getContributorById" resultMap="contributorMap">
+        SELECT *
+        FROM contributor
+        WHERE id = #{id}
+    </select>
+
+    <select id="getContributorByUserAndProject" resultMap="contributorMap">
+        SELECT *
+        FROM contributor
+        WHERE user_id = #{userId}
+          AND project_id = #{projectId}
+    </select>
+
+
+    <select id="getContributorsByUserId" resultMap="contributorMap" useCache="true">
+        SELECT *
+        FROM contributor
+        WHERE user_id = #{userId}
+    </select>
+
+
+
+    <select id="getContributorByLogin" resultMap="contributorMap" useCache="true">
+        SELECT *
+        FROM contributor ctr
+                 JOIN wsuser usr ON ctr.user_id = usr.id
+        WHERE ctr.project_id = #{projectId}
+          AND usr.login = #{login}
+    </select>
+
+
+    <select id="countProjectContributors" resultType="integer" useCache="true">
+        SELECT count(id)
+        FROM contributor
+        WHERE project_id = #{projectId}
+          and is_active = true
+    </select>
+
+    <delete id="deleteProjectContributors">
+        DELETE
+        FROM contributor
+        WHERE project_id = #{projectId}
+    </delete>
+
+</mapper>

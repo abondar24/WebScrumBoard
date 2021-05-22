@@ -23,13 +23,12 @@ public interface DataMapper {
 
     void insertTask(@Param("task") Task task);
 
-    void insertContributor(@Param("contributor") Contributor contributor);
+
 
     void insertSprint(@Param("sprint") Sprint sprint);
 
     void insertCode(@Param("securityCode") SecurityCode code);
 
-    void updateContributor(@Param("contributor") Contributor contributor);
 
     void updateTask(@Param("task") Task task);
 
@@ -39,15 +38,6 @@ public interface DataMapper {
 
     void updateTasksSprint(@Param("idList") List<Long> idList,@Param("sprintId") long sprintId);
 
-    Contributor getContributorById(@Param("id") long id);
-
-    Contributor getContributorByLogin(@Param("projectId") long projectId, @Param("login")String login);
-
-    Contributor getContributorByUserAndProject(@Param("userId") long userId, @Param("projectId") Long projectId);
-
-    List<Contributor> getContributorsByUserId(@Param("userId") long userId, @Param("offset") int offset, @Param("limit") int limit);
-
-    Integer countProjectContributors(@Param("projectId") long projectId);
 
     Task getTaskById(@Param("id") long id);
 
@@ -79,15 +69,9 @@ public interface DataMapper {
 
     Integer countSprints(@Param("prjId") long prjId);
 
-    void deactivateUserContributors(@Param("userId") long userId);
-
-    void deactivateProjectContributors(@Param("projectId") long projectId);
-
     void deleteProjectTasks(@Param("projectId") long projectId);
 
     void deleteProjectSprints(@Param("projectId") long projectId);
-
-    void deleteProjectContributors(@Param("projectId") long projectId);
 
     void deleteTask(@Param("id") long id);
 
@@ -96,14 +80,9 @@ public interface DataMapper {
     void deleteCode(@Param("id") long id);
 
 
-    @Delete("DELETE FROM contributor")
-    void deleteContributors();
-
     @Delete("DELETE FROM task")
     void deleteTasks();
 
-    @Delete(" DELETE FROM project")
-    void deleteProjects();
 
     @Delete(" DELETE FROM sprint")
     void deleteSprints();

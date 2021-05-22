@@ -3,6 +3,7 @@ package org.abondar.experimental.wsboard.server.dao;
 import org.abondar.experimental.wsboard.server.datamodel.Project;
 import org.abondar.experimental.wsboard.server.exception.DataCreationException;
 import org.abondar.experimental.wsboard.server.exception.DataExistenceException;
+import org.abondar.experimental.wsboard.server.mapper.ContributorMapper;
 import org.abondar.experimental.wsboard.server.mapper.DataMapper;
 import org.abondar.experimental.wsboard.server.mapper.ProjectMapper;
 import org.abondar.experimental.wsboard.server.mapper.UserMapper;
@@ -36,16 +37,19 @@ public class ProjectDao{
 
     private final PlatformTransactionManager transactionManager;
 
-    //TODO: replace with ctr mapper
+    //TODO: replace with sprint and task mapper
     @Autowired
     private DataMapper mapper;
 
+    private final ContributorMapper contributorMapper;
+
     @Autowired
     public ProjectDao(UserMapper userMapper,ProjectMapper projectMapper,
-                      PlatformTransactionManager transactionManager) {
+                      ContributorMapper contributorMapper,PlatformTransactionManager transactionManager) {
 
        this.userMapper = userMapper;
        this.projectMapper = projectMapper;
+       this.contributorMapper = contributorMapper;
        this.transactionManager = transactionManager;
     }
 
@@ -118,7 +122,7 @@ public class ProjectDao{
         try {
             if (isActive != null) {
                 if (!isActive) {
-                    mapper.deactivateProjectContributors(prj.getId());
+                    contributorMapper.deactivateProjectContributors(prj.getId());
                     if (endDate != null && !prj.getStartDate().after(endDate)) {
                         prj.setEndDate(endDate);
                     } else {
@@ -158,7 +162,7 @@ public class ProjectDao{
 
             mapper.deleteProjectTasks(id);
             mapper.deleteProjectSprints(id);
-            mapper.deleteProjectContributors(id);
+            contributorMapper.deleteProjectContributors(id);
             projectMapper.deleteProject(id);
 
             var msg = String.format(LogMessageUtil.LOG_FORMAT + " %s", "Project ", id, " successfully updated");

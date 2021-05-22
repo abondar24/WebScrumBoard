@@ -3,6 +3,7 @@ package org.abondar.experimental.wsboard.server.dao;
 import org.abondar.experimental.wsboard.server.datamodel.user.User;
 import org.abondar.experimental.wsboard.server.exception.DataCreationException;
 import org.abondar.experimental.wsboard.server.exception.DataExistenceException;
+import org.abondar.experimental.wsboard.server.mapper.ContributorMapper;
 import org.abondar.experimental.wsboard.server.mapper.DataMapper;
 import org.abondar.experimental.wsboard.server.mapper.ProjectMapper;
 import org.abondar.experimental.wsboard.server.mapper.UserMapper;
@@ -25,21 +26,21 @@ import java.util.Optional;
  * @author a.bondar
  */
 @Component
-public class ContributorDao extends BaseDao {
+public class ContributorDao {
 
     private static final Logger logger = LoggerFactory.getLogger(ContributorDao.class);
 
-    //TODO: move to constructor after base dao removal
-    @Autowired
     private UserMapper userMapper;
 
-    @Autowired
     private ProjectMapper projectMapper;
 
+    private ContributorMapper contributorMapper;
 
     @Autowired
-    public ContributorDao(DataMapper mapper) {
-        super(mapper);
+    public ContributorDao(UserMapper userMapper, ProjectMapper projectMapper, ContributorMapper contributorMapper) {
+        this.userMapper = userMapper;
+        this.projectMapper = projectMapper;
+        this.contributorMapper = contributorMapper;
     }
 
     /**
@@ -72,7 +73,7 @@ public class ContributorDao extends BaseDao {
         }
 
 
-        var existingCtr = mapper.getContributorByUserAndProject(userId,projectId);
+        var existingCtr = contributorMapper.getContributorByUserAndProject(userId,projectId);
         if (existingCtr!=null){
             if (existingCtr.isActive()){
                 msg = String.format(LogMessageUtil.CONTRIBUTOR_EXISTS_LOG,projectId,userId);
@@ -84,12 +85,12 @@ public class ContributorDao extends BaseDao {
                     existingCtr.setOwner(true);
                 }
 
-                mapper.updateContributor(existingCtr);
+                contributorMapper.updateContributor(existingCtr);
                 return existingCtr;
             }
         } else {
             var ctr = new Contributor(userId, projectId, isOwner);
-            mapper.insertContributor(ctr);
+            contributorMapper.insertContributor(ctr);
             msg = String.format(LogMessageUtil.LOG_FORMAT, "Contributor created ", ctr.getId());
             logger.info(msg);
 
@@ -117,7 +118,7 @@ public class ContributorDao extends BaseDao {
         findProjectById(projectId);
 
         var msg = "";
-        var ctr = mapper.getContributorByUserAndProject(userId, projectId);
+        var ctr = contributorMapper.getContributorByUserAndProject(userId, projectId);
         if (ctr == null) {
             msg = String.format("%s with user id: %d", LogMessageUtil.CONTRIBUTOR_NOT_EXISTS, userId);
             logger.error(msg);
@@ -142,9 +143,9 @@ public class ContributorDao extends BaseDao {
                 }
 
                 if (ownr!=null){
-                    var oldOwner = mapper.getContributorByUserAndProject(ownr.getId(),projectId);
+                    var oldOwner = contributorMapper.getContributorByUserAndProject(ownr.getId(),projectId);
                     oldOwner.setOwner(false);
-                    mapper.updateContributor(oldOwner);
+                    contributorMapper.updateContributor(oldOwner);
                 }
 
             } else {
@@ -167,7 +168,7 @@ public class ContributorDao extends BaseDao {
             ctr.setActive(isActive);
         }
 
-        mapper.updateContributor(ctr);
+        contributorMapper.updateContributor(ctr);
 
         msg = String.format(LogMessageUtil.LOG_FORMAT, "Contributor updated ", ctr.getId());
         logger.info(msg);
@@ -180,7 +181,7 @@ public class ContributorDao extends BaseDao {
 
           findProjectById(projectId);
 
-         var ctrId = mapper.getContributorByUserAndProject(userId,projectId).getId();
+         var ctrId = contributorMapper.getContributorByUserAndProject(userId,projectId).getId();
 
          var msg = String.format(LogMessageUtil.LOG_FORMAT, "Contributor found ", ctrId);
          logger.info(msg);
@@ -242,7 +243,7 @@ public class ContributorDao extends BaseDao {
 
         findProjectById(projectId);
 
-        var ctr = mapper.getContributorByLogin(projectId,login);
+        var ctr = contributorMapper.getContributorByLogin(projectId,login);
         if (ctr==null){
             throw new DataExistenceException(LogMessageUtil.CONTRIBUTOR_NOT_EXISTS);
         }
@@ -262,7 +263,7 @@ public class ContributorDao extends BaseDao {
     public Integer countProjectContributors(Long projectId) throws DataExistenceException{
         findProjectById(projectId);
 
-        var res =  mapper.countProjectContributors(projectId);
+        var res =  contributorMapper.countProjectContributors(projectId);
         var msg = String.format(LogMessageUtil.LOG_COUNT_FORMAT, "Counted contributors for project ", projectId,res);
         logger.info(msg);
 
@@ -284,7 +285,7 @@ public class ContributorDao extends BaseDao {
 
        checkUser(userId);
 
-        return mapper.getContributorsByUserId(userId, offset, limit);
+        return contributorMapper.getContributorsByUserId(userId, offset, limit);
     }
 
 

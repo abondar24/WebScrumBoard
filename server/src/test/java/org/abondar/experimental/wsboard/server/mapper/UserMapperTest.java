@@ -2,6 +2,7 @@ package org.abondar.experimental.wsboard.server.mapper;
 
 
 
+import org.junit.Ignore;
 import org.junit.jupiter.api.Test;
 
 
@@ -78,4 +79,17 @@ public class UserMapperTest extends MapperTest {
 
         assertEquals(2, res.size());
     }
+
+    @Test
+    public void getProjectOwnerTest() {
+        cleanData();
+        var user = createUser();
+        var project = createProject();
+        createContributor(user.getId(), project.getId(), true);
+
+        var res = userMapper.getProjectOwner(project.getId());
+        assertEquals(user.getId(), res.getId());
+
+    }
+
 }

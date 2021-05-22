@@ -7,6 +7,7 @@ import org.abondar.experimental.wsboard.server.exception.CannotPerformOperationE
 import org.abondar.experimental.wsboard.server.exception.DataCreationException;
 import org.abondar.experimental.wsboard.server.exception.DataExistenceException;
 import org.abondar.experimental.wsboard.server.exception.InvalidHashException;
+import org.abondar.experimental.wsboard.server.mapper.ContributorMapper;
 import org.abondar.experimental.wsboard.server.mapper.UserMapper;
 import org.abondar.experimental.wsboard.server.util.LogMessageUtil;
 import org.abondar.experimental.wsboard.server.util.PasswordUtil;
@@ -31,15 +32,16 @@ public class UserDao {
 
     private final PlatformTransactionManager transactionManager;
 
-    private final UserMapper mapper;
+    private final UserMapper userMapper;
 
-
+    private final ContributorMapper contributorMapper;
 
     private static final Logger logger = LoggerFactory.getLogger(UserDao.class);
 
     @Autowired
-    public UserDao(UserMapper mapper, PlatformTransactionManager transactionManager) {
-        this.mapper = mapper;
+    public UserDao(UserMapper userMapper, ContributorMapper contributorMapper, PlatformTransactionManager transactionManager) {
+        this.userMapper = userMapper;
+        this.contributorMapper = contributorMapper;
         this.transactionManager = transactionManager;
     }
 
@@ -60,7 +62,7 @@ public class UserDao {
     public User createUser(String login, String password, String email, String firstName,
                            String lastName, String roles)
             throws CannotPerformOperationException, DataCreationException, DataExistenceException {
-        var usr = mapper.getUserByLogin(login);
+        var usr = userMapper.getUserByLogin(login);
 
         if (usr != null) {
             logger.error(LogMessageUtil.USER_EXISTS);
@@ -94,7 +96,7 @@ public class UserDao {
         var pwdHash = PasswordUtil.createHash(password);
 
         usr = new User(login, email, firstName, lastName, pwdHash, checkRoles(roles));
-        mapper.insertUser(usr);
+        userMapper.insertUser(usr);
 
         var msg = String.format(LogMessageUtil.LOG_FORMAT, "User successfully created ", usr.getId());
         logger.info(msg);
@@ -117,7 +119,7 @@ public class UserDao {
             throw new DataCreationException(LogMessageUtil.USER_EMTPY_LOGIN);
         }
 
-        var usr = mapper.getUserByLogin(login);
+        var usr = userMapper.getUserByLogin(login);
         if (usr != null) {
             logger.error(LogMessageUtil.USER_EXISTS);
             throw new DataExistenceException(LogMessageUtil.USER_EXISTS);
@@ -127,7 +129,7 @@ public class UserDao {
         usr = findUserById(userId);
 
         usr.setLogin(login);
-        mapper.updateUser(usr);
+        userMapper.updateUser(usr);
 
         var msg = String.format("%s %d", "User login updated for user: ", usr.getId());
         logger.info(msg);
@@ -155,7 +157,7 @@ public class UserDao {
             throw new InvalidHashException(LogMessageUtil.WRONG_PWD);
         }
         usr.setPassword(PasswordUtil.createHash(newPassword));
-        mapper.updateUser(usr);
+        userMapper.updateUser(usr);
 
         var msg = String.format("%s %d", "Password updated for user: ", usr.getId());
         logger.info(msg);
@@ -203,13 +205,13 @@ public class UserDao {
             usr.setAvatar(avatar);
         }
 
-        mapper.updateUser(usr);
+        userMapper.updateUser(usr);
 
         return usr;
     }
 
     public void resetPassword(long id) throws DataExistenceException, CannotPerformOperationException {
-        var usr = mapper.getUserById(id);
+        var usr = userMapper.getUserById(id);
         if (usr == null) {
             var msg = String.format(LogMessageUtil.LOG_FORMAT, LogMessageUtil.USER_NOT_EXISTS, id);
             logger.error(msg);
@@ -218,7 +220,7 @@ public class UserDao {
         }
 
         usr.setPassword(PasswordUtil.createHash("reset"));
-        mapper.updateUser(usr);
+        userMapper.updateUser(usr);
         var msg = String.format("Password reset for " + LogMessageUtil.LOG_FORMAT, "user ", usr.getId());
         logger.info(msg);
 
@@ -243,22 +245,21 @@ public class UserDao {
             throw new DataExistenceException(ex.getMessage());
         }
 
-        //TODO: uncomment when ctr mapper will be added
-//        var contributors = mapper.getContributorsByUserId(id, -1, 0);
-//        if (!contributors.isEmpty()) {
-//            var isOwnerOnce = contributors.stream().anyMatch(Contributor::isOwner);
-//            if (isOwnerOnce) {
-//                logger.error(LogMessageUtil.USER_IS_PROJECT_OWNER);
-//                transactionManager.rollback(txStatus);
-//                throw new DataCreationException(LogMessageUtil.USER_IS_PROJECT_OWNER);
-//            }
-//
-//            mapper.deactivateUserContributors(usr.getId());
-     //   }
+        var contributors = contributorMapper.getContributorsByUserId(id, -1, 0);
+        if (!contributors.isEmpty()) {
+            var isOwnerOnce = contributors.stream().anyMatch(Contributor::isOwner);
+            if (isOwnerOnce) {
+                logger.error(LogMessageUtil.USER_IS_PROJECT_OWNER);
+                transactionManager.rollback(txStatus);
+                throw new DataCreationException(LogMessageUtil.USER_IS_PROJECT_OWNER);
+            }
+
+            contributorMapper.deactivateUserContributors(usr.getId());
+        }
 
         usr.setDeleted();
 
-        mapper.updateUser(usr);
+        userMapper.updateUser(usr);
 
         var msg = String.format(LogMessageUtil.LOG_FORMAT + "%s", "User ", usr.getId(), " marked as deleted");
         logger.info(msg);
@@ -277,7 +278,7 @@ public class UserDao {
      */
     public User findUserById(long id) throws DataExistenceException {
 
-        var usr = mapper.getUserById(id);
+        var usr = userMapper.getUserById(id);
         if (usr == null) {
             var msg = String.format(LogMessageUtil.LOG_FORMAT, LogMessageUtil.USER_NOT_EXISTS, id);
             logger.error(msg);
@@ -302,7 +303,7 @@ public class UserDao {
      * @return - list of users
      */
     public List<User> findUsersByIds(List<Long> ids) {
-        return mapper.getUsersByIds(ids);
+        return userMapper.getUsersByIds(ids);
     }
 
     /**
@@ -318,7 +319,7 @@ public class UserDao {
             throw new DataExistenceException(LogMessageUtil.USER_NOT_EXISTS);
         }
 
-        var usr = mapper.getUserByLogin(login);
+        var usr = userMapper.getUserByLogin(login);
         if (usr == null) {
             logger.error(LogMessageUtil.USER_NOT_EXISTS);
 

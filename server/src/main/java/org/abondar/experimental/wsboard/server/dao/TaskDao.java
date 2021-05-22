@@ -5,6 +5,7 @@ import org.abondar.experimental.wsboard.server.datamodel.task.TaskState;
 import org.abondar.experimental.wsboard.server.datamodel.user.UserRole;
 import org.abondar.experimental.wsboard.server.exception.DataCreationException;
 import org.abondar.experimental.wsboard.server.exception.DataExistenceException;
+import org.abondar.experimental.wsboard.server.mapper.ContributorMapper;
 import org.abondar.experimental.wsboard.server.mapper.ProjectMapper;
 import org.abondar.experimental.wsboard.server.mapper.UserMapper;
 import org.abondar.experimental.wsboard.server.util.LogMessageUtil;
@@ -42,6 +43,9 @@ public class TaskDao extends BaseDao{
 
     @Autowired
     private ProjectMapper projectMapper;
+
+    @Autowired
+    private ContributorMapper contributorMapper;
 
     @Autowired
     public TaskDao(DataMapper mapper) {
@@ -204,7 +208,7 @@ public class TaskDao extends BaseDao{
         }
 
 
-        var ctr = mapper.getContributorById(task.getContributorId());
+        var ctr = contributorMapper.getContributorById(task.getContributorId());
         var usr = userMapper.getUserById(ctr.getUserId());
 
         if (!ctr.isOwner()) {
@@ -544,7 +548,7 @@ public class TaskDao extends BaseDao{
      * @throws DataExistenceException - contributor not found
      */
     private void checkContributor(long contributorId) throws DataExistenceException {
-        var ctr = mapper.getContributorById(contributorId);
+        var ctr = contributorMapper.getContributorById(contributorId);
         if (ctr == null || !ctr.isActive()) {
             var msg = String.format(LogMessageUtil.LOG_FORMAT, LogMessageUtil.CONTRIBUTOR_NOT_EXISTS, contributorId);
             logger.info(msg);

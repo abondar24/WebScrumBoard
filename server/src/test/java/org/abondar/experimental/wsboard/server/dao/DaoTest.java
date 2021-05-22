@@ -7,6 +7,7 @@ import org.abondar.experimental.wsboard.server.datamodel.task.Task;
 import org.abondar.experimental.wsboard.server.datamodel.task.TaskState;
 import org.abondar.experimental.wsboard.server.datamodel.user.User;
 import org.abondar.experimental.wsboard.server.datamodel.user.UserRole;
+import org.abondar.experimental.wsboard.server.mapper.ContributorMapper;
 import org.abondar.experimental.wsboard.server.mapper.DataMapper;
 import org.abondar.experimental.wsboard.server.mapper.ProjectMapper;
 import org.abondar.experimental.wsboard.server.mapper.UserMapper;
@@ -21,8 +22,7 @@ import java.util.Date;
 
 @ExtendWith({MockitoExtension.class})
 @ActiveProfiles("test")
-public class BaseDaoTest {
-
+public class DaoTest {
 
     @Mock
     protected DataMapper mapper;
@@ -32,6 +32,9 @@ public class BaseDaoTest {
 
     @Mock
     protected ProjectMapper projectMapper;
+
+    @Mock
+    protected ContributorMapper contributorMapper;
 
 
     protected User usr;

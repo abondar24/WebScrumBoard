@@ -14,7 +14,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 
-public class SecurityCodeDaoTest extends BaseDaoTest {
+public class SecurityCodeDaoTest extends DaoTest {
 
     @InjectMocks
     private SecurityCodeDao codeDao;
