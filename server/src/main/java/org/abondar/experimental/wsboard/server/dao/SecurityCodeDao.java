@@ -1,7 +1,7 @@
 package org.abondar.experimental.wsboard.server.dao;
 
 import org.abondar.experimental.wsboard.server.exception.DataExistenceException;
-import org.abondar.experimental.wsboard.server.mapper.DataMapper;
+import org.abondar.experimental.wsboard.server.mapper.SecurityCodeMapper;
 import org.abondar.experimental.wsboard.server.mapper.UserMapper;
 import org.abondar.experimental.wsboard.server.util.LogMessageUtil;
 
@@ -16,25 +16,26 @@ import java.security.SecureRandom;
 import java.util.Random;
 
 @Component
-public class SecurityCodeDao extends BaseDao {
+public class SecurityCodeDao{
 
     private static final Logger logger = LoggerFactory.getLogger(SecurityCodeDao.class);
 
-    //TODO: move to constructor after base dao removal
-    @Autowired
-    private UserMapper userMapper;
+    private final UserMapper userMapper;
+
+    private final SecurityCodeMapper codeMapper;
 
     @Autowired
-    public SecurityCodeDao(DataMapper mapper) {
-        super(mapper);
+    public SecurityCodeDao(UserMapper userMapper, SecurityCodeMapper codeMapper) {
+        this.userMapper = userMapper;
+        this.codeMapper = codeMapper;
     }
 
     public long insertCode(long userId) throws DataExistenceException {
         checkUser(userId);
 
-        var foundCode = mapper.getCodeByUserId(userId);
+        var foundCode = codeMapper.getCodeByUserId(userId);
         if (foundCode != null) {
-            mapper.deleteCode(foundCode.getId());
+            codeMapper.deleteCode(foundCode.getId());
         }
 
         long code;
@@ -43,7 +44,7 @@ public class SecurityCodeDao extends BaseDao {
 
 
         var sc = new SecurityCode(code, userId);
-        mapper.insertCode(sc);
+        codeMapper.insertCode(sc);
 
         var msg = String.format(LogMessageUtil.LOG_FORMAT, "New security code inserted for user", userId);
         logger.info(msg);
@@ -54,7 +55,7 @@ public class SecurityCodeDao extends BaseDao {
     public void enterCode(long userId, long code) throws DataExistenceException {
         checkUser(userId);
 
-        var foundCode = mapper.getCodeByUserId(userId);
+        var foundCode = codeMapper.getCodeByUserId(userId);
         if (foundCode == null) {
             throw new DataExistenceException(LogMessageUtil.CODE_NOT_EXISTS);
         }
@@ -63,7 +64,7 @@ public class SecurityCodeDao extends BaseDao {
             throw new DataExistenceException(LogMessageUtil.CODE_NOT_MATCHES);
         }
 
-        mapper.deleteCode(foundCode.getId());
+        codeMapper.deleteCode(foundCode.getId());
     }
 
 

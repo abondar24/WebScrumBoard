@@ -22,8 +22,8 @@ public class SecurityCodeDaoTest extends DaoTest {
     @Test
     public void insertCodeTest() throws Exception {
         when(userMapper.getUserById(anyLong())).thenReturn(usr);
-        when(mapper.getCodeByUserId(anyLong())).thenReturn(null);
-        doNothing().when(mapper).insertCode(any(SecurityCode.class));
+        when(codeMapper.getCodeByUserId(anyLong())).thenReturn(null);
+        doNothing().when(codeMapper).insertCode(any(SecurityCode.class));
 
         var code = codeDao.insertCode(usr.getId());
 
@@ -42,12 +42,12 @@ public class SecurityCodeDaoTest extends DaoTest {
     @Test
     public void enterCodeTest() throws Exception {
         when(userMapper.getUserById(anyLong())).thenReturn(usr);
-        when(mapper.getCodeByUserId(anyLong())).thenReturn(null);
+        when(codeMapper.getCodeByUserId(anyLong())).thenReturn(null);
 
-        doNothing().when(mapper).insertCode(any(SecurityCode.class));
+        doNothing().when(codeMapper).insertCode(any(SecurityCode.class));
         var code = codeDao.insertCode(usr.getId());
-        when(mapper.getCodeByUserId(anyLong())).thenReturn(new SecurityCode(code, usr.getId()));
-        doNothing().when(mapper).deleteCode(anyLong());
+        when(codeMapper.getCodeByUserId(anyLong())).thenReturn(new SecurityCode(code, usr.getId()));
+        doNothing().when(codeMapper).deleteCode(anyLong());
         codeDao.enterCode(usr.getId(), code);
 
 
@@ -62,7 +62,7 @@ public class SecurityCodeDaoTest extends DaoTest {
     @Test
     public void enterCodeNotFoundTest() throws Exception {
         when(userMapper.getUserById(anyLong())).thenReturn(usr);
-        when(mapper.getCodeByUserId(anyLong())).thenReturn(null);
+        when(codeMapper.getCodeByUserId(anyLong())).thenReturn(null);
         assertThrows(DataExistenceException.class, () -> codeDao.enterCode(usr.getId(), 123));
 
     }
@@ -70,11 +70,11 @@ public class SecurityCodeDaoTest extends DaoTest {
     @Test
     public void enterCodeNotMatchesTest() throws Exception {
         when(userMapper.getUserById(anyLong())).thenReturn(usr);
-        when(mapper.getCodeByUserId(anyLong())).thenReturn(null);
+        when(codeMapper.getCodeByUserId(anyLong())).thenReturn(null);
 
-        doNothing().when(mapper).insertCode(any(SecurityCode.class));
+        doNothing().when(codeMapper).insertCode(any(SecurityCode.class));
         var code = codeDao.insertCode(usr.getId());
-        when(mapper.getCodeByUserId(anyLong())).thenReturn(new SecurityCode(anyLong(), usr.getId()));
+        when(codeMapper.getCodeByUserId(anyLong())).thenReturn(new SecurityCode(anyLong(), usr.getId()));
 
         assertThrows(DataExistenceException.class, () -> codeDao.enterCode(usr.getId(), 123));
 

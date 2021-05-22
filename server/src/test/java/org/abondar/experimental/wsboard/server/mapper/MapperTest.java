@@ -8,7 +8,6 @@ import org.abondar.experimental.wsboard.server.datamodel.task.Task;
 import org.abondar.experimental.wsboard.server.datamodel.task.TaskState;
 import org.abondar.experimental.wsboard.server.datamodel.user.User;
 import org.abondar.experimental.wsboard.server.datamodel.user.UserRole;
-import org.junit.Ignore;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
@@ -21,8 +20,6 @@ import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -34,18 +31,17 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class MapperTest {
 
     @Autowired
-    private DataMapper mapper;
-
-    @Autowired
     protected UserMapper userMapper;
-
     @Autowired
     protected ProjectMapper projectMapper;
-
     @Autowired
     protected ContributorMapper contributorMapper;
 
+    @Autowired
+    protected SecurityCodeMapper securityCodeMapper;
 
+    @Autowired
+    private DataMapper mapper;
 
     @Test
     public void insertTaskTest() {
@@ -59,47 +55,6 @@ public class MapperTest {
     }
 
 
-
-    @Test
-    public void insertCodeTest() {
-        cleanData();
-        var user = createUser();
-
-        var code = new SecurityCode(123345, user.getId());
-        mapper.insertCode(code);
-
-        assertTrue(code.getId() > 0);
-
-    }
-
-    @Test
-    public void deleteCodeTest() {
-        cleanData();
-        var user = createUser();
-
-        var code = new SecurityCode(123345, user.getId());
-        mapper.insertCode(code);
-
-        mapper.deleteCode(code.getId());
-        code = mapper.getCodeByUserId(user.getId());
-
-        assertNull(code);
-
-    }
-
-    @Test
-    public void checkCodeExistsTest() {
-        cleanData();
-        var user = createUser();
-
-        var code = new SecurityCode(123345, user.getId());
-        mapper.insertCode(code);
-
-        Integer exists = mapper.checkCodeExists(code.getCode());
-
-        assertEquals(Integer.valueOf(1), exists);
-
-    }
 
     @Test
     public void getTaskByIdTest() {
@@ -353,7 +308,6 @@ public class MapperTest {
     }
 
 
-
     @Test
     public void deleteTaskTest() {
         cleanData();
@@ -410,7 +364,6 @@ public class MapperTest {
     }
 
 
-
     protected User createUser() {
         var roles = UserRole.DEVELOPER + ":" + UserRole.QA;
         var user = new User("testUser", "test@email.com",
@@ -449,7 +402,7 @@ public class MapperTest {
         mapper.deleteTasks();
         mapper.deleteSprints();
         contributorMapper.deleteContributors();
-        mapper.deleteCodes();
+        securityCodeMapper.deleteCodes();
         userMapper.deleteUsers();
         projectMapper.deleteProjects();
     }

@@ -12,9 +12,6 @@
         <property name="memoryStoreEvictionPolicy" value="LRU"/>
     </cache>
 
-
-
-
     <resultMap id="taskMap" type="org.abondar.experimental.wsboard.server.datamodel.task.Task">
         <id column="id" property="id"/>
         <result column="contributor_id" property="contributorId"/>
@@ -40,11 +37,6 @@
 
     </resultMap>
 
-    <resultMap id="securityCodeMap" type="org.abondar.experimental.wsboard.server.datamodel.SecurityCode">
-        <id column="id" property="id"/>
-        <result column="code" property="code"/>
-        <result column="user_id" property="userId"/>
-    </resultMap>
 
 
     <insert id="insertTask" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
@@ -63,13 +55,6 @@
                 #{sprint.startDate},
                 #{sprint.endDate},
                 #{sprint.projectId})
-        ON CONFLICT (id) DO NOTHING;
-    </insert>
-
-    <insert id="insertCode" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
-        INSERT INTO security_code (code, user_id)
-        VALUES (#{securityCode.code},
-                #{securityCode.userId})
         ON CONFLICT (id) DO NOTHING;
     </insert>
 
@@ -212,20 +197,6 @@
     </select>
 
 
-    <select id="getCodeByUserId" resultMap="securityCodeMap">
-        SELECT *
-        FROM security_code
-        WHERE user_id = #{id}
-    </select>
-
-    <select id="checkCodeExists" resultType="Integer">
-        SELECT 1
-        FROM security_code
-        WHERE code = #{code}
-        LIMIT 1
-    </select>
-
-
     <delete id="deleteProjectTasks">
         DELETE
         FROM task ts
@@ -240,8 +211,6 @@
         WHERE id = #{id}
     </delete>
 
-
-
     <delete id="deleteProjectSprints">
         DELETE
         FROM sprint
@@ -253,13 +222,5 @@
         FROM sprint
         WHERE id = #{id}
     </delete>
-
-
-    <delete id="deleteCode">
-        DELETE
-        FROM security_code
-        WHERE id = #{id}
-    </delete>
-
 
 </mapper>

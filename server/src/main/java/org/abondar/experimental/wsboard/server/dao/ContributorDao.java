@@ -4,7 +4,6 @@ import org.abondar.experimental.wsboard.server.datamodel.user.User;
 import org.abondar.experimental.wsboard.server.exception.DataCreationException;
 import org.abondar.experimental.wsboard.server.exception.DataExistenceException;
 import org.abondar.experimental.wsboard.server.mapper.ContributorMapper;
-import org.abondar.experimental.wsboard.server.mapper.DataMapper;
 import org.abondar.experimental.wsboard.server.mapper.ProjectMapper;
 import org.abondar.experimental.wsboard.server.mapper.UserMapper;
 import org.abondar.experimental.wsboard.server.util.LogMessageUtil;
