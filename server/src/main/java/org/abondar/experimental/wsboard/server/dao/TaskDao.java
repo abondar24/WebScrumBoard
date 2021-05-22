@@ -10,7 +10,7 @@ import org.abondar.experimental.wsboard.server.mapper.ProjectMapper;
 import org.abondar.experimental.wsboard.server.mapper.SprintMapper;
 import org.abondar.experimental.wsboard.server.mapper.UserMapper;
 import org.abondar.experimental.wsboard.server.util.LogMessageUtil;
-import org.abondar.experimental.wsboard.server.mapper.DataMapper;
+import org.abondar.experimental.wsboard.server.mapper.TaskMapper;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,29 +31,30 @@ import java.util.stream.Collectors;
  * @author a.bondar
  */
 @Component
-public class TaskDao extends BaseDao{
+public class TaskDao {
 
     private static final Logger logger = LoggerFactory.getLogger(TaskDao.class);
 
 
     private final Map<TaskState, List<TaskState>> stateMoves;
 
-    //TODO: move to constructor after base dao removal
-    @Autowired
-    private UserMapper userMapper;
+    private  final UserMapper userMapper;
+
+    private final ProjectMapper projectMapper;
+
+    private final ContributorMapper contributorMapper;
+
+    private final SprintMapper sprintMapper;
+
+    private final TaskMapper taskMapper;
 
     @Autowired
-    private ProjectMapper projectMapper;
-
-    @Autowired
-    private ContributorMapper contributorMapper;
-
-    @Autowired
-    private SprintMapper sprintMapper;
-
-    @Autowired
-    public TaskDao(DataMapper mapper) {
-        super(mapper);
+    public TaskDao(UserMapper userMapper, ProjectMapper projectMapper, ContributorMapper contributorMapper, SprintMapper sprintMapper, TaskMapper taskMapper) {
+        this.userMapper = userMapper;
+        this.projectMapper = projectMapper;
+        this.contributorMapper = contributorMapper;
+        this.sprintMapper = sprintMapper;
+        this.taskMapper = taskMapper;
         this.stateMoves = initMoves();
     }
 
@@ -76,7 +77,7 @@ public class TaskDao extends BaseDao{
         var task = new Task(contributorId, startDate, devOpsEnabled, taskName, taskDescription);
 
 
-        mapper.insertTask(task);
+        taskMapper.insertTask(task);
         var msg = String.format(LogMessageUtil.LOG_FORMAT, "Created a task ", task.getId());
         logger.info(msg);
 
@@ -125,9 +126,7 @@ public class TaskDao extends BaseDao{
             task.setTaskDescription(taskDescription);
         }
 
-
-
-        mapper.updateTask(task);
+        taskMapper.updateTask(task);
 
         var msg = String.format(LogMessageUtil.LOG_FORMAT, "Updated a task ", task.getId());
         logger.info(msg);
@@ -148,7 +147,7 @@ public class TaskDao extends BaseDao{
 
         checkSprint(sprintId);
 
-        mapper.updateTaskSprint(taskId, sprintId);
+        taskMapper.updateTaskSprint(taskId, sprintId);
 
         var msg = String.format(LogMessageUtil.LOG_FORMAT, "Updated task sprint ", task.getId());
         logger.info(msg);
@@ -168,7 +167,7 @@ public class TaskDao extends BaseDao{
 
         checkSprint(sprintId);
 
-        mapper.updateTasksSprint(taskIds, sprintId);
+        taskMapper.updateTasksSprint(taskIds, sprintId);
     }
 
 
@@ -239,7 +238,7 @@ public class TaskDao extends BaseDao{
             task.setEndDate(endDate);
         }
 
-        mapper.updateTask(task);
+        taskMapper.updateTask(task);
 
         var msg = String.format("Updated task state to %s for id:  %d", taskState.name(), taskId);
         logger.info(msg);
@@ -256,13 +255,13 @@ public class TaskDao extends BaseDao{
      */
     public boolean deleteTask(long id) {
 
-        if (mapper.getTaskById(id) == null) {
+        if (taskMapper.getTaskById(id) == null) {
             var msg = String.format(LogMessageUtil.LOG_FORMAT, LogMessageUtil.TASK_NOT_EXISTS, id);
             logger.info(msg);
             return false;
         }
 
-        mapper.deleteTask(id);
+        taskMapper.deleteTask(id);
 
         var msg = String.format(LogMessageUtil.LOG_FORMAT, "Deleted task ", id);
         logger.info(msg);
@@ -279,7 +278,7 @@ public class TaskDao extends BaseDao{
     public Task getTaskById(long taskId) throws DataExistenceException {
 
 
-        var task = mapper.getTaskById(taskId);
+        var task = taskMapper.getTaskById(taskId);
         if (task == null) {
             var msg = String.format(LogMessageUtil.LOG_FORMAT, LogMessageUtil.TASK_NOT_EXISTS, taskId);
             logger.info(msg);
@@ -306,7 +305,7 @@ public class TaskDao extends BaseDao{
 
         checkProject(projectId);
 
-        var tasks = mapper.getTasksForProject(projectId, offset, limit);
+        var tasks = taskMapper.getTasksForProject(projectId, offset, limit);
 
         var msg = String.format(LogMessageUtil.LOG_FORMAT, "Found tasks for project ", projectId);
         logger.info(msg);
@@ -325,7 +324,7 @@ public class TaskDao extends BaseDao{
     public List<Task> getNonSprintTasksForProject(long projectId) throws DataExistenceException{
         checkProject(projectId);
 
-        var tasks = mapper.getTasksForProject(projectId, 0,null);
+        var tasks = taskMapper.getTasksForProject(projectId, 0,null);
 
         var msg = String.format(LogMessageUtil.LOG_FORMAT, "Found non-sprint tasks for project ", projectId);
         logger.info(msg);
@@ -349,7 +348,7 @@ public class TaskDao extends BaseDao{
 
         checkContributor(ctrId);
 
-        var tasks = mapper.getTasksForContributor(ctrId, offset, limit);
+        var tasks = taskMapper.getTasksForContributor(ctrId, offset, limit);
 
         var msg = String.format(LogMessageUtil.LOG_FORMAT, "Found tasks for contributor ", ctrId);
         logger.info(msg);
@@ -371,7 +370,7 @@ public class TaskDao extends BaseDao{
 
         checkUser(usrId);
 
-        var tasks = mapper.getTasksForUser(usrId, offset, limit);
+        var tasks = taskMapper.getTasksForUser(usrId, offset, limit);
 
         var msg = String.format(LogMessageUtil.LOG_FORMAT, "Found tasks for user ", usrId);
         logger.info(msg);
@@ -390,7 +389,7 @@ public class TaskDao extends BaseDao{
 
         checkUser(usrId);
 
-        var res = mapper.countUserTasks(usrId);
+        var res = taskMapper.countUserTasks(usrId);
         var msg = String.format(LogMessageUtil.LOG_COUNT_FORMAT, "Counted tasks for user ", usrId,res);
         logger.info(msg);
 
@@ -411,7 +410,7 @@ public class TaskDao extends BaseDao{
 
         checkSprint(sprintId);
 
-        var tasks = mapper.getTasksForSprint(sprintId, offset, limit);
+        var tasks = taskMapper.getTasksForSprint(sprintId, offset, limit);
 
         var msg = String.format(LogMessageUtil.LOG_FORMAT, "Found tasks for sprint ", sprintId);
         logger.info(msg);
@@ -429,7 +428,7 @@ public class TaskDao extends BaseDao{
 
         checkSprint(spId);
 
-        var res = mapper.countSprintTasks(spId);
+        var res = taskMapper.countSprintTasks(spId);
         var msg = String.format(LogMessageUtil.LOG_COUNT_FORMAT, "Counted tasks for sprint ", spId,res);
         logger.info(msg);
 
@@ -447,7 +446,7 @@ public class TaskDao extends BaseDao{
 
         checkContributor(ctrId);
 
-        var res = mapper.countContributorTasks(ctrId);
+        var res = taskMapper.countContributorTasks(ctrId);
         var msg = String.format(LogMessageUtil.LOG_COUNT_FORMAT, "Counted tasks for contributor ", ctrId,res);
         logger.info(msg);
 

@@ -8,7 +8,7 @@ import org.abondar.experimental.wsboard.server.datamodel.task.TaskState;
 import org.abondar.experimental.wsboard.server.datamodel.user.User;
 import org.abondar.experimental.wsboard.server.datamodel.user.UserRole;
 import org.abondar.experimental.wsboard.server.mapper.ContributorMapper;
-import org.abondar.experimental.wsboard.server.mapper.DataMapper;
+import org.abondar.experimental.wsboard.server.mapper.TaskMapper;
 import org.abondar.experimental.wsboard.server.mapper.ProjectMapper;
 import org.abondar.experimental.wsboard.server.mapper.SecurityCodeMapper;
 import org.abondar.experimental.wsboard.server.mapper.SprintMapper;
@@ -27,7 +27,7 @@ import java.util.Date;
 public class DaoTest {
 
     @Mock
-    protected DataMapper mapper;
+    protected TaskMapper mapper;
 
     @Mock
     protected UserMapper userMapper;

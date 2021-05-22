@@ -1,6 +1,7 @@
 package org.abondar.experimental.wsboard.server.mapper;
 
 import org.abondar.experimental.wsboard.server.datamodel.Sprint;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -28,4 +29,8 @@ public interface SprintMapper {
     void deleteProjectSprints(@Param("projectId") long projectId);
 
     void deleteSprint(@Param("id") long id);
+
+    @Delete(" DELETE FROM sprint")
+    void deleteSprints();
+
 }

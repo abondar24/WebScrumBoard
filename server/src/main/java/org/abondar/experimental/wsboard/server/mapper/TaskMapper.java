@@ -1,6 +1,5 @@
 package org.abondar.experimental.wsboard.server.mapper;
 
-import org.abondar.experimental.wsboard.server.datamodel.Sprint;
 import org.abondar.experimental.wsboard.server.datamodel.task.Task;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
@@ -15,8 +14,8 @@ import java.util.List;
  * @author a.bondar
  */
 @Mapper
-@Qualifier("dataMapper")
-public interface DataMapper {
+@Qualifier("taskMapper")
+public interface TaskMapper {
 
     void insertTask(@Param("task") Task task);
 
@@ -48,9 +47,5 @@ public interface DataMapper {
 
     @Delete("DELETE FROM task")
     void deleteTasks();
-
-
-    @Delete(" DELETE FROM sprint")
-    void deleteSprints();
 
 }

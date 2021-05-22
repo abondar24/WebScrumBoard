@@ -4,7 +4,7 @@ import org.abondar.experimental.wsboard.server.datamodel.Project;
 import org.abondar.experimental.wsboard.server.exception.DataCreationException;
 import org.abondar.experimental.wsboard.server.exception.DataExistenceException;
 import org.abondar.experimental.wsboard.server.mapper.ContributorMapper;
-import org.abondar.experimental.wsboard.server.mapper.DataMapper;
+import org.abondar.experimental.wsboard.server.mapper.TaskMapper;
 import org.abondar.experimental.wsboard.server.mapper.ProjectMapper;
 import org.abondar.experimental.wsboard.server.mapper.SprintMapper;
 import org.abondar.experimental.wsboard.server.mapper.UserMapper;
@@ -40,7 +40,7 @@ public class ProjectDao{
 
     //TODO: replace with sprint and task mapper
     @Autowired
-    private DataMapper mapper;
+    private TaskMapper mapper;
 
     private final SprintMapper sprintMapper;
 
