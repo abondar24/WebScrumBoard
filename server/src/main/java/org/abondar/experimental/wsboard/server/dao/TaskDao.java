@@ -352,12 +352,7 @@ public class TaskDao extends BaseDao{
     public List<Task> getTasksForUser(long usrId, int offset, int limit)
             throws DataExistenceException {
 
-        var usr = mapper.getUserById(usrId);
-        if (usr == null) {
-            var msg = String.format(LogMessageUtil.LOG_FORMAT, LogMessageUtil.USER_NOT_EXISTS, usrId);
-            logger.info(msg);
-            throw new DataExistenceException(LogMessageUtil.USER_NOT_EXISTS);
-        }
+        checkUser(usrId);
 
         var tasks = mapper.getTasksForUser(usrId, offset, limit);
 
@@ -376,12 +371,7 @@ public class TaskDao extends BaseDao{
      */
     public Integer countUserTasks(Long usrId) throws DataExistenceException{
 
-        var usr = mapper.getUserById(usrId);
-        if (usr == null) {
-            var msg = String.format(LogMessageUtil.LOG_FORMAT, LogMessageUtil.USER_NOT_EXISTS, usrId);
-            logger.info(msg);
-            throw new DataExistenceException(LogMessageUtil.USER_NOT_EXISTS);
-        }
+        checkUser(usrId);
 
         var res = mapper.countUserTasks(usrId);
         var msg = String.format(LogMessageUtil.LOG_COUNT_FORMAT, "Counted tasks for user ", usrId,res);
@@ -509,6 +499,12 @@ public class TaskDao extends BaseDao{
         }
     }
 
+    /**
+     * Helper method to get task from enum by string value
+     * @param state - string value of state
+     * @return - task state from enum
+     * @throws DataExistenceException - state is not present in enu,
+     */
     private TaskState getTaskState(String state) throws DataExistenceException {
         try {
             return TaskState.valueOf(state.toUpperCase());
@@ -518,7 +514,11 @@ public class TaskDao extends BaseDao{
         }
     }
 
-
+    /**
+     * Check project for existence
+     * @param projectId - id of the project
+     * @throws DataExistenceException - project not found
+     */
     private void checkProject(long projectId) throws DataExistenceException {
         var prj = mapper.getProjectById(projectId);
         if (prj == null) {
@@ -531,8 +531,8 @@ public class TaskDao extends BaseDao{
     /**
      * Check contributor for existence
      *
-     * @param contributorId
-     * @throws DataExistenceException
+     * @param contributorId - contributor id
+     * @throws DataExistenceException - contributor not found
      */
     private void checkContributor(long contributorId) throws DataExistenceException {
         var ctr = mapper.getContributorById(contributorId);
@@ -547,8 +547,8 @@ public class TaskDao extends BaseDao{
     /**
      * Check sprint for existence
      *
-     * @param sprintId
-     * @throws DataExistenceException
+     * @param sprintId - sprint id
+     * @throws DataExistenceException - sprint not found
      */
     private void checkSprint(long sprintId) throws DataExistenceException {
         var sprint = mapper.getSprintById(sprintId);
@@ -556,6 +556,20 @@ public class TaskDao extends BaseDao{
             var msg = String.format(LogMessageUtil.LOG_FORMAT, LogMessageUtil.SPRINT_NOT_EXISTS, sprintId);
             logger.info(msg);
             throw new DataExistenceException(LogMessageUtil.SPRINT_NOT_EXISTS);
+        }
+    }
+
+    /**
+     * Check user for existence
+     * @param usrId - user id
+     * @throws DataExistenceException - user not found
+     */
+    public void checkUser(long usrId) throws DataExistenceException {
+        var usr = mapper.getUserById(usrId);
+        if (usr == null) {
+            var msg = String.format(LogMessageUtil.LOG_FORMAT, LogMessageUtil.USER_NOT_EXISTS, usrId);
+            logger.info(msg);
+            throw new DataExistenceException(LogMessageUtil.USER_NOT_EXISTS);
         }
     }
 }
