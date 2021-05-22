@@ -1,6 +1,7 @@
 package org.abondar.experimental.wsboard.server.mapper;
 
 import org.abondar.experimental.wsboard.server.datamodel.Project;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -25,4 +26,8 @@ public interface ProjectMapper {
     List<Project> getUserProjects(@Param("userId") long userId);
 
     void deleteProject(@Param("id") long id);
+
+    @Delete(" DELETE FROM project")
+    void deleteProjects();
+
 }
