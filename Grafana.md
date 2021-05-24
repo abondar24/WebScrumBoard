@@ -2,10 +2,6 @@
 
 A short guide to set up Grafana and Loki in Kubernetes cluster.
 
-## Requirements
-
-Helm. Check install guide [here](https://helm.sh/docs/intro/install/)
-
 ## Order
 1. Install Grafana
 ```
