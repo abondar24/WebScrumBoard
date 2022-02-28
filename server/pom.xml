@@ -13,7 +13,7 @@
 
     <properties>
         <springboot.version>2.4.1</springboot.version>
-        <postgres.version>42.2.25</postgres.version>
+        <postgres.version>42.3.3</postgres.version>
         <cxf.version>3.4.2</cxf.version>
         <junit.version>5.7.0</junit.version>
         <jaxb.version>3.0.0</jaxb.version>
